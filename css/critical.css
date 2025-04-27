@@ -1,0 +1,140 @@
+
+/* Critical styles only */
+:root {
+    --primary-color: #0d6efd;
+    --dark-color: #1a1a1a;
+    --light-color: #f8f9fa;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+}
+
+.page-header {
+    background: linear-gradient(45deg, #2563eb, #3b82f6);
+    padding: 1rem 0;
+    color: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Add only essential above-the-fold styles */
+:root {
+    --bg-primary: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --bg-secondary: #f8f9fa;
+    --border-color: #e5e7eb;
+    --card-bg: #ffffff;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 16rem;
+    background-color: var(--card-bg);
+    transition: transform 0.3s ease;
+    z-index: 40;
+}
+
+.main-content {
+    margin-left: 16rem;
+    transition: margin-left 0.3s ease;
+    background-color: var(--bg-primary);
+    opacity: 1 !important;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+            margin-left: 0;
+    }
+}
+
+.custom-icon {
+    width: 28px;
+    height: 28px;
+    fill: #3B82F6;
+}
+
+.job-heading {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    min-height: 2rem;
+}
+.hero-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #4B5563;
+    margin-bottom: 1.5rem;
+    visibility: visible;
+    opacity: 1;
+    will-change: opacity;
+    contain: content;
+  }
+  @media (min-width: 768px) {
+    .hero-text { font-size: 1.125rem; }
+  }
+  .dark .hero-text { color: #9CA3AF; }
+  .custom-icon { width: 24px; height: 24px; }
+  .job-heading { font-size: 1.5rem; font-weight: 600; }
+  @font-face {
+    font-family: "Bootstrap Icons";
+    src: url("fonts/bootstrap-icons-subset.woff2") format("woff2");
+  }
+  .bi::before { font-family: "Bootstrap Icons"; }
+  .bi-sun-fill::before { content: "\f1c2"; }
+  .bi-moon-fill::before { content: "\f1c1"; }
+  .bi-bell::before { content: "\f108"; }
+  .bi-chevron-down::before { content: "\f229"; }
+  .text-6xl.md\:text-8xl {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 1em;
+  }
+  .fas {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+  }
+  .fas.fa-code.text-6xl {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  .text-white\/30 { opacity: 0.3; will-change: opacity; transform: translateZ(0); }
+  .dark .text-white\/20 { opacity: 0.2; will-change: opacity; transform: translateZ(0); }
+  .icon-size {
+    font-size: 4rem; /* text-6xl equivalent */
+    color: rgba(255, 255, 255, 0.3); /* text-white/30 equivalent */
+  }
+  .dark\:bg-gray-800 {
+    background-color: var(--bg-primary);
+}
+.text-gray-700 {
+    color: var(--text-primary);
+}
+

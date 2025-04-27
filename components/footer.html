@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCVWorld Footer</title>
+    <head>
+        <link rel="preload" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" as="style">
+<style>
+    :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #f59e0b;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --success: #10b981;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+    
+/* Footer */
+footer {
+    background-color: var(--dark);
+    color: white;
+    padding: 60px 0 20px;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-logo-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-about p {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #334155;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.social-links a:hover {
+    background-color: var(--primary);
+}
+
+.footer-links h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+    color: #cbd5e1;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.footer-links ul li a:hover {
+    color: white;
+}
+
+.footer-newsletter p {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.newsletter-form {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+}
+
+.newsletter-btn {
+    padding: 12px 20px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.newsletter-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.newsletter-btn:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+</style>
+</head>
+<body>
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <img src="/assets/images/logo.webp" alt="BCVWorld Logo" width="30" height="30">
+                    </div>
+                    <p>BCVWorld is the leading job portal connecting talented professionals with top companies worldwide.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61575272554223" aria-label="Facebook">f</a>
+                        <a href="https://t.me/bcvworld" aria-label="Telegram">t</a>
+                        <a href="https://www.linkedin.com/in/bcv-world-7a294235a/" aria-label="LinkedIn">in</a>
+                        <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o" aria-label="WhatsApp">W</a>
+                        <a href="https://www.instagram.com/bcvworld18/" aria-label="Instagram">ig</a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>For Job Seekers</h3>
+                    <ul>
+                        <li><a href="html/jobs.html">Browse Jobs</a></li>
+                        <li><a href="html/appliedJobs.html">Applied Jobs</a></li>
+                    </ul>
+                </div> 
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="html/about.html">About Us</a></li>
+                        <li><a href="html/contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get the latest jobs and career advice.</p>
+                    <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+                        <input 
+                            type="email" 
+                            id="newsletterEmail"
+                            class="newsletter-input" 
+                            placeholder="Your email address" 
+                            aria-label="Email for newsletter"
+                            required
+                        >
+                        <button type="submit" class="newsletter-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BCVWorld. All rights reserved. | <a href="html/privacy.html">Privacy Policy</a> | <a href="html/terms.html">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js" defer></script>
+     <script src="/js/index.js" type="module" defer></script>
+</body>
+</html>

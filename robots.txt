@@ -1,0 +1,52 @@
+User-agent: *
+Allow: /
+Allow: /jobs/
+Allow: /about/
+Allow: /contact/
+Allow: /sitemap.xml
+Allow: /images/
+Allow: /css/
+Allow: /js/
+
+Disallow: /admin/
+Disallow: /private/
+Disallow: /includes/
+Disallow: /cgi-bin/
+Disallow: /tmp/
+Disallow: /backup/
+Disallow: /config/
+Disallow: /api/private/
+Disallow: /assets/private/
+Disallow: /uploads/private/
+
+Disallow: /*.json$
+Disallow: /*.txt$
+Disallow: /*.log$
+Disallow: /*.sql$
+Disallow: /*.env$
+Disallow: /*.config$
+
+Crawl-delay: 10
+
+Sitemap: https://jobs.bcvworld.com/sitemap.xml
+
+# Bot-specific rules
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /assets/public/
+
+User-agent: Bingbot
+Crawl-delay: 15
+
+User-agent: Scrapy
+Disallow: /
+
+# Optionally block known aggressive bots individually
+# User-agent: MJ12bot
+# Disallow: /

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="description" content="BCVWorld - #1 Job Portal for Freshers & Experienced Professionals. Find latest IT jobs, software developer positions, engineering careers, remote work opportunities, and internships. Apply to top companies hiring now!">
+    <meta name="keywords" content="job portal, fresher jobs, entry level positions, career opportunities, job search, internships, professional jobs, career guidance, job placement, IT jobs, engineering jobs, graduate jobs, remote work, work from home, software developer jobs, tech jobs, startup jobs, MNC jobs, top companies hiring, job vacancies 2025, highest paying jobs, job interview tips, resume builder, career counseling, job alerts, campus placement">
+    <meta name="theme-color" content="#007bff">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="JobsBCVWorld">
+    <meta name="google-site-verification" content="your-verification-code">
+  
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="BCVWorld - #1 Job Portal | Latest Jobs for Freshers & Experienced 2025">
+    <meta property="og:description" content="Find latest job opportunities in IT, Engineering & other sectors. Apply to top companies hiring now! Best job portal for freshers & experienced professionals with career guidance.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jobs.bcvworld.com">
+    <meta property="og:image" content="https://jobs.bcvworld.com/assets/images/bcvworld-og.png">
+    <meta property="og:image:alt" content="BCVWorld Job Portal">
+  
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BCVWorld - #1 Job Portal | Latest Jobs 2025">
+    <meta name="twitter:description" content="Find your dream job at top companies. IT jobs, Engineering careers, Remote work opportunities & more. Apply now!">
+    <meta name="twitter:image" content="https://jobs.bcvworld.com/assets/images/twitter-image.webp">
+  
+    <title>BCVWorld - #1 IT & Software Jobs 2025 | Java, Python, React, DevOps Jobs | Fresher & Experienced Roles | Software Developer, Software Engineer | QA Tester</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+    <link rel ="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.webp" alt="BCVWorld Logo" width="40" height="40">
+                <span class="logo-text">BCVWorld</span>
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="html/jobs.html">Browse Jobs</a></li>
+                    <li><a href="html/about.html">About</a></li>
+                    <li><a href="html/contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons" id="authButtons">
+                <!-- Default state shows login/signup -->
+                <a href="pages/login.html" class="btn btn-outline">Log In</a>
+                <a href="pages/register.html" class="btn btn-primary">Register</a>
+            </div>
+            
+            <!-- This will be shown when user is logged in -->
+            <div class="user-profile" id="userProfile" style="display: none;">
+                <div class="profile-toggle" id="profileToggle">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <span class="user-name" id="userName">John Doe</span>
+                    <svg class="dropdown-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-avatar" id="dropdownAvatar">JD</div>
+                        <div>
+                            <div class="dropdown-name" id="dropdownName">John Doe</div>
+                            <div class="dropdown-email" id="dropdownEmail">john@example.com</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="html/profile.html" class="dropdown-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        My Profile
+                    </a>
+                    <a href="html/appliedJobs.html" class="dropdown-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        My Applications
+                    </a>
+                    <a href="html/savedJobs.html" class="dropdown-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Saved Jobs
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-item" id="logoutBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Log Out
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Find Your Dream Job Today</h1>
+            <p>Join thousands of companies and job seekers connecting through our platform. Search for your perfect job or find the best talent for your company.</p>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container stats-container">
+            <div class="stat-item">
+                <div id="jobsCount" class="stat-number">Loading...</div>
+                <div class="stat-label">Jobs Available</div>
+            </div>
+            <div class="stat-item">
+                <div id="companiesCount" class="stat-number">Loading...</div>
+                <div class="stat-label">Companies Hiring</div>
+            </div>
+            <div class="stat-item">
+                <div id="usersCount" class="stat-number">Loading...</div>
+                <div class="stat-label">Job Seekers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Job Categories -->
+    <section class="categories">
+        <div class="container">
+            <div class="section-title">
+                <h2>Popular Job Categories</h2>
+                <p>Browse jobs by category to find the perfect match for your skills and experience</p>
+            </div>
+            
+            <div class="categories-grid" id="categoriesContainer">
+                <div class="loading-categories">
+                    Loading job categories...
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Jobs -->
+    <section class="featured-jobs">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured Jobs</h2>
+                <p>Hand-picked opportunities from top companies</p>
+            </div>
+            
+            <div class="jobs-grid" id="jobsContainer">
+                <div class="loading-jobs">
+                    Loading featured jobs...
+                </div>
+            </div>
+            
+            <div class="view-all">
+                <a href="html/jobs.html" class="btn btn-outline">View All Jobs</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Success Stories</h2>
+                <p>What our users say about finding jobs through BCVWorld</p>
+            </div>
+            
+            <div class="testimonials-container">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "BCVWorld made my job search so much easier. Within two weeks of creating my profile, I had multiple interview requests and landed my dream job at a tech startup!"
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="images/user1.jpg" alt="Sarah Johnson" class="author-avatar" width="50" height="50">
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Product Designer at TechStart</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Take the Next Step in Your Career?</h2>
+            <p>Whether you're looking for your next opportunity or searching for top talent, BCVWorld helps you achieve your goals faster.</p>
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <a href="pages/register.html" class="btn btn-light" style="background-color: white; color: var(--primary);">Find a Job</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <img src="assets/images/logo.webp" alt="BCVWorld Logo" width="30" height="30">
+                    </div>
+                    <p>BCVWorld is the leading job portal connecting talented professionals with top companies worldwide.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61575272554223" aria-label="Facebook">f</a>
+                        <a href="https://t.me/bcvworld" aria-label="Telegram">t</a>
+                        <a href="https://www.linkedin.com/in/bcv-world-7a294235a/" aria-label="LinkedIn">in</a>
+                        <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o" aria-label="WhatsApp">W</a>
+                        <a href="https://www.instagram.com/bcvworld18/" aria-label="Instagram">ig</a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>For Job Seekers</h3>
+                    <ul>
+                        <li><a href="html/jobs.html">Browse Jobs</a></li>
+                        <li><a href="html/appliedJobs.html">Applied Jobs</a></li>
+                    </ul>
+                </div> 
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="html/about.html">About Us</a></li>
+                        <li><a href="html/contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get the latest jobs and career advice.</p>
+                    <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+                        <input 
+                            type="email" 
+                            id="newsletterEmail"
+                            class="newsletter-input" 
+                            placeholder="Your email address" 
+                            aria-label="Email for newsletter"
+                            required
+                        >
+                        <button type="submit" class="newsletter-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BCVWorld. All rights reserved. | <a href="html/privacy.html">Privacy Policy</a> | <a href="html/terms.html">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>
