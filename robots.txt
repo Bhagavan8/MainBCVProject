@@ -28,7 +28,7 @@ Disallow: /*.config$
 
 Crawl-delay: 10
 
-Sitemap: https://jobs.bcvworld.com/sitemap.xml
+Sitemap: https://bcvworld.com/sitemap.xml
 
 # Bot-specific rules
 User-agent: GPTBot

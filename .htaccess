@@ -77,7 +77,7 @@ ErrorDocument 500 /500.html
 # Redirect www to non-www (or vice versa)
 RewriteEngine On
 RewriteCond %{HTTP_HOST} ^www\.bcvworld\.com [NC]
-RewriteRule ^(.*)$ https://jobs.bcvworld.com/$1 [L,R=301]
+RewriteRule ^(.*)$ https://bcvworld.com/$1 [L,R=301]
 
 # Force HTTPS
 RewriteCond %{HTTPS} off
