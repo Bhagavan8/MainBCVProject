@@ -42,19 +42,3 @@ export async function loadComponents() {
         toastr.error('Failed to load page components');
     }
 }
-
-
-function loadComponent(containerId, componentPath) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    // Clear existing content
-    container.innerHTML = '';
-    
-    fetch(componentPath)
-        .then(response => response.text())
-        .then(html => {
-            container.innerHTML = html;
-        })
-        .catch(error => console.error('Error loading component:', error));
-}
