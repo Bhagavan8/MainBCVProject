@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${formatSkills(jobData.skills)}
         </div>
         <div class="job-footer">
-            <a href="/html/job-detail.html?id=${jobId}&type=private" class="btn btn-primary">View Details</a>
+            <a href="/html/job-details.html?id=${jobId}&type=private" class="btn btn-primary">View Details</a>
         </div>
     </div>
 </div>
