@@ -66,9 +66,7 @@ async function fetchStats() {
                 </div>
                 <h3>${category}</h3>
                 <p>${formatNumber(count)} jobs available</p>
-            `;
-
-               
+            `; 
 
                 categoriesContainer.appendChild(categoryCard);
             }
@@ -97,6 +95,64 @@ async function fetchStats() {
 
 // Call the function when the document loads
 document.addEventListener('DOMContentLoaded', fetchStats);
+document.addEventListener('DOMContentLoaded', function() {
+    // Stats fetching
+    const fetchStats = async () => {
+        try {
+            const jobsCountElement = document.getElementById('jobsCount');
+            const companiesCountElement = document.getElementById('companiesCount');
+            const usersCountElement = document.getElementById('usersCount');
+            
+            if (jobsCountElement) jobsCountElement.textContent = '100+';
+            if (companiesCountElement) companiesCountElement.textContent = '50+';
+            if (usersCountElement) usersCountElement.textContent = '10+';
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
+    };
+
+    // Featured jobs loading
+    const loadFeaturedJobs = async () => {
+        try {
+            const jobsContainer = document.getElementById('jobsContainer');
+            if (jobsContainer) {
+                // Your jobs loading logic here
+                jobsContainer.innerHTML = ''; // Clear loading message
+                // Add your jobs content
+            }
+        } catch (error) {
+            console.error('Error loading featured jobs:', error);
+        }
+    };
+
+    // Event listeners
+    const element = document.getElementById('yourElementId');
+    if (element) {
+        element.addEventListener('click', function() {
+            // Your event handler code
+        });
+    }
+
+    // Auth state changes
+    const handleAuthStateChange = (user) => {
+        const userProfile = document.getElementById('userProfile');
+        const authButtons = document.getElementById('authButtons');
+        
+        if (userProfile && authButtons) {
+            if (user) {
+                userProfile.style.display = 'block';
+                authButtons.style.display = 'none';
+            } else {
+                userProfile.style.display = 'none';
+                authButtons.style.display = 'flex';
+            }
+        }
+    };
+
+    // Initialize your features
+    fetchStats();
+    loadFeaturedJobs();
+});
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         // Query to get featured jobs (active and public)
