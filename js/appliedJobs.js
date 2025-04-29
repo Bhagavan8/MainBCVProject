@@ -441,3 +441,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+window.handleNewsletterSubmit = async (event) => {
+    event.preventDefault();
+
+    const emailInput = document.getElementById('newsletterEmail');
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    const email = emailInput.value.trim();
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showToast('Please enter a valid email address', false);
+        return;
+    }
+
+    // Disable button during submission
+    const originalButtonText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Checking...';
+
+    try {
+        // Check if email already exists
+        const q = query(collection(db, "subscriptions"), where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+            showToast('You are already subscribed! Thank you.', false);
+            return;
+        }
+
+        // Add email to Firebase if not exists
+        submitButton.textContent = 'Subscribing...';
+        await addDoc(collection(db, "subscriptions"), {
+            email: email,
+            subscriptionDate: serverTimestamp(),
+            active: true,
+            source: 'website'
+        });
+
+        // Clear input and show success
+        emailInput.value = '';
+        showToast('Thank you for subscribing! You will receive our latest updates.');
+    } catch (error) {
+        console.error("Error processing subscription: ", error);
+        showToast('Subscription failed. Please try again.', false);
+    } finally {
+        // Re-enable button
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+    }
+};
+
+
+// Replace your error handling code with this:
+function showToast(message, isSuccess = true) {
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${isSuccess ? 'success' : 'error'}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
