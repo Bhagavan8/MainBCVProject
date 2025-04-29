@@ -186,12 +186,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             jobCard.innerHTML = `
             <div class="job-card-inner">
             <div class="job-header">
-              <img src="assets/images/companies/${jobData.companyLogo || 'default-logo.png'}" 
+              <img src="assets/images/companies/${jobData.companyLogo || 'default-logo.webp'}" 
              alt="${jobData.companyName} Logo" 
              class="company-logo" 
              width="50" 
              height="50"
-             onerror="this.src='images/company-logos/default-logo.png'">
+             onerror="this.src='assets/images/companies/default-company.webp'">
         <div class="job-info">
             <h3>${jobData.jobTitle}</h3>
             <p class="company">${jobData.companyName}</p>

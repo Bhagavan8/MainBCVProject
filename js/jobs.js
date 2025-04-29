@@ -65,7 +65,7 @@ function createJobCard(job, type) {
                     ` : type == 'government' ? `
                         <i class="bi bi-building-fill icon-large text-danger"></i>
                     ` : `
-                        <img src="/assets/images/companies/${getValue(job.companyLogo, 'default-company.png')}" 
+                        <img src="/assets/images/companies/${getValue(job.companyLogo, 'default-company.webp')}" 
                             alt="${getValue(job.companyName)} Logo" 
                             class="company-logo">
                     `}
