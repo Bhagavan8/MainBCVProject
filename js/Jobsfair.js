@@ -12,7 +12,9 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 async function updateViewCount() {
-    const pageId = 'job-fair-bangalore-may2025';
+    // Get the current page URL to determine which job fair
+    const currentPage = window.location.pathname;
+    const pageId = currentPage.includes('chennai') ? 'job-fair-chennai-may2025' : 'job-fair-bangalore-may2025';
     const viewsRef = doc(db, 'pageViews', pageId);
     
     try {
@@ -55,8 +57,12 @@ function updateLastUpdated() {
 
 // Function to fetch comments count
 async function fetchCommentsCount() {
+    // Get the current page URL to determine which job fair
+    const currentPage = window.location.pathname;
+    const collectionName = currentPage.includes('chennai') ? 'jobfaircomments_chennai' : 'jobfaircomments_bangalore';
+    
     try {
-        const q = query(collection(db, 'jobfaircomments'));
+        const q = query(collection(db, collectionName));
         const snapshot = await getDocs(q);
         document.getElementById('commentCount').textContent = snapshot.size;
     } catch (error) {
@@ -72,6 +78,10 @@ async function setupComments() {
     const loginPrompt = document.getElementById('loginPrompt');
     const commentFormContent = document.getElementById('commentFormContent');
     const commentsList = document.getElementById('commentsList');
+    
+    // Determine which collection to use based on the current page
+    const currentPage = window.location.pathname;
+    const collectionName = currentPage.includes('chennai') ? 'jobfaircomments_chennai' : 'jobfaircomments_bangalore';
 
     // Check if required elements exist before proceeding
     if (!commentsList) {
@@ -118,8 +128,8 @@ async function setupComments() {
             const content = commentInput.value.trim();
 
             try {
-                // Add comment to Firebase
-                await addDoc(collection(db, 'jobfaircomments'), {
+                // Add comment to Firebase using the appropriate collection
+                await addDoc(collection(db, collectionName), {
                     userId: auth.currentUser.uid,
                     userName: auth.currentUser.displayName || 'Anonymous',
                     content: content,
@@ -152,9 +162,13 @@ async function loadComments() {
     const commentsList = document.getElementById('commentsList');
     if (!commentsList) return;
 
+    // Determine which collection to use based on the current page
+    const currentPage = window.location.pathname;
+    const collectionName = currentPage.includes('chennai') ? 'jobfaircomments_chennai' : 'jobfaircomments_bangalore';
+
     try {
         const commentsQuery = query(
-            collection(db, 'jobfaircomments'),
+            collection(db, collectionName),
             orderBy('timestamp', 'desc')
         );
 
