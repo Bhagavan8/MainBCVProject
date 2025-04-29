@@ -36,7 +36,7 @@ class JobDetailsManager {
         try {
             if (!this.jobId || !this.jobType) {
                 console.log('Missing job ID or type');
-                window.location.href = '/jobs.html';
+                window.location.href = '/html/jobs.html';
                 return;
             }
 
@@ -1126,7 +1126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const jobId = urlParams.get('id');
     if (!jobId) {
         console.log('Missing job ID or type');
-        window.location.href = '/jobs.html';
+        window.location.href = '/html/jobs.html';
         return;
     } else {
         (jobId)
