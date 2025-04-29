@@ -343,6 +343,11 @@ async function updateCategoryCounts() {
             allCountElement.textContent = totalCount;
         }
 
+        const allCountHeader = document.getElementById('totalJobCount');
+        if (allCountHeader) {
+            allCountHeader.textContent = totalCount;
+        }
+
         // For private job categories
         const categories = ['IT', 'marketing', 'finance', 'sales', 'hr'];
         for (const category of categories) {

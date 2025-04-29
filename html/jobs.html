@@ -287,7 +287,32 @@
             <div class="col-lg-6">
                 <!-- Results Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="h5 mb-0">Showing <span id="jobCount" class="text-primary">0</span> Jobs</h2>
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="total-jobs-stats stats-card">
+                            <div class="stats-icon">
+                                <i class="bi bi-briefcase-fill"></i>
+                            </div>
+                            <div class="stats-content">
+                                <div class="stats-label text-muted small mb-1">Total Available Jobs</div>
+                                <div class="d-flex align-items-baseline">
+                                    <span id="totalJobCount" class="h3 mb-0 text-primary fw-bold">0</span>
+                                    <span class="text-muted ms-2 small">positions</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filtered-jobs-stats stats-card">
+                            <div class="stats-icon">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                            <div class="stats-content">
+                                <div class="stats-label text-muted small mb-1">Filtered Jobs</div>
+                                <div class="d-flex align-items-baseline">
+                                    <span id="jobCount" class="h5 mb-0 text-success">0</span>
+                                    <span class="text-muted ms-2 small">matches</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <a href="/index.html" class="back-home-btn d-inline-flex align-items-center text-white text-decoration-none">
                         <i class="bi bi-arrow-left-circle-fill me-2"></i>
                         <span>Back to Home</span>
