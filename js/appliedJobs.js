@@ -60,9 +60,9 @@ async function loadAppliedJobs() {
                 <div class="d-flex align-items-start gap-4">
                     <div class="company-logo-wrapper">
                         <div class="company-logo bg-light rounded-lg p-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                            <img src="${job.companyLogo || '/assets/images/companies/default-company.webp'}" 
-                                 alt="${job.companyName}" 
-                                 class="img-fluid"
+                            <img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
+                                 alt="${job.companyName} Logo" 
+                                 class="img-fluid rounded"
                                  style="object-fit: contain; width: 100%; height: 100%;"
                                  onerror="this.src='/assets/images/companies/default-company.webp'">
                         </div>
@@ -336,11 +336,11 @@ async function loadRelatedJobs() {
             <div class="job-card shadow-sm border rounded p-4 mb-3 bg-white hover-effect">
                 <div class="d-flex align-items-start gap-3">
                     <div class="company-logo rounded bg-light p-2" style="width: 60px; height: 60px;">
-                        <img src="../assets/images/companies/${job.companyLogo || '../assets/images/companies/default-company.webp'}" 
-                             alt="${job.companyName}" 
+                        <img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
+                             alt="${job.companyName} Logo" 
                              class="img-fluid rounded"
                              style="object-fit: contain; width: 100%; height: 100%;"
-                             onerror="this.src='../assets/images/companies/default-company.webp'">
+                             onerror="this.src='/assets/images/companies/default-company.webp'">
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-2">

@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
-Allow: /jobs/
-Allow: /about/
-Allow: /contact/
+Allow: /html/jobs/
+Allow: /html/about/
+Allow: /html/contact/
 Allow: /sitemap.xml
 Allow: /images/
 Allow: /css/
