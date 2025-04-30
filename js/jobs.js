@@ -65,7 +65,7 @@ function createJobCard(job, type) {
                     ` : type == 'government' ? `
                         <i class="bi bi-building-fill icon-large text-danger"></i>
                     ` : `
-                        <img src="/assets/images/companies/${getValue(job.companyLogo, 'default-company.webp')}" 
+                        <img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
                             alt="${getValue(job.companyName)} Logo" 
                             class="company-logo">
                     `}
@@ -746,7 +746,7 @@ async function loadCompanyWiseJobs() {
             if (!companies[job.companyName]) {
                 companies[job.companyName] = {
                     jobs: [],
-                    logo: job.companyLogo || 'default-company.png'
+                    logo: job.companyLogo ? (job.companyLogo.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo}`) : '/assets/images/companies/default-company.webp'
                 };
             }
             companies[job.companyName].jobs.push({
@@ -771,7 +771,7 @@ async function loadCompanyWiseJobs() {
                     <div class="list-group-item company-item py-3" onclick="showCompanyRoles('${companyName}')">
                         <div class="d-flex align-items-center">
                             <div class="company-logo me-3">
-                                <img src="/assets/images/companies/${data.logo}" 
+                                <img src="${data.logo}" 
                                      alt="${companyName}" 
                                      class="rounded-circle"
                                      style="width: 40px; height: 40px; object-fit: cover;">

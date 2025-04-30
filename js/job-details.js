@@ -232,8 +232,8 @@ class JobDetailsManager {
         if (this.jobType === 'bank') {
             logoContainer.innerHTML = '<i class="bi bi-bank2 fs-1 text-primary"></i>';
         } else {
-            logoContainer.innerHTML = `<img src="/assets/images/companies/${job.companyLogo}" 
-                alt="${job.companyName}" class="company-logo">`;
+            logoContainer.innerHTML = `<img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
+                alt="${job.companyName} Logo" class="company-logo">`;
         }
 
         const jobDescriptionEl = document.querySelector('.job-description');
@@ -864,7 +864,7 @@ class JobDetailsManager {
                 if (!companies[companyName]) {
                     companies[companyName] = {
                         jobs: [],
-                        logo: job.companyLogo || 'default-company.png',
+                        logo: job.companyLogo,
                         count: 0
                     };
                 }
@@ -892,8 +892,8 @@ class JobDetailsManager {
                     <div class="company-card">
                         <div class="company-header" onclick="toggleCompanyJobs('${companyName}')">
                             <div class="company-info">
-                                <img src="/assets/images/companies/${data.logo}" 
-                                     alt="${companyName}" 
+                                <img src="${data.logo?.startsWith('http') ? data.logo : `/assets/images/companies/${data.logo || 'default-company.webp'}`}" 
+                                     alt="${companyName} Logo" 
                                      class="company-logo-side">
                                 <div class="company-details">
                                     <h6>${companyName}</h6>
