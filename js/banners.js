@@ -4,28 +4,17 @@ import { collection, query, where, orderBy, limit, getDocs } from 'https://www.g
 class NotificationManager {
     constructor() {
         this.container = document.querySelector('.notification-container');
-        this.currentType = 'job'; // Start with job notification
         this.initialize();
     }
 
     async initialize() {
         // Initial load
-        this.showNextNotification();
+        await this.showJobNotification();
         
         // Refresh every 3 minutes
         setInterval(() => {
-            this.showNextNotification();
+            this.showJobNotification();
         }, 3 * 60 * 1000);
-    }
-
-    async showNextNotification() {
-        if (this.currentType === 'job') {
-            await this.showLatestJobNotification();
-            this.currentType = 'news';
-        } else {
-            await this.showLatestNewsNotification();
-            this.currentType = 'job';
-        }
     }
 
     formatDate(timestamp) {
@@ -40,7 +29,6 @@ class NotificationManager {
             date = new Date(timestamp);
         }
 
-        // Format date with time
         return date.toLocaleDateString('en-IN', {
             day: 'numeric',
             month: 'short',
@@ -51,7 +39,7 @@ class NotificationManager {
         });
     }
 
-    async showLatestJobNotification() {
+    async showJobNotification() {
         try {
             const jobsQuery = query(
                 collection(db, 'jobs'),
@@ -81,37 +69,7 @@ class NotificationManager {
         }
     }
 
-    async showLatestNewsNotification() {
-        try {
-            const newsQuery = query(
-                collection(db, 'news'),
-                where('section', '==', "breaking"),
-                orderBy('createdAt', 'desc'),
-                limit(1)
-            );
-
-            const querySnapshot = await getDocs(newsQuery);
-            if (!querySnapshot.empty) {
-                const newsData = querySnapshot.docs[0].data();
-                const newsId = querySnapshot.docs[0].id;
-
-                this.createNotification({
-                    icon: '📰',
-                    title: 'Breaking News',
-                    message: newsData.title,
-                    actionText: 'Read More',
-                    actionUrl: `news-detail.html?id=${newsId}`,
-                    theme: 'news',
-                    createdAt: this.formatDate(newsData.createdAt) // Fixed variable name from jobData to newsData
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching news:', error);
-        }
-    }
-
-    createNotification({ icon, title, message, actionText, actionUrl, theme,createdAt }) {
-        // Remove existing notification if any
+    createNotification({ icon, title, message, actionText, actionUrl, theme, createdAt }) {
         const existingNotif = document.querySelector('.notification');
         if (existingNotif) {
             existingNotif.remove();
@@ -141,13 +99,11 @@ class NotificationManager {
 
         this.container.appendChild(notification);
         
-        // Add close button functionality
         notification.querySelector('.close-btn').addEventListener('click', () => {
             notification.style.animation = 'slideOut 0.4s forwards';
             setTimeout(() => notification.remove(), 400);
         });
 
-        // Auto-dismiss after 3 minutes
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.style.animation = 'slideOut 0.4s forwards';
@@ -156,7 +112,6 @@ class NotificationManager {
         }, 3 * 60 * 1000);
     }
 }
-
 
 // Initialize notification manager
 const notificationManager = new NotificationManager();
