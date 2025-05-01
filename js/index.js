@@ -64,7 +64,7 @@ async function fetchStats() {
                 <div class="category-icon">
                     <i>${emoji}</i>
                 </div>
-                <h3>${category}</h3>
+                <h3>${category.toUpperCase()}</h3>
                 <p>${formatNumber(count)} jobs available</p>
             `; 
 
@@ -489,4 +489,18 @@ function populateTestimonials(comments) {
 
 // Call this when the page loads
 document.addEventListener('DOMContentLoaded', displayTestimonialsIfExist);
+
+// Update CTA button based on auth state
+auth.onAuthStateChanged((user) => {
+    const ctaButton = document.getElementById('ctaButton');
+    if (ctaButton) {
+        if (user) {
+            ctaButton.href = '/html/jobs.html';
+            ctaButton.textContent = 'Browse Jobs';
+        } else {
+            ctaButton.href = '/pages/register.html';
+            ctaButton.textContent = 'Find a Job';
+        }
+    }
+});
   

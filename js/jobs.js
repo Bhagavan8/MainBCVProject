@@ -851,7 +851,7 @@ async function populateLocationFilter() {
         const privateSnapshot = await getDocs(privateRef);
         privateSnapshot.docs.forEach(doc => {
             const location = doc.data().location;
-            if (location) locations.add(location);
+            if (location) locations.add(location.trim());
         });
 
         // Get locations from bank jobs
@@ -859,7 +859,7 @@ async function populateLocationFilter() {
         const bankSnapshot = await getDocs(bankRef);
         bankSnapshot.docs.forEach(doc => {
             const state = doc.data().state;
-            if (state) locations.add(state);
+            if (state) locations.add(state.trim());
         });
 
         // Get locations from government jobs
@@ -867,7 +867,7 @@ async function populateLocationFilter() {
         const govSnapshot = await getDocs(govRef);
         govSnapshot.docs.forEach(doc => {
             const state = doc.data().state;
-            if (state) locations.add(state);
+            if (state) locations.add(state.trim());
         });
 
         // Sort locations alphabetically
@@ -875,12 +875,20 @@ async function populateLocationFilter() {
 
         // Populate the select element
         const locationFilter = document.getElementById('locationFilter');
-        sortedLocations.forEach(location => {
-            const option = document.createElement('option');
-            option.value = location;
-            option.textContent = location;
-            locationFilter.appendChild(option);
-        });
+        if (locationFilter) {
+            // Clear existing options except the first one (if any)
+            while (locationFilter.options.length > 1) {
+                locationFilter.remove(1);
+            }
+            
+            // Add sorted unique locations
+            sortedLocations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationFilter.appendChild(option);
+            });
+        }
 
     } catch (error) {
         console.error('Error populating location filter:', error);
