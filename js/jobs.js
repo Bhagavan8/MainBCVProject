@@ -993,19 +993,15 @@ async function getJobsByDate(selectedDate) {
 // Initialize with proper date handling
 async function initializeJobsbyDateFilter() {
     try {
-        // Get current date in UTC (to match string format)
+        // Get current date in Indian timezone
         const today = new Date();
-        const todayUTC = new Date(Date.UTC(
-            today.getUTCFullYear(),
-            today.getUTCMonth(),
-            today.getUTCDate()
-        ));
-        const todayStr = todayUTC.toISOString().split('T')[0];
+        const indianDate = new Date(today.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+        const todayStr = formatDateForInput(indianDate);
         
-        // Set date picker value (in local time format)
+        // Set date picker value (in Indian time format)
         const datePicker = document.getElementById('dateFilter');
         if (datePicker) {
-            datePicker.valueAsDate = new Date(); // Shows current local date
+            datePicker.value = todayStr; // Shows current Indian date
         }
         
         // Load jobs for today
@@ -1027,11 +1023,12 @@ window.filterJobsByDate = async function(selectedDate) {
 };
 
 function formatDateForInput(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const indianDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const year = indianDate.getFullYear();
+    const month = String(indianDate.getMonth() + 1).padStart(2, '0');
+    const day = String(indianDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-  }
+}
 
   // Main initialization function
   function initializePage() {
