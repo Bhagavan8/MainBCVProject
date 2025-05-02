@@ -881,50 +881,45 @@ body {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
 }
-
-.back-home-btn {
-    background: #3b82f6;
-    padding: 8px 20px;
-    border-radius: 50px;
-    font-weight: 500;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: left;
-    white-space: nowrap;
+.home-btn {
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-.back-home-btn:hover {
-    background: #2563eb;
-    transform: translateX(-4px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+.home-btn:active {
+    transform: translateY(1px);
 }
 
-.back-home-btn::before {
+.home-btn::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
-    transform: translateX(-100%);
-    transition: transform 0.6s ease;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
 }
 
-.back-home-btn:hover::before {
-    transform: translateX(100%);
+.home-btn:hover::before {
+    width: 200%;
+    height: 200%;
 }
 
-.back-home-btn i {
-    font-size: 1.25rem;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: inline-block;
+.btn-icon {
+    transition: transform 0.3s ease;
 }
 
-.back-home-btn:hover i {
-    transform: translateX(-4px) rotate(-12deg);
+.home-btn:hover .btn-icon {
+    transform: translateX(-3px);
 }
 
 
@@ -952,17 +947,15 @@ body {
         background: #fff;
         padding: 1rem 1.25rem;
         border-radius: 0.75rem;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         display: flex;
         align-items: center;
         gap: 1rem;
         transition: all 0.3s ease;
-        border: 1px solid rgba(0, 0, 0, 0.05);
+       
     }
 
     .stats-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
     }
 
     .stats-icon {
@@ -1012,4 +1005,5 @@ body {
             font-size: 1.25rem;
         }
     }
+
 

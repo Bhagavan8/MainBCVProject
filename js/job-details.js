@@ -209,7 +209,11 @@ class JobDetailsManager {
 
         if (jobTitleEl) jobTitleEl.textContent = job.jobTitle || job.postName;
         if (companyNameEl) companyNameEl.textContent = job.companyName || job.bankName;
-        if (locationEl) locationEl.textContent = job.location || job.state;
+        if (locationEl) {
+            const locationText = job.location || job.state;
+            locationEl.textContent = locationText?.length > 28 ? locationText.substring(0, 28) + '...' : locationText;
+            locationEl.title = locationText || 'Location N/A';
+        }
         if (experienceEl) {
             if (job.experience && job.experience.toLowerCase() === 'fresher') {
                 experienceEl.textContent = 'Fresher';
@@ -269,7 +273,7 @@ class JobDetailsManager {
                         ${this.renderDetailItem('Bank Type', job.bankType)}
                         ${this.renderDetailItem('Exam Date', job.examDate)}
                         ${this.renderDetailItem('Last Date', job.lastDate)}
-                        ${this.renderDetailItem('State', job.state)}
+                        ${this.renderDetailItem('State', ((job.location || job.state || 'Location N/A').length > 28 ? (job.location || job.state || 'Location N/A').substring(0, 28) + '...' : (job.location || job.state || 'Location N/A')), 'bi-geo-alt', (job.location || job.state || 'Location N/A'))}
                     </div>
                 </div>
 
@@ -338,7 +342,7 @@ class JobDetailsManager {
                         <div class="details-column">
                             ${job.experience ? this.renderDetailItem('Experience', this.capitalizeFirstLetter(job.experience), 'bi-briefcase') : ''}
                             ${job.educationLevel ? this.renderDetailItem('Education', this.capitalizeFirstLetter(job.educationLevel), 'bi-mortarboard') : ''}
-                            ${job.location ? this.renderDetailItem('Location', this.capitalizeFirstLetter(job.location), 'bi-geo-alt') : ''}
+                            ${job.location ? this.renderDetailItem('Location', ((this.capitalizeFirstLetter(job.location).length > 28 ? this.capitalizeFirstLetter(job.location).substring(0, 28) + '...' : this.capitalizeFirstLetter(job.location))), 'bi-geo-alt', job.location) : ''}
                         </div>
                         <div class="details-column">
                             ${job.lastDate ? this.renderDetailItem('Last Date', this.capitalizeFirstLetter(job.lastDate), 'bi-calendar') : ''}
@@ -395,7 +399,7 @@ class JobDetailsManager {
         `;
     }
 
-    renderDetailItem(label, value, iconClass) {
+    renderDetailItem(label, value, iconClass, fullText) {
         if (!value) return '';
 
         // Handle experience display
@@ -408,7 +412,7 @@ class JobDetailsManager {
                 <i class="bi ${iconClass}"></i>
                 <div class="detail-content">
                     <span class="detail-label fw-bold">${label} <span class="separator">⟫</span></span>
-                    <span class="detail-value">${value}</span>
+                    <span class="detail-value" title="${fullText || value}">${value}</span>
                 </div>
             </div>
         `;
@@ -799,8 +803,8 @@ class JobDetailsManager {
                         <h6 class="job-title">${this.capitalizeFirstLetter(job.jobTitle || 'Untitled')}</h6>
                         <p class="company-name">${this.capitalizeFirstLetter(job.companyName || 'Unknown Company')}</p>
                         <div class="job-stats">
-                            <span class="location">
-                                <i class="bi bi-geo-alt"></i> ${job.location || 'Location N/A'}
+                            <span class="location" title="${job.location || 'Location N/A'}">
+                                <i class="bi bi-geo-alt"></i> ${(job.location || 'Location N/A').length > 28 ? (job.location || 'Location N/A').substring(0, 28) + '...' : (job.location || 'Location N/A')}
                             </span>
                         </div>
                     </div>
@@ -836,8 +840,8 @@ class JobDetailsManager {
                             <span class="posted-time">
                                 <i class="bi bi-clock"></i> ${timeAgo}
                             </span>
-                            <span class="location">
-                                <i class="bi bi-geo-alt"></i> ${job.location || 'Location N/A'}
+                            <span class="location" title="${job.location || 'Location N/A'}">
+                                <i class="bi bi-geo-alt"></i> ${(job.location || 'Location N/A').length > 28 ? (job.location || 'Location N/A').substring(0, 28) + '...' : (job.location || 'Location N/A')}
                             </span>
                         </div>
                     </div>
@@ -908,7 +912,7 @@ class JobDetailsManager {
                                    class="job-link">
                                     <div class="job-info">
                                         <h6>${job.jobTitle}</h6>
-                                        <span class="location">${job.location || 'Location N/A'}</span>
+                                        <span class="location" title="${job.location || job.state || 'Location N/A'}">${((job.location || job.state || 'Location N/A').length > 28 ? (job.location || job.state || 'Location N/A').substring(0, 28) + '...' : (job.location || job.state || 'Location N/A'))}</span>
                                     </div>
                                     <i class="bi bi-arrow-right"></i>
                                 </a>
@@ -1054,7 +1058,7 @@ class JobDetailsManager {
                     </p>
                     <div class="d-flex justify-content-between align-items-center content-container">
                         <small class="text-truncate" style="max-width: 60%;">
-                            ${job.location || job.state || 'Location N/A'}
+                        <span class="location" title="${job.location || job.state || 'Location N/A'}">${((job.location || job.state || 'Location N/A').length > 28 ? (job.location || job.state || 'Location N/A').substring(0, 28) + '...' : (job.location || job.state || 'Location N/A'))}</span>
                         </small>
                         <small class="text-muted">
                             ${job.salary || ''}

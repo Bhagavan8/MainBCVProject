@@ -13,12 +13,7 @@ class SocialShare {
         sidebar.setAttribute('aria-label', 'Social media links');
         
         const socialButtons = [
-            {
-                name: 'facebook',
-                icon: 'bi-facebook',
-                url: 'https://www.facebook.com/profile.php?id=61575272554223',
-                label: 'Follow BCVWorld on Facebook'
-            },
+           
             {
                 name: 'linkedin',
                 icon: 'bi-linkedin',
@@ -32,15 +27,9 @@ class SocialShare {
                 label: 'Follow BCVWorld on Instagram'
             },
             {
-                name: 'email',
-                icon: 'bi-envelope-fill',
-                url: 'mailto:help.bcv@bcvworld.com',
-                label: 'Email BCVWorld at help.bcv@bcvworld.com'
-            },
-            {
                 name: 'whatsapp',
                 icon: 'bi-whatsapp',
-                url: 'https://whatsapp.com/channel/0029VasadwXLikgEikBhWE1o',
+                url: 'https://chat.whatsapp.com/HyIFJGSIBru1AmgQuRHwI8',
                 label: 'Join BCVWorld\'s WhatsApp channel'
             },
             {
@@ -49,12 +38,7 @@ class SocialShare {
                 url: 'https://t.me/bcvworld',
                 label: 'Join BCVWorld\'s Telegram channel'
             },
-            {
-                name: 'github',
-                icon: 'bi-github',
-                url: 'https://github.com/bcvworld',
-                label: 'Visit BCVWorld on GitHub'
-            }
+           
         ];
 
         socialButtons.forEach(button => {

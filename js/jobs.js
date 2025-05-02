@@ -87,7 +87,7 @@ function createJobCard(job, type) {
         <div class="job-details">
             <div class="details-item">
                 <i class="bi bi-geo-alt"></i>
-                <span>${getValue(job.state || job.location)}</span>
+                <span title="${getValue(job.state || job.location)}">${(getValue(job.state || job.location).length > 28 ? getValue(job.state || job.location).substring(0, 28) + '...' : getValue(job.state || job.location))}</span>
             </div>
             ${type === 'private' ? `
                 <div class="details-item">
@@ -707,6 +707,7 @@ window.handleSearch = debounce(async (event) => {
                     ${job.location?.toLowerCase() || ''} 
                     ${job.description?.toLowerCase() || ''} 
                     ${job.skills?.join(' ').toLowerCase() || ''}
+                    ${job.referralCode?.toLowerCase() || ''}
                 `;
                 return searchableText.includes(searchTerm);
             });

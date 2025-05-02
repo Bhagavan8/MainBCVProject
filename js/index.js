@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <h3>${jobData.jobTitle}</h3>
             <p class="company">${jobData.companyName}</p>
             <div class="job-meta">
-                <span><i>📍</i> ${jobData.location}</span>
+                <span title="${jobData.location?.trim() || 'Location not specified'}"><i>📍</i> ${(jobData.location?.trim() || '').length > 28 ? (jobData.location?.trim() || '').substring(0, 28) + '...' : jobData.location?.trim() || 'Location not specified'}</span>
                 ${jobData.experience ? `<span><i>📅</i> ${formatExperience(jobData.experience)} years</span>` : ''}
                 <span class="employment-type"><i>📄</i> ${formatEmploymentType(jobData.employmentType)}</span>
             </div>
