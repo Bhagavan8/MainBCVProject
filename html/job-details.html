@@ -13,7 +13,7 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bcvworld.com/html/job-details.html">
+    <meta property="og:url" content="https://bcvworld.com/html/job-details">
     <meta property="og:title" content="Latest Jobs 2025 | IT, Banking, Government Jobs | BCVWorld">
     <meta property="og:description" content="Apply for latest jobs in IT, Banking, Government sectors. 10000+ active job vacancies with high salary packages. Work from home jobs, freshers jobs, and experienced positions available.">
     <meta property="og:image" content="https://bcvworld.com/assets/images/bcvworld-og.png">
@@ -21,7 +21,7 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://bcvworld.com/html/job-details.html">
+    <meta property="twitter:url" content="https://bcvworld.com/html/job-details">
     <meta property="twitter:title" content="Latest Jobs 2025 | IT, Banking, Government Jobs | BCVWorld">
     <meta property="twitter:description" content="Apply for latest jobs in IT, Banking, Government sectors. 10000+ active job vacancies with high salary packages. Work from home jobs, freshers jobs, and experienced positions available.">
     <meta property="twitter:image" content="https://bcvworld.com/assets/images/twitter-image.png">
@@ -47,8 +47,6 @@
     
     
     <!-- Critical CSS Preload -->
-    <link rel="preload" href="/assets/images/companies/Deloitte.webp" as="image">
-    <link rel="preload" href="/css/critical.css" as="style">
     <link rel="preload" href="/css/job-details.css" as="style">
     <link rel="preload" href="/css/job-stats.css" as="style">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
@@ -76,6 +74,7 @@
     <link rel="stylesheet" href="/css/social-share.css">
     <link href="/css/job-details.css" rel="stylesheet">
     <link href="/css/job-stats.css" rel="stylesheet">
+    <link href="/css/mobile.responsive.css" rel="stylesheet">
     <link href="/css/banners.css" rel="stylesheet">
     <link rel ="stylesheet" href="/css/toaster.css">
 
@@ -142,32 +141,6 @@
     </script>
 
     <style>
-         /* Critical above-the-fold styles */
-         :root {
-            --primary-color: #0d6efd;
-            --success-color: #198754;
-            --dark-color: #1a1a1a;
-            --light-color: #f8f9fa;
-        }
-        
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            line-height: 1.6;
-        }
-        
-        .main-container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        
-        .job-header {
-            background: linear-gradient(to right, #ffffff, #f8f9fa);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 1rem;
-        }
          @font-face {
              font-family: 'bootstrap-icons-fallback';
              src: local('Arial');
@@ -181,6 +154,22 @@
              font-family: 'bootstrap-icons', 'bootstrap-icons-fallback';
          }
         /* Critical above-the-fold styles */
+        .main-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .job-header {
+            background: linear-gradient(to right, #ffffff, #f8f9fa);
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .company-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            background: #fff;
+        }
         .job-title-section h1 {
             font-size: 32px;
             font-weight: 600;
@@ -203,6 +192,8 @@
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQNPNWJ"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- End Google Tag Manager (noscript) -->
     <div id="header-container"></div>
 
     <div class="main-container">
@@ -210,7 +201,7 @@
             <!-- Left Sidebar - Ads -->
             <div class="left-sidebar">
                 <div class="ad-space sticky-top">
-                    <div class="ad-placeholder"></div>
+                    <div class="ad-placeholder">Advertisement</div>
                 </div>
             </div>
 
@@ -218,7 +209,7 @@
             <div class="main-content">
                 <!-- Add Back Button -->
                 <div class="back-navigation mb-3">
-                    <a href="/html/jobs.html" class="btn btn-outline-primary back-btn">
+                    <a href="jobs.html" class="btn btn-outline-primary back-btn">
                         <i class="bi bi-arrow-left"></i> Back to Jobs
                     </a>
                 </div>
@@ -313,28 +304,8 @@
                     <div class="tab-container">
                         <div id="overview" class="tab-content active">
                             <div class="content-wrapper">
-                                <div class="job-description content-block"></div>
+                                <div class="job-description content-block "></div>
                                 <div class="key-details content-block"></div>
-                                <div class="follow-us-section text-center">
-                                    <h4 class="follow-title">
-                                        <i class="bi bi-globe2"></i>
-                                        Follow Us for More Jobs
-                                    </h4>
-                                    <div class="social-links">
-                                        <a href="https://www.linkedin.com/company/bcvworld" class="social-link" data-platform="linkedin" target="_blank" rel="noopener">
-                                            <i class="bi bi-linkedin"></i>
-                                        </a>
-                                        <a href="https://twitter.com/bcvworld" class="social-link" data-platform="twitter" target="_blank" rel="noopener">
-                                            <i class="bi bi-twitter-x"></i>
-                                        </a>
-                                        <a href="https://www.instagram.com/bcvworld" class="social-link" data-platform="instagram" target="_blank" rel="noopener">
-                                            <i class="bi bi-instagram"></i>
-                                        </a>
-                                        <a href="https://chat.whatsapp.com/HyIFJGSIBru1AmgQuRHwI8" class="social-link" data-platform="WhatsApp" target="_blank" rel="noopener">
-                                            <i class="bi bi-whatsapp"></i>
-                                        </a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -394,6 +365,84 @@
                 </div>
             </div>
         </div>
+        <div class="bottom-section-wrapper">
+            <div class="section-layout">
+                <!-- Left Sidebar - Ads -->
+                <div class="left-sidebar-bottom">
+                    <div class="ad-container">
+                        <div class="ad-space-bottom sticky-top mb-4">
+                            <div class="ad-placeholder-bottom">Advertisement Space 1</div>
+                        </div>
+                        <div class="ad-space-bottom sticky-top">
+                            <div class="ad-placeholder-bottom">Advertisement Space 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content Grid -->
+                <div class="main-section">
+                    <div class="jobs-grid-container">
+                        <!-- First Column -->
+                        <div class="grid-column">
+                            <!-- Similar Jobs -->
+                            <div class="related-job-card slide-up-animation">
+                                <div class="related-card-header">
+                                    <h5 class="related-title">
+                                        <i class="bi bi-briefcase text-primary pulse-icon"></i> Similar Jobs
+                                    </h5>
+                                    <span class="related-badge primary" id="similarJobsCount">0</span>
+                                </div>
+                                <div class="related-card-content">
+                                    <div id="similarJobs" class="related-jobs-list"></div>
+                                </div>
+                            </div>
+
+                            <!-- Most Viewed Jobs -->
+                            <div class="related-job-card slide-up-animation">
+                                <div class="related-card-header">
+                                    <h5 class="related-title">
+                                        <i class="bi bi-eye text-success pulse-icon"></i> Most Viewed Jobs
+                                    </h5>
+                                    <span class="related-badge success" id="mostViewedJobsCount">0</span>
+                                </div>
+                                <div class="related-card-content">
+                                    <div id="mostViewedJobs" class="related-jobs-list"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second Column -->
+                        <div class="grid-column">
+                            <!-- Top Companies -->
+                            <div class="related-job-card slide-up-animation">
+                                <div class="related-card-header">
+                                    <h5 class="related-title">
+                                        <i class="bi bi-building text-purple pulse-icon"></i> Top Companies
+                                    </h5>
+                                    <span class="related-badge purple" id="companyCount">0</span>
+                                </div>
+                                <div class="related-card-content">
+                                    <div id="companyJobs" class="related-jobs-list company-wise-list"></div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Jobs -->
+                            <div class="related-job-card slide-up-animation">
+                                <div class="related-card-header">
+                                    <h5 class="related-title">
+                                        <i class="bi bi-clock-history text-info pulse-icon"></i> Recent Jobs
+                                    </h5>
+                                    <span class="related-badge info" id="recentJobsCount">0</span>
+                                </div>
+                                <div class="related-card-content">
+                                    <div id="recentJobs" class="related-jobs-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="notification-container"></div>
     <div id="footer-container"></div>
@@ -407,7 +456,6 @@
     <script type="module" src="/js/job-stats.js"></script>
     <script type="module" src="/js/banners.js"></script>
      <script src="/js/social-share.js" defer></script>
-     <script src="/js/main.js" type="module"></script>
    </body>
 
 </html>
