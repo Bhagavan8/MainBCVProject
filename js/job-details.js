@@ -800,6 +800,7 @@ function showToast(message, isSuccess = true) {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+export default JobDetailsManager;
 
 
 
