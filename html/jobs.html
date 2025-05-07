@@ -238,32 +238,6 @@
                             </div>
                         </div>
 
-                        <!-- Salary Range Input -->
-                        <!-- Salary Range Input -->
-                        <div class="mb-4">
-                            <label for="salaryRange" class="form-label fw-bold d-flex justify-content-between">
-                                <span>Salary Range</span>
-                                <span id="salaryValue" class="text-primary">5 LPA</span>
-                            </label>
-                            <input 
-                                type="range" 
-                                class="form-range mb-2" 
-                                id="salaryRange" 
-                                min="0" 
-                                max="50" 
-                                step="1" 
-                                value="5"
-                                aria-labelledby="salaryValue"
-                                aria-valuemin="0"
-                                aria-valuemax="50"
-                                aria-valuenow="5"
-                                oninput="updateSalaryValue(this.value)">
-                            <div class="d-flex justify-content-between">
-                                <small class="text-muted">0 LPA</small>
-                                <small class="text-muted">50 LPA</small>
-                            </div>
-                        </div>
-
                         <!-- Filter Buttons -->
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary flex-grow-1" onclick="applyFilters()">Apply Filters</button>
@@ -538,7 +512,7 @@
     
     
     <!-- Load application scripts -->
-    <script type="module" src="/js/jobs.js" defer></script>
+    <script type="module" src="/js/jobs.js"></script>
     <script type="module" src="/js/components/component-loader.js" defer></script>
     <script type="module" src="/js/components/auth.js" defer></script>
     <script type="module" src="/js/common.js" defer></script>
