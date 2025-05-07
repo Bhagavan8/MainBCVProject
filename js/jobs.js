@@ -128,7 +128,7 @@ function createJobCard(job, type) {
                     </div>
                     <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.educationLevel)}">
                         <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
-                        <span class="details-text text-truncate">${trimText(getValue(job.educationLevel), 15)}</span>
+                        <span class="details-text text-truncate">${trimText(getValue(job.educationLevel), 18)}</span>
                     </div>
                 ` : `
                     <div class="details-item d-inline-flex align-items-center me-3">

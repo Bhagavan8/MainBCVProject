@@ -1518,7 +1518,40 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    color: #6c757d;
     transition: all 0.2s;
+    }
+}
+
+.toaster-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    max-width: calc(100% - 40px);
+}
+
+.toaster-message.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toaster-message i {
+    font-size: 1.2em;
+}
+@media (max-width: 768px) {
+    .toaster-message {
+        font-size: 14px;
+        padding: 10px 20px;
     }
 }

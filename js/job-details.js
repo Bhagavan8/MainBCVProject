@@ -9,27 +9,38 @@ import {
     getDocs,
     limit,
     serverTimestamp,
-    updateDoc,  // Add this
-    orderBy  // Add this
+    updateDoc,
+    orderBy
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 const auth = getAuth();
 
 class JobDetailsManager {
     constructor() {
+        // Ensure singleton instance
+        if (typeof JobDetailsManager.instance === 'object') {
+            return JobDetailsManager.instance;
+        }
+
+        // Initialize instance
+        JobDetailsManager.instance = this;
         this.jobId = new URLSearchParams(window.location.search).get('id');
         this.jobType = new URLSearchParams(window.location.search).get('type');
         this.currentJob = null;
+        this.viewUpdatePromise = null; // Add promise to track view update
+        
+        // Initialize components
         this.init();
         this.initializeCopyLink();
         this.initializeRatingSystem();
+
+        return this;
     }
     async init() {
         await this.loadJobDetails();
         if (this.currentJob) {
             this.setupEventListeners();
-            await this.renderSidebarJobs()
-
+            await this.renderSidebarJobs();
         }
     }
     async loadJobDetails() {
@@ -47,6 +58,10 @@ class JobDetailsManager {
                 this.currentJob = jobDoc.data();
                 const averageRating = this.currentJob.averageRating || 0;
                 const totalRatings = this.currentJob.totalRatings || 0;
+
+                // Update view count
+                await this.updateViewCount(jobRef);
+
                 this.updateRatingDisplay(averageRating, totalRatings);
                 this.renderJobDetails(this.currentJob);
                 this.updateDetailsSection(this.currentJob);
@@ -57,10 +72,37 @@ class JobDetailsManager {
             console.error('Error loading job details:', error);
         }
     }
+    async updateViewCount(jobRef) {
+        const viewKey = `job_view_${this.jobId}`;
+        const hasViewed = sessionStorage.getItem(viewKey);
+        
+        if (!hasViewed && !this.viewsTracked) {  // Add viewsTracked check
+            this.viewsTracked = true;  // Set flag to prevent multiple updates
+            sessionStorage.setItem(viewKey, 'true');
+            const currentViews = this.currentJob.views || 0;
+            
+            try {
+                await updateDoc(jobRef, {
+                    views: currentViews + 1
+                });
+            } catch (error) {
+                console.error('Error updating view count:', error);
+                // Reset flags if update fails
+                sessionStorage.removeItem(viewKey);
+                this.viewsTracked = false;
+            }
+        }
+    }
+
     capitalizeFirstLetter(string) {
         if (!string) return '';
         return string.split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .map(word => {
+                if (word.length === 2) {
+                    return word.toUpperCase();
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
             .join(' ');
     }
     initializeRatingSystem() {
@@ -138,25 +180,56 @@ class JobDetailsManager {
     formatDate(timestamp) {
         if (!timestamp) return 'Date not available';
 
-        // Convert timestamp to Date object if it's a Firestore timestamp
+        // Convert string timestamp to Date object and adjust for IST
+        const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
         let date;
-        if (timestamp.toDate && typeof timestamp.toDate === 'function') {
+        
+        if (typeof timestamp === 'string') {
+            // Handle ISO string format
+            date = new Date(timestamp);
+        } else if (timestamp.toDate && typeof timestamp.toDate === 'function') {
+            // Handle Firestore timestamp
             date = timestamp.toDate();
         } else if (timestamp.seconds) {
             // Handle Firestore timestamp format
             date = new Date(timestamp.seconds * 1000);
         } else {
-            // Handle regular Date object or timestamp
+            // Handle regular Date object
             date = new Date(timestamp);
         }
 
+        // Convert to IST
+        const istDate = new Date(date.getTime() + istOffset);
         const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const istNow = new Date(now.getTime() + istOffset);
 
-        if (diffDays === 1) return 'Yesterday';
-        if (diffDays < 7) return `${diffDays} days ago`;
-        return date.toLocaleDateString();
+        // Calculate time difference in IST
+        const diffMs = istNow - istDate;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        // Return relative time
+        if (diffMins < 60) {
+            return `${diffMins} minutes ago`;
+        } else if (diffHours < 24) {
+            return `${diffHours} hours ago`;
+        } else if (diffDays === 1) {
+            return 'Yesterday';
+        } else if (diffDays < 7) {
+            return `${diffDays} days ago`;
+        }
+
+        // Format date in IST
+        return istDate.toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'Asia/Kolkata'
+        });
     }
 
     setupEventListeners() {
@@ -639,34 +712,38 @@ class JobDetailsManager {
         }
     }
 
-    async handleCopyLink() {
-        try {
-            const currentUrl = window.location.href;
-            await navigator.clipboard.writeText(currentUrl);
-
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification';
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="bi bi-check-circle-fill text-success"></i>
-                    <span>Link copied to clipboard!</span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        } catch (err) {
-            console.error('Failed to copy link:', err);
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification error';
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="bi bi-x-circle-fill text-danger"></i>
-                    <span>Failed to copy link</span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
+    // Add this helper method to generate a unique fingerprint for anonymous users
+    getAnonymousViewerId() {
+        let anonymousId = localStorage.getItem('anonymousViewerId');
+        if (!anonymousId) {
+            anonymousId = 'anonymous_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+            localStorage.setItem('anonymousViewerId', anonymousId);
         }
+        return anonymousId;
+    }
+
+    handleCopyLink() {
+        const currentUrl = window.location.href;
+        navigator.clipboard.writeText(currentUrl).then(() => {
+            // Create and show toaster
+            const toaster = document.createElement('div');
+            toaster.className = 'toaster-message show';
+            toaster.innerHTML = `
+                <i class="bi bi-check-circle-fill"></i>
+                Link copied to clipboard!
+            `;
+            document.body.appendChild(toaster);
+
+            // Remove toaster after animation
+            setTimeout(() => {
+                toaster.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toaster);
+                }, 300); // Wait for fade out animation
+            }, 3000); // Show for 3 seconds
+        }).catch(err => {
+            console.error('Failed to copy link:', err);
+        });
     }
     renderSidebarSection(containerId, snapshot) {
         const container = document.querySelector(`#${containerId}`);
@@ -825,11 +902,7 @@ class JobDetailsManager {
 
         const jobsHtml = snapshot.docs.map(doc => {
             const job = doc.data();
-            let timeAgo = 'Recently';
-            if (job.createdAt) {
-                const timestamp = job.createdAt.seconds ? job.createdAt : new Date(job.createdAt);
-                timeAgo = this.getTimeAgo(timestamp);
-            }
+            const timeAgo = job.createdAt ? this.formatDate(job.createdAt) : 'Recently';
 
             return `
                 <a href="/html/job-details.html?id=${doc.id}&type=${this.jobType}" class="job-card list-group-item list-group-item-action py-2 fade-in">
@@ -945,30 +1018,7 @@ class JobDetailsManager {
             </div>`;
     }
 
-    getTimeAgo(date) {
-        try {
-            const seconds = Math.floor((new Date() - (date instanceof Date ? date : date.toDate())) / 1000);
-            const intervals = {
-                year: 31536000,
-                month: 2592000,
-                week: 604800,
-                day: 86400,
-                hour: 3600,
-                minute: 60
-            };
 
-            for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-                const interval = Math.floor(seconds / secondsInUnit);
-                if (interval >= 1) {
-                    return `${interval} ${unit}${interval === 1 ? '' : 's'} ago`;
-                }
-            }
-            return 'Just now';
-        } catch (error) {
-            console.error('Error formatting date:', error);
-            return 'Recently';
-        }
-    }
 
     handleSidebarError() {
         ['similarJobs', 'mostViewedJobs', 'recentJobs', 'companyJobs'].forEach(sectionId => {
@@ -1001,34 +1051,38 @@ class JobDetailsManager {
         }
     }
 
-    async handleCopyLink() {
-        try {
-            const currentUrl = window.location.href;
-            await navigator.clipboard.writeText(currentUrl);
-
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification';
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="bi bi-check-circle-fill text-success"></i>
-                    <span>Link copied to clipboard!</span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        } catch (err) {
-            console.error('Failed to copy link:', err);
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification error';
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="bi bi-x-circle-fill text-danger"></i>
-                    <span>Failed to copy link</span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
+    // Add this helper method to generate a unique fingerprint for anonymous users
+    getAnonymousViewerId() {
+        let anonymousId = localStorage.getItem('anonymousViewerId');
+        if (!anonymousId) {
+            anonymousId = 'anonymous_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+            localStorage.setItem('anonymousViewerId', anonymousId);
         }
+        return anonymousId;
+    }
+
+    handleCopyLink() {
+        const currentUrl = window.location.href;
+        navigator.clipboard.writeText(currentUrl).then(() => {
+            // Create and show toaster
+            const toaster = document.createElement('div');
+            toaster.className = 'toaster-message show';
+            toaster.innerHTML = `
+                <i class="bi bi-check-circle-fill"></i>
+                Link copied to clipboard!
+            `;
+            document.body.appendChild(toaster);
+
+            // Remove toaster after animation
+            setTimeout(() => {
+                toaster.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toaster);
+                }, 300); // Wait for fade out animation
+            }, 3000); // Show for 3 seconds
+        }).catch(err => {
+            console.error('Failed to copy link:', err);
+        });
     }
     renderSidebarSection(containerId, snapshot) {
         const container = document.querySelector(`#${containerId}`);
