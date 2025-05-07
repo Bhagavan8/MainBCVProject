@@ -8,44 +8,69 @@ async function getJobs(jobType) {
         let jobsRef;
         let q;
         
+        // Get current date and 1 month ago date
+        const today = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        
         switch(jobType) {
             case 'private':
                 jobsRef = collection(db, 'jobs');
                 q = query(jobsRef, 
                     where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')  // Add sorting
+                    orderBy('createdAt', 'desc')
                 );
                 break;
             case 'government':
                 jobsRef = collection(db, 'governmentJobs');
                 q = query(jobsRef, 
                     where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')  // Add sorting
+                    orderBy('createdAt', 'desc')
                 );
                 break;
             case 'bank':
                 jobsRef = collection(db, 'bankJobs');
                 q = query(jobsRef, 
                     where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')  // Add sorting
+                    orderBy('createdAt', 'desc')
                 );
                 break;
             default:
                 jobsRef = collection(db, 'jobs');
                 q = query(jobsRef, 
                     where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')  // Add sorting
+                    orderBy('createdAt', 'desc')
                 );
         }
 
         const snapshot = await getDocs(q);
         console.log(`Fetched ${snapshot.size} ${jobType} jobs`);
         
-        return snapshot.docs.map(doc => ({
+        // Filter jobs based on lastDate and createdAt
+        const filteredJobs = snapshot.docs.map(doc => ({
             id: doc.id,
             type: jobType,
             ...doc.data()
-        }));
+        })).filter(job => {
+            // Convert timestamps to Date objects
+            const createdAt = job.createdAt?.seconds ? new Date(job.createdAt.seconds * 1000) : null;
+            const lastDate = job.lastDate?.seconds ? new Date(job.lastDate.seconds * 1000) : null;
+            
+            // Skip jobs older than 1 month
+            if (!createdAt || createdAt < oneMonthAgo) {
+                return false;
+            }
+            
+            // Skip jobs with expired lastDate
+            if (lastDate && lastDate < today) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        console.log(`Filtered to ${filteredJobs.length} active ${jobType} jobs`);
+        return filteredJobs;
         
     } catch (error) {
         console.error(`Error getting ${jobType} jobs:`, error);
@@ -56,28 +81,34 @@ async function getJobs(jobType) {
 
 function createJobCard(job, type) {
     const getValue = (value, defaultValue = 'Not specified') => value || defaultValue;
+    const trimText = (text, maxLength) => {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    };
+
     const headerSection = `
         <div class="card-header-section">
             <div class="card-header-content">
                 <div class="logo-container">
                     ${type == 'bank' ? `
-                        <i class="bi bi-bank2 icon-large text-primary"></i>
+                        <i class="bi bi-bank2 icon-large text-primary" aria-hidden="true"></i>
                     ` : type == 'government' ? `
-                        <i class="bi bi-building-fill icon-large text-danger"></i>
+                        <i class="bi bi-building-fill icon-large text-danger" aria-hidden="true"></i>
                     ` : `
                         <img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
                             alt="${getValue(job.companyName)} Logo" 
-                            class="company-logo">
+                            class="company-logo"
+                            loading="lazy"
+                            width="48"
+                            height="48">
                     `}
                 </div>
                 <div class="header-info">
-                    <h3 class="company-title">
-                        ${getValue(type == 'bank' ? job.bankName : 
-                                 type == 'government' ? job.department : 
-                                 job.companyName)}
+                    <h3 class="company-title text-truncate" title="${getValue(type == 'bank' ? job.bankName : type == 'government' ? job.department : job.companyName)}">
+                        ${trimText(getValue(type == 'bank' ? job.bankName : type == 'government' ? job.department : job.companyName), 40)}
                     </h3>
-                    <p class="job-title">
-                        ${getValue(type == 'private' ? job.jobTitle : job.postName)}
+                    <p class="job-title text-truncate" title="${getValue(type == 'private' ? job.jobTitle : job.postName)}">
+                        ${trimText(getValue(type == 'private' ? job.jobTitle : job.postName), 50)}
                     </p>
                 </div>
             </div>
@@ -85,81 +116,80 @@ function createJobCard(job, type) {
 
     const detailsSection = `
         <div class="job-details">
-            <div class="details-item">
-                <i class="bi bi-geo-alt"></i>
-                <span title="${getValue(job.state || job.location)}">${(getValue(job.state || job.location).length > 28 ? getValue(job.state || job.location).substring(0, 28) + '...' : getValue(job.state || job.location))}</span>
-            </div>
-            ${type === 'private' ? `
-                <div class="details-item">
-                    <i class="bi bi-briefcase"></i>
-                    <span>${getValue(job.experience) === 'fresher' ? 'Fresher' : `${getValue(job.experience)} Years`}</span>
+            <div class="details-flex">
+                <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.state || job.location)}">
+                    <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>
+                    <span class="details-text text-truncate">${trimText(getValue(job.state || job.location), 20)}</span>
                 </div>
-                <div class="details-item">
-                    <i class="bi bi-mortarboard"></i>
-                    <span title="${getValue(job.educationLevel)?.length > 25 ? getValue(job.educationLevel) : ''}">${
-                        (getValue(job.educationLevel)?.charAt(0).toUpperCase() + getValue(job.educationLevel)?.slice(1) || 'Not specified')
-                        .slice(0, 25) + (getValue(job.educationLevel)?.length > 25 ? '...' : '')
-                    }</span>
-                </div>
-            ` : `
-                <div class="details-item">
-                    <i class="bi bi-people"></i>
-                    <span>${getValue(job.vacancies)} Vacancies</span>
-                </div>
-                <div class="details-item">
-                    <i class="bi bi-mortarboard"></i>
-                    <span>${getValue(job.qualification)}</span>
-                </div>
-                ${job.ageLimit ? `
-                    <div class="details-item">
-                        <i class="bi bi-person"></i>
-                        <span>Age Limit: ${job.ageLimit} years</span>
+                ${type === 'private' ? `
+                    <div class="details-item d-inline-flex align-items-center me-3">
+                        <i class="bi bi-briefcase me-1" aria-hidden="true"></i>
+                        <span class="details-text">${getValue(job.experience) === 'fresher' ? 'Fresher' : `${getValue(job.experience)} Years`}</span>
                     </div>
-                ` : ''}
-            `}
+                    <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.educationLevel)}">
+                        <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
+                        <span class="details-text text-truncate">${trimText(getValue(job.educationLevel), 15)}</span>
+                    </div>
+                ` : `
+                    <div class="details-item d-inline-flex align-items-center me-3">
+                        <i class="bi bi-people me-1" aria-hidden="true"></i>
+                        <span class="details-text">${getValue(job.vacancies)} Vacancies</span>
+                    </div>
+                    <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.qualification)}">
+                        <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
+                        <span class="details-text text-truncate">${trimText(getValue(job.qualification), 15)}</span>
+                    </div>
+                    ${job.ageLimit ? `
+                        <div class="details-item d-inline-flex align-items-center me-3">
+                            <i class="bi bi-person me-1" aria-hidden="true"></i>
+                            <span class="details-text">Age: ${job.ageLimit}y</span>
+                        </div>
+                    ` : ''}
+                `}
+            </div>
         </div>`;
 
-    const footerSection = `
-        <div class="card-footer">
+        const footerSection = `
+        <div class="card-footer p-2">
             ${type === 'private' && job.skills ? `
-                <div class="skills-info mb-2">
-                    <div class="skills-list">
-                        ${job.skills.slice(0, 9).map(skill => `
-                            <span class="badge bg-light text-dark me-1">${skill}</span>
+                <div class="skills-info mb-2 overflow-hidden">
+                    <div class="skills-list d-flex flex-nowrap gap-2 overflow-x-auto py-1">
+                        ${job.skills.slice(0, 4).map(skill => `
+                            <span class="badge bg-light text-dark text-nowrap">${trimText(skill, 12)}</span>
                         `).join('')}
+                        ${job.skills.length > 4 ? `
+                            <span class="badge bg-light text-dark text-nowrap">+${job.skills.length - 4}</span>
+                        ` : ''}
                     </div>
                 </div>
             ` : ''}
-            <div class="footer-info">
-                <span class="post-date">
-                    <i class="bi bi-clock"></i> Posted: ${
-                        type === 'bank' 
-                        ? formatTimeAgo(job.postedAt)
-                        : formatDate(job.createdAt)
-                    }
-                </span>
-                ${(type === 'bank' || type === 'government') && job.lastDate ? `
-                    <span class="deadline">
-                        <i class="bi bi-calendar-event"></i> Last Date: ${formatDate(job.lastDate)}
+            <div class="d-flex align-items-center justify-content-between footer-actions">
+                <div class="date-info d-inline-flex align-items-center" style="margin-right: 90px; min-width: fit-content;">
+                    <span class="post-date d-inline-flex align-items-center">
+                        <i class="bi bi-clock me-1" aria-hidden="true"></i>
+                        <span class="small">${type === 'bank' ? formatTimeAgo(job.postedAt) : formatDate(job.createdAt)}</span>
                     </span>
-                ` : ''}
-            </div>
-            ${type === 'private' && job.referralCode ? `
-                <div class="referral-code mb-2">
-                    <span class="badge bg-info">
-                        <i class="bi bi-ticket-perforated"></i> Referral Code: ${job.referralCode}
-                    </span>
+                    ${(type === 'bank' || type === 'government') && job.lastDate ? `
+                        <span class="deadline d-inline-flex align-items-center ms-2">
+                            <i class="bi bi-calendar-event me-1" aria-hidden="true"></i>
+                            <span class="small">Last: ${formatDate(job.lastDate)}</span>
+                        </span>
+                    ` : ''}
                 </div>
-            ` : ''}
-            <div class="action-buttons">
-                <a href="${job.applicationLink}" target="_blank" download class="btn btn-primary btn-sm">
-                    Apply Now
-                </a>
-                ${job.notificationFile ? `
-                    <a href="${job.notificationFile}"  target="_blank" download class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-file-text"></i> Notification
-                    </a>
+                ${type === 'private' && job.referralCode ? `
+                    <div class="referral-code d-inline-flex" style="margin-right: 125px; min-width: fit-content;">
+                        <span class="badge bg-info d-inline-flex align-items-center">
+                            <i class="bi bi-ticket-perforated me-1" aria-hidden="true"></i>
+                            <span>Ref: ${job.referralCode}</span>
+                        </span>
+                    </div>
                 ` : ''}
+                <div class="d-inline-flex apply-btn-container">
+                    <a href="${job.applicationLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm apply-btn">
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                        <span>Apply</span>
+                    </a>
+                </div>
             </div>
         </div>`;
 
