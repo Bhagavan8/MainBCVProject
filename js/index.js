@@ -30,10 +30,18 @@ async function fetchStats() {
         const jobsCount = jobsSnapshot.size;
         document.getElementById('jobsCount').textContent = formatNumber(jobsCount);
 
+        // Get companies from both collections
+        const companiesSnapshot = await getDocs(collection(db, "companies"));
+        const companiesFromDb = companiesSnapshot.size;
+
+        // Get unique companies from jobs collection
         const allCompanyNames = jobsSnapshot.docs.map(doc => doc.data().companyName);
         const uniqueCompanyNames = [...new Set(allCompanyNames)];
-        const uniqueCompaniesCount = uniqueCompanyNames.length;
-        document.getElementById('companiesCount').textContent = formatNumber(uniqueCompaniesCount);
+        const oldCompaniesCount = uniqueCompanyNames.length;
+
+        // Total unique companies (combine both counts)
+        const totalCompanies = companiesFromDb + oldCompaniesCount;
+        document.getElementById('companiesCount').textContent = formatNumber(totalCompanies);
 
         // Get users count
         const usersSnapshot = await getDocs(collection(db, "users"));

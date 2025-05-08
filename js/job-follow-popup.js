@@ -24,19 +24,22 @@ class JobFollowPopup {
 
     async fetchStats() {
         try {
-            // Get total jobs count and unique companies
+            // Get total jobs count
             const jobsSnapshot = await getDocs(collection(db, 'jobs'));
             const totalJobs = jobsSnapshot.size;
 
-            // Get unique companies from jobs collection
-            const uniqueCompanies = new Set();
-            jobsSnapshot.forEach(doc => {
-                const jobData = doc.data();
-                if (jobData.companyName) {
-                    uniqueCompanies.add(jobData.companyName);
-                }
-            });
-            const totalCompanies = uniqueCompanies.size;
+            // Get companies from companies collection
+            const companiesSnapshot = await getDocs(collection(db, 'companies'));
+            const companiesFromDb = companiesSnapshot.size;
+
+            // Get unique companies from jobs collection (legacy data)
+            const jobsWithoutCompanyId = jobsSnapshot.docs.filter(doc => !doc.data().companyId);
+            const legacyCompanyNames = jobsWithoutCompanyId.map(doc => doc.data().companyName);
+            const uniqueLegacyCompanies = [...new Set(legacyCompanyNames)];
+            const legacyCompaniesCount = uniqueLegacyCompanies.length;
+
+            // Total unique companies (combine both counts)
+            const totalCompanies = companiesFromDb + legacyCompaniesCount;
 
             this.stats = {
                 totalJobs,
