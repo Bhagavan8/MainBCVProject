@@ -174,44 +174,70 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Create job cards
-        jobsSnapshot.forEach(doc => {
-            const jobData = doc.data();
-            const jobId = doc.id;
+        // Process jobs with company details
+        const jobs = await Promise.all(jobsSnapshot.docs.map(async (docSnapshot) => {
+            const jobData = docSnapshot.data();
+            const jobId = docSnapshot.id;
+            
+            // Initialize company details before the if block
+            let companyName = jobData.companyName || 'Unknown Company';
+            let companyLogo = jobData.companyLogo || 'default-company.webp';
+            
+            if (jobData.companyId) {
+                try {
+                    const companyRef = doc(db, 'companies', jobData.companyId);
+                    const companyDoc = await getDoc(companyRef);
+                    if (companyDoc.exists()) {
+                        const companyData = companyDoc.data();
+                        companyName = companyData.name || companyName;
+                        companyLogo = companyData.logoURL || companyLogo;
+                    }
+                } catch (error) {
+                    console.error('Error fetching company details:', error);
+                }
+            }
+            
+            return {
+                ...jobData,
+                id: jobId,
+                companyName: companyName,
+                companyLogo: companyLogo
+            };
+        }));
 
+        // Create job cards
+        jobs.forEach(jobData => {
             const jobCard = document.createElement('div');
             jobCard.className = 'job-card';
-            // Inside the job card creation in featured-jobs.js
-            // Inside the job card creation
             jobCard.innerHTML = `
             <div class="job-card-inner">
-            <div class="job-header">
-              <img src="${jobData.companyLogo?.startsWith('http') ? jobData.companyLogo : `/assets/images/companies/${jobData.companyLogo || 'default-company.webp'}`}" 
-             alt="${jobData.companyName} Logo" 
-             class="company-logo" 
-             width="50" 
-             height="50"
-             onerror="this.src='/assets/images/companies/default-company.webp'">
-        <div class="job-info">
-            <h3>${jobData.jobTitle}</h3>
-            <p class="company">${jobData.companyName}</p>
-            <div class="job-meta">
-                <span title="${jobData.location?.trim() || 'Location not specified'}"><i>📍</i> ${(jobData.location?.trim() || '').length > 28 ? (jobData.location?.trim() || '').substring(0, 28) + '...' : jobData.location?.trim() || 'Location not specified'}</span>
-                ${jobData.experience ? `<span><i>📅</i> ${formatExperience(jobData.experience)} years</span>` : ''}
-                <span class="employment-type"><i>📄</i> ${formatEmploymentType(jobData.employmentType)}</span>
+                <div class="job-header">
+                    <img src="${jobData.companyLogo?.startsWith('http') ? jobData.companyLogo : `/assets/images/companies/${jobData.companyLogo}`}" 
+                        alt="${jobData.companyName} Logo" 
+                        class="company-logo" 
+                        width="50" 
+                        height="50"
+                        onerror="this.src='/assets/images/companies/default-company.webp'">
+                    <div class="job-info">
+                        <h3>${jobData.jobTitle}</h3>
+                        <p class="company">${jobData.companyName}</p>
+                        <div class="job-meta">
+                            <span title="${jobData.location?.trim() || 'Location not specified'}"><i>📍</i> ${(jobData.location?.trim() || '').length > 28 ? (jobData.location?.trim() || '').substring(0, 28) + '...' : jobData.location?.trim() || 'Location not specified'}</span>
+                            ${jobData.experience ? `<span><i>📅</i> ${formatExperience(jobData.experience)}</span>` : ''}
+                            <span class="employment-type"><i>📄</i> ${formatEmploymentType(jobData.employmentType)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="job-content">
+                    <div class="job-skills">
+                        ${formatSkills(jobData.skills)}
+                    </div>
+                    <div class="job-footer">
+                        <a href="/html/job-details.html?id=${jobData.id}&type=private" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="job-content">
-        <div class="job-skills">
-            ${formatSkills(jobData.skills)}
-        </div>
-        <div class="job-footer">
-            <a href="/html/job-details.html?id=${jobId}&type=private" class="btn btn-primary">View Details</a>
-        </div>
-    </div>
-</div>
-`;
+            `;
             jobsContainer.appendChild(jobCard);
         });
 
@@ -238,17 +264,15 @@ function formatSkills(skillsArray) {
 }
 
 // Format experience range
+// Format experience range
 function formatExperience(experience) {
-    const ranges = {
-        "0-1": "<1",
-        "1-3": "1-3",
-        "3-5": "3-5",
-        "5-10": "5-10",
-        "10+": "10+"
-    };
-    return ranges[experience] || experience;
+    if (experience === "0-1" || experience.toLowerCase() === "fresher") {
+        return "Fresher";
+    }
+    return experience + " years";
 }
 
+// In the job card template, update the experience display:
 // Format employment type
 function formatEmploymentType(type) {
     const types = {
