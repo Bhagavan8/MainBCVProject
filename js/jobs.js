@@ -122,7 +122,10 @@ async function getJobs(jobType) {
             const jobData = {
                 id: docItem.id,
                 type: jobType,
-                ...docItem.data()
+                ...docItem.data(),
+                createdAt: docItem.data().createdAt?.toDate
+                    ? new Date(docItem.data().createdAt.toDate().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+                    : new Date(new Date(docItem.data().createdAt || currentDate).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
             };
 
             // Convert dates to IST
@@ -222,6 +225,18 @@ function createJobCard(job, type) {
             </div>
         </div>`;
 
+    // In your displayJobs function, after setting the jobsGrid innerHTML
+    jobsGrid.addEventListener('click', (e) => {
+        const applyButton = e.target.closest('.apply-btn');
+        if (applyButton) {
+            const jobId = applyButton.dataset.jobId;
+            const jobType = applyButton.dataset.jobType;
+            if (jobId && jobType) {
+                window.location.href = `/html/job-details.html?id=${jobId}&type=${jobType}`;
+            }
+        }
+    });
+
     const detailsSection = `
         <div class="job-details">
             <div class="details-flex">
@@ -256,7 +271,6 @@ function createJobCard(job, type) {
                 `}
             </div>
         </div>`;
-
     const footerSection = `
         <div class="card-footer p-2">
             ${type === 'private' && job.skills ? `
@@ -275,7 +289,7 @@ function createJobCard(job, type) {
                 <div class="date-info d-inline-flex align-items-center" style="margin-right: 90px; min-width: fit-content;">
                     <span class="post-date d-inline-flex align-items-center">
                         <i class="bi bi-clock me-1" aria-hidden="true"></i>
-                        <span class="small">${type === 'bank' ? formatTimeAgo(job.postedAt) : formatDate(job.createdAt)}</span>
+                        <span class="small">${type === 'bank' ? formatDate(job.postedAt) : formatDate(job.createdAt)}</span>
                     </span>
                     ${(type === 'bank' || type === 'government') && job.lastDate ? `
                         <span class="deadline d-inline-flex align-items-center ms-2">
@@ -293,7 +307,7 @@ function createJobCard(job, type) {
                     </div>
                 ` : ''}
                <div class="d-inline-flex apply-btn-container">
-                <button class="btn btn-primary btn-sm apply-btn">
+                <button class="btn btn-primary btn-sm apply-btn" data-job-id="${job.id}" data-job-type="${type}">
                     <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                     <span>Apply</span>
                 </button>
@@ -302,7 +316,7 @@ function createJobCard(job, type) {
         </div>`;
 
     return `
-        <div class="job-card ${type}-job" data-job-id="${job.id}" data-job-type="${type}">
+        <div class="job-card ${type}-job">
             ${headerSection}
             ${detailsSection}
             ${footerSection}
@@ -654,23 +668,25 @@ function formatDate(dateInput) {
         date = new Date(dateInput);
     }
 
-    return date.toLocaleDateString('en-IN', {
+    // Convert to IST
+    return date.toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         day: 'numeric',
         month: 'long',
         year: 'numeric'
     });
 }
-jobsGrid.addEventListener('click', handleJobCardClick);
-function handleJobCardClick(e) {
-    const jobCard = e.target.closest('.job-card');
-    if (!jobCard) return;
-
-    e.preventDefault();
-    const { jobId, jobType } = jobCard.dataset;
-    
-    // Always navigate to job details page
-    window.location.href = `/html/job-details.html?id=${jobId}&type=${jobType}`;
-}
+// In your displayJobs function, after setting the jobsGrid innerHTML
+jobsGrid.addEventListener('click', (e) => {
+    const applyButton = e.target.closest('.apply-btn');
+    if (applyButton) {
+        const jobId = applyButton.dataset.jobId;
+        const jobType = applyButton.dataset.jobType;
+        if (jobId && jobType) {
+            window.location.href = `/html/job-details.html?id=${jobId}&type=${jobType}`;
+        }
+    }
+});
 
 // Add missing export statement if needed
 export { getJobs, filterByCategory, updateCategoryCounts, initializeJobs };
