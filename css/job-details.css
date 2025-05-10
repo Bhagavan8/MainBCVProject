@@ -1253,3 +1253,28 @@ body {
       padding: 0.5rem;
   }
 }
+
+@media screen and (max-width: 991px) {
+  .mobile-menu-toggle {
+      display: block;
+  }
+
+  #primary-navigation {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 300px;
+      height: 100vh;
+      background-color: #fff;
+      padding: 80px 20px 20px;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      transform: translateX(100%);
+  }
+
+  #primary-navigation.active {
+      right: 0;
+      transform: translateX(0);
+  }
+}
