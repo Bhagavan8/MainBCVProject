@@ -40,13 +40,16 @@
     <link rel="alternate" href="https://bcvworld.com/html/job-details.html" hreflang="en-in" />
 
     <!-- Resource Hints -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     
     <!-- Critical CSS Preload -->
+    <link rel="preload" href="/css/critical.css" as="style">
+    <link rel="preload" href="/js/job-details.js" as="script">
     <link rel="preload" href="/css/job-details.css" as="style">
     <link rel="preload" href="/css/job-stats.css" as="style">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
@@ -81,7 +84,8 @@
 
    
     <!-- Defer non-critical CSS -->
-    <link rel="stylesheet" href="/css/social-share.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/css/mobile.responsive.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/css/job-follow-popup.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" media="print" onload="this.media='all'">
 
      <!-- Load fonts asynchronously -->
@@ -218,7 +222,7 @@
                 <div class="job-header">
                     <div class="company-info">
                         <div id="companyLogo" class="company-logo"></div>
-                        <div class="job-title-section">
+                        <div class="job-title-section" style="min-height: 120px">
                             <h1 id="jobTitle" class="text-capitalize job-title-gradient"></h1>
                             <h2 id="companyName" class="text-capitalize company-name-style"></h2>
                             <div class="job-meta">
@@ -235,7 +239,7 @@
                                     <span id="salary"></span>
                                 </span>
                             </div>
-                            <div class="job-stats-container">
+                            <div class="job-stats-container" style="min-height: 48px">
                                 <div class="stats-row d-flex align-items-center justify-content-start gap-4">
                                     <!-- Pre-reserve space for job code -->
                                     <div id="jobCodeWrapper" class="stat-item job-code-referal">
@@ -377,6 +381,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script type="module" src="/js/components/component-loader.js"></script>
+    <!-- Add to head -->
+   
     <script type="module" src="/js/job-details.js"></script>
     <script src="/js/company-jobs.js"></script>
     <script type="module" src="/js/job-stats.js"></script>
