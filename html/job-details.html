@@ -202,7 +202,7 @@
             <!-- Left Sidebar - Ads -->
             <div class="left-sidebar">
                 <div class="ad-space sticky-top">
-                    <div class="ad-placeholder">Advertisement</div>
+                    <div class="ad-placeholder"></div>
                 </div>
             </div>
 
@@ -296,7 +296,9 @@
                         <button class="tab-btn active" data-tab="overview">
                             <i class="bi bi-file-text"></i> Overview
                         </button>
-                        <!-- Removed details tab button -->
+                        <button class="tab-btn" data-tab="company">
+                            <i class="bi bi-building"></i> Company Details
+                        </button>
                         <button class="tab-btn" data-tab="reviews">
                             <i class="bi bi-star"></i> Reviews & Comments
                         </button>
@@ -305,60 +307,60 @@
                     <div class="tab-container">
                         <div id="overview" class="tab-content active">
                             <div class="content-wrapper">
-                                <div class="job-description content-block "></div>
-                                <div class="key-details content-block"></div>
+                                <div class="job-description content-block"></div>
+                            </div>
+                        </div>
+
+                        <div id="company" class="tab-content">
+                            <div class="content-wrapper">
+                                <div class="company-profile content-block">
+                                    <div class="company-header">
+                                        <img id="companyDetailLogo" class="company-detail-logo" src="" alt="Company Logo">
+                                        <h3 id="companyDetailName" class="company-detail-name"></h3>
+                                    </div>
+                                    <div class="company-info-block">
+                                        <p id="companyDetailAbout" class="company-about"></p>
+                                        <div class="company-links">
+                                            <a id="companyWebsite" href="" target="_blank" class="btn btn-primary">
+                                                <i class="bi bi-globe"></i> Visit Website
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div id="reviews" class="tab-content">
                             <div class="content-wrapper">
-                                <div class="rating-section">
-                                    <div class="rating-header">
-                                        <h4 class="section-title">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            Job Rating
-                                        </h4>
-                                        <div class="rating-stats">
+                                <div class="reviews-section content-block">
+                                    <div class="rating-summary">
+                                        <div class="average-rating">
+                                            <h4>Overall Rating</h4>
                                             <div id="averageRatingStars" class="stars"></div>
-                                            <div class="rating-numbers">
-                                                <span id="averageRatingValue" class="rating-value"></span>
-                                                <span id="totalRatings" class="rating-count"></span>
+                                            <div class="rating-text">
+                                                <span id="averageRatingValue">0.0</span>
+                                                <span id="totalRatings">(0 ratings)</span>
+                                            </div>
+                                        </div>
+                                        <div id="ratingContainer" class="rate-job">
+                                            <h4>Rate this Job</h4>
+                                            <div id="ratingInput" class="rating-input">
+                                                <i class="bi bi-star" data-rating="1"></i>
+                                                <i class="bi bi-star" data-rating="2"></i>
+                                                <i class="bi bi-star" data-rating="3"></i>
+                                                <i class="bi bi-star" data-rating="4"></i>
+                                                <i class="bi bi-star" data-rating="5"></i>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="ratingContainer" class="rating-input-section">
-                                        <h5 class="input-title">Rate this job</h5>
-                                        <div class="rating-input-wrapper">
-                                            <div class="stars" id="ratingInput">
-                                                <i class="bi bi-star" data-rating="1" title="Poor"></i>
-                                                <i class="bi bi-star" data-rating="2" title="Fair"></i>
-                                                <i class="bi bi-star" data-rating="3" title="Good"></i>
-                                                <i class="bi bi-star" data-rating="4" title="Very Good"></i>
-                                                <i class="bi bi-star" data-rating="5" title="Excellent"></i>
-                                            </div>
-                                            <span id="ratingMessage" class="rating-message"></span>
-                                        </div>
+                                    <div class="comments-section">
+                                        <h4>Comments</h4>
+                                        <form id="commentForm" class="comment-form">
+                                            <textarea id="commentText" placeholder="Share your experience..." required></textarea>
+                                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                                        </form>
+                                        <div id="commentsList" class="comments-list"></div>
                                     </div>
-                                </div>
-                                <div class="comments-section">
-                                    <div class="comments-header">
-                                        <h4 class="section-title">
-                                            <i class="bi bi-chat-dots text-primary"></i>
-                                            Comments
-                                        </h4>
-                                    </div>
-                                    <div class="comment-form-wrapper">
-                                        <textarea id="commentInput" class="form-control custom-textarea"
-                                            placeholder="Share your thoughts about this job..."
-                                            maxlength="500"></textarea>
-                                        <div class="comment-actions">
-                                            <span class="char-count">0/500</span>
-                                            <button class="btn btn-primary comment-btn" id="postComment">
-                                                <i class="bi bi-send"></i> Post Comment
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div id="commentsList" class="comments-list"></div>
                                 </div>
                             </div>
                         </div>

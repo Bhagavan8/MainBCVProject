@@ -28,7 +28,7 @@ class JobDetailsManager {
         this.currentJob = null;
         this.currentCompany = null;
         this.viewsTracked = false;
-        
+
         this.init();
         this.initializeCopyLink();
         this.initializeRatingSystem();
@@ -52,6 +52,8 @@ class JobDetailsManager {
             }
 
             const jobRef = doc(db, this.getCollectionName(), this.jobId);
+
+            // First get the job data
             const jobDoc = await getDoc(jobRef);
 
             if (jobDoc.exists()) {
@@ -59,13 +61,17 @@ class JobDetailsManager {
                 const averageRating = this.currentJob.averageRating || 0;
                 const totalRatings = this.currentJob.totalRatings || 0;
 
-                await this.fetchAndMergeCompanyData();
+                // Now update view count after we have the job data
                 await this.updateViewCount(jobRef);
 
-                this.updateRatingDisplay(averageRating, totalRatings);
-                this.renderJobDetails(this.currentJob);
-                this.updateDetailsSection(this.currentJob);
-                
+                // Start company data fetch and UI updates in parallel
+                await Promise.all([
+                    this.fetchAndMergeCompanyData(),
+                    this.updateRatingDisplay(averageRating, totalRatings),
+                    this.renderJobDetails(this.currentJob),
+                    this.updateDetailsSection(this.currentJob)
+                ]);
+
                 if (this.currentCompany) {
                     this.updateCompanyDisplay(this.currentCompany);
                 }
@@ -80,37 +86,50 @@ class JobDetailsManager {
     }
 
     async fetchAndMergeCompanyData() {
-        if (this.currentJob.companyId) {
-            try {
-                const companyRef = doc(db, 'companies', this.currentJob.companyId);
-                const companyDoc = await getDoc(companyRef);
-                
-                if (companyDoc.exists()) {
-                    this.currentCompany = companyDoc.data();
-                    this.currentJob = {
-                        ...this.currentJob,
-                        companyName: this.currentCompany.name,
-                        companyLogo: this.currentCompany.logoURL,
-                        companyWebsite: this.currentCompany.website,
-                        companyAbout: this.currentCompany.about || ''
-                    };
-                } else {
-                    console.warn('Company not found:', this.currentJob.companyId);
-                    this.currentCompany = null;
-                }
-            } catch (error) {
-                console.error('Error loading company details:', error);
-                this.currentCompany = null;
-            }
-        } else if (this.currentJob.companyName) {
+        // Early return if no companyId
+        if (!this.currentJob.companyId) {
             this.currentCompany = {
                 name: this.currentJob.companyName,
                 logoURL: this.currentJob.companyLogo,
                 website: this.currentJob.companyWebsite,
-                about: this.currentJob.companyAbout || ''
+                about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
             };
-        } else {
-            this.currentCompany = null;
+            return;
+        }
+
+        try {
+            const companyRef = doc(db, 'companies', this.currentJob.companyId);
+            const companyDoc = await getDoc(companyRef);
+
+            this.currentCompany = companyDoc.exists() ? {
+                ...companyDoc.data(),
+                about: companyDoc.data().about || ''
+            } : {
+                name: this.currentJob.companyName,
+                logoURL: this.currentJob.companyLogo,
+                website: this.currentJob.companyWebsite,
+                about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
+            };
+
+            // Update job data with company info
+            if (companyDoc.exists()) {
+                this.currentJob = {
+                    ...this.currentJob,
+                    companyName: this.currentCompany.name,
+                    companyLogo: this.currentCompany.logoURL,
+                    companyWebsite: this.currentCompany.website,
+                    companyAbout: this.currentCompany.about
+                };
+            }
+        } catch (error) {
+            console.error('Error loading company details:', error);
+            // Fallback to job collection data
+            this.currentCompany = {
+                name: this.currentJob.companyName,
+                logoURL: this.currentJob.companyLogo,
+                website: this.currentJob.companyWebsite,
+                about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
+            };
         }
     }
 
@@ -167,12 +186,12 @@ class JobDetailsManager {
     async updateViewCount(jobRef) {
         const viewKey = `job_view_${this.jobId}`;
         const hasViewed = sessionStorage.getItem(viewKey);
-        
+
         if (!hasViewed && !this.viewsTracked) {
             this.viewsTracked = true;
             sessionStorage.setItem(viewKey, 'true');
             const currentViews = this.currentJob.views || 0;
-            
+
             try {
                 await updateDoc(jobRef, {
                     views: currentViews + 1,
@@ -187,11 +206,122 @@ class JobDetailsManager {
         }
     }
 
+    capitalizeEducationFirstLetter(string) {
+        if (!string) return '';
+    
+        // First handle special combined cases with flexible matching
+        const combinedCases = {
+            'be/b.tech/any graduation/m.tech': 'B.E/B.Tech/Any Graduation/M.Tech',
+            'b.e, btech or similar': 'B.E, B.Tech or Similar',
+            'b.e/b.tech or similar': 'B.E/B.Tech or Similar',
+            'b.e, btech or similar': 'B.E, B.Tech or Similar'
+        };
+    
+        // Normalize the input string for comparison (lowercase and trim)
+        const normalizedInput = string.toLowerCase().trim();
+    
+        // Check for combined cases first
+        for (const [pattern, replacement] of Object.entries(combinedCases)) {
+            if (normalizedInput === pattern.toLowerCase()) {
+                return replacement;
+            }
+        }
+    
+        // Handle individual education levels
+        const educationPatterns = {
+            'master of engineering': 'Master of Engineering',
+            'master of technology': 'Master of Technology',
+            'bachelor of engineering': 'Bachelor of Engineering',
+            'bachelor of technology': 'Bachelor of Technology',
+            'b.tech': 'B.Tech',
+            'b.e': 'B.E',
+            'm.tech': 'M.Tech',
+            'm.e': 'M.E',
+            'btech': 'B.Tech',
+            'mtech': 'M.Tech',
+            'be': 'B.E',
+            'me': 'M.E'
+        };
+    
+        // Process each word separately
+        return string.split(/(\s+|\/|,)/).map(part => {
+            // Skip whitespace and separators
+            if (/^\s+$|\/|,/.test(part)) {
+                return part;
+            }
+    
+            const lowerPart = part.toLowerCase();
+            
+            // Check for exact matches in education patterns
+            if (educationPatterns.hasOwnProperty(lowerPart)) {
+                return educationPatterns[lowerPart];
+            }
+    
+            // Handle "OR" specifically
+            if (lowerPart === 'or') {
+                return 'or'; // keep it lowercase as it's a conjunction
+            }
+    
+            // Default capitalization
+            return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+        }).join('');
+    }
+
     capitalizeFirstLetter(string) {
         if (!string) return '';
+
+        // Handle experience format
+        if (string.toLowerCase().includes('year')) {
+            return string.replace(/([0-9]+)\s*years?/i, '$1 Years');
+        }
+
+        // Default capitalization
         return string.split(' ')
             .map(word => word.length === 2 ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
             .join(' ');
+    }
+
+    renderJobDetailsSection(job) {
+        return `
+            <div class="overview-section">
+                <h4 class="section-title">
+                    <i class="bi bi-briefcase"></i> 
+                    <span>Job Details</span>
+                </h4>
+                <div class="job-details-container">
+                    ${job.experience ? `
+                        <div class="detail-item">
+                            <i class="bi bi-briefcase"></i>
+                            <span class="detail-label">Experience:</span>
+                            <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
+                        </div>` : ''}
+                        ${job.educationLevel ? `
+                                  <div class="detail-item">
+                                    <i class="bi bi-mortarboard"></i>
+                                    <span class="detail-label">Education:</span>
+                                      <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
+                                         </div>` : ''}
+                    ${job.location ? `
+                        <div class="detail-item">
+                            <i class="bi bi-geo-alt"></i>
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">${this.formatLocation(job.location)}</span>
+                        </div>` : ''}
+                    ${job.lastDate ? `
+                        <div class="detail-item">
+                            <i class="bi bi-calendar"></i>
+                            <span class="detail-label">Last Date:</span>
+                            <span class="detail-value">${this.capitalizeFirstLetter(job.lastDate)}</span>
+                        </div>` : ''}
+                    ${job.salary ? `
+                        <div class="detail-item">
+                            <i class="bi bi-currency-rupee"></i>
+                            <span class="detail-label">Salary:</span>
+                            <span class="detail-value">${this.capitalizeFirstLetter(job.salary)}</span>
+                        </div>` : ''}
+                </div>
+            </div>
+        `;
     }
 
     initializeRatingSystem() {
@@ -254,7 +384,7 @@ class JobDetailsManager {
             document.getElementById('avgRating').textContent = averageRating.toFixed(1);
             document.getElementById('ratingCount').textContent = ratingCount;
             this.updateRatingDisplay(averageRating, ratingCount);
-            
+
             if (auth.currentUser) {
                 const userRatingDoc = await getDoc(doc(db, 'jobRatings', `${this.jobId}_${auth.currentUser.uid}`));
                 if (userRatingDoc.exists()) {
@@ -271,7 +401,7 @@ class JobDetailsManager {
 
         const istOffset = 5.5 * 60 * 60 * 1000;
         let date;
-        
+
         if (typeof timestamp === 'string') {
             date = new Date(timestamp);
         } else if (timestamp.toDate) {
@@ -334,6 +464,41 @@ class JobDetailsManager {
 
         document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
         document.getElementById(tabId).classList.add('active');
+
+        // Update company details when switching to company tab
+        if (tabId === 'company' && this.currentJob) {
+            this.updateCompanyTabContent(this.currentJob);
+        }
+    }
+
+    updateCompanyTabContent(job) {
+        const companyDetailLogo = document.getElementById('companyDetailLogo');
+        const companyDetailName = document.getElementById('companyDetailName');
+        const companyDetailAbout = document.getElementById('companyDetailAbout');
+        const companyWebsite = document.getElementById('companyWebsite');
+
+        if (this.jobType === 'bank') {
+            companyDetailLogo.innerHTML = '<i class="bi bi-bank2 fs-1 text-primary"></i>';
+        } else {
+            const logoUrl = job.companyLogo?.startsWith('http') ?
+                job.companyLogo :
+                `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`;
+            companyDetailLogo.src = logoUrl;
+            companyDetailLogo.onerror = () => {
+                companyDetailLogo.src = '/assets/images/companies/default-company.webp';
+            };
+        }
+
+        companyDetailName.textContent = job.companyName || job.bankName;
+        companyDetailName.textContent = job.companyName || job.bankName;
+        companyDetailAbout.textContent = job.aboutCompany || job.companyAbout || 'No company description available';
+
+        if (job.companyWebsite) {
+            companyWebsite.href = this.ensureHttp(job.companyWebsite);
+            companyWebsite.style.display = 'inline-flex';
+        } else {
+            companyWebsite.style.display = 'none';
+        }
     }
 
     getCollectionName() {
@@ -349,7 +514,7 @@ class JobDetailsManager {
         const salaryWrapper = document.getElementById('salaryWrapper');
 
         if (jobTitleEl) jobTitleEl.textContent = job.jobTitle || job.postName;
-        
+
         if (companyNameEl) {
             if (job.companyWebsite) {
                 companyNameEl.innerHTML = `
@@ -363,7 +528,7 @@ class JobDetailsManager {
                 companyNameEl.textContent = job.companyName || job.bankName;
             }
         }
-        
+
         if (locationEl) {
             const locationText = job.location || job.state;
             locationEl.textContent = locationText?.length > 28 ? locationText.substring(0, 28) + '...' : locationText;
@@ -393,10 +558,10 @@ class JobDetailsManager {
         if (this.jobType === 'bank') {
             logoContainer.innerHTML = '<i class="bi bi-bank2 fs-1 text-primary"></i>';
         } else {
-            const logoUrl = job.companyLogo?.startsWith('http') ? 
-                job.companyLogo : 
+            const logoUrl = job.companyLogo?.startsWith('http') ?
+                job.companyLogo :
                 `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`;
-                
+
             logoContainer.innerHTML = `
                 <img src="${logoUrl}" 
                      alt="${job.companyName} Logo" 
@@ -469,48 +634,19 @@ class JobDetailsManager {
             </div>
         `;
     }
+    
 
     async renderPrivateJobOverview(job) {
-        let companyAbout = '';
-        if (job.companyId) {
-            try {
-                const companyRef = doc(db, 'companies', job.companyId);
-                const companyDoc = await getDoc(companyRef);
-                if (companyDoc.exists()) {
-                    companyAbout = companyDoc.data().about || '';
-                }
-            } catch (error) {
-                console.error('Error fetching company about:', error);
-            }
-        } else {
-            companyAbout = job.aboutCompany || '';
-        }
+        // Check if description and qualifications are the same
+        const descriptionPoints = job.description ? job.description.split('\n').filter(point => point.trim()) : [];
+        const qualificationPoints = job.qualifications ?
+            (Array.isArray(job.qualifications) ? job.qualifications : job.qualifications.split('\n')).filter(point => point.trim()) : [];
 
-        const companyInfoSection = `
-            <div class="overview-section slide-in-right animate__animated animate__fadeInRight">
-                <h4 class="section-title animate__animated animate__fadeIn">
-                    <i class="bi bi-building pulse-icon"></i> 
-                    <span class="gradient-text">Company Information</span>
-                </h4>
-                <div class="company-details">
-                    ${companyAbout ? `
-                        <div class="about-company animate__animated animate__fadeIn">
-                            <p>${companyAbout}</p>
-                        </div>
-                    ` : '<p class="text-muted">No company description available</p>'}
-                    <div class="company-links animate__animated animate__fadeInUp">
-                        ${job.companyWebsite ? `
-                            <a href="${this.ensureHttp(job.companyWebsite)}" 
-                               class="company-link btn-hover-effect" 
-                               target="_blank">
-                                <i class="bi bi-globe rotating-icon"></i> 
-                                <span>Visit Website</span>
-                            </a>
-                        ` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
+        const descriptionContent = descriptionPoints.join('\n');
+        const qualificationContent = qualificationPoints.join('\n');
+
+        // Only show description section if content is different from qualifications
+        const showDescription = descriptionContent !== qualificationContent;
 
         return `
             <div class="job-overview-container animate-fade-in">
@@ -521,7 +657,17 @@ class JobDetailsManager {
                     </button>
                 </div>
 
-                ${companyInfoSection}
+                ${showDescription ? `
+                <div class="overview-section slide-in-left">
+                    <h4 class="section-title">
+                        <i class="bi bi-file-text gradient-icon"></i>
+                        <span class="gradient-text">Job Description</span>
+                    </h4>
+                    <div class="description-content">
+                        ${this.formatDescription(job.description)}
+                    </div>
+                </div>
+                ` : ''}
 
                 ${this.renderJobDetailsSection(job)}
                 ${this.renderSkillsSection(job)}
@@ -547,7 +693,7 @@ class JobDetailsManager {
                 <div class="details-grid">
                     <div class="details-column">
                         ${job.experience ? this.renderDetailItem('Experience', this.capitalizeFirstLetter(job.experience), 'bi-briefcase') : ''}
-                        ${job.educationLevel ? this.renderDetailItem('Education', this.capitalizeFirstLetter(job.educationLevel), 'bi-mortarboard') : ''}
+                        ${job.educationLevel ? this.renderDetailItem('Education', this.capitalizeEducationFirstLetter(job.educationLevel), 'bi-mortarboard') : ''}
                         ${job.location ? this.renderDetailItem('Location', this.formatLocation(job.location), 'bi-geo-alt', job.location) : ''}
                     </div>
                     <div class="details-column">
@@ -621,8 +767,8 @@ class JobDetailsManager {
     updateJobMetaInfo(job) {
         const experienceElement = document.getElementById('experience');
         if (experienceElement && job.experience) {
-            experienceElement.textContent = job.experience.toLowerCase() === 'fresher' ? 
-                'Fresher' : 
+            experienceElement.textContent = job.experience.toLowerCase() === 'fresher' ?
+                'Fresher' :
                 `${job.experience} Years`;
         }
     }
@@ -644,13 +790,33 @@ class JobDetailsManager {
     formatQualifications(qualifications) {
         if (!qualifications) return 'No specific qualifications mentioned';
 
+        // Common technology and skill keywords to bold
+        const techKeywords = [
+            'JavaScript', 'Python', 'Java', 'C\\+\\+', 'React', 'Angular', 'Vue', 'Node.js',
+            'AWS', 'Azure', 'Docker', 'Kubernetes', 'SQL', 'MongoDB', 'Express', 'TypeScript',
+            'HTML', 'CSS', 'Git', 'REST', 'API', 'DevOps', 'CI/CD', 'Machine Learning',
+            'AI', 'Cloud', 'Microservices', 'Spring Boot', '.NET', 'PHP', 'Ruby', 'Swift',
+            'Kotlin', 'Android', 'iOS', 'Flutter', 'React Native', 'GraphQL', 'Redux',
+            'Bootstrap', 'Sass', 'Less', 'jQuery', 'webpack', 'Babel', 'Jenkins', 'CRM', 'Agile', 'GitLab', 'OOP', 'Apache Kafka',
+            'Confluent Kafka','Helm','NodeJS','APIs','JUnit', 'Selenium', 'TestNG'
+        ];
+
+        const boldTechTerms = (text) => {
+            let processedText = text;
+            techKeywords.forEach(keyword => {
+                const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+                processedText = processedText.replace(regex, '<strong>$&</strong>');
+            });
+            return processedText;
+        };
+
         if (Array.isArray(qualifications)) {
             return `
                 <ul class="qualifications-list">
                     ${qualifications.map(point => `
                         <li class="qualification-point animate__animated animate__fadeIn">
                             <i class="bi bi-check2-circle text-success"></i>
-                            ${point.trim()}
+                            ${boldTechTerms(point.trim())}
                         </li>
                     `).join('')}
                 </ul>
@@ -664,7 +830,7 @@ class JobDetailsManager {
                     ${points.map(point => `
                         <li class="qualification-point animate__animated animate__fadeIn">
                             <i class="bi bi-check2-circle text-success"></i>
-                            ${point.trim()}
+                            ${boldTechTerms(point.trim())}
                         </li>
                     `).join('')}
                 </ul>
@@ -829,21 +995,12 @@ class JobDetailsManager {
 
     handleCopyLink() {
         navigator.clipboard.writeText(window.location.href).then(() => {
-            const toaster = document.createElement('div');
-            toaster.className = 'toaster-message show';
-            toaster.innerHTML = `
-                <i class="bi bi-check-circle-fill"></i>
-                Link copied to clipboard!
-            `;
-            document.body.appendChild(toaster);
-
-            setTimeout(() => {
-                toaster.classList.remove('show');
-                setTimeout(() => document.body.removeChild(toaster), 300);
-            }, 3000);
-        }).catch(console.error);
+            this.showToast('Link copied to clipboard!', 'success');
+        }).catch(error => {
+            console.error('Failed to copy link:', error);
+            this.showToast('Failed to copy link', 'error');
+        });
     }
-
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -874,7 +1031,7 @@ window.handleNewsletterSubmit = async (event) => {
     try {
         const q = query(collection(db, "subscriptions"), where("email", "==", email));
         const querySnapshot = await getDocs(q);
-        
+
         if (!querySnapshot.empty) {
             showToast('You are already subscribed! Thank you.', false);
             return;
@@ -904,7 +1061,7 @@ function showToast(message, isSuccess = true) {
     toast.className = `custom-toast ${isSuccess ? 'success' : 'error'}`;
     toast.textContent = message;
     document.body.appendChild(toast);
-    
+
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
@@ -912,11 +1069,11 @@ function showToast(message, isSuccess = true) {
     }, 3000);
 }
 
-window.toggleCompanyJobs = function(companyName) {
+window.toggleCompanyJobs = function (companyName) {
     const elementId = `jobs-${companyName.replace(/\s+/g, '-')}`;
     const jobsContainer = document.getElementById(elementId);
     const toggleIcon = jobsContainer.previousElementSibling.querySelector('.toggle-icon');
-    
+
     if (jobsContainer.style.display === 'none') {
         jobsContainer.style.display = 'block';
         toggleIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');

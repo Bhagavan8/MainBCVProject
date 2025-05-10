@@ -58,3 +58,23 @@
         height: 35px;
     }
 }
+.share-buttons .share-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.share-buttons .share-btn:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Platform-specific colors on hover */
+.share-buttons .share-btn[data-platform="facebook"]:hover { color: #1877f2; }
+.share-buttons .share-btn[data-platform="twitter"]:hover { color: #1da1f2; }
+.share-buttons .share-btn[data-platform="linkedin"]:hover { color: #0a66c2; }
+.share-buttons .share-btn[data-platform="whatsapp"]:hover { color: #25d366; }
+#copyLink:hover { color: #6c757d; }

@@ -14,15 +14,11 @@ class NotificationManager {
         await this.fetchJobs();
         this.showNextJob();
         
-        // Refresh jobs list every 3 minutes
+        // Refresh jobs list and rotate display every 3 minutes
         setInterval(async () => {
             await this.fetchJobs();
-        }, 3 * 60 * 1000);
-
-        // Rotate job display every 10 seconds
-        setInterval(() => {
             this.showNextJob();
-        }, 10 * 1000);
+        }, 3 * 60 * 1000);
     }
 
     async fetchJobs() {

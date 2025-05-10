@@ -50,6 +50,27 @@
     .stat-item {
         margin-bottom: 8px;
     }
+    
+    .tab-navigation {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -16px;
+        padding: 0 16px;
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .tab-navigation::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
 }
 
 @media screen and (max-width: 480px) {
