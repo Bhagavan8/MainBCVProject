@@ -124,8 +124,8 @@ async function getJobs(jobType) {
                 type: jobType,
                 ...docItem.data(),
                 createdAt: docItem.data().createdAt?.toDate
-                    ? new Date(docItem.data().createdAt.toDate().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
-                    : new Date(new Date(docItem.data().createdAt || currentDate).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+                    ? docItem.data().createdAt.toDate()
+                    : new Date(docItem.data().createdAt || currentDate)
             };
 
             // Convert dates to IST
@@ -631,31 +631,6 @@ document.getElementById('jobTypeFilter')?.addEventListener('change', async (e) =
     }
 });
 
-function formatTimeAgo(timestamp) {
-    if (!timestamp) return '';
-
-    const now = Date.now();
-    const timeStampMs = timestamp.seconds * 1000;
-    const diffInSeconds = Math.floor((now - timeStampMs) / 1000);
-
-    const intervals = {
-        year: 31536000,
-        month: 2592000,
-        week: 604800,
-        day: 86400,
-        hour: 3600,
-        minute: 60
-    };
-
-    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-        const interval = Math.floor(diffInSeconds / secondsInUnit);
-        if (interval >= 1) {
-            return `${interval}${unit.charAt(0)} ago`;
-        }
-    }
-
-    return 'Just now';
-}
 
 function formatDate(dateInput) {
     if (!dateInput) return 'N/A';
@@ -668,9 +643,9 @@ function formatDate(dateInput) {
         date = new Date(dateInput);
     }
 
-    // Convert to IST
+    // Keep the original UTC date and just format it
     return date.toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
+        timeZone: 'UTC',  // Use UTC to prevent double timezone conversion
         day: 'numeric',
         month: 'long',
         year: 'numeric'
@@ -1295,7 +1270,10 @@ async function populateLocationFilter() {
             sortedLocations.forEach(location => {
                 const option = document.createElement('option');
                 option.value = location;
-                option.textContent = location;
+                // Trim location name if longer than 20 characters
+                option.textContent = location.length > 20 ? location.substring(0, 20) + '...' : location;
+                // Add title attribute for tooltip
+                option.title = location;
                 locationFilter.appendChild(option);
             });
         }
