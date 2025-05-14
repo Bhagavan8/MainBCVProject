@@ -1,12 +1,13 @@
 // Import Firebase functions
 import { db } from './firebase-config.js';
-import { collection, query, where, getDocs, deleteDoc, doc, addDoc,limit,orderBy  } from  "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, query, where, getDocs, doc, addDoc, limit, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const auth = getAuth();
 
 // Function to fetch and display applied jobs
 async function loadAppliedJobs() {
+    // In the loadAppliedJobs function, modify the applications data fetching:
     try {
         const user = auth.currentUser;
         if (!user) {
@@ -18,12 +19,34 @@ async function loadAppliedJobs() {
         const jobsRef = collection(db, 'jobApplications');
         const q = query(jobsRef, where('userId', '==', user.uid));
         const querySnapshot = await getDocs(q);
-        
+
         const applications = [];
-        querySnapshot.forEach((doc) => {
-            applications.push({ id: doc.id, ...doc.data() });
-        });
-        
+        for (const docSnapshot of querySnapshot.docs) {
+            const applicationData = docSnapshot.data();
+            // Fetch job details
+            const jobDocRef = doc(db, 'jobs', applicationData.jobId);
+            const jobDoc = await getDoc(jobDocRef);
+            if (jobDoc.exists()) {
+                const jobData = jobDoc.data();
+                // Fetch company details if companyId exists
+                let companyData = {};
+                if (jobData.companyId) {
+                    const companyDocRef = doc(db, 'companies', jobData.companyId);
+                    const companyDoc = await getDoc(companyDocRef);
+                    if (companyDoc.exists()) {
+                        companyData = companyDoc.data();
+                    }
+                }
+                applications.push({
+                    id: docSnapshot.id,
+                    ...applicationData,
+                    jobTitle: jobData.jobTitle,
+                    companyName: companyData.name || jobData.companyName,
+                    companyLogo: companyData.logo || jobData.companyLogo
+                });
+            }
+        }
+
         const jobsList = document.querySelector('.applied-jobs-list');
         if (!jobsList) return;
 
@@ -45,7 +68,7 @@ async function loadAppliedJobs() {
             `;
             return;
         }
-        
+
         // Pagination setup - Move this before using totalPages
         const itemsPerPage = 8;
         const totalPages = Math.ceil(applications.length / itemsPerPage);
@@ -160,7 +183,7 @@ async function loadAppliedJobs() {
         document.head.appendChild(styleSheet);
 
         // Add styles
-      
+
         styleSheet.textContent = `
             .job-card {
                 transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -290,7 +313,7 @@ function getStatusColor(status) {
 
 function formatDate(timestamp) {
     if (!timestamp) return 'Date not available';
-    
+
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
@@ -312,23 +335,39 @@ window.changePage = async (pageNumber) => {
 
 // Function to load related jobs from Firebase
 async function loadRelatedJobs() {
+    // In the loadRelatedJobs function, modify the jobs data fetching:
     try {
         const user = auth.currentUser;
         if (!user) return;
 
         const jobsRef = collection(db, 'jobs');
         const q = query(
-            jobsRef, 
+            jobsRef,
             orderBy('createdAt', 'desc'),
             limit(5)
         );
         const querySnapshot = await getDocs(q);
-        
+
         const jobs = [];
-        querySnapshot.forEach((doc) => {
-            jobs.push({ id: doc.id, ...doc.data() });
-        });
-        
+        for (const docSnapshot of querySnapshot.docs) {
+            const jobData = docSnapshot.data();
+            // Fetch company details if companyId exists
+            let companyData = {};
+            if (jobData.companyId) {
+                const companyDocRef = doc(db, 'companies', jobData.companyId);
+                const companyDoc = await getDoc(companyDocRef)
+                if (companyDoc.exists()) {
+                    companyData = companyDoc.data();
+                }
+            }
+            jobs.push({
+                id: docSnapshot.id,
+                ...jobData,
+                companyName: companyData.name || jobData.companyName,
+                companyLogo: companyData.logo || jobData.companyLogo
+            });
+        }
+
         const relatedJobsList = document.querySelector('.related-jobs-list');
         if (!relatedJobsList) return;
 
@@ -465,7 +504,7 @@ window.handleNewsletterSubmit = async (event) => {
         // Check if email already exists
         const q = query(collection(db, "subscriptions"), where("email", "==", email));
         const querySnapshot = await getDocs(q);
-        
+
         if (!querySnapshot.empty) {
             showToast('You are already subscribed! Thank you.', false);
             return;
@@ -500,11 +539,11 @@ function showToast(message, isSuccess = true) {
     toast.className = `custom-toast ${isSuccess ? 'success' : 'error'}`;
     toast.textContent = message;
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.classList.add('show');
     }, 10);
-    
+
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
