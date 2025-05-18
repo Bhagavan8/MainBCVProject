@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getStorage, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-
+import { getFunctions } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js";
 // Encrypted configuration (properly encoded)
 const encryptedConfig = "eyJhcGlLZXkiOiJBSXphU3lEOVhWYUI0Vk1zaXBHUTRmUTQ1VFg3UHhiTTNEdTVfWEUiLCJhdXRoRG9tYWluIjoiYmN2d29ybGQtY2M0MGUuZmlyZWJhc2VhcHAuY29tIiwicHJvamVjdElkIjoiYmN2d29ybGQtY2M0MGUiLCJzdG9yYWdlQnVja2V0IjoiYmN2d29ybGQtY2M0MGUuZmlyZWJhc2VzdG9yYWdlLmFwcCIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiMTA4MzI5NTgwODIyNyIsImFwcElkIjoiMToxMDgzMjk1ODA4MjI3OndlYjo4MDcwZDA4MGJlYjdlOWE4MTlhM2Q2IiwibWVhc3VyZW1lbnRJZCI6IkctRlZUU0tLTkpCSCJ9";
 
@@ -23,18 +23,19 @@ const decryptConfig = (encrypted) => {
     }
 };
 
-let db, auth, storage;
+let db, auth, storage,functions;
 try {
     const firebaseConfig = decryptConfig(encryptedConfig);
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     auth = getAuth(app);
      storage = getStorage(app);
+     functions = getFunctions(app);
 } catch (error) {
     console.error('Initialization error:', error);
 }
 
-export { db, auth, storage, getDownloadURL };
+export { db, auth, storage, functions, getDownloadURL };
 
 
 

@@ -146,5 +146,2279 @@ Header set Cache-Control "public, max-age=300, must-revalidate"
 <IfModule mod_http2.c>
     Protocols h2 h2c http/1.1
 </IfModule>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
 
-# Prevent duplicate rules and optimize the order of configurations.
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+# Add MIME Types for downloads
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+
+# Force download for templates
+<Files "ats-templates.zip">
+    ForceType application/zip
+    Header set Content-Disposition "attachment"
+</Files>
+
+<Files "*.pdf">
+    ForceType application/pdf
+    Header set Content-Disposition "inline"
+</Files>
+AddType application/pdf .pdf
+AddType application/zip .zip
+AddType application/msword .doc
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.
