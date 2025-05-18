@@ -1,34 +1,22 @@
 // Import Firebase configuration
-import firebaseConfig from './firebase-config.js';
+import { db, auth, storage, functions } from './firebase-config.js';
 
 // Initialize Firebase with dynamic imports
-// Dynamic import function for Firebase modules
 const loadFirebaseModules = async () => {
     const modules = {};
     
-    // Core app is always needed
-    const { initializeApp } = await import('firebase/app');
-    modules.app = initializeApp(firebaseConfig);
-    
-    // Load auth only when needed
-    modules.loadAuth = async () => {
-        const { getAuth } = await import(
-            /* webpackChunkName: "firebase-auth" */
-            'firebase/auth'
-        );
-        return getAuth(modules.app);
-    };
-    
-    // Load firestore only when needed
-    modules.loadFirestore = async () => {
-        const { getFirestore } = await import(
-            /* webpackChunkName: "firebase-firestore" */
-            'firebase/firestore'
-        );
-        return getFirestore(modules.app);
-    };
-    
-    return modules;
+    try {
+        modules.db = db;
+        modules.auth = auth;
+        modules.storage = storage;
+        modules.functions = functions;
+        
+        console.log('Firebase modules loaded successfully');
+        return modules;
+    } catch (error) {
+        console.error('Error loading Firebase modules:', error);
+        throw error;
+    }
 };
 
 // Initialize Firebase with retry mechanism
@@ -45,4 +33,4 @@ async function initializeFirebase(retryCount = 3, delay = 1000) {
     }
 }
 
-export default initializeFirebase;
+export { initializeFirebase };
