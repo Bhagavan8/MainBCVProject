@@ -197,28 +197,24 @@
      </head>
 
 <body>
+    <div id="pageLoader" class="page-loader-minimal">
+        <div class="loader-spinner"></div>
+    </div>
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQNPNWJ"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-   
-]
+
     <div id="header-container"></div>
 
     <div class="main-container">
         <div class="page-layout">
-            <!-- Left Sidebar - Ads -->
-            <div class="left-sidebar">
-                <div class="ad-space sticky-top">
-                    <div class="ad-placeholder"></div>
-                </div>
-            </div>
-
             <!-- Main Content -->
             <div class="main-content">
-                <!-- Add Back Button -->
-                <div class="back-navigation mb-3">
-                    <a href="jobs.html" class="btn btn-outline-primary back-btn">
-                        <i class="bi bi-arrow-left"></i> Back to Jobs
+                <!-- Centered Back Button with improved design -->
+                <div class="back-navigation-wrapper">
+                    <a href="jobs.html" class="back-btn-enhanced">
+                        <span class="back-icon"><i class="bi bi-arrow-left"></i></span>
+                        <span class="back-text">Back to Jobs</span>
                     </a>
                 </div>
 
@@ -392,6 +388,43 @@
     <script type="module" src="/js/banners.js"></script>
      <script src="/js/social-share.js" defer></script>
      <script type="module" src="../js/job-follow-popup.js"></script>
-   </body>
+   
+<script>
+    // Show loader immediately
+    const pageLoader = document.getElementById('pageLoader');
+    
+    // Hide loader when content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait for job details to be populated
+        const jobTitle = document.getElementById('jobTitle');
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.target.textContent.trim() !== '') {
+                    // Job details are loaded, hide the loader
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 300);
+                    observer.disconnect();
+                }
+            });
+        });
 
+        observer.observe(jobTitle, { 
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        // Fallback: Hide loader after 5 seconds if content doesn't load
+        setTimeout(() => {
+            pageLoader.style.opacity = '0';
+            setTimeout(() => {
+                pageLoader.style.display = 'none';
+            }, 300);
+        }, 5000);
+    });
+</script>
+</body>
 </html>
+

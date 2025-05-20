@@ -125,7 +125,7 @@ class JobFollowPopup {
     showInitialPopup() {
         setTimeout(() => {
             this.showPopup();
-        }, 1000);
+        }, 60000); // Changed from 1000 to 60000 (1 minute)
     }
 
     setupIntervalPopup() {

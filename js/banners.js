@@ -10,15 +10,17 @@ class NotificationManager {
     }
 
     async initialize() {
-        // Initial load
+        // Initial load with 1.5 minutes delay
         await this.fetchJobs();
-        this.showNextJob();
-        
-        // Refresh jobs list and rotate display every 3 minutes
-        setInterval(async () => {
-            await this.fetchJobs();
+        setTimeout(() => {
             this.showNextJob();
-        }, 3 * 60 * 1000);
+            
+            // Set up the regular interval after the initial delay
+            setInterval(async () => {
+                await this.fetchJobs();
+                this.showNextJob();
+            }, 60 * 1000); // Changed to 1 minute interval
+        }, 90000); // 1.5 minutes = 90000 milliseconds
     }
 
     async fetchJobs() {
@@ -159,7 +161,7 @@ class NotificationManager {
                 notification.style.animation = 'slideOut 0.4s forwards';
                 setTimeout(() => notification.remove(), 400);
             }
-        }, 3 * 60 * 1000);
+        }, 60 * 1000); // Changed to 1 minute auto-close
     }
 }
 

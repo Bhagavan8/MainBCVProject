@@ -28,6 +28,7 @@ class JobDetailsManager {
         this.currentJob = null;
         this.currentCompany = null;
         this.viewsTracked = false;
+        this.cache = new Map(); // Add cache for job and company data
 
         this.init();
         this.initializeCopyLink();
@@ -51,9 +52,17 @@ class JobDetailsManager {
                 return;
             }
 
-            const jobRef = doc(db, this.getCollectionName(), this.jobId);
+            // Check cache first
+            const cacheKey = `job_${this.jobId}`;
+            if (this.cache.has(cacheKey)) {
+                const cachedData = this.cache.get(cacheKey);
+                this.currentJob = cachedData.job;
+                this.currentCompany = cachedData.company;
+                await this.updateUI();
+                return;
+            }
 
-            // First get the job data
+            const jobRef = doc(db, this.getCollectionName(), this.jobId);
             const jobDoc = await getDoc(jobRef);
 
             if (jobDoc.exists()) {
@@ -61,20 +70,16 @@ class JobDetailsManager {
                 const averageRating = this.currentJob.averageRating || 0;
                 const totalRatings = this.currentJob.totalRatings || 0;
 
-                // Now update view count after we have the job data
-                await this.updateViewCount(jobRef);
+                // Update cache
+                this.cache.set(cacheKey, {
+                    job: this.currentJob,
+                    timestamp: Date.now()
+                });
 
-                // Start company data fetch and UI updates in parallel
-                await Promise.all([
-                    this.fetchAndMergeCompanyData(),
-                    this.updateRatingDisplay(averageRating, totalRatings),
-                    this.renderJobDetails(this.currentJob),
-                    this.updateDetailsSection(this.currentJob)
-                ]);
-
-                if (this.currentCompany) {
-                    this.updateCompanyDisplay(this.currentCompany);
-                }
+                // Parallel loading of non-critical data
+                this.updateViewCount(jobRef).catch(console.error); // Non-blocking
+                
+                await this.updateUI();
             } else {
                 console.log('Job not found');
                 window.location.href = '/html/jobs.html';
@@ -85,52 +90,72 @@ class JobDetailsManager {
         }
     }
 
+    async updateUI() {
+        await Promise.all([
+            this.fetchAndMergeCompanyData(),
+            this.updateRatingDisplay(this.currentJob.averageRating || 0, this.currentJob.totalRatings || 0),
+            this.renderJobDetails(this.currentJob),
+            this.updateDetailsSection(this.currentJob)
+        ]);
+
+        if (this.currentCompany) {
+            this.updateCompanyDisplay(this.currentCompany);
+        }
+        this.setupEventListeners();
+    }
+
     async fetchAndMergeCompanyData() {
-        // Early return if no companyId
-        if (!this.currentJob.companyId) {
-            this.currentCompany = {
-                name: this.currentJob.companyName,
-                logoURL: this.currentJob.companyLogo,
-                website: this.currentJob.companyWebsite,
-                about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
-            };
+        const companyId = this.currentJob.companyId;
+        if (!companyId) {
+            this.currentCompany = this.createDefaultCompanyObject();
             return;
         }
 
         try {
-            const companyRef = doc(db, 'companies', this.currentJob.companyId);
+            // Check company cache
+            const companyCacheKey = `company_${companyId}`;
+            if (this.cache.has(companyCacheKey)) {
+                this.currentCompany = this.cache.get(companyCacheKey);
+                return;
+            }
+
+            const companyRef = doc(db, 'companies', companyId);
             const companyDoc = await getDoc(companyRef);
 
-            this.currentCompany = companyDoc.exists() ? {
-                ...companyDoc.data(),
-                about: companyDoc.data().about || ''
-            } : {
-                name: this.currentJob.companyName,
-                logoURL: this.currentJob.companyLogo,
-                website: this.currentJob.companyWebsite,
-                about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
-            };
+            this.currentCompany = companyDoc.exists() 
+                ? { ...companyDoc.data(), about: companyDoc.data().about || '' }
+                : this.createDefaultCompanyObject();
+
+            // Cache company data
+            this.cache.set(companyCacheKey, this.currentCompany);
 
             // Update job data with company info
             if (companyDoc.exists()) {
-                this.currentJob = {
-                    ...this.currentJob,
-                    companyName: this.currentCompany.name,
-                    companyLogo: this.currentCompany.logoURL,
-                    companyWebsite: this.currentCompany.website,
-                    companyAbout: this.currentCompany.about
-                };
+                this.updateJobWithCompanyInfo();
             }
         } catch (error) {
             console.error('Error loading company details:', error);
-            // Fallback to job collection data
-            this.currentCompany = {
-                name: this.currentJob.companyName,
-                logoURL: this.currentJob.companyLogo,
-                website: this.currentJob.companyWebsite,
-                about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
-            };
+            this.currentCompany = this.createDefaultCompanyObject();
         }
+    }
+
+    createDefaultCompanyObject() {
+        return {
+            name: this.currentJob.companyName,
+            logoURL: this.currentJob.companyLogo,
+            website: this.currentJob.companyWebsite,
+            about: this.currentJob.aboutCompany || this.currentJob.companyAbout || ''
+        };
+    }
+
+    updateJobWithCompanyInfo() {
+        this.currentJob = {
+            ...this.currentJob,
+            companyName: this.currentCompany.name,
+            companyLogo: this.currentCompany.logoURL,
+            companyWebsite: this.currentCompany.website,
+            companyAbout: this.currentCompany.about
+        };
     }
 
     updateCompanyDisplay(company) {
@@ -798,7 +823,14 @@ class JobDetailsManager {
             'AI', 'Cloud', 'Microservices', 'Spring Boot', '.NET', 'PHP', 'Ruby', 'Swift',
             'Kotlin', 'Android', 'iOS', 'Flutter', 'React Native', 'GraphQL', 'Redux',
             'Bootstrap', 'Sass', 'Less', 'jQuery', 'webpack', 'Babel', 'Jenkins', 'CRM', 'Agile', 'GitLab', 'OOP', 'Apache Kafka',
-            'Confluent Kafka','Helm','NodeJS','APIs','JUnit', 'Selenium', 'TestNG'
+            'Confluent Kafka', 'Helm', 'NodeJS', 'APIs', 'JUnit', 'Selenium', 'TestNG',
+            // Added education-related keywords
+            'Bachelor', "Bachelor's", 'Bachelors', 'B\\.E', 'B\\.Tech', 'Computer Science', 'Engineering',
+            'Masters', "Master's", 'M\\.Tech', 'M\\.E', 'Information Technology', 'IT',
+            // Added role-related keywords
+            'QA', 'Quality Assurance', 'Quality Analyst', 'Test Engineer', 'SDET',
+            'Architect', 'Software Architect', 'Solutions Architect', 'Technical Architect',
+            'Lead', 'Senior', 'Developer', 'Engineer', 'Analyst', 'Manager'
         ];
 
         const boldTechTerms = (text) => {
