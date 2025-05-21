@@ -20,6 +20,8 @@ class JobStatsManager {
         this.jobType = jobType;
         this.collectionName = this.jobType === 'private' ? 'jobs' : `${this.jobType}Jobs`;
         this.viewsTracked = false;
+        this.hasInitialized = false;
+        this.excludedUserIds = ['n5nccUzn7WeHOEW54CBiVauKLeu1', 'biA0mS11CAZNBEKjNUYkgfX6ALu2'];
         this.commentsPerPage = 8;
         this.currentPage = 1;
         this.totalComments = 0;
@@ -34,6 +36,7 @@ class JobStatsManager {
         this.setupLikeButton();
         await this.loadComments();
     }
+    
 
     setupComments() {
         const commentInput = document.getElementById('commentInput');
@@ -55,11 +58,10 @@ class JobStatsManager {
         }
     }
 
-    // Add this new method
+    
     setupAuthStateListener() {
         auth.onAuthStateChanged(async (user) => {
             await this.loadJobStats();
-            await this.trackPageView();
             this.setupLikeButton();
             await this.loadComments();
         });
@@ -327,9 +329,19 @@ class JobStatsManager {
     }
 
     async trackPageView() {
+        // Return early if already tracked
         if (this.viewsTracked) return;
 
         try {
+            // Check if user is in excluded list
+            if (auth.currentUser && [
+                'n5nccUzn7WeHOEW54CBiVauKLeu1',
+                'biA0mS11CAZNBEKjNUYkgfX6ALu2'
+            ].includes(auth.currentUser.uid)) {
+                this.viewsTracked = true; // Mark as tracked to prevent further attempts
+                return;
+            }
+
             const viewId = auth.currentUser?.uid || `anonymous_${Date.now()}`;
             const viewsRef = doc(db, 'jobViews', `${this.jobId}_${viewId}`);
             const viewDoc = await getDoc(viewsRef);
@@ -350,11 +362,15 @@ class JobStatsManager {
                 });
 
                 // Update local view count
-                const currentViews = parseInt(document.getElementById('viewCount').textContent);
-                document.getElementById('viewCount').textContent = currentViews + 1;
-                
-                this.viewsTracked = true;
+                const viewCountElement = document.getElementById('viewCount');
+                if (viewCountElement) {
+                    const currentViews = parseInt(viewCountElement.textContent);
+                    viewCountElement.textContent = currentViews + 1;
+                }
             }
+            
+            // Mark as tracked to prevent double counting
+            this.viewsTracked = true;
         } catch (error) {
             console.error('Error tracking page view:', error);
         }
