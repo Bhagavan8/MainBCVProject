@@ -21,7 +21,6 @@ class JobStatsManager {
         this.collectionName = this.jobType === 'private' ? 'jobs' : `${this.jobType}Jobs`;
         this.viewsTracked = false;
         this.hasInitialized = false;
-        this.excludedUserIds = ['n5nccUzn7WeHOEW54CBiVauKLeu1', 'biA0mS11CAZNBEKjNUYkgfX6ALu2'];
         this.commentsPerPage = 8;
         this.currentPage = 1;
         this.totalComments = 0;
@@ -333,15 +332,19 @@ class JobStatsManager {
         if (this.viewsTracked) return;
 
         try {
-            // Check if user is in excluded list
-            if (auth.currentUser && [
+            // Define excluded users
+            const excludedUsers = [
                 'n5nccUzn7WeHOEW54CBiVauKLeu1',
                 'biA0mS11CAZNBEKjNUYkgfX6ALu2'
-            ].includes(auth.currentUser.uid)) {
-                this.viewsTracked = true; // Mark as tracked to prevent further attempts
+            ];
+
+           
+            if (auth.currentUser && excludedUsers.includes(auth.currentUser.uid)) {
+                this.viewsTracked = true;
                 return;
             }
 
+            // Only proceed with view tracking for non-excluded users
             const viewId = auth.currentUser?.uid || `anonymous_${Date.now()}`;
             const viewsRef = doc(db, 'jobViews', `${this.jobId}_${viewId}`);
             const viewDoc = await getDoc(viewsRef);
@@ -369,10 +372,10 @@ class JobStatsManager {
                 }
             }
             
-            // Mark as tracked to prevent double counting
             this.viewsTracked = true;
         } catch (error) {
             console.error('Error tracking page view:', error);
+            this.viewsTracked = true; // Prevent retry on error
         }
     }
 
