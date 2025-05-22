@@ -52,6 +52,7 @@
     <link rel="preconnect" href="https://code.jquery.com" crossorigin>
     <link rel="preload" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5Q.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/css/jobs.css" as="style">
+    <link rel="preload" href="/css/recommended-jobs.css" as="style">
     <link rel="preload" href="/js/jobs.js" as="script">
 
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -73,6 +74,7 @@
     <link rel="stylesheet" href="/css/social-share.css">
     <script src="/js/social-share.js" defer></script>
     <link href="/css/jobs.css" rel="stylesheet">
+    <link href="/css/recommended-jobs.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/loader.css">
     <link rel ="stylesheet" href="/css/toaster.css">
     <noscript>
@@ -179,7 +181,6 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 text-lg-start ps-lg-0">
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        
                         <h1 class="hero-title fw-bold mb-0">Find Your Dream Job</h1>
                     </div>
                     <p class="hero-subtitle mb-3">Explore top job opportunities for Freshers and Experienced professionals.</p>
@@ -194,88 +195,115 @@
                                 <i class="bi bi-search me-2"></i>Search
                             </button>
                         </form>
-                        
                     </div> 
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- Main Content -->
     <div class="container-fluid py-5">
         <div class="row">
-            <!-- Left Sidebar - Filters -->
-            <div class="col-lg-3">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white py-3">
-                        <h2 class="h5 mb-0">Filter Jobs</h2>
+            <!-- Left Sidebar - Recent Jobs & Recommended Jobs -->
+            <div class="col-lg-3 order-lg-1">
+
+                <div id="recommendedJobs" class="card shadow-sm mb-4 animate-fade-in">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0 Recommended-jobs-title">Recommended Jobs based on your Skills</h2>
+                        <span class="badge bg-primary rounded-pill" id="recommendedJobsCount">0</span>
                     </div>
-                    <div class="card-body">
-                        <!-- Job Type Filter -->
-                        <!-- Job Type Filter -->
-                        <div class="mb-4">
-                            <label for="jobTypeFilter" class="form-label fw-bold">Job Type</label>
-                            <select id="jobTypeFilter" class="form-select" onchange="handleFilters()" aria-label="Select job type">
-                                <option value="all">All Job Types</option>
-                                <option value="government">Government Jobs</option>
-                                <option value="private">Private Jobs</option>
-                                <option value="bank">Bank Jobs</option>
-                            </select>
-                        </div>
-
-                        <!-- Location Filter -->
-                        <div class="mb-4">
-                            <label for="locationFilter" class="form-label fw-bold">Location</label>
-                            <select id="locationFilter" class="form-select" onchange="handleFilters()" aria-label="Select job location">
-                                <option value="all">All Locations</option>
-                                <!-- Locations will be populated dynamically -->
-                            </select>
-                        </div>
-
-                        <!-- Experience Level -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Experience Level</label>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" value="fresher" id="fresherCheck"
-                                    onchange="handleFilters()">
-                                <label class="form-check-label" for="fresherCheck">Fresher</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="experienced"
-                                    id="experiencedCheck" onchange="handleFilters()">
-                                <label class="form-check-label" for="experiencedCheck">Experienced</label>
-                            </div>
-                        </div>
-
-                        <!-- Filter Buttons -->
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-grow-1" onclick="applyFilters()">Apply Filters</button>
-                            <button class="btn btn-outline-secondary" onclick="clearFilters()">
-                                <i class="bi bi-x-circle"></i> Clear
-                            </button>
+                    <div class="card-body p-0">
+                        <div id="recommendedJobsList" class="list-group list-group-flush job-list-animate recommended-jobs-container">
+                            <!-- Recommended jobs will be loaded here dynamically -->
                         </div>
                     </div>
                 </div>
-
-                <!-- Ad Space -->
-                <div class="card shadow-sm">
-                    <div class="ad-container">
-                        <div class="ad-placeholder" style="height: 600px;">
-                            <div class="text-center p-3">Advertisement Space</div>
+                <!-- Recent Jobs -->
+                <div class="card shadow-sm mb-4 animate-fade-in">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0 recent-jobs-title">Recent Jobs</h2>
+                        <span class="badge bg-primary rounded-pill" id="recentJobsCount">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="recentJobs" class="list-group list-group-flush job-list-animate" style="min-height: 150px">
+                            <!-- Recent jobs loaded dynamically -->
                         </div>
                     </div>
                 </div>
+    
+                <!-- Recommended Jobs -->
+                
             </div>
-
+    
             <!-- Main Content Area -->
-             
-            <div class="col-lg-6">
-                <a href="/index.html" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-2 home-btn" style="margin-left: 300px;">
-                    <i class="bi bi-arrow-left-circle-fill btn-icon"></i>
-                    <span>Back to Home</span>
-                </a>
+            <div class="col-lg-6 order-lg-2">
+                <!-- Filters Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                        <h2 class="h5 mb-0">Filter Jobs</h2>
+                        <button class="btn btn-link text-muted p-0 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#filterContent" aria-expanded="true" aria-controls="filterContent">
+                            <i class="bi bi-funnel-fill"></i>
+                        </button>
+                    </div>
+                    <div class="card-body collapse show" id="filterContent">
+                        <div class="row gy-3">
+                            <!-- Job Type Filter -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <label for="jobTypeFilter" class="form-label fw-bold">Job Type</label>
+                                <select id="jobTypeFilter" class="form-select form-select-sm" onchange="handleFilters()" aria-label="Select job type">
+                                    <option value="all">All Job Types</option>
+                                    <option value="government">Government Jobs</option>
+                                    <option value="private">Private Jobs</option>
+                                    <option value="bank">Bank Jobs</option>
+                                </select>
+                            </div>
+    
+                            <!-- Location Filter -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <label for="locationFilter" class="form-label fw-bold">Location</label>
+                                <select id="locationFilter" class="form-select form-select-sm" onchange="handleFilters()" aria-label="Select job location">
+                                    <option value="all">All Locations</option>
+                                    <!-- Locations will be populated dynamically -->
+                                </select>
+                            </div>
+    
+                            <!-- Experience Level -->
+                            <div class="col-12 col-md-12 col-lg-4">
+                                <label class="form-label fw-bold d-block mb-2">Experience Level</label>
+                                <div class="d-flex gap-2" role="group" aria-label="Experience level selection">
+                                    <input type="checkbox" class="btn-check" id="fresherCheck" value="fresher" onchange="handleFilters()" autocomplete="off">
+                                    <label class="btn btn-outline-secondary btn-sm flex-fill" for="fresherCheck">Fresher</label>
+
+                                    <input type="checkbox" class="btn-check" id="experiencedCheck" value="experienced" onchange="handleFilters()" autocomplete="off">
+                                    <label class="btn btn-outline-secondary btn-sm flex-fill" for="experiencedCheck">Experienced</label>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch gap-3 mt-4">
+                            <div class="date-filter-container flex-grow-1 flex-md-grow-0">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text border-end-0 bg-light">
+                                        <i class="bi bi-calendar3"></i>
+                                    </span>
+                                    <input type="date" class="form-control form-control-sm border-start-0" id="dateFilter" onchange="filterJobsByDate(this.value)">
+                                    <button class="btn btn-sm btn-outline-secondary border-start-0" type="button" id="clearFilterBtn" title="Clear date filter">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="d-grid d-md-flex gap-2">
+                                <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply Filters</button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle me-1"></i>Clear All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
                 <!-- Results Header -->
-                <div class="d-flex align-items-center justify-content-between bg-white p-3 rounded-3">
+                <div class="d-flex align-items-center justify-content-between bg-white p-3 rounded-3 mb-3">
                     <div class="d-flex align-items-center gap-3">
                         <div class="stats-card d-flex align-items-center gap-2">
                             <div class="stats-icon bg-primary bg-opacity-10 p-2 rounded-circle">
@@ -302,45 +330,23 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="date-filter-container">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text border-end-0 bg-light">
-                                    <i class="bi bi-calendar3"></i>
-                                </span>
-                                <input type="date" class="form-control form-control-sm border-start-0" id="dateFilter" onchange="filterJobsByDate(this.value)">
-                                <button class="btn btn-sm btn-outline-secondary border-start-0" type="button" id="clearFilterBtn" title="Clear date filter">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </div>
-                        </div>
-                       
-                    </div>
+    
+                    <a href="/index.html" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-2 home-btn">
+                        <i class="bi bi-arrow-left-circle-fill btn-icon"></i>
+                        <span>Back to Home</span>
+                    </a>
                 </div>
-
+    
+                <!-- Jobs List -->
                 <div id="jobsList" class="jobs-container" style="min-height: 200px">
                     <div class="row" id="jobsGrid">
+                        <!-- Jobs will be loaded here -->
                     </div>
                 </div>
             </div>
-
+    
             <!-- Right Sidebar -->
-            <div class="col-lg-3">
-                <!-- Recent Jobs -->
-                <div class="card shadow-sm mb-4 animate-fade-in">
-                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0 recent-jobs-title">Recent Jobs</h2>
-                        <span class="badge bg-primary rounded-pill" id="recentJobsCount">0</span>
-                    </div>
-
-                    <div class="card-body p-0">
-                        <div id="recentJobs" class="list-group list-group-flush job-list-animate" style="min-height: 150px">
-                            <!-- Recent jobs loaded dynamically -->
-                        </div>
-                    </div>
-                </div>
-
+            <div class="col-lg-3 order-lg-3">
                 <!-- Most Viewed Jobs -->
                 <div class="card shadow-sm mb-4 animate-fade-in">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -353,6 +359,8 @@
                         </div>
                     </div>
                 </div>
+    
+                <!-- Company Wise Jobs -->
                 <div class="card shadow-sm mb-4 animate-fade-in">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0 company-jobs-title">Company Wise Jobs</h2>
@@ -373,7 +381,7 @@
                         </div>
                     </div>
                 </div>
-
+    
                 <!-- Job Categories -->
                 <div class="card shadow-sm animate-fade-in">
                     <div class="card-header bg-white py-3">
@@ -526,6 +534,7 @@
     <script type="module" src="/js/components/auth.js" defer></script>
     <script type="module" src="/js/common.js" defer></script>
     <script type="module" src="/js/components/javascript.js" defer></script>
+<script src="/js/recommended-jobs.js" type="module"></script>
     <script src="/js/loader.js" defer></script>
 </body>
 

@@ -781,7 +781,7 @@ body {
 
 /* Date Filter Styles */
 .date-filter-container {
-    position: relative;
+    min-width: 200px;
 }
 
 .date-picker {
@@ -858,7 +858,7 @@ body {
     animation: none;
 }
 .card-body {
-    min-height: 400px;
+    min-height: 170px;
     contain: layout paint;
 }
 
@@ -988,23 +988,34 @@ body {
     }
 
     @media (max-width: 768px) {
-        .d-flex.align-items-center.gap-4 {
-            gap: 0.75rem !important;
-            flex-wrap: wrap;
-        }
-        
-        .stats-card {
-            padding: 0.75rem 1rem;
-            min-width: 200px;
-        }
-
-        .stats-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 1.25rem;
-        }
+    .date-filter-container {
+        min-width: 100%;
+    }
+    
+    .btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
+    .btn-group .btn {
+        border-radius: 0.25rem !important;
+        width: 100%;
+    }
+    
+    #filterContent {
+        padding: 1rem;
+    }
+    
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
     }
     @media (max-width: 576px) {
+    .date-filter-container {
+        min-width: 100%;
+    }
+
     .jobs-container {
         display: flex;
         flex-direction: column;
@@ -1169,6 +1180,44 @@ body {
     }
 }
 
+.btn-check:checked + .btn-outline-secondary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+
+.btn-check + .btn-outline-secondary {
+    min-width: 100px;
+    text-align: center;
+    padding: 0.25rem 1rem;
+}
+
+@media (max-width: 768px) {
+    .btn-check + .btn-outline-secondary {
+        min-width: unset;
+        width: 100%;
+    }
+}
+
+#filterContent {
+    transition: all 0.3s ease;
+}
+
+.card-header .btn-link {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.card-header .btn-link:hover {
+    background-color: var(--bs-light);
+    color: var(--bs-primary) !important;
+}
+
 /* Cross-browser compatibility */
 .date-filter-container input[type="date"] {
     -webkit-appearance: none;
@@ -1208,5 +1257,9 @@ body {
         }
     }
 }
+
+
+
+
 
 
