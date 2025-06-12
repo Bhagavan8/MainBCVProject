@@ -17,7 +17,7 @@ class SocialShare {
             {
                 name: 'linkedin',
                 icon: 'bi-linkedin',
-                url: 'https://www.linkedin.com/in/bcv-world-7a294235a/',
+                url: 'https://www.linkedin.com/company/bcvworld',
                 label: 'Connect with BCVWorld on LinkedIn'
             },
             {
