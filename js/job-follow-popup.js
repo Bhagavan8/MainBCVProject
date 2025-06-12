@@ -93,7 +93,7 @@ class JobFollowPopup {
                             <i class="bi bi-telegram"></i>
                             Telegram Channel
                         </a>
-                        <a href="https://www.linkedin.com/in/bcv-world-7a294235a/" target="_blank" class="social-btn linkedin">
+                        <a href="https://www.linkedin.com/company/bcvworld" target="_blank" class="social-btn linkedin">
                             <i class="bi bi-linkedin"></i>
                             LinkedIn Page
                         </a>
