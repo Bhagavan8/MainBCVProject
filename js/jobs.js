@@ -8,7 +8,7 @@ import {
     getDoc,
     doc, // Make sure this is imported
     serverTimestamp,
-    addDoc 
+    addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 // Global state for pagination
 let currentJobsList = [];
@@ -25,7 +25,7 @@ async function initializePage() {
         const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
         const todayDate = new Date(todayIST);
         const dateStr = formatDateForInput(todayDate);
-        
+
         const datePicker = document.getElementById('dateFilter');
         if (datePicker) {
             datePicker.value = dateStr;
@@ -34,15 +34,15 @@ async function initializePage() {
         // Load today's jobs by default
         const jobs = await getJobsByDate(dateStr);
         displayJobs(jobs, 'date', dateStr);
-        
+
         // Setup other components
         populateLocationFilter();
         updateCategoryCounts();
-        
+
         // Event listeners
         document.getElementById('clearFilterBtn').addEventListener('click', clearDateFilter);
         document.getElementById('searchForm').addEventListener('submit', (e) => e.preventDefault());
-        
+
         // Setup pagination handlers
         setupPagination();
 
@@ -127,17 +127,17 @@ async function getJobs(jobType) {
             };
 
             // Convert dates to IST
-            const createdAt = jobData.createdAt?.toDate 
-                ? jobData.createdAt.toDate() 
+            const createdAt = jobData.createdAt?.toDate
+                ? jobData.createdAt.toDate()
                 : new Date(jobData.createdAt || currentDate);
-            const lastDate = jobData.lastDate?.toDate 
-                ? jobData.lastDate.toDate() 
+            const lastDate = jobData.lastDate?.toDate
+                ? jobData.lastDate.toDate()
                 : jobData.lastDate ? new Date(jobData.lastDate) : null;
 
             // Apply date filters
             const isRecent = createdAt >= oneMonthAgo;
             const isNotExpired = !lastDate || lastDate >= currentDate;
-            
+
             if (!isRecent || !isNotExpired) return null;
 
             // Fetch company details if available
@@ -172,7 +172,7 @@ async function getJobs(jobType) {
 
         // Filter out null jobs (those that didn't meet date criteria)
         const filteredJobs = jobs.filter(job => job !== null);
-        
+
         console.log(`Filtered ${jobType} jobs count:`, filteredJobs.length);
         return filteredJobs;
 
@@ -361,19 +361,28 @@ function displayJobs(jobs, filterType = 'default', filterValue = null) {
         if (index > 0 && index % 3 === 0) {
             const adContainer = document.createElement('div');
             adContainer.className = 'ad-container my-3';
-            adContainer.innerHTML = `
-                <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="7380359586"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"></ins>
-            `;
+
+            const ins = document.createElement('ins');
+            ins.className = 'adsbygoogle';
+            ins.style.display = 'block';
+            ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+            ins.setAttribute('data-ad-slot', '7380359586');
+            ins.setAttribute('data-ad-format', 'auto');
+            ins.setAttribute('data-full-width-responsive', 'true');
+
+            adContainer.appendChild(ins);
             jobsGrid.appendChild(adContainer);
-            
-            // Push ad only for new containers
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
+
+            // Only push AFTER it's appended to DOM
+            setTimeout(() => {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error("AdSense push failed", e);
+                }
+            }, 0);
         }
+
 
         // Create and append job card
         const cardHTML = createJobCard(job, job.type);
@@ -489,7 +498,7 @@ function setupPagination() {
             if (page) {
                 currentPaginationState.page = page;
                 updatePaginationUI();
-                
+
                 // Save scroll position
                 sessionStorage.setItem('scrollPosition', window.scrollY);
             }
@@ -499,15 +508,15 @@ function setupPagination() {
 // Update URL with current pagination state
 function updateUrlWithPagination() {
     const url = new URL(window.location);
-    
+
     // Remove existing page parameter
     url.searchParams.delete('page');
-    
+
     // Add page parameter if not on first page
     if (currentPaginationState.page > 1) {
         url.searchParams.set('page', currentPaginationState.page);
     }
-    
+
     // Update URL without reload
     window.history.replaceState({}, '', url);
 }
@@ -537,7 +546,7 @@ async function filterByCategory(category) {
                 where('jobCategory', '==', category)
             );
             const snapshot = await getDocs(q);
-            
+
             // Process jobs with company details
             jobs.private = await Promise.all(snapshot.docs.map(async (docItem) => {
                 const jobData = {
@@ -616,7 +625,7 @@ async function updateCategoryCounts() {
             }
         }
 
-       
+
 
     } catch (error) {
         console.error('Error updating category counts:', error);
@@ -698,7 +707,7 @@ window.applyFilters = async () => {
 
     try {
         let jobs = {};
-        
+
         if (jobType === 'all' || jobType === 'bank') {
             const bankRef = collection(db, 'bankJobs');
             const conditions = [where('isActive', '==', true)];
@@ -721,7 +730,7 @@ window.applyFilters = async () => {
             if (location !== 'all') conditions.push(where('location', '==', location));
             if (isFresher && !isExperienced) conditions.push(where('experience', '==', 'fresher'));
             else if (!isFresher && isExperienced) conditions.push(where('experience', '!=', 'fresher'));
-            
+
             const privateSnapshot = await getDocs(query(privateRef, ...conditions));
             jobs.private = await Promise.all(privateSnapshot.docs.map(async docItem => {
                 const jobData = { id: docItem.id, type: 'private', ...docItem.data() };
@@ -767,7 +776,7 @@ function debounce(func, wait) {
 window.handleSearch = debounce(async (event) => {
     const searchTerm = event.target.value.toLowerCase().trim();
     if (!searchTerm) return initializeJobs();
-    
+
     try {
         const jobs = {
             bank: await getJobs('bank'),
@@ -803,18 +812,18 @@ document.getElementById('searchForm').addEventListener('submit', (e) => {
 });
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Parse initial page from URL
     const urlParams = new URLSearchParams(window.location.search);
     currentPaginationState.page = parseInt(urlParams.get('page')) || 1;
-    
+
     // Restore scroll position if needed
     const scrollPosition = sessionStorage.getItem('scrollPosition');
     if (scrollPosition) {
         window.scrollTo(0, parseInt(scrollPosition));
         sessionStorage.removeItem('scrollPosition');
     }
-    
+
     initializePage();
 });
 
@@ -883,7 +892,7 @@ window.clearFilters = async () => {
     document.getElementById('locationFilter').value = 'all';
     document.getElementById('fresherCheck').checked = false;
     document.getElementById('experiencedCheck').checked = false;
-   
+
 
     // Fetch and display all jobs
     try {
@@ -947,7 +956,7 @@ async function getJobsByDate(selectedDate) {
                         console.log('Fetching company details for ID:', jobData.companyId);
                         const companyRef = doc(db, 'companies', jobData.companyId);
                         const companyDoc = await getDoc(companyRef);
-                        
+
                         if (companyDoc.exists()) {
                             const companyData = companyDoc.data();
                             return {
@@ -972,7 +981,7 @@ async function getJobsByDate(selectedDate) {
             government: await processJobsWithCompany(govSnapshot.docs, 'government'),
             bank: await processJobsWithCompany(bankSnapshot.docs, 'bank')
         };
-        
+
 
     } catch (error) {
         console.error('Error getting jobs by date:', error);
@@ -1007,18 +1016,18 @@ async function initializeJobsbyDateFilter() {
 
 
 
-window.filterJobsByDate = async function(selectedDate) {
+window.filterJobsByDate = async function (selectedDate) {
     if (!selectedDate) return;
     try {
         const jobs = await getJobsByDate(selectedDate);
-        
+
         // Update the job count display
         const totalJobs = Object.values(jobs).reduce((sum, jobsList) => sum + jobsList.length, 0);
         const jobCountElement = document.getElementById('jobCount');
         if (jobCountElement) {
             jobCountElement.textContent = totalJobs;
         }
-        
+
         displayJobs(jobs, 'date', selectedDate);
     } catch (error) {
         console.error('Error filtering by date:', error);
@@ -1037,7 +1046,7 @@ function formatDateForInput(date) {
 
 
 // Call initializePage when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializePage();
     setupPagination();
 });
