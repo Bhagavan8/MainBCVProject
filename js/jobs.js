@@ -773,6 +773,108 @@ function debounce(func, wait) {
     };
 }
 
+<<<<<<< HEAD
+=======
+
+async function getRecentJobs(limit = 4) {
+    try {
+        const jobsRef = collection(db, 'jobs');
+        const q = query(
+            jobsRef,
+            where('isActive', '==', true),
+            orderBy('createdAt', 'desc')
+        );
+
+        const snapshot = await getDocs(q);
+        
+        // Process jobs with company details
+        const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
+            const jobData = {
+                id: docItem.id,
+                type: 'private',
+                title: docItem.data().jobTitle,
+                company: docItem.data().companyName,
+                location: docItem.data().location,
+                createdAt: docItem.data().createdAt,
+                postedAt: formatDate(docItem.data().createdAt),
+                companyId: docItem.data().companyId  // Include companyId
+            };
+
+            // Fetch company details if companyId exists
+            if (jobData.companyId) {
+                try {
+                    const companyRef = doc(db, 'companies', jobData.companyId);
+                    const companyDoc = await getDoc(companyRef);
+
+                    if (companyDoc.exists()) {
+                        const companyData = companyDoc.data();
+                        return {
+                            ...jobData,
+                            company: companyData.name || jobData.company,
+                            companyLogo: companyData.logoURL || null,
+                            companyWebsite: companyData.website || null,
+                            companyAbout: companyData.about || null
+                        };
+                    }
+                } catch (error) {
+                    console.error('Error fetching company details:', error);
+                }
+            }
+            return jobData;
+        }));
+
+        // Sort by date and apply limit
+        return jobs
+            .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
+            .slice(0, limit);
+    } catch (error) {
+        console.error('Error fetching recent jobs:', error);
+        return [];
+    }
+}
+
+
+const loadSidebarJobs = async () => {
+    try {
+        const recentJobs = await getRecentJobs(4);
+
+        // Update counts in the headers
+        const recentCount = document.getElementById('recentJobsCount');
+        const viewedCount = document.getElementById('mostViewedJobsCount');
+        if (recentCount) recentCount.textContent = recentJobs.length;
+        if (viewedCount) viewedCount.textContent = mostViewedJobs.length;
+
+        ['recentJobs', 'mostViewedJobs'].forEach((containerId, containerIndex) => {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const jobs = containerId === 'recentJobs' ? recentJobs : mostViewedJobs;
+
+            container.innerHTML = jobs.map((job, index) => `
+                <a href="/html/job-details.html?id=${job.id}&type=${job.type}" 
+                   class="list-group-item list-group-item-action py-2 fade-in"
+                   style="animation-delay: ${index * 0.1}s">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="mb-1 text-truncate" style="max-width: 80%;">${job.title}</h6>
+                        ${containerId === 'mostViewedJobs' ?
+                    `<span class="badge bg-primary rounded-pill">#${index + 1}</span>` : ''}
+                    </div>
+                    <p class="mb-1 small text-muted text-truncate company-name hover-effect">${job.company}</p>
+                    <div class="d-flex justify-content-between align-items-center content-container">
+                        <small class="text-truncate" style="max-width: 60%;">${job.location}</small>
+                        ${containerId === 'mostViewedJobs' ?
+                    `<small class="text-muted"><i class="bi bi-eye-fill"></i> ${job.views}</small>` :
+                    `<small class="text-muted"><i class="bi bi-calendar"></i> ${job.postedAt}</small>`}
+                    </div>
+                </a>
+            `).join('');
+        });
+    } catch (error) {
+        console.error('Error loading sidebar jobs:', error);
+    }
+};
+
+>>>>>>> 22d9c5e (new changes in addsss)
 window.handleSearch = debounce(async (event) => {
     const searchTerm = event.target.value.toLowerCase().trim();
     if (!searchTerm) return initializeJobs();
