@@ -627,62 +627,6 @@ body {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.recent-jobs-title {
-    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    position: relative;
-    display: inline-block;
-}
-
-.recent-jobs-title::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s ease;
-}
-
-.recent-jobs-title:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-}
-
-.most-viewed-title {
-    background: linear-gradient(45deg, #2193b0, #6dd5ed);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    position: relative;
-    display: inline-block;
-}
-
-.most-viewed-title::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(45deg, #2193b0, #6dd5ed);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-}
-
-.most-viewed-title:hover::after {
-    transform: scaleX(1);
-}
 
 .company-jobs-title {
     background: linear-gradient(45deg, #4B79A1, #283E51);
@@ -1257,7 +1201,10 @@ body {
         }
     }
 }
-
+.rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+  }
 
 
 

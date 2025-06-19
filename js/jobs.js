@@ -38,8 +38,6 @@ async function initializePage() {
         // Setup other components
         populateLocationFilter();
         updateCategoryCounts();
-        loadSidebarJobs();
-        loadCompanyWiseJobs();
         
         // Event listeners
         document.getElementById('clearFilterBtn').addEventListener('click', clearDateFilter);
@@ -189,6 +187,8 @@ async function getJobs(jobType) {
 }
 
 
+
+
 function createJobCard(job, type) {
     const getValue = (value, defaultValue = 'Not specified') => value || defaultValue;
     const trimText = (text, maxLength) => {
@@ -327,33 +327,72 @@ function displayJobs(jobs, filterType = 'default', filterValue = null) {
     const jobsGrid = document.getElementById('jobsGrid');
     if (!jobsGrid) return;
 
+    // Clear existing ads first
+    const existingAds = document.querySelectorAll('.adsbygoogle');
+    existingAds.forEach(ad => {
+        ad.innerHTML = ''; // Clear any existing ad content
+        ad.removeAttribute('data-ad-status');
+        ad.removeAttribute('data-adsbygoogle-status');
+    });
+
     // Combine all jobs into a single array
     currentJobsList = Object.entries(jobs).reduce((acc, [type, jobsList]) => {
         return acc.concat(jobsList.map(job => ({ ...job, type })));
     }, []);
 
-    // Update job count in all cases
+    // Update job count
     const jobCountElement = document.getElementById('jobCount');
     if (jobCountElement) {
         jobCountElement.textContent = currentJobsList.length;
     }
 
     // Handle empty state
-    if (!currentJobsList || currentJobsList.length === 0) {
+    if (currentJobsList.length === 0) {
         jobsGrid.innerHTML = '<div class="alert alert-info">No jobs found for the selected date</div>';
         return;
     }
+
+    // Reset grid before rendering
+    jobsGrid.innerHTML = '';
+
+    // Loop through jobs and add cards + ads
+    currentJobsList.forEach((job, index) => {
+        // Insert ad every 3 jobs (adjust as needed)
+        if (index > 0 && index % 3 === 0) {
+            const adContainer = document.createElement('div');
+            adContainer.className = 'ad-container my-3';
+            adContainer.innerHTML = `
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="7380359586"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+            `;
+            jobsGrid.appendChild(adContainer);
+            
+            // Push ad only for new containers
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }
+
+        // Create and append job card
+        const cardHTML = createJobCard(job, job.type);
+        const cardWrapper = document.createElement('div');
+        cardWrapper.innerHTML = cardHTML;
+        jobsGrid.appendChild(cardWrapper);
+    });
 
     // Update pagination state and UI
     currentPaginationState = {
         ...currentPaginationState,
         filterType,
         filterValue,
-        page: 1 // Reset to first page on new filter
+        page: 1
     };
 
     updatePaginationUI();
 }
+
 
 // Update pagination UI
 function updatePaginationUI() {
@@ -577,26 +616,7 @@ async function updateCategoryCounts() {
             }
         }
 
-        // For bank jobs
-        const bankQ = query(
-            collection(db, 'bankJobs'),
-            where('isActive', '==', true),
-            where('jobType', '==', 'bank')  // Added type check
-        );
-        const bankCount = document.getElementById('bankCount');
-        if (bankCount) {
-            bankCount.textContent = bankSnapshot.size || '0';
-        }
-
-        // For government jobs
-        const govQ = query(
-            collection(db, 'governmentJobs'),
-            where('jobType', '==', 'government')  // Added type check
-        );
-        const govCount = document.getElementById('govCount');
-        if (govCount) {
-            govCount.textContent = govSnapshot.size || '0';
-        }
+       
 
     } catch (error) {
         console.error('Error updating category counts:', error);
@@ -726,7 +746,6 @@ window.applyFilters = async () => {
                 return jobData;
             }));
         }
-
         displayJobs(jobs, 'filter', { jobType, location, isFresher, isExperienced });
     } catch (error) {
         console.error('Error applying filters:', error);
@@ -745,164 +764,6 @@ function debounce(func, wait) {
     };
 }
 
-
-async function getRecentJobs(limit = 4) {
-    try {
-        const jobsRef = collection(db, 'jobs');
-        const q = query(
-            jobsRef,
-            where('isActive', '==', true),
-            orderBy('createdAt', 'desc')
-        );
-
-        const snapshot = await getDocs(q);
-        
-        // Process jobs with company details
-        const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
-            const jobData = {
-                id: docItem.id,
-                type: 'private',
-                title: docItem.data().jobTitle,
-                company: docItem.data().companyName,
-                location: docItem.data().location,
-                createdAt: docItem.data().createdAt,
-                postedAt: formatDate(docItem.data().createdAt),
-                companyId: docItem.data().companyId  // Include companyId
-            };
-
-            // Fetch company details if companyId exists
-            if (jobData.companyId) {
-                try {
-                    const companyRef = doc(db, 'companies', jobData.companyId);
-                    const companyDoc = await getDoc(companyRef);
-
-                    if (companyDoc.exists()) {
-                        const companyData = companyDoc.data();
-                        return {
-                            ...jobData,
-                            company: companyData.name || jobData.company,
-                            companyLogo: companyData.logoURL || null,
-                            companyWebsite: companyData.website || null,
-                            companyAbout: companyData.about || null
-                        };
-                    }
-                } catch (error) {
-                    console.error('Error fetching company details:', error);
-                }
-            }
-            return jobData;
-        }));
-
-        // Sort by date and apply limit
-        return jobs
-            .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-            .slice(0, limit);
-    } catch (error) {
-        console.error('Error fetching recent jobs:', error);
-        return [];
-    }
-}
-
-async function getMostViewedJobs(limit = 4) {
-    try {
-        const allJobs = [];
-        const jobTypes = ['bank', 'government', 'private'];
-
-        for (const type of jobTypes) {
-            const jobsRef = collection(db, type === 'private' ? 'jobs' : `${type}Jobs`);
-            const q = query(jobsRef, where('isActive', '==', true));
-            const snapshot = await getDocs(q);
-            
-            // Process jobs with company details (for private jobs)
-            const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
-                const data = docItem.data();
-                const baseJob = {
-                    id: docItem.id,
-                    type,
-                    title: type === 'private' ? data.jobTitle : data.postName,
-                    company: type === 'private' ? data.companyName :
-                            type === 'bank' ? data.bankName :
-                            data.department,
-                    location: data.location || data.state,
-                    views: data.views || 0,
-                    companyId: type === 'private' ? data.companyId : null
-                };
-
-                // Only fetch company details for private jobs with companyId
-                if (type === 'private' && baseJob.companyId) {
-                    try {
-                        const companyRef = doc(db, 'companies', baseJob.companyId);
-                        const companyDoc = await getDoc(companyRef);
-
-                        if (companyDoc.exists()) {
-                            const companyData = companyDoc.data();
-                            return {
-                                ...baseJob,
-                                company: companyData.name || baseJob.company || '',
-                                companyLogo: companyData.logoURL || '',
-                                companyWebsite: companyData.website || ''
-                            };
-                        }
-                    } catch (error) {
-                        console.error('Error fetching company details:', error);
-                    }
-                }
-                return baseJob;
-            }));
-
-            allJobs.push(...jobs);
-        }
-
-        return allJobs
-            .sort((a, b) => (b.views || 0) - (a.views || 0))
-            .slice(0, limit);
-    } catch (error) {
-        console.error('Error fetching most viewed jobs:', error);
-        return [];
-    }
-}
-
-const loadSidebarJobs = async () => {
-    try {
-        const recentJobs = await getRecentJobs(4);
-        const mostViewedJobs = await getMostViewedJobs(4);
-
-        // Update counts in the headers
-        const recentCount = document.getElementById('recentJobsCount');
-        const viewedCount = document.getElementById('mostViewedJobsCount');
-        if (recentCount) recentCount.textContent = recentJobs.length;
-        if (viewedCount) viewedCount.textContent = mostViewedJobs.length;
-
-        ['recentJobs', 'mostViewedJobs'].forEach((containerId, containerIndex) => {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            const jobs = containerId === 'recentJobs' ? recentJobs : mostViewedJobs;
-
-            container.innerHTML = jobs.map((job, index) => `
-                <a href="/html/job-details.html?id=${job.id}&type=${job.type}" 
-                   class="list-group-item list-group-item-action py-2 fade-in"
-                   style="animation-delay: ${index * 0.1}s">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <h6 class="mb-1 text-truncate" style="max-width: 80%;">${job.title}</h6>
-                        ${containerId === 'mostViewedJobs' ?
-                    `<span class="badge bg-primary rounded-pill">#${index + 1}</span>` : ''}
-                    </div>
-                    <p class="mb-1 small text-muted text-truncate company-name hover-effect">${job.company}</p>
-                    <div class="d-flex justify-content-between align-items-center content-container">
-                        <small class="text-truncate" style="max-width: 60%;">${job.location}</small>
-                        ${containerId === 'mostViewedJobs' ?
-                    `<small class="text-muted"><i class="bi bi-eye-fill"></i> ${job.views}</small>` :
-                    `<small class="text-muted"><i class="bi bi-calendar"></i> ${job.postedAt}</small>`}
-                    </div>
-                </a>
-            `).join('');
-        });
-    } catch (error) {
-        console.error('Error loading sidebar jobs:', error);
-    }
-};
-
 window.handleSearch = debounce(async (event) => {
     const searchTerm = event.target.value.toLowerCase().trim();
     if (!searchTerm) return initializeJobs();
@@ -914,7 +775,6 @@ window.handleSearch = debounce(async (event) => {
             private: await getJobs('private')
         };
 
-        // Filter jobs based on search term
         const filteredJobs = {};
         Object.entries(jobs).forEach(([type, jobsList]) => {
             filteredJobs[type] = jobsList.filter(job => {
@@ -962,271 +822,6 @@ document.addEventListener('DOMContentLoaded', function() {
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
     initializePage();
 }
-
-
-
-async function loadCompanyWiseJobs() {
-    try {
-        const jobsRef = collection(db, 'jobs');
-        const q = query(jobsRef, where('isActive', '==', true));
-        const snapshot = await getDocs(q);
-
-        // Get current date in IST
-        const nowIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-        const currentDate = new Date(nowIST);
-        
-        // Calculate 1 month ago in IST
-        const oneMonthAgoIST = new Date(currentDate);
-        oneMonthAgoIST.setMonth(oneMonthAgoIST.getMonth() - 1);
-
-        // Object to store companies
-        const companies = {};
-        let validJobsCount = 0;
-        const companyPromises = [];
-
-        // Process each job
-        for (const docItem of snapshot.docs) {
-            const job = docItem.data();
-            
-            // Convert Firestore timestamps or strings to Date objects
-            const createdAt = job.createdAt?.toDate 
-                ? job.createdAt.toDate() 
-                : new Date(job.createdAt || currentDate);
-            
-            const lastDate = job.lastDate?.toDate 
-                ? job.lastDate.toDate() 
-                : job.lastDate ? new Date(job.lastDate) : null;
-
-            // Apply date filters
-            const isRecent = createdAt >= oneMonthAgoIST;
-            const isNotExpired = !lastDate || lastDate >= currentDate;
-            
-            if (!isRecent || !isNotExpired) continue;
-            
-            validJobsCount++;
-
-            // Handle company grouping (both old and new format)
-            const companyKey = job.companyId || `old_${job.companyName || 'unknown'}`;
-            
-            if (!companies[companyKey]) {
-                companies[companyKey] = {
-                    id: companyKey,
-                    name: job.companyName || 'Unknown Company',
-                    logo: job.companyLogo 
-                        ? (job.companyLogo.startsWith('http') 
-                            ? job.companyLogo 
-                            : `/assets/images/companies/${job.companyLogo}`)
-                        : '/assets/images/companies/default-company.webp',
-                    jobs: [],
-                    isOldFormat: !job.companyId
-                };
-                
-                // For new format, try to fetch company details
-                if (job.companyId) {
-                    const promise = (async () => {
-                        try {
-                            const companyRef = doc(db, 'companies', job.companyId);
-                            const companyDoc = await getDoc(companyRef);
-                            if (companyDoc.exists()) {
-                                const companyData = companyDoc.data();
-                                companies[companyKey].name = companyData.name || companies[companyKey].name;
-                                companies[companyKey].logo = companyData.logoURL || companies[companyKey].logo;
-                            }
-                        } catch (error) {
-                            console.error(`Error fetching company ${job.companyId}:`, error);
-                        }
-                    })();
-                    companyPromises.push(promise);
-                }
-            }
-            
-            companies[companyKey].jobs.push({
-                id: docItem.id,
-                ...job,
-                createdAt,
-                lastDate
-            });
-        }
-
-        // Wait for all company details to be fetched
-        await Promise.all(companyPromises);
-
-        // Prepare final company list
-        const companyArray = Object.values(companies)
-            .filter(company => company.jobs.length > 0)
-            .sort((a, b) => b.jobs.length - a.jobs.length)
-            .slice(0, 5);
-
-        // Update UI with counts
-        const companyCountElement = document.getElementById('companyCount');
-        
-        if (companyCountElement) companyCountElement.textContent = companyArray.length;
-
-        // Render companies
-        const companyJobsContainer = document.getElementById('companyJobs');
-        if (companyJobsContainer) {
-            companyJobsContainer.innerHTML = companyArray.map(company => `
-                <div class="list-group-item company-item py-3" 
-                     onclick="showCompanyRoles('${company.id}', ${company.isOldFormat})">
-                    <div class="d-flex align-items-center">
-                        <div class="company-logo me-3">
-                            <img src="${company.logo}" 
-                                 alt="${company.name}" 
-                                 class="rounded-circle"
-                                 style="width: 40px; height: 40px; object-fit: cover;"
-                                 onerror="this.src='/assets/images/companies/default-company.webp'">
-                        </div>
-                        <div>
-                            <h6 class="mb-1 company-name">${company.name}</h6>
-                            <small class="job-count">${company.jobs.length} active position${company.jobs.length !== 1 ? 's' : ''}</small>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-    } catch (error) {
-        console.error('Error loading company wise jobs:', error);
-        showToast('Error loading company listings. Please try again.', false);
-    }
-}
-
-// Updated showCompanyRoles to handle both old and new format
-window.showCompanyRoles = async function(companyIdentifier, isOldFormat) {
-    try {
-        const companyJobs = document.getElementById('companyJobs');
-        const companyRoles = document.getElementById('companyRoles');
-        
-        let jobs = [];
-        let companyName = '';
-        let companyLogo = '/assets/images/companies/default-company.webp';
-
-        // Get current date in IST for filtering
-        const nowIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-        const currentDate = new Date(nowIST);
-        const oneMonthAgo = new Date(currentDate);
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-        if (isOldFormat) {
-            // Handle old format (company name-based)
-            const companyNameParam = companyIdentifier.replace('old_', '');
-            const jobsRef = collection(db, 'jobs');
-            const q = query(
-                jobsRef,
-                where('isActive', '==', true),
-                where('companyName', '==', companyNameParam)
-            );
-            const snapshot = await getDocs(q);
-            
-            jobs = snapshot.docs.map(docItem => {
-                const job = docItem.data();
-                const createdAt = job.createdAt?.toDate ? job.createdAt.toDate() : new Date(job.createdAt);
-                const lastDate = job.lastDate?.toDate ? job.lastDate.toDate() : job.lastDate ? new Date(job.lastDate) : null;
-                
-                return {
-                    id: docItem.id,
-                    ...job,
-                    createdAt,
-                    lastDate,
-                    companyLogo: job.companyLogo || companyLogo
-                };
-            }).filter(job => {
-                return job.createdAt >= oneMonthAgo && (!job.lastDate || job.lastDate >= currentDate);
-            });
-            
-            if (jobs.length > 0) {
-                companyName = jobs[0].companyName;
-                companyLogo = jobs[0].companyLogo || companyLogo;
-            }
-        } else {
-            // Handle new format (company ID-based)
-            const companyRef = doc(db, 'companies', companyIdentifier);
-            const companyDoc = await getDoc(companyRef);
-            const companyData = companyDoc.exists() ? companyDoc.data() : null;
-            
-            const jobsRef = collection(db, 'jobs');
-            const q = query(
-                jobsRef,
-                where('isActive', '==', true),
-                where('companyId', '==', companyIdentifier)
-            );
-            const snapshot = await getDocs(q);
-            
-            jobs = snapshot.docs.map(docItem => {
-                const job = docItem.data();
-                const createdAt = job.createdAt?.toDate ? job.createdAt.toDate() : new Date(job.createdAt);
-                const lastDate = job.lastDate?.toDate ? job.lastDate.toDate() : job.lastDate ? new Date(job.lastDate) : null;
-                
-                return {
-                    id: docItem.id,
-                    ...job,
-                    createdAt,
-                    lastDate
-                };
-            }).filter(job => {
-                return job.createdAt >= oneMonthAgo && (!job.lastDate || job.lastDate >= currentDate);
-            });
-            
-            if (companyData) {
-                companyName = companyData.name;
-                companyLogo = companyData.logoURL || companyLogo;
-            } else if (jobs.length > 0) {
-                companyName = jobs[0].companyName;
-            }
-        }
-
-        // Render the company roles
-        companyRoles.innerHTML = `
-            <div class="p-2 border-bottom d-flex justify-content-between align-items-center">
-                <button class="btn btn-link btn-sm text-decoration-none p-0" onclick="showCompanyList()">
-                    <i class="bi bi-arrow-left"></i> Back to Companies
-                </button>
-                <div class="company-header-info">
-                    <img src="${companyLogo}" 
-                         alt="${companyName}" 
-                         class="rounded-circle me-2"
-                         style="width: 30px; height: 30px; object-fit: cover;"
-                         onerror="this.src='/assets/images/companies/default-company.webp'">
-                    <span class="fw-bold">${companyName}</span>
-                </div>
-            </div>
-            ${jobs.map(job => `
-                <a href="/html/job-details.html?id=${job.id}&type=private" 
-                   class="list-group-item list-group-item-action role-item py-3">
-                    <h6 class="mb-1">${job.jobTitle}</h6>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <small class="text-muted">
-                            <i class="bi bi-geo-alt"></i> ${job.location}
-                        </small>
-                        <small class="text-muted">
-                            <i class="bi bi-clock"></i> ${formatDate(job.createdAt)}
-                        </small>
-                    </div>
-                </a>
-            `).join('')}
-        `;
-
-        companyJobs.classList.add('d-none');
-        companyRoles.classList.remove('d-none');
-
-    } catch (error) {
-        console.error('Error showing company roles:', error);
-        showToast('Error loading company details. Please try again.', false);
-    }
-};
-
-
-
-
-
-window.showCompanyList = () => {
-    const companyJobs = document.getElementById('companyJobs');
-    const companyRoles = document.getElementById('companyRoles');
-
-    companyRoles.classList.add('d-none');
-    companyJobs.classList.remove('d-none');
-};
-
 async function populateLocationFilter() {
     try {
         const locations = new Set();
