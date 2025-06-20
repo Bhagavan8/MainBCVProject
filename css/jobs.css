@@ -1213,6 +1213,75 @@ body {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
+
+  .page-header {
+    background: linear-gradient(45deg, #2563eb, #3b82f6);
+    padding: 1rem 0;
+    contain: layout paint;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin: 0;
+    font-weight: bold;
+}
+
+.hero-subtitle {
+    color: #ffffff;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.search-box {
+    background: #fff;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Minimal Bootstrap Grid Classes */
+.container {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.col-lg-6 {
+    padding: 0 15px;
+}
+
+@media (min-width: 992px) {
+    .col-lg-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* Essential Form Styles */
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+}
   
 
 

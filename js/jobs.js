@@ -6,11 +6,10 @@ import {
     getDocs,
     orderBy,
     getDoc,
-    doc, // Make sure this is imported
+    doc, 
     serverTimestamp,
     addDoc 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-// Global state for pagination
 let currentJobsList = [];
 let currentPaginationState = {
     page: 1,
@@ -43,7 +42,6 @@ async function initializePage() {
         
         // Event listeners
         document.getElementById('clearFilterBtn').addEventListener('click', clearDateFilter);
-        document.getElementById('searchForm').addEventListener('submit', (e) => e.preventDefault());
         
         // Setup pagination handlers
         setupPagination();
@@ -878,10 +876,7 @@ window.handleSearch = debounce(async (event) => {
     }
 }, 300);
 
-// Prevent form submission
-document.getElementById('searchForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-});
+
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
@@ -1290,7 +1285,6 @@ async function getJobsByDate(selectedDate) {
                 // If job has companyId, fetch company details
                 if (jobData.companyId) {
                     try {
-                        console.log('Fetching company details for ID:', jobData.companyId);
                         const companyRef = doc(db, 'companies', jobData.companyId);
                         const companyDoc = await getDoc(companyRef);
                         
