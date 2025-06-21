@@ -1391,6 +1391,7 @@ body {
     height: 30px;
   }
 }
+/* === PAGE WRAPPER === */
 .page-wrapper {
   display: flex;
   justify-content: center;
@@ -1399,12 +1400,20 @@ body {
   padding: 16px;
 }
 
-/* Ad Columns */
-.ad-column {
+/* === AD COLUMN === */
+.ad-column, .ad-left, .ad-right {
   width: 120px;
   flex-shrink: 0;
+  display: block !important;
+  visibility: visible !important;
+  overflow: visible !important;
+  min-height: 600px;
+  height: auto !important;
+  padding: 0;
+  margin: 0;
 }
 
+/* === AD BOX GENERAL === */
 .ad-box {
   width: 100%;
   height: 600px;
@@ -1416,63 +1425,69 @@ body {
   color: #333;
 }
 
-/* Main content responsiveness */
+/* === AD LABEL === */
+.ad-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+/* === RESPONSIVE ADS === */
+@media (max-width: 992px) {
+  .page-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ad-left,
+  .ad-right {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .ad-box {
+    height: auto;
+    min-height: 100px;
+  }
+
+  .main-container {
+    width: 100%;
+  }
+}
+
+/* === MAIN CONTENT === */
 .main-container {
   max-width: 960px;
   flex-grow: 1;
 }
 
-@media (max-width: 992px) {
-  .page-wrapper {
-      flex-direction: column;
-      align-items: stretch;
-  }
-
-  .ad-left,
-  .ad-right {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-  }
-
-  .ad-box {
-      height: auto;
-      min-height: 100px;
-  }
-
-  .main-container {
-      width: 100%;
-  }
-}
-
+/* === OTHER AD STYLES (FROM YOUR ORIGINAL CODE) === */
 .ad-section {
   margin-bottom: 20px;
   text-align: center;
 }
 
-.ad-box-job {
+.ad-box-job,
+.ad-box-skills {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   padding: 12px;
   border-radius: 8px;
-  max-width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  max-width: 100%;
 }
 
-.ad-box img.responsive-ad-img {
+.ad-box img.responsive-ad-img,
+.responsive-ad-img {
   width: 100%;
   height: auto;
-  max-width: 728px; /* Desktop size */
+  max-width: 728px;
 }
 
-
-@media (max-width: 768px) {
-  .ad-box img {
-      width: 100%;
-      height: auto;
-  }
-}
-
+/* COMMUNITY */
 .community-section {
   margin-bottom: 20px;
   padding: 16px;
@@ -1509,41 +1524,18 @@ body {
   background-color: #0088cc;
 }
 
+/* INLINE AD BOTTOM */
 .bottom-inline-ad {
   margin-top: 20px;
   text-align: center;
 }
 
-.ad-box-skills {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  max-width: 100%;
-}
-
-.responsive-ad-img {
-  width: 100%;
-  max-width: 728px;
-  height: auto;
-}
-
-@media (max-width: 768px) {
-  .community-links {
-      flex-direction: column;
-  }
-
-  .responsive-ad-img {
-      max-width: 100%;
-  }
-}
-
+/* AD CONTAINER WRAPPER */
 .ad-section-responsive {
   width: 100%;
   margin: 20px 0 10px 0;
   text-align: center;
-  padding: 0 16px; /* Adds spacing on small screens */
+  padding: 0 16px;
   box-sizing: border-box;
 }
 
@@ -1558,17 +1550,7 @@ body {
   margin: 0 auto;
 }
 
-
-
-
-.ad-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  margin-bottom: 6px;
-}
-
+/* AD IMAGE */
 .ad-img {
   width: 100%;
   height: auto;
@@ -1576,16 +1558,25 @@ body {
   object-fit: contain;
 }
 
-/* Responsive for small devices */
+/* MOBILE OVERRIDES */
 @media (max-width: 768px) {
+  .community-links {
+    flex-direction: column;
+  }
+
+  .responsive-ad-img {
+    max-width: 100%;
+  }
+
   .ad-container {
-      padding: 8px;
+    padding: 8px;
   }
 
   .ad-img {
-      max-height: 60px;
+    max-height: 60px;
   }
 }
+
 
 
 
