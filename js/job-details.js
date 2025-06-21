@@ -78,7 +78,7 @@ class JobDetailsManager {
 
                 // Parallel loading of non-critical data
                 this.updateViewCount(jobRef).catch(console.error); // Non-blocking
-                
+
                 await this.updateUI();
             } else {
                 console.log('Job not found');
@@ -122,7 +122,7 @@ class JobDetailsManager {
             const companyRef = doc(db, 'companies', companyId);
             const companyDoc = await getDoc(companyRef);
 
-            this.currentCompany = companyDoc.exists() 
+            this.currentCompany = companyDoc.exists()
                 ? { ...companyDoc.data(), about: companyDoc.data().about || '' }
                 : this.createDefaultCompanyObject();
 
@@ -233,7 +233,7 @@ class JobDetailsManager {
 
     capitalizeEducationFirstLetter(string) {
         if (!string) return '';
-    
+
         // First handle special combined cases with flexible matching
         const combinedCases = {
             'be/b.tech/any graduation/m.tech': 'B.E/B.Tech/Any Graduation/M.Tech',
@@ -241,17 +241,17 @@ class JobDetailsManager {
             'b.e/b.tech or similar': 'B.E/B.Tech or Similar',
             'b.e, btech or similar': 'B.E, B.Tech or Similar'
         };
-    
+
         // Normalize the input string for comparison (lowercase and trim)
         const normalizedInput = string.toLowerCase().trim();
-    
+
         // Check for combined cases first
         for (const [pattern, replacement] of Object.entries(combinedCases)) {
             if (normalizedInput === pattern.toLowerCase()) {
                 return replacement;
             }
         }
-    
+
         // Handle individual education levels
         const educationPatterns = {
             'master of engineering': 'Master of Engineering',
@@ -267,26 +267,26 @@ class JobDetailsManager {
             'be': 'B.E',
             'me': 'M.E'
         };
-    
+
         // Process each word separately
         return string.split(/(\s+|\/|,)/).map(part => {
             // Skip whitespace and separators
             if (/^\s+$|\/|,/.test(part)) {
                 return part;
             }
-    
+
             const lowerPart = part.toLowerCase();
-            
+
             // Check for exact matches in education patterns
             if (educationPatterns.hasOwnProperty(lowerPart)) {
                 return educationPatterns[lowerPart];
             }
-    
+
             // Handle "OR" specifically
             if (lowerPart === 'or') {
                 return 'or'; // keep it lowercase as it's a conjunction
             }
-    
+
             // Default capitalization
             return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
         }).join('');
@@ -320,12 +320,12 @@ class JobDetailsManager {
                             <span class="detail-label">Experience:</span>
                             <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
                         </div>` : ''}
-                        ${job.educationLevel ? `
-                                  <div class="detail-item">
-                                    <i class="bi bi-mortarboard"></i>
-                                    <span class="detail-label">Education:</span>
-                                      <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
-                                         </div>` : ''}
+                    ${job.educationLevel ? `
+                        <div class="detail-item">
+                            <i class="bi bi-mortarboard"></i>
+                            <span class="detail-label">Education:</span>
+                            <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
+                        </div>` : ''}
                     ${job.location ? `
                         <div class="detail-item">
                             <i class="bi bi-geo-alt"></i>
@@ -659,21 +659,19 @@ class JobDetailsManager {
             </div>
         `;
     }
-    
+
 
     async renderPrivateJobOverview(job) {
-        // Check if description and qualifications are the same
         const descriptionPoints = job.description ? job.description.split('\n').filter(point => point.trim()) : [];
         const qualificationPoints = job.qualifications ?
             (Array.isArray(job.qualifications) ? job.qualifications : job.qualifications.split('\n')).filter(point => point.trim()) : [];
-
+    
         const descriptionContent = descriptionPoints.join('\n');
         const qualificationContent = qualificationPoints.join('\n');
-
-        // Only show description section if content is different from qualifications
         const showDescription = descriptionContent !== qualificationContent;
-
-        return `
+    
+        // HTML content
+        const html = `
             <div class="job-overview-container animate-fade-in">
                 <div class="quick-actions">
                     <button class="action-btn apply-now pulse-animation" onclick="window.open('${job.applicationLink}', '_blank')">
@@ -681,7 +679,7 @@ class JobDetailsManager {
                         Apply Now
                     </button>
                 </div>
-
+    
                 ${showDescription ? `
                 <div class="overview-section slide-in-left">
                     <h4 class="section-title">
@@ -691,13 +689,25 @@ class JobDetailsManager {
                     <div class="description-content">
                         ${this.formatDescription(job.description)}
                     </div>
-                </div>
-                ` : ''}
-
+                </div>` : ''}
+    
                 ${this.renderJobDetailsSection(job)}
                 ${this.renderSkillsSection(job)}
                 ${this.renderQualificationsSection(job)}
-
+    
+                <!-- Inline AdSense ad -->
+                <div class="ad-section-responsive">
+                    <div class="ad-container">
+                        <span class="ad-label">Sponsored</span>
+                        <ins class="adsbygoogle"
+                             style="display:block; text-align:center;"
+                             data-ad-layout="in-article"
+                             data-ad-format="fluid"
+                             data-ad-client="ca-pub-6284022198338659"
+                             data-ad-slot="1592614775"></ins>
+                    </div>
+                </div>
+    
                 <div class="quick-actions mt-4 text-center">
                     <button class="action-btn apply-now pulse-animation" onclick="window.open('${job.applicationLink}', '_blank')">
                         <i class="bi bi-box-arrow-up-right"></i>
@@ -706,10 +716,39 @@ class JobDetailsManager {
                 </div>
             </div>
         `;
+    
+        // Trigger ad render after DOM update
+        setTimeout(() => {
+            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error('AdSense load failed in job overview:', e);
+                }
+            }
+        }, 0);
+    
+        return html;
     }
+    
 
     renderJobDetailsSection(job) {
-        return `
+        const adHtml = `
+            <div class="ad-section">
+                <div class="ad-box-job">
+                    <strong class="ad-label">Sponsored</strong>
+                    <ins class="adsbygoogle"
+                        style="display:block; text-align:center;"
+                        data-ad-layout="in-article"
+                        data-ad-format="fluid"
+                        data-ad-client="ca-pub-6284022198338659"
+                        data-ad-slot="2693943458"></ins>
+                </div>
+            </div>
+        `;
+    
+        const html = `
+            ${adHtml}
             <div class="overview-section slide-in-left">
                 <h4 class="section-title">
                     <i class="bi bi-briefcase gradient-icon"></i> 
@@ -728,11 +767,43 @@ class JobDetailsManager {
                 </div>
             </div>
         `;
+    
+        // Defer pushing ads into the DOM – call this AFTER injecting HTML
+        setTimeout(() => {
+            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error('AdSense error:', e);
+                }
+            }
+        }, 0);
+    
+        return html;
     }
+    
+   
 
     renderSkillsSection(job) {
         if (!job.skills) return '';
-        return `
+    
+        // Generate the HTML
+        const html = `
+            <div class="community-section content-section">
+                <h4 class="section-title">
+                    <i class="bi bi-people-fill gradient-icon"></i> 
+                    <span class="gradient-text">Join Our Community</span>
+                </h4>
+                <div class="community-links">
+                    <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o" target="_blank" class="community-btn whatsapp-btn">
+                        <i class="bi bi-whatsapp"></i> Join WhatsApp Group
+                    </a>
+                    <a href="https://t.me/bcvworld" target="_blank" class="community-btn telegram-btn">
+                        <i class="bi bi-telegram"></i> Join Telegram Channel
+                    </a>
+                </div>
+            </div>
+    
             <div class="overview-section content-section">
                 <h4 class="section-title">
                     <i class="bi bi-tools gradient-icon"></i> 
@@ -747,7 +818,32 @@ class JobDetailsManager {
                     `).join('')}
                 </div>
             </div>
+    
+            <div class="bottom-inline-ad">
+                <div class="ad-box-skills">
+                    <strong>Sponsored</strong><br>
+                    <ins class="adsbygoogle"
+                         style="display:block; text-align:center;"
+                         data-ad-layout="in-article"
+                         data-ad-format="fluid"
+                         data-ad-client="ca-pub-6284022198338659"
+                         data-ad-slot="6058473396"></ins>
+                </div>
+            </div>
         `;
+    
+        // Activate AdSense after DOM is updated
+        setTimeout(() => {
+            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error('AdSense error in skills section:', e);
+                }
+            }
+        }, 0);
+    
+        return html;
     }
 
     renderQualificationsSection(job) {
