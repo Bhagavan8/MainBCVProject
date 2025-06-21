@@ -7,10 +7,8 @@ import {
     query,
     where,
     getDocs,
-    limit,
     serverTimestamp,
     updateDoc,
-    orderBy,
     addDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -67,8 +65,6 @@ class JobDetailsManager {
 
             if (jobDoc.exists()) {
                 this.currentJob = jobDoc.data();
-                const averageRating = this.currentJob.averageRating || 0;
-                const totalRatings = this.currentJob.totalRatings || 0;
 
                 // Update cache
                 this.cache.set(cacheKey, {
@@ -696,17 +692,7 @@ class JobDetailsManager {
                 ${this.renderQualificationsSection(job)}
     
                 <!-- Inline AdSense ad -->
-                <div class="ad-section-responsive">
-                    <div class="ad-container">
-                        <span class="ad-label">Sponsored</span>
-                        <ins class="adsbygoogle"
-                             style="display:block; text-align:center;"
-                             data-ad-layout="in-article"
-                             data-ad-format="fluid"
-                             data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="1592614775"></ins>
-                    </div>
-                </div>
+                
     
                 <div class="quick-actions mt-4 text-center">
                     <button class="action-btn apply-now pulse-animation" onclick="window.open('${job.applicationLink}', '_blank')">
@@ -717,38 +703,14 @@ class JobDetailsManager {
             </div>
         `;
     
-        // Trigger ad render after DOM update
-        setTimeout(() => {
-            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error('AdSense load failed in job overview:', e);
-                }
-            }
-        }, 0);
+       
     
         return html;
     }
     
 
     renderJobDetailsSection(job) {
-        const adHtml = `
-            <div class="ad-section">
-                <div class="ad-box-job">
-                    <strong class="ad-label">Sponsored</strong>
-                    <ins class="adsbygoogle"
-                        style="display:block; text-align:center;"
-                        data-ad-layout="in-article"
-                        data-ad-format="fluid"
-                        data-ad-client="ca-pub-6284022198338659"
-                        data-ad-slot="2693943458"></ins>
-                </div>
-            </div>
-        `;
-    
         const html = `
-            ${adHtml}
             <div class="overview-section slide-in-left">
                 <h4 class="section-title">
                     <i class="bi bi-briefcase gradient-icon"></i> 
@@ -821,7 +783,6 @@ class JobDetailsManager {
     
             <div class="bottom-inline-ad">
                 <div class="ad-box-skills">
-                    <strong>Sponsored</strong><br>
                     <ins class="adsbygoogle"
                          style="display:block; text-align:center;"
                          data-ad-layout="in-article"
