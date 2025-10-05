@@ -2,14 +2,9 @@ import { db } from './firebase-config.js';
 import {
     doc,
     getDoc,
-    setDoc,
-    collection,
-    query,
-    where,
-    getDocs,
-    serverTimestamp,
     updateDoc,
-    addDoc
+    serverTimestamp,
+    setDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 const auth = getAuth();
@@ -30,7 +25,6 @@ class JobDetailsManager {
 
         this.init();
         this.initializeCopyLink();
-        this.initializeRatingSystem();
 
         return this;
     }
@@ -89,9 +83,8 @@ class JobDetailsManager {
     async updateUI() {
         await Promise.all([
             this.fetchAndMergeCompanyData(),
-            this.updateRatingDisplay(this.currentJob.averageRating || 0, this.currentJob.totalRatings || 0),
-            this.renderJobDetails(this.currentJob),
-            this.updateDetailsSection(this.currentJob)
+            this.updateJobHeaderDetails(this.currentJob),
+            this.updateJobContentSections(this.currentJob)
         ]);
 
         if (this.currentCompany) {
@@ -302,118 +295,10 @@ class JobDetailsManager {
             .join(' ');
     }
 
-    renderJobDetailsSection(job) {
-        return `
-            <div class="overview-section">
-                <h4 class="section-title">
-                    <i class="bi bi-briefcase"></i> 
-                    <span>Job Details</span>
-                </h4>
-                <div class="job-details-container">
-                    ${job.experience ? `
-                        <div class="detail-item">
-                            <i class="bi bi-briefcase"></i>
-                            <span class="detail-label">Experience:</span>
-                            <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
-                        </div>` : ''}
-                    ${job.educationLevel ? `
-                        <div class="detail-item">
-                            <i class="bi bi-mortarboard"></i>
-                            <span class="detail-label">Education:</span>
-                            <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
-                        </div>` : ''}
-                    ${job.location ? `
-                        <div class="detail-item">
-                            <i class="bi bi-geo-alt"></i>
-                            <span class="detail-label">Location:</span>
-                            <span class="detail-value">${this.formatLocation(job.location)}</span>
-                        </div>` : ''}
-                    ${job.lastDate ? `
-                        <div class="detail-item">
-                            <i class="bi bi-calendar"></i>
-                            <span class="detail-label">Last Date:</span>
-                            <span class="detail-value">${this.capitalizeFirstLetter(job.lastDate)}</span>
-                        </div>` : ''}
-                    ${job.salary ? `
-                        <div class="detail-item">
-                            <i class="bi bi-currency-rupee"></i>
-                            <span class="detail-label">Salary:</span>
-                            <span class="detail-value">${this.capitalizeFirstLetter(job.salary)}</span>
-                        </div>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    initializeRatingSystem() {
-        const ratingStars = document.querySelectorAll('#ratingInput .bi-star');
-        ratingStars.forEach(star => {
-            star.addEventListener('click', (e) => this.handleRating(e));
-            star.addEventListener('mouseover', (e) => this.handleStarHover(e));
-            star.addEventListener('mouseout', () => this.handleStarHoverOut());
-        });
-    }
-
     initializeCopyLink() {
         const copyLinkBtn = document.getElementById('copyLink');
         if (copyLinkBtn) {
             copyLinkBtn.addEventListener('click', () => this.handleCopyLink());
-        }
-    }
-
-    handleStarHover(e) {
-        const rating = parseInt(e.target.dataset.rating);
-        const stars = document.querySelectorAll('#ratingInput .bi-star');
-        stars.forEach((star, index) => {
-            star.classList.toggle('bi-star-fill', index < rating);
-            star.classList.toggle('bi-star', index >= rating);
-        });
-    }
-
-    handleStarHoverOut() {
-        const stars = document.querySelectorAll('#ratingInput i');
-        stars.forEach(star => {
-            star.classList.remove('bi-star-fill');
-            star.classList.add('bi-star');
-        });
-    }
-
-    async loadJobStats() {
-        try {
-            const ratingsQuery = query(
-                collection(db, 'jobRatings'),
-                where('jobId', '==', this.jobId)
-            );
-            const ratingsSnapshot = await getDocs(ratingsQuery);
-
-            let totalRating = 0;
-            let ratingCount = 0;
-
-            ratingsSnapshot.forEach(doc => {
-                totalRating += doc.data().rating;
-                ratingCount++;
-            });
-
-            const averageRating = ratingCount > 0 ? totalRating / ratingCount : 0;
-
-            const jobRef = doc(db, this.getCollectionName(), this.jobId);
-            await updateDoc(jobRef, {
-                averageRating: averageRating,
-                totalRatings: ratingCount
-            });
-
-            document.getElementById('avgRating').textContent = averageRating.toFixed(1);
-            document.getElementById('ratingCount').textContent = ratingCount;
-            this.updateRatingDisplay(averageRating, ratingCount);
-
-            if (auth.currentUser) {
-                const userRatingDoc = await getDoc(doc(db, 'jobRatings', `${this.jobId}_${auth.currentUser.uid}`));
-                if (userRatingDoc.exists()) {
-                    this.disableRating();
-                }
-            }
-        } catch (error) {
-            console.error('Error loading job stats:', error);
         }
     }
 
@@ -459,13 +344,7 @@ class JobDetailsManager {
     }
 
     setupEventListeners() {
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                this.switchTab(tabId);
-            });
-        });
-
+        // Set up share buttons
         document.querySelectorAll('.share-buttons button').forEach(button => {
             button.addEventListener('click', (e) => {
                 const platform = e.currentTarget.getAttribute('data-platform');
@@ -473,60 +352,18 @@ class JobDetailsManager {
             });
         });
 
-        document.getElementById('commentForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleComment();
+        // Set up apply buttons
+        const applyButtons = document.querySelectorAll('.action-btn.apply-now');
+        applyButtons.forEach(button => {
+            button.addEventListener('click', () => this.handleApplyClick(this.currentJob));
         });
-    }
-
-    switchTab(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-
-        // Update company details when switching to company tab
-        if (tabId === 'company' && this.currentJob) {
-            this.updateCompanyTabContent(this.currentJob);
-        }
-    }
-
-    updateCompanyTabContent(job) {
-        const companyDetailLogo = document.getElementById('companyDetailLogo');
-        const companyDetailName = document.getElementById('companyDetailName');
-        const companyDetailAbout = document.getElementById('companyDetailAbout');
-        const companyWebsite = document.getElementById('companyWebsite');
-
-        if (this.jobType === 'bank') {
-            companyDetailLogo.innerHTML = '<i class="bi bi-bank2 fs-1 text-primary"></i>';
-        } else {
-            const logoUrl = job.companyLogo?.startsWith('http') ?
-                job.companyLogo :
-                `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`;
-            companyDetailLogo.src = logoUrl;
-            companyDetailLogo.onerror = () => {
-                companyDetailLogo.src = '/assets/images/companies/default-company.webp';
-            };
-        }
-
-        companyDetailName.textContent = job.companyName || job.bankName;
-        companyDetailName.textContent = job.companyName || job.bankName;
-        companyDetailAbout.textContent = job.aboutCompany || job.companyAbout || 'No company description available';
-
-        if (job.companyWebsite) {
-            companyWebsite.href = this.ensureHttp(job.companyWebsite);
-            companyWebsite.style.display = 'inline-flex';
-        } else {
-            companyWebsite.style.display = 'none';
-        }
     }
 
     getCollectionName() {
         return this.jobType === 'private' ? 'jobs' : `${this.jobType}Jobs`;
     }
 
-    renderJobDetails(job) {
+    updateJobHeaderDetails(job) {
         const jobTitleEl = document.getElementById('jobTitle');
         const companyNameEl = document.getElementById('companyName');
         const locationEl = document.getElementById('location');
@@ -589,270 +426,148 @@ class JobDetailsManager {
                      class="company-logo"
                      onerror="this.src='/assets/images/companies/default-company.webp'">`;
         }
+    }
 
-        const jobDescriptionEl = document.querySelector('.job-description');
-        if (jobDescriptionEl) {
-            const overviewContent = this.jobType === 'bank' ?
-                this.renderBankOverview(job) :
-                this.renderPrivateJobOverview(job).then(content => {
-                    jobDescriptionEl.innerHTML = content;
-                }).catch(error => {
-                    console.error('Error rendering job overview:', error);
-                    jobDescriptionEl.innerHTML = '<p class="text-danger">Error loading job details</p>';
-                });
+    async updateJobContentSections(job) {
+        if (this.jobType === 'bank') {
+            this.updateBankJobContent(job);
+        } else {
+            this.updatePrivateJobContent(job);
+        }
+    }
+
+    updateBankJobContent(job) {
+        // Update description content
+        const descriptionContent = document.getElementById('descriptionContent');
+        if (descriptionContent) {
+            descriptionContent.innerHTML = this.formatDescription(job.description);
         }
 
-        document.querySelectorAll('.action-btn.apply-now').forEach(button => {
+        // Update job details
+        this.updateJobDetailsSection(job);
+
+        // Hide skills and qualifications sections for bank jobs
+        const skillsSection = document.getElementById('skillsSection');
+        const qualificationsSection = document.getElementById('qualificationsSection');
+        
+        if (skillsSection) skillsSection.style.display = 'none';
+        if (qualificationsSection) qualificationsSection.style.display = 'none';
+
+        // Update apply buttons - use ensureHttp method for consistent URL handling
+        const applyButtons = document.querySelectorAll('.action-btn.apply-now');
+        applyButtons.forEach(button => {
+            button.onclick = () => window.open(this.ensureHttp(job.applicationLink), '_blank');
+        });
+    }
+
+    updatePrivateJobContent(job) {
+        // Update description content
+        const descriptionContent = document.getElementById('descriptionContent');
+        if (descriptionContent) {
+            descriptionContent.innerHTML = this.formatDescription(job.description);
+        }
+
+        // Update job details section
+        this.updateJobDetailsSection(job);
+
+        // Update skills section
+        this.updateSkillsSection(job);
+
+        // Update qualifications section
+        this.updateQualificationsSection(job);
+
+        // Update apply buttons
+        const applyButtons = document.querySelectorAll('.action-btn.apply-now');
+        applyButtons.forEach(button => {
             button.onclick = () => this.handleApplyClick(job);
         });
     }
 
-    renderBankOverview(job) {
-        return `
-            <div class="job-overview-container">
-                <div class="quick-actions">
-                    <button class="action-btn apply-now" onclick="window.open('${job.applicationLink}', '_blank')">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                        Apply Now
-                    </button>
-                </div>
+    updateJobDetailsSection(job) {
+        const detailsContainer = document.getElementById('jobDetailsContainer');
+        if (!detailsContainer) return;
 
-                <div class="overview-section">
-                    <h4><i class="bi bi-info-circle"></i> Key Details</h4>
-                    <div class="details-grid">
-                        ${this.renderDetailItem('Age Limit', job.ageLimit)}
-                        ${this.renderDetailItem('Qualification', job.qualification)}
-                        ${this.renderDetailItem('Vacancies', job.vacancies)}
-                        ${this.renderDetailItem('Bank Type', job.bankType)}
-                        ${this.renderDetailItem('Exam Date', job.examDate)}
-                        ${this.renderDetailItem('Last Date', job.lastDate)}
-                        ${this.renderDetailItem('State', this.formatLocation(job.location || job.state), 'bi-geo-alt', job.location || job.state)}
-                    </div>
-                </div>
-
-                <div class="overview-section">
-                    <h4><i class="bi bi-file-text"></i> Description</h4>
-                    <div class="description-content">
-                        ${this.formatDescription(job.description)}
-                    </div>
-                </div>
-
-                <div class="overview-section">
-                    <h4><i class="bi bi-link-45deg"></i> Important Links</h4>
-                    <div class="links-container">
-                        ${job.notificationFile ? `
-                            <a href="${job.notificationFile}" class="important-link" target="_blank">
-                                <i class="bi bi-file-pdf"></i>
-                                Download Notification
-                            </a>
-                        ` : ''}
-                        <a href="${job.applicationLink}" class="important-link" target="_blank">
-                            <i class="bi bi-box-arrow-up-right"></i>
-                            Apply Online
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `;
+        let html = '';
+        
+        if (job.experience) {
+            html += `
+                <div class="detail-item">
+                    <span class="detail-label">Experience:</span>
+                    <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
+                </div>`;
+        }
+        
+        if (job.educationLevel) {
+            html += `
+                <div class="detail-item">
+                    <span class="detail-label">Education:</span>
+                    <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
+                </div>`;
+        }
+        
+        if (job.location) {
+            html += `
+                <div class="detail-item">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">${this.formatLocation(job.location)}</span>
+                </div>`;
+        }
+        
+        if (job.lastDate) {
+            html += `
+                <div class="detail-item">
+                    <span class="detail-label">Last Date:</span>
+                    <span class="detail-value">${this.capitalizeFirstLetter(job.lastDate)}</span>
+                </div>`;
+        }
+        
+        if (job.salary) {
+            html += `
+                <div class="detail-item">
+                    <span class="detail-label">Salary:</span>
+                    <span class="detail-value">${this.capitalizeFirstLetter(job.salary)}</span>
+                </div>`;
+        }
+        
+        detailsContainer.innerHTML = html;
     }
 
-
-    async renderPrivateJobOverview(job) {
-        const descriptionPoints = job.description ? job.description.split('\n').filter(point => point.trim()) : [];
-        const qualificationPoints = job.qualifications ?
-            (Array.isArray(job.qualifications) ? job.qualifications : job.qualifications.split('\n')).filter(point => point.trim()) : [];
-    
-        const descriptionContent = descriptionPoints.join('\n');
-        const qualificationContent = qualificationPoints.join('\n');
-        const showDescription = descriptionContent !== qualificationContent;
-    
-        // HTML content
-        const html = `
-            <div class="job-overview-container animate-fade-in">
-                <div class="quick-actions">
-                    <button class="action-btn apply-now pulse-animation" onclick="window.open('${job.applicationLink}', '_blank')">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                        Apply Now
-                    </button>
-                </div>
-    
-                ${showDescription ? `
-                <div class="overview-section slide-in-left">
-                    <h4 class="section-title">
-                        <i class="bi bi-file-text gradient-icon"></i>
-                        <span class="gradient-text">Job Description</span>
-                    </h4>
-                    <div class="description-content">
-                        ${this.formatDescription(job.description)}
-                    </div>
-                </div>` : ''}
-    
-                ${this.renderJobDetailsSection(job)}
-                ${this.renderSkillsSection(job)}
-                ${this.renderQualificationsSection(job)}
-    
-                <!-- Inline AdSense ad -->
-                
-    
-                <div class="quick-actions mt-4 text-center">
-                    <button class="action-btn apply-now pulse-animation" onclick="window.open('${job.applicationLink}', '_blank')">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                        Apply Now
-                    </button>
-                </div>
-            </div>
-        `;
-    
-       
-    
-        return html;
-    }
-    
-
-    renderJobDetailsSection(job) {
-        const html = `
-            <div class="overview-section slide-in-left">
-                <h4 class="section-title">
-                    <i class="bi bi-briefcase gradient-icon"></i> 
-                    <span class="gradient-text">Job Details</span>
-                </h4>
-                <div class="details-grid">
-                    <div class="details-column">
-                        ${job.experience ? this.renderDetailItem('Experience', this.capitalizeFirstLetter(job.experience), 'bi-briefcase') : ''}
-                        ${job.educationLevel ? this.renderDetailItem('Education', this.capitalizeEducationFirstLetter(job.educationLevel), 'bi-mortarboard') : ''}
-                        ${job.location ? this.renderDetailItem('Location', this.formatLocation(job.location), 'bi-geo-alt', job.location) : ''}
-                    </div>
-                    <div class="details-column">
-                        ${job.lastDate ? this.renderDetailItem('Last Date', this.capitalizeFirstLetter(job.lastDate), 'bi-calendar') : ''}
-                        ${job.salary ? this.renderDetailItem('Salary', this.capitalizeFirstLetter(job.salary), 'bi-currency-rupee') : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    
-        // Defer pushing ads into the DOM – call this AFTER injecting HTML
-        setTimeout(() => {
-            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error('AdSense error:', e);
-                }
-            }
-        }, 0);
-    
-        return html;
-    }
-    
-   
-
-    renderSkillsSection(job) {
-        if (!job.skills) return '';
-    
-        // Generate the HTML
-        const html = `
-            <div class="community-section content-section">
-                <h4 class="section-title">
-                    <i class="bi bi-people-fill gradient-icon"></i> 
-                    <span class="gradient-text">Join Our Community</span>
-                </h4>
-                <div class="community-links">
-                    <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o" target="_blank" class="community-btn whatsapp-btn">
-                        <i class="bi bi-whatsapp"></i> Join WhatsApp Group
-                    </a>
-                    <a href="https://t.me/bcvworld" target="_blank" class="community-btn telegram-btn">
-                        <i class="bi bi-telegram"></i> Join Telegram Channel
-                    </a>
-                </div>
-            </div>
-    
-            <div class="overview-section content-section">
-                <h4 class="section-title">
-                    <i class="bi bi-tools gradient-icon"></i> 
-                    <span class="gradient-text">Required Skills</span>
-                </h4>
-                <div class="skills-container">
-                    ${job.skills.map(skill => `
-                        <span class="skill-tag">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                            ${this.capitalizeFirstLetter(skill)}
-                        </span>
-                    `).join('')}
-                </div>
-            </div>
-    
-            <div class="bottom-inline-ad">
-                <div class="ad-box-skills">
-                    <ins class="adsbygoogle"
-                         style="display:block; text-align:center;"
-                         data-ad-layout="in-article"
-                         data-ad-format="fluid"
-                         data-ad-client="ca-pub-6284022198338659"
-                         data-ad-slot="6058473396"></ins>
-                </div>
-            </div>
-        `;
-    
-        // Activate AdSense after DOM is updated
-        setTimeout(() => {
-            if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error('AdSense error in skills section:', e);
-                }
-            }
-        }, 0);
-    
-        return html;
+    updateSkillsSection(job) {
+        const skillsSection = document.getElementById('skillsSection');
+        const skillsContainer = document.getElementById('skillsContainer');
+        
+        if (!skillsSection || !skillsContainer) return;
+        
+        if (!job.skills || !job.skills.length) {
+            skillsSection.style.display = 'none';
+            return;
+        }
+        
+        skillsContainer.innerHTML = job.skills.map(skill => `
+            <span class="skill-tag">
+                ${this.capitalizeFirstLetter(skill)}
+            </span>
+        `).join('');
     }
 
-    renderQualificationsSection(job) {
-        if (!job.qualifications) return '';
-        return `
-            <div class="overview-section content-section">
-                <h4 class="section-title">
-                    <i class="bi bi-award gradient-icon"></i> 
-                    <span class="gradient-text">Desired Qualifications</span>
-                </h4>
-                <div class="qualifications-content">
-                    ${this.formatQualifications(job.qualifications)}
-                </div>
-            </div>
-        `;
+    updateQualificationsSection(job) {
+        const qualificationsSection = document.getElementById('qualificationsSection');
+        const qualificationsContent = document.getElementById('qualificationsContent');
+        
+        if (!qualificationsSection || !qualificationsContent) return;
+        
+        if (!job.qualifications) {
+            qualificationsSection.style.display = 'none';
+            return;
+        }
+        
+        qualificationsContent.innerHTML = this.formatQualifications(job.qualifications);
     }
 
     formatLocation(location) {
         if (!location) return 'Location N/A';
         const formatted = this.capitalizeFirstLetter(location);
         return formatted.length > 28 ? formatted.substring(0, 28) + '...' : formatted;
-    }
-
-    renderDetailItem(label, value, iconClass, fullText) {
-        if (!value) return '';
-
-        if (label === 'Experience') {
-            value = value.toLowerCase() === 'fresher' ? 'Fresher' : `${value} Years`;
-        }
-
-        return `
-            <div class="detail-item">
-                <i class="bi ${iconClass}"></i>
-                <div class="detail-content">
-                    <span class="detail-label fw-bold">${label} <span class="separator">⟫</span></span>
-                    <span class="detail-value" title="${fullText || value}">${value}</span>
-                </div>
-            </div>
-        `;
-    }
-
-    updateJobMetaInfo(job) {
-        const experienceElement = document.getElementById('experience');
-        if (experienceElement && job.experience) {
-            experienceElement.textContent = job.experience.toLowerCase() === 'fresher' ?
-                'Fresher' :
-                `${job.experience} Years`;
-        }
     }
 
     formatDescription(description) {
@@ -932,7 +647,7 @@ class JobDetailsManager {
     async handleApplyClick(job) {
         try {
             const user = auth.currentUser;
-
+    
             if (user) {
                 const applicationRef = doc(db, 'jobApplications', `${this.jobId}_${user.uid}`);
                 await setDoc(applicationRef, {
@@ -945,9 +660,10 @@ class JobDetailsManager {
                     status: 'applied'
                 });
             }
-
+    
+            // Fix for Apply Now button - use ensureHttp method for consistent URL handling
             if (job.applicationLink) {
-                window.open(job.applicationLink, '_blank');
+                window.open(this.ensureHttp(job.applicationLink), '_blank');
             } else {
                 document.getElementById('applicationSection').classList.remove('d-none');
             }
@@ -955,103 +671,6 @@ class JobDetailsManager {
             console.error('Error recording application:', error);
             if (auth.currentUser) {
                 this.showToast('Error recording application', 'error');
-            }
-        }
-    }
-
-    handleRating(e) {
-        if (!e?.target) return;
-
-        const ratingValue = parseInt(e.target.dataset.rating);
-        if (!ratingValue) return;
-
-        const stars = document.querySelectorAll('#ratingInput i');
-        stars.forEach((star, index) => {
-            star.classList.toggle('bi-star-fill', index < ratingValue);
-            star.classList.toggle('bi-star', index >= ratingValue);
-        });
-
-        this.submitRating(ratingValue);
-    }
-
-    async submitRating(rating) {
-        try {
-            const user = auth.currentUser;
-            if (!user) {
-                this.showToast('Please login to rate this job', 'warning');
-                return;
-            }
-
-            const ratingRef = doc(db, 'jobRatings', `${this.jobId}_${user.uid}`);
-            await setDoc(ratingRef, {
-                jobId: this.jobId,
-                userId: user.uid,
-                rating: Number(rating),
-                timestamp: serverTimestamp()
-            });
-
-            this.showToast('Rating submitted successfully!', 'success');
-            await this.loadJobStats(this.jobId);
-        } catch (error) {
-            console.error('Error submitting rating:', error);
-            this.showToast('Failed to submit rating', 'error');
-        }
-    }
-
-    showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `
-            <div class="toast-content">
-                <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-        document.body.appendChild(toast);
-
-        setTimeout(() => toast.remove(), 3000);
-    }
-
-    disableRating() {
-        const ratingContainer = document.getElementById('ratingContainer');
-        if (ratingContainer) {
-            ratingContainer.innerHTML = '<p class="text-success">Thank you for rating this job!</p>';
-        }
-    }
-
-    updateRatingDisplay(average, total) {
-        const starsContainer = document.getElementById('averageRatingStars');
-        const ratingValue = document.getElementById('averageRatingValue');
-        const totalRatings = document.getElementById('totalRatings');
-
-        if (!starsContainer || !ratingValue || !totalRatings) return;
-
-        starsContainer.innerHTML = '';
-        for (let i = 1; i <= 5; i++) {
-            const star = document.createElement('i');
-            star.className = `bi ${i <= average ? 'bi-star-fill' : 'bi-star'}`;
-            starsContainer.appendChild(star);
-        }
-
-        ratingValue.textContent = average.toFixed(1);
-        totalRatings.textContent = `(${total} ${total === 1 ? 'rating' : 'ratings'})`;
-    }
-
-    updateDetailsSection(job) {
-        const detailsContainer = document.querySelector('.job-details-container');
-        if (!detailsContainer) return;
-
-        if (job.companyWebsite) {
-            const websiteLink = detailsContainer.querySelector('.company-website');
-            if (websiteLink) {
-                websiteLink.href = job.companyWebsite;
-            }
-        }
-
-        if (job.lastDate) {
-            const deadlineElement = detailsContainer.querySelector('.application-deadline');
-            if (deadlineElement) {
-                deadlineElement.textContent = new Date(job.lastDate).toLocaleDateString();
             }
         }
     }
@@ -1073,13 +692,18 @@ class JobDetailsManager {
         }
     }
 
-    getAnonymousViewerId() {
-        let anonymousId = localStorage.getItem('anonymousViewerId');
-        if (!anonymousId) {
-            anonymousId = 'anonymous_' + Date.now() + '_' + Math.random().toString(36).substring(2);
-            localStorage.setItem('anonymousViewerId', anonymousId);
-        }
-        return anonymousId;
+    showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 3000);
     }
 
     handleCopyLink() {
@@ -1092,82 +716,9 @@ class JobDetailsManager {
     }
 }
 
+// Initialize the job details manager
 document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const jobId = urlParams.get('id');
-    if (!jobId) {
-        window.location.href = '/html/jobs.html';
-        return;
-    }
     new JobDetailsManager();
 });
 
-window.handleNewsletterSubmit = async (event) => {
-    event.preventDefault();
-    const emailInput = document.getElementById('newsletterEmail');
-    const submitButton = event.target.querySelector('button[type="submit"]');
-    const email = emailInput.value.trim();
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('Please enter a valid email address', false);
-        return;
-    }
-
-    const originalButtonText = submitButton.textContent;
-    submitButton.disabled = true;
-    submitButton.textContent = 'Checking...';
-
-    try {
-        const q = query(collection(db, "subscriptions"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-            showToast('You are already subscribed! Thank you.', false);
-            return;
-        }
-
-        submitButton.textContent = 'Subscribing...';
-        await addDoc(collection(db, "subscriptions"), {
-            email: email,
-            subscriptionDate: serverTimestamp(),
-            active: true,
-            source: 'website'
-        });
-
-        emailInput.value = '';
-        showToast('Thank you for subscribing! You will receive our latest updates.');
-    } catch (error) {
-        console.error("Error processing subscription: ", error);
-        showToast('Subscription failed. Please try again.', false);
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = originalButtonText;
-    }
-};
-
-function showToast(message, isSuccess = true) {
-    const toast = document.createElement('div');
-    toast.className = `custom-toast ${isSuccess ? 'success' : 'error'}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
-}
-
-window.toggleCompanyJobs = function (companyName) {
-    const elementId = `jobs-${companyName.replace(/\s+/g, '-')}`;
-    const jobsContainer = document.getElementById(elementId);
-    const toggleIcon = jobsContainer.previousElementSibling.querySelector('.toggle-icon');
-
-    if (jobsContainer.style.display === 'none') {
-        jobsContainer.style.display = 'block';
-        toggleIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');
-    } else {
-        jobsContainer.style.display = 'none';
-        toggleIcon.classList.replace('bi-chevron-up', 'bi-chevron-down');
-    }
-};
+export { JobDetailsManager };

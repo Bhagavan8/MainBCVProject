@@ -36,7 +36,6 @@ class JobStatsManager {
         await this.loadComments();
     }
     
-
     setupComments() {
         const commentInput = document.getElementById('commentInput');
         const charCount = document.querySelector('.char-count');
@@ -56,7 +55,6 @@ class JobStatsManager {
             });
         }
     }
-
     
     setupAuthStateListener() {
         auth.onAuthStateChanged(async (user) => {
@@ -65,8 +63,6 @@ class JobStatsManager {
             await this.loadComments();
         });
     }
-
-    // Remove init method since we're using auth state listener
 
     async handlePostComment() {
         if (!auth.currentUser) {
@@ -238,7 +234,7 @@ class JobStatsManager {
             const paginationHTML = this.generatePaginationHTML(totalPages);
 
             commentsList.innerHTML = `
-                ${commentsHTML}
+                ${commentsHTML.join('')}
                 ${totalPages > 1 ? `
                     <div class="pagination-container mt-4 d-flex justify-content-center">
                         ${paginationHTML}
@@ -309,11 +305,12 @@ class JobStatsManager {
 
     updateStatsDisplay(jobData) {
         // Update view count
-        document.getElementById('viewCount').textContent = jobData.views || 0;
+        const viewCount = document.getElementById('viewCount');
+        if (viewCount) viewCount.textContent = jobData.views || 0;
         
         // Update like count
         const likeCount = document.getElementById('likeCount');
-        likeCount.textContent = jobData.likes || 0;
+        if (likeCount) likeCount.textContent = jobData.likes || 0;
         
         // Update like button state if user has liked
         if (auth.currentUser) {
@@ -321,9 +318,12 @@ class JobStatsManager {
         }
 
         // Update rating
-        document.getElementById('avgRating').textContent = 
+        const avgRating = document.getElementById('avgRating');
+        const ratingCount = document.getElementById('ratingCount');
+        
+        if (avgRating) avgRating.textContent = 
             jobData.averageRating ? jobData.averageRating.toFixed(1) : '0.0';
-        document.getElementById('ratingCount').textContent = 
+        if (ratingCount) ratingCount.textContent = 
             jobData.totalRatings || 0;
     }
 
@@ -416,7 +416,8 @@ class JobStatsManager {
 
             // Update UI
             const newLikeCount = (jobData.likes || 0) + (isLiked ? -1 : 1);
-            document.getElementById('likeCount').textContent = newLikeCount;
+            const likeCountElement = document.getElementById('likeCount');
+            if (likeCountElement) likeCountElement.textContent = newLikeCount;
             this.updateLikeButtonState(isLiked ? [] : [userId]);
 
         } catch (error) {
@@ -426,9 +427,12 @@ class JobStatsManager {
 
     updateLikeButtonState(likedBy) {
         const likeButton = document.getElementById('likeButton');
-        const heartIcon = likeButton.querySelector('i');
+        if (!likeButton) return;
         
-        if (likedBy.includes(auth.currentUser?.uid)) {
+        const heartIcon = likeButton.querySelector('i');
+        if (!heartIcon) return;
+        
+        if (auth.currentUser && likedBy.includes(auth.currentUser.uid)) {
             heartIcon.classList.remove('bi-heart');
             heartIcon.classList.add('bi-heart-fill', 'text-danger');
             likeButton.classList.add('liked');
@@ -438,6 +442,7 @@ class JobStatsManager {
             likeButton.classList.remove('liked');
         }
     }
+
     generatePaginationHTML(totalPages) {
         let html = '<nav aria-label="Comments pagination"><ul class="pagination">';
         
@@ -468,6 +473,7 @@ class JobStatsManager {
         html += '</ul></nav>';
         return html;
     }
+
     setupPaginationListeners() {
         const paginationLinks = document.querySelectorAll('.pagination .page-link');
         paginationLinks.forEach(link => {
@@ -485,69 +491,8 @@ class JobStatsManager {
             });
         });
     }
-        // Add after setupComments method
-        async handlePostComment() {
-            if (!auth.currentUser) {
-                alert('Please login to post a comment');
-                return;
-            }
-    
-            const commentInput = document.getElementById('commentInput');
-            const content = commentInput.value.trim();
-    
-            if (!content) {
-                alert('Please enter a comment');
-                return;
-            }
-    
-            const postButton = document.getElementById('postComment');
-            postButton.disabled = true;
-    
-            try {
-                const commentsRef = collection(db, 'jobComments');
-                await addDoc(commentsRef, {
-                    jobId: this.jobId,
-                    userId: auth.currentUser.uid,
-                    userName: auth.currentUser.displayName || 'Anonymous',
-                    content: content,
-                    timestamp: serverTimestamp(),
-                    userEmail: auth.currentUser.email
-                });
-    
-                commentInput.value = '';
-                document.querySelector('.char-count').textContent = '0/500';
-                this.currentPage = 1;
-                await this.loadComments();
-                
-                // Show success message
-                Toastify({
-                    text: "Comment posted successfully",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    }
-                }).showToast();
-    
-            } catch (error) {
-                console.error('Error posting comment:', error);
-                Toastify({
-                    text: "Failed to post comment",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    }
-                }).showToast();
-            } finally {
-                postButton.disabled = false;
-            }
-        }
-    
-        
 }
+
 async function displayJobDetails(jobId, jobType) {
     if (jobType !== 'private') return; // Only proceed for private jobs
     
@@ -561,16 +506,15 @@ async function displayJobDetails(jobId, jobType) {
             const jobCodeWrapper = document.getElementById('jobCodeWrapper');
             const jobCodeElement = document.getElementById('jobCode');
             
-            if (jobData.referralCode) {
+            if (jobCodeWrapper && jobCodeElement && jobData.referralCode) {
                 jobCodeElement.textContent = jobData.referralCode;
                 jobCodeWrapper.style.display = 'flex';
-            } else {
+            } else if (jobCodeWrapper) {
                 jobCodeWrapper.style.display = 'none';
             }
         }
     } catch (error) {
         console.error('Error fetching job details:', error);
-        showErrorToast('Failed to load job details');
     }
 }
 
