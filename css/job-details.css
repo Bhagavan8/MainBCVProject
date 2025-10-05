@@ -56,22 +56,53 @@ body {
     width: 100%;
 }
 
+/* Minimalist Back Button */
+.back-navigation-wrapper {
+    padding: 0 15px 20px;
+    margin-bottom: 20px;
+}
+
 .back-btn-enhanced {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 24px;
-    background: var(--bg-white);
-    color: var(--text-secondary);
+    padding: 10px 16px;
+    background: transparent;
+    color: var(--primary-color, #0a7de3);
     text-decoration: none;
-    border-radius: var(--border-radius);
+    border-radius: 8px;
     font-weight: 500;
-    border: 1px solid #eee;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    min-height: 40px;
 }
 
 .back-btn-enhanced:hover {
-    background: var(--bg-gray);
-    color: var(--primary-color);
+    background: var(--primary-color, #007bff);
+    color: white;
+    border-color: var(--primary-color, #007bff);
+}
+
+.back-icon {
+    transition: transform 0.2s ease;
+}
+
+.back-btn-enhanced:hover .back-icon {
+    transform: translateX(-2px);
+}
+
+/* Mobile responsive for minimalist version */
+@media (max-width: 575.98px) {
+    .back-navigation-wrapper {
+        padding: 0 10px 15px;
+    }
+    
+    .back-btn-enhanced {
+        padding: 8px 12px;
+        min-height: 36px;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* ===== JOB HEADER ===== */
@@ -93,14 +124,11 @@ body {
 .company-logo {
     width: 100px;
     height: 100px;
-    border-radius: var(--border-radius);
-    background: var(--bg-gray);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
-    border: 1px solid #eee;
 }
 
 .company-logo img {
@@ -149,8 +177,7 @@ body {
     font-size: 14px;
     flex-shrink: 0;
 }
-
-/* ===== JOB STATS ===== */
+/* ===== JOB STATS - FIXED ===== */
 .job-stats-container {
     border-top: 1px solid #eee;
     padding-top: 20px;
@@ -180,6 +207,23 @@ body {
     padding: 8px 16px;
     border-radius: 20px;
     border: 1px solid #eee;
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+.job-code-referal i {
+    color: var(--primary-color);
+}
+
+.views, .likes {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+.views i, .likes i {
+    color: var(--primary-color);
 }
 
 .like-btn {
@@ -192,10 +236,28 @@ body {
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
 .like-btn:hover {
     background: var(--bg-gray);
+    color: var(--danger-color);
+}
+
+.like-btn.liked {
+    color: var(--danger-color);
+}
+
+.like-btn.liked i {
+    color: var(--danger-color);
+}
+
+/* Ensure all stat items are visible */
+#jobCodeWrapper,
+.stat-item.views,
+.stat-item.likes {
+    display: flex !important;
+    visibility: visible !important;
 }
 
 /* ===== CONTENT SECTIONS ===== */
@@ -219,26 +281,66 @@ body {
     width: 100%;
     text-align: center;
 }
+/* Compact Quick Actions Button */
+.quick-actions {
+    padding: 0 15px;
+}
 
 .action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 16px 32px;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 16px;
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: 25px; /* More rounded for modern look */
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    max-width: 100%;
-    font-size: 16px;
+    font-size: 13px;
     margin: 0 auto;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+    min-height: 40px;
+    width: auto;
+    max-width: 250px;
+    white-space: nowrap;
 }
 
 .action-btn:hover {
     background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+}
+
+/* Mobile Responsive */
+@media (max-width: 575.98px) {
+    .action-btn {
+        padding: 6px 14px;
+        font-size: 12px;
+        min-height: 36px;
+        max-width: 100%;
+        width: 100%;
+        border-radius: 20px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .action-btn {
+        padding: 7px 15px;
+        font-size: 12.5px;
+        max-width: 220px;
+    }
+}
+
+@media (min-width: 768px) {
+    .action-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        max-width: 240px;
+    }
 }
 
 .overview-section {
@@ -718,4 +820,143 @@ body {
     .section-title {
         font-size: 18px;
     }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Social Share Section - Mobile Responsive */
+.social-share-section {
+    border-left: 4px solid #007bff;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.social-share-section .card {
+    border: none;
+    border-radius: 12px;
+}
+
+/* Desktop Buttons */
+.social-share-buttons {
+    gap: 0.5rem;
+}
+
+.social-share-btn {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    font-weight: 500;
+}
+
+/* Mobile Buttons */
+.social-share-buttons-mobile .btn {
+    border-radius: 12px;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+}
+
+.social-share-buttons-mobile .bi {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+}
+
+.social-share-buttons-mobile small {
+    font-size: 0.7rem;
+    line-height: 1.2;
+}
+
+/* Hover Effects */
+.social-share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.social-share-btn:active {
+    transform: translateY(0);
+}
+
+/* Platform Specific Colors */
+.btn-success.social-share-btn { 
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border-color: #128C7E;
+}
+
+.btn-primary.social-share-btn { 
+    background: linear-gradient(135deg, #0077B5, #0a66c2);
+    border-color: #0a66c2;
+}
+
+.btn-info.social-share-btn { 
+    background: linear-gradient(135deg, #0088cc, #229ED9);
+    border-color: #229ED9;
+}
+
+.btn-success.social-share-btn:hover { 
+    background: linear-gradient(135deg, #128C7E, #25D366);
+    border-color: #25D366;
+}
+
+.btn-primary.social-share-btn:hover { 
+    background: linear-gradient(135deg, #0a66c2, #0077B5);
+    border-color: #0077B5;
+}
+
+.btn-info.social-share-btn:hover { 
+    background: linear-gradient(135deg, #229ED9, #0088cc);
+    border-color: #0088cc;
+}
+
+/* Mobile Specific Adjustments */
+@media (max-width: 768px) {
+    .social-share-section {
+        margin-left: -15px;
+        margin-right: -15px;
+        border-left: none;
+        border-top: 4px solid #007bff;
+    }
+    
+    .social-share-section .card {
+        border-radius: 0;
+        margin: 0;
+    }
+    
+    .social-share-buttons-mobile .col-4 {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .social-share-buttons-mobile .btn {
+        padding: 0.6rem 0.3rem;
+        min-height: 65px;
+    }
+    
+    .social-share-buttons-mobile .bi {
+        font-size: 1.1rem;
+    }
+    
+    .social-share-buttons-mobile small {
+        font-size: 0.65rem;
+    }
+}
+
+/* Animation for better UX */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.social-share-btn:focus {
+    animation: pulse 0.6s ease-in-out;
 }

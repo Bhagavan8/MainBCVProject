@@ -10,75 +10,6 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 const auth = getAuth();
 
 class JobDetailsManager {
-
-    initializeAds() {
-        console.log('Initializing ads...');
-
-        // Wait for DOM to be fully loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.initAdsAfterLoad());
-        } else {
-            this.initAdsAfterLoad();
-        }
-    }
-    initAdsAfterLoad() {
-        // Multiple attempts to ensure ads load properly
-        const initAttempts = [100, 500, 1000, 2000];
-
-        initAttempts.forEach((delay, index) => {
-            setTimeout(() => {
-                console.log(`Ad initialization attempt ${index + 1} after ${delay}ms`);
-                this.forceAdInitialization();
-            }, delay);
-        });
-    }
-    forceAdInitialization() {
-        try {
-            // Get all ad containers
-            const adContainers = document.querySelectorAll('.adsbygoogle');
-            console.log(`Found ${adContainers.length} ad containers`);
-
-            adContainers.forEach((container, index) => {
-                // Force container to have dimensions
-                const parent = container.parentElement;
-                if (parent) {
-                    parent.style.minHeight = '250px';
-                    parent.style.display = 'block';
-                    parent.style.visibility = 'visible';
-                }
-
-                container.style.display = 'block';
-                container.style.visibility = 'visible';
-                container.style.minHeight = '250px';
-                container.style.width = '100%';
-
-                // Check if ad script is loaded and initialize
-                if (window.adsbygoogle) {
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                        console.log(`Ad container ${index + 1} initialized`);
-                    } catch (error) {
-                        console.error(`Error initializing ad container ${index + 1}:`, error);
-                    }
-                } else {
-                    console.warn('adsbygoogle not available yet');
-                }
-            });
-
-            // Additional initialization for responsive ads
-            if (window.adsbygoogle) {
-                setTimeout(() => {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    console.log('Additional ad push completed');
-                }, 1000);
-            }
-        } catch (error) {
-            console.error('Error in forceAdInitialization:', error);
-        }
-    }
-
-
-    // Modify the constructor to call this new method
     constructor() {
         if (typeof JobDetailsManager.instance === 'object') {
             return JobDetailsManager.instance;
@@ -90,19 +21,79 @@ class JobDetailsManager {
         this.currentJob = null;
         this.currentCompany = null;
         this.viewsTracked = false;
-        this.cache = new Map(); // Add cache for job and company data
+        this.cache = new Map();
+        this.adsInitialized = false;
+        this.adContainersInitialized = new Set();
 
+        this.loadCommonComponents();
         this.init();
         this.initializeCopyLink();
-        this.initializeAds(); // Add this line
 
         return this;
+    }
+
+    async loadCommonComponents() {
+        try {
+            // Load header
+            const headerResponse = await fetch('/components/header.html');
+            const headerHtml = await headerResponse.text();
+            document.getElementById('header-container').innerHTML = headerHtml;
+
+            // Load footer
+            const footerResponse = await fetch('/components/footer.html');
+            const footerHtml = await footerResponse.text();
+            document.getElementById('footer-container').innerHTML = footerHtml;
+
+            console.log('Header and footer loaded successfully');
+            
+            this.initializeHeaderFooterScripts();
+            
+        } catch (error) {
+            console.error('Error loading common components:', error);
+            this.createFallbackHeaderFooter();
+        }
+    }
+
+    initializeHeaderFooterScripts() {
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', () => {
+                document.querySelector('.nav-menu')?.classList.toggle('active');
+            });
+        }
+    }
+
+    createFallbackHeaderFooter() {
+        const headerContainer = document.getElementById('header-container');
+        const footerContainer = document.getElementById('footer-container');
+        
+        if (headerContainer && !headerContainer.innerHTML.trim()) {
+            headerContainer.innerHTML = `
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container">
+                        <a class="navbar-brand" href="/">BCV World</a>
+                        <a href="/html/jobs.html" class="btn btn-primary">Back to Jobs</a>
+                    </div>
+                </nav>
+            `;
+        }
+        
+        if (footerContainer && !footerContainer.innerHTML.trim()) {
+            footerContainer.innerHTML = `
+                <footer class="bg-dark text-light py-3 mt-5">
+                    <div class="container text-center">
+                        <p>&copy; 2024 BCV World. All rights reserved.</p>
+                    </div>
+                </footer>
+            `;
+        }
     }
 
     async init() {
         await this.loadJobDetails();
         if (this.currentJob) {
             this.setupEventListeners();
+            this.initializeAds();
         }
     }
 
@@ -114,7 +105,6 @@ class JobDetailsManager {
                 return;
             }
 
-            // Check cache first
             const cacheKey = `job_${this.jobId}`;
             if (this.cache.has(cacheKey)) {
                 const cachedData = this.cache.get(cacheKey);
@@ -128,17 +118,14 @@ class JobDetailsManager {
             const jobDoc = await getDoc(jobRef);
 
             if (jobDoc.exists()) {
-                this.currentJob = jobDoc.data();
+                this.currentJob = { id: jobDoc.id, ...jobDoc.data() };
 
-                // Update cache
                 this.cache.set(cacheKey, {
                     job: this.currentJob,
                     timestamp: Date.now()
                 });
 
-                // Parallel loading of non-critical data
-                this.updateViewCount(jobRef).catch(console.error); // Non-blocking
-
+                this.updateViewCount(jobRef).catch(console.error);
                 await this.updateUI();
             } else {
                 console.log('Job not found');
@@ -160,7 +147,400 @@ class JobDetailsManager {
         if (this.currentCompany) {
             this.updateCompanyDisplay(this.currentCompany);
         }
+        
+        this.updateJobStats(this.currentJob);
+        
+        // UPDATE: Add meta tags update for social sharing
+        this.updateMetaTagsForSharing(this.currentJob);
+        
+        this.initializeSocialShare();
         this.setupEventListeners();
+        
+        console.log('UI updated successfully');
+    }
+
+    // NEW METHOD: Update meta tags for social sharing
+    updateMetaTagsForSharing(job) {
+        const jobTitle = job.jobTitle || job.postName || 'Latest Job Opportunity';
+        const companyName = job.companyName || job.bankName || 'Top Company';
+        const jobDescription = job.description ? 
+            job.description.substring(0, 160) + '...' : 
+            'Apply for this amazing job opportunity with great benefits and career growth. Join now!';
+        const currentUrl = window.location.href;
+        
+        // Generate OG Image URL
+        const ogImageUrl = this.generateOGImageUrl(jobTitle, companyName);
+        
+        // Update Open Graph tags
+        this.updateMetaTag('property', 'og:title', `${jobTitle} at ${companyName} | BCVWorld`);
+        this.updateMetaTag('property', 'og:description', jobDescription);
+        this.updateMetaTag('property', 'og:url', currentUrl);
+        this.updateMetaTag('property', 'og:image', ogImageUrl);
+        this.updateMetaTag('property', 'og:image:width', '1200');
+        this.updateMetaTag('property', 'og:image:height', '630');
+        this.updateMetaTag('property', 'og:site_name', 'BCVWorld');
+        this.updateMetaTag('property', 'og:type', 'article');
+        
+        // Update Twitter tags
+        this.updateMetaTag('property', 'twitter:card', 'summary_large_image');
+        this.updateMetaTag('property', 'twitter:title', `${jobTitle} at ${companyName} | BCVWorld`);
+        this.updateMetaTag('property', 'twitter:description', jobDescription);
+        this.updateMetaTag('property', 'twitter:image', ogImageUrl);
+        
+        // Update page title
+        document.title = `${jobTitle} at ${companyName} | BCVWorld`;
+        
+        console.log('Meta tags updated for sharing:', { jobTitle, companyName, ogImageUrl });
+    }
+
+    // NEW METHOD: Update individual meta tag
+    updateMetaTag(attribute, name, content) {
+        let metaTag = document.querySelector(`meta[${attribute}="${name}"]`);
+        if (!metaTag) {
+            metaTag = document.createElement('meta');
+            metaTag.setAttribute(attribute, name);
+            document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', content);
+    }
+
+    // NEW METHOD: Generate OG Image URL
+    generateOGImageUrl(jobTitle, companyName) {
+        // Use your existing OG image or create a dynamic one
+        // For now, using a static image - replace with your actual OG image URL
+        const baseImageUrl = 'https://bcvworld.com/assets/images/og-job-image.jpg';
+        
+        // If you want to add parameters for dynamic generation later
+        const params = new URLSearchParams({
+            title: encodeURIComponent(jobTitle.substring(0, 50)),
+            company: encodeURIComponent(companyName.substring(0, 30)),
+            v: '1.0'
+        });
+        
+        return `${baseImageUrl}?${params.toString()}`;
+    }
+
+    initializeSocialShare() {
+        const shareButtons = document.querySelectorAll('.social-share-btn');
+        
+        console.log(`Found ${shareButtons.length} social share buttons`);
+        
+        if (shareButtons.length === 0) {
+            console.error('No social share buttons found in DOM');
+            return;
+        }
+        
+        shareButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const platform = button.getAttribute('data-platform');
+                console.log(`Share button clicked: ${platform}`);
+                this.handleSocialShare(platform);
+            });
+        });
+
+        shareButtons.forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            button.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    }
+
+    handleSocialShare(platform) {
+        console.log(`Starting share process for: ${platform}`);
+        
+        const jobTitle = this.currentJob?.jobTitle || this.currentJob?.postName || 'Amazing Job Opportunity';
+        const jobUrl = window.location.href;
+        const jobCompany = this.currentJob?.companyName || this.currentJob?.bankName || 'Great Company';
+        const referralCode = this.currentJob?.referralCode || '';
+        
+        console.log('Share data:', { jobTitle, jobUrl, jobCompany, referralCode });
+        
+        const shareText = `🚀 ${jobTitle} at ${jobCompany}${referralCode ? ` (Referral Code: ${referralCode})` : ''}\n\nCheck out this opportunity: ${jobUrl}\n\n#JobOpportunity #Hiring #Careers`;
+        
+        const encodedText = encodeURIComponent(shareText);
+        const encodedUrl = encodeURIComponent(jobUrl);
+
+        let shareUrl = '';
+
+        switch (platform) {
+            case 'whatsapp':
+                shareUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+                break;
+                
+            case 'linkedin':
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+                break;
+                
+            case 'telegram':
+                shareUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+                break;
+                
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+                break;
+                
+            case 'twitter':
+                const twitterText = encodeURIComponent(`${jobTitle} at ${jobCompany} - ${jobUrl}`);
+                shareUrl = `https://twitter.com/intent/tweet?text=${twitterText}`;
+                break;
+                
+            case 'copy':
+                console.log('Copy to clipboard requested');
+                navigator.clipboard.writeText(shareText).then(() => {
+                    this.showToast('📋 Link copied to clipboard!', 'success');
+                }).catch(error => {
+                    console.error('Failed to copy:', error);
+                    this.fallbackCopyToClipboard(shareText);
+                });
+                return;
+                
+            default:
+                console.warn('Unknown platform:', platform);
+                this.showToast('Unknown platform', 'error');
+                return;
+        }
+
+        console.log(`Share URL for ${platform}:`, shareUrl);
+
+        if (shareUrl && platform !== 'copy') {
+            const isMobile = window.innerWidth <= 768;
+            const width = isMobile ? Math.min(400, window.screen.width - 20) : 600;
+            const height = isMobile ? Math.min(600, window.screen.height - 100) : 400;
+            
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+            
+            console.log(`Opening share window: ${width}x${height}`);
+            
+            const shareWindow = window.open(
+                shareUrl,
+                'share',
+                `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+            );
+            
+            if (shareWindow) {
+                this.showToast(`📤 Sharing via ${platform.charAt(0).toUpperCase() + platform.slice(1)}`, 'success');
+            } else {
+                console.error('Share window blocked by popup blocker');
+                this.showToast('❌ Popup blocked! Please allow popups to share.', 'error');
+            }
+        }
+    }
+
+    fallbackCopyToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            this.showToast('📋 Link copied to clipboard!', 'success');
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+            this.showToast('❌ Failed to copy link', 'error');
+        }
+        
+        document.body.removeChild(textArea);
+    }
+
+    initializeAds() {
+        console.log('Initializing ads...');
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    this.initializeAdsOnce();
+                }, 1000);
+            });
+        } else {
+            setTimeout(() => {
+                this.initializeAdsOnce();
+            }, 1000);
+        }
+    }
+
+    initializeAdsOnce() {
+        console.log('Starting ad initialization...');
+        
+        try {
+            const adContainers = document.querySelectorAll('.adsbygoogle:not([data-initialized])');
+            console.log(`Found ${adContainers.length} ad containers to initialize`);
+
+            if (adContainers.length === 0) {
+                console.log('No uninitialized ad containers found');
+                return;
+            }
+
+            adContainers.forEach((container, index) => {
+                const containerId = container.id || `ad-${index}`;
+                
+                if (this.adContainersInitialized.has(containerId)) {
+                    console.log(`Ad container ${containerId} already initialized, skipping`);
+                    return;
+                }
+
+                const rect = container.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                
+                if (!isVisible) {
+                    console.warn(`Ad container ${containerId} has zero width/height, skipping`);
+                    return;
+                }
+
+                console.log(`Initializing ad container ${containerId} with width: ${rect.width}px`);
+
+                try {
+                    container.setAttribute('data-initialized', 'true');
+                    this.adContainersInitialized.add(containerId);
+                    
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    
+                    console.log(`Ad container ${containerId} initialization requested`);
+                    
+                } catch (error) {
+                    console.error(`Error initializing ad container ${containerId}:`, error);
+                    container.removeAttribute('data-initialized');
+                    this.adContainersInitialized.delete(containerId);
+                }
+            });
+
+        } catch (error) {
+            console.error('Error in ad initialization process:', error);
+        }
+    }
+
+    updateJobStats(job) {
+        try {
+            console.log('=== DEBUG: updateJobStats started ===');
+            console.log('Full job object:', job);
+            
+            const jobCodeEl = document.getElementById('jobCode');
+            if (jobCodeEl) {
+                console.log('Job code element found');
+                
+                const possibleJobCodeFields = [
+                    'referralCode', 'referralcode', 'refCode', 'refcode', 'referenceCode',
+                    'jobCode', 'jobcode', 'code', 'postShortName', 'postshortname',
+                    'jobId', 'jobid', 'reference', 'ref', 'postCode', 'postcode',
+                    'jobReference', 'job_reference', 'job_ref'
+                ];
+                
+                let foundJobCode = 'N/A';
+                let foundField = null;
+                
+                for (const field of possibleJobCodeFields) {
+                    if (job[field]) {
+                        foundJobCode = job[field];
+                        foundField = field;
+                        break;
+                    }
+                }
+                
+                console.log('Job code search results:', {
+                    foundJobCode,
+                    foundField,
+                    referralCode: job.referralCode
+                });
+                
+                jobCodeEl.textContent = foundJobCode;
+                console.log('Job code set to:', foundJobCode);
+                
+            } else {
+                console.error('Job code element NOT FOUND in DOM');
+            }
+
+            const viewCountEl = document.getElementById('viewCount');
+            if (viewCountEl) {
+                const views = job.views || 0;
+                viewCountEl.textContent = views.toLocaleString();
+                console.log('View count set to:', views);
+            }
+
+            const likeCountEl = document.getElementById('likeCount');
+            const likeButton = document.getElementById('likeButton');
+            
+            if (likeCountEl) {
+                const likes = job.likes || 0;
+                likeCountEl.textContent = likes.toLocaleString();
+                console.log('Like count set to:', likes);
+            }
+
+            if (likeButton) {
+                this.setupLikeButton(likeButton, job);
+            }
+
+            console.log('=== DEBUG: updateJobStats completed ===');
+
+        } catch (error) {
+            console.error('Error updating job stats:', error);
+        }
+    }
+
+    setupLikeButton(likeButton, job) {
+        const jobId = this.jobId;
+        const likeKey = `job_like_${jobId}`;
+        const hasLiked = localStorage.getItem(likeKey);
+        const currentLikes = job.likes || 0;
+        
+        if (hasLiked) {
+            likeButton.classList.add('liked');
+            likeButton.innerHTML = '<i class="bi bi-heart-fill"></i> <span id="likeCount">' + currentLikes + '</span>';
+        } else {
+            likeButton.classList.remove('liked');
+            likeButton.innerHTML = '<i class="bi bi-heart"></i> <span id="likeCount">' + currentLikes + '</span>';
+        }
+
+        likeButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            try {
+                const hasLiked = localStorage.getItem(likeKey);
+                const currentLikes = job.likes || 0;
+                let newLikes;
+
+                if (hasLiked) {
+                    newLikes = Math.max(0, currentLikes - 1);
+                    localStorage.removeItem(likeKey);
+                    likeButton.classList.remove('liked');
+                    likeButton.innerHTML = '<i class="bi bi-heart"></i> <span id="likeCount">' + newLikes + '</span>';
+                } else {
+                    newLikes = currentLikes + 1;
+                    localStorage.setItem(likeKey, 'true');
+                    likeButton.classList.add('liked');
+                    likeButton.innerHTML = '<i class="bi bi-heart-fill"></i> <span id="likeCount">' + newLikes + '</span>';
+                }
+
+                const jobRef = doc(db, this.getCollectionName(), jobId);
+                await updateDoc(jobRef, {
+                    likes: newLikes,
+                    lastLikedAt: serverTimestamp()
+                });
+
+                job.likes = newLikes;
+
+                const likeCountEl = document.getElementById('likeCount');
+                if (likeCountEl) {
+                    likeCountEl.textContent = newLikes;
+                }
+
+                this.showToast(hasLiked ? 'Like removed' : 'Job liked!', 'success');
+
+            } catch (error) {
+                console.error('Error updating likes:', error);
+                this.showToast('Failed to update likes', 'error');
+            }
+        });
     }
 
     async fetchAndMergeCompanyData() {
@@ -171,7 +551,6 @@ class JobDetailsManager {
         }
 
         try {
-            // Check company cache
             const companyCacheKey = `company_${companyId}`;
             if (this.cache.has(companyCacheKey)) {
                 this.currentCompany = this.cache.get(companyCacheKey);
@@ -185,10 +564,8 @@ class JobDetailsManager {
                 ? { ...companyDoc.data(), about: companyDoc.data().about || '' }
                 : this.createDefaultCompanyObject();
 
-            // Cache company data
             this.cache.set(companyCacheKey, this.currentCompany);
 
-            // Update job data with company info
             if (companyDoc.exists()) {
                 this.updateJobWithCompanyInfo();
             }
@@ -245,21 +622,6 @@ class JobDetailsManager {
                     </a>`;
             }
         }
-
-        const aboutSection = document.querySelector('.company-about-section');
-        if (aboutSection && company.about) {
-            aboutSection.innerHTML = `
-                <h4>About ${company.name}</h4>
-                <p>${company.about}</p>
-                ${company.website ? `
-                    <a href="${this.ensureHttp(company.website)}" 
-                       class="company-website-link" 
-                       target="_blank">
-                        Visit Website <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
-                ` : ''}
-            `;
-        }
     }
 
     ensureHttp(url) {
@@ -293,7 +655,6 @@ class JobDetailsManager {
     capitalizeEducationFirstLetter(string) {
         if (!string) return '';
 
-        // First handle special combined cases with flexible matching
         const combinedCases = {
             'be/b.tech/any graduation/m.tech': 'B.E/B.Tech/Any Graduation/M.Tech',
             'b.e, btech or similar': 'B.E, B.Tech or Similar',
@@ -301,17 +662,14 @@ class JobDetailsManager {
             'b.e, btech or similar': 'B.E, B.Tech or Similar'
         };
 
-        // Normalize the input string for comparison (lowercase and trim)
         const normalizedInput = string.toLowerCase().trim();
 
-        // Check for combined cases first
         for (const [pattern, replacement] of Object.entries(combinedCases)) {
             if (normalizedInput === pattern.toLowerCase()) {
                 return replacement;
             }
         }
 
-        // Handle individual education levels
         const educationPatterns = {
             'master of engineering': 'Master of Engineering',
             'master of technology': 'Master of Technology',
@@ -327,26 +685,21 @@ class JobDetailsManager {
             'me': 'M.E'
         };
 
-        // Process each word separately
         return string.split(/(\s+|\/|,)/).map(part => {
-            // Skip whitespace and separators
             if (/^\s+$|\/|,/.test(part)) {
                 return part;
             }
 
             const lowerPart = part.toLowerCase();
 
-            // Check for exact matches in education patterns
             if (educationPatterns.hasOwnProperty(lowerPart)) {
                 return educationPatterns[lowerPart];
             }
 
-            // Handle "OR" specifically
             if (lowerPart === 'or') {
-                return 'or'; // keep it lowercase as it's a conjunction
+                return 'or';
             }
 
-            // Default capitalization
             return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
         }).join('');
     }
@@ -354,12 +707,10 @@ class JobDetailsManager {
     capitalizeFirstLetter(string) {
         if (!string) return '';
 
-        // Handle experience format
         if (string.toLowerCase().includes('year')) {
             return string.replace(/([0-9]+)\s*years?/i, '$1 Years');
         }
 
-        // Default capitalization
         return string.split(' ')
             .map(word => word.length === 2 ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
             .join(' ');
@@ -414,15 +765,6 @@ class JobDetailsManager {
     }
 
     setupEventListeners() {
-        // Set up share buttons
-        document.querySelectorAll('.share-buttons button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const platform = e.currentTarget.getAttribute('data-platform');
-                this.handleShare(platform);
-            });
-        });
-
-        // Set up apply buttons
         const applyButtons = document.querySelectorAll('.action-btn.apply-now');
         applyButtons.forEach(button => {
             button.addEventListener('click', () => this.handleApplyClick(this.currentJob));
@@ -507,23 +849,19 @@ class JobDetailsManager {
     }
 
     updateBankJobContent(job) {
-        // Update description content
         const descriptionContent = document.getElementById('descriptionContent');
         if (descriptionContent) {
             descriptionContent.innerHTML = this.formatDescription(job.description);
         }
 
-        // Update job details
         this.updateJobDetailsSection(job);
 
-        // Hide skills and qualifications sections for bank jobs
         const skillsSection = document.getElementById('skillsSection');
         const qualificationsSection = document.getElementById('qualificationsSection');
-
+        
         if (skillsSection) skillsSection.style.display = 'none';
         if (qualificationsSection) qualificationsSection.style.display = 'none';
 
-        // Update apply buttons - use ensureHttp method for consistent URL handling
         const applyButtons = document.querySelectorAll('.action-btn.apply-now');
         applyButtons.forEach(button => {
             button.onclick = () => window.open(this.ensureHttp(job.applicationLink), '_blank');
@@ -531,22 +869,15 @@ class JobDetailsManager {
     }
 
     updatePrivateJobContent(job) {
-        // Update description content
         const descriptionContent = document.getElementById('descriptionContent');
         if (descriptionContent) {
             descriptionContent.innerHTML = this.formatDescription(job.description);
         }
 
-        // Update job details section
         this.updateJobDetailsSection(job);
-
-        // Update skills section
         this.updateSkillsSection(job);
-
-        // Update qualifications section
         this.updateQualificationsSection(job);
 
-        // Update apply buttons
         const applyButtons = document.querySelectorAll('.action-btn.apply-now');
         applyButtons.forEach(button => {
             button.onclick = () => this.handleApplyClick(job);
@@ -558,7 +889,7 @@ class JobDetailsManager {
         if (!detailsContainer) return;
 
         let html = '';
-
+        
         if (job.experience) {
             html += `
                 <div class="detail-item">
@@ -566,7 +897,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
                 </div>`;
         }
-
+        
         if (job.educationLevel) {
             html += `
                 <div class="detail-item">
@@ -574,7 +905,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
                 </div>`;
         }
-
+        
         if (job.location) {
             html += `
                 <div class="detail-item">
@@ -582,7 +913,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.formatLocation(job.location)}</span>
                 </div>`;
         }
-
+        
         if (job.lastDate) {
             html += `
                 <div class="detail-item">
@@ -590,7 +921,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeFirstLetter(job.lastDate)}</span>
                 </div>`;
         }
-
+        
         if (job.salary) {
             html += `
                 <div class="detail-item">
@@ -598,21 +929,21 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeFirstLetter(job.salary)}</span>
                 </div>`;
         }
-
+        
         detailsContainer.innerHTML = html;
     }
 
     updateSkillsSection(job) {
         const skillsSection = document.getElementById('skillsSection');
         const skillsContainer = document.getElementById('skillsContainer');
-
+        
         if (!skillsSection || !skillsContainer) return;
-
+        
         if (!job.skills || !job.skills.length) {
             skillsSection.style.display = 'none';
             return;
         }
-
+        
         skillsContainer.innerHTML = job.skills.map(skill => `
             <span class="skill-tag">
                 ${this.capitalizeFirstLetter(skill)}
@@ -623,14 +954,14 @@ class JobDetailsManager {
     updateQualificationsSection(job) {
         const qualificationsSection = document.getElementById('qualificationsSection');
         const qualificationsContent = document.getElementById('qualificationsContent');
-
+        
         if (!qualificationsSection || !qualificationsContent) return;
-
+        
         if (!job.qualifications) {
             qualificationsSection.style.display = 'none';
             return;
         }
-
+        
         qualificationsContent.innerHTML = this.formatQualifications(job.qualifications);
     }
 
@@ -657,7 +988,6 @@ class JobDetailsManager {
     formatQualifications(qualifications) {
         if (!qualifications) return 'No specific qualifications mentioned';
 
-        // Common technology and skill keywords to bold
         const techKeywords = [
             'JavaScript', 'Python', 'Java', 'C\\+\\+', 'React', 'Angular', 'Vue', 'Node.js',
             'AWS', 'Azure', 'Docker', 'Kubernetes', 'SQL', 'MongoDB', 'Express', 'TypeScript',
@@ -666,10 +996,8 @@ class JobDetailsManager {
             'Kotlin', 'Android', 'iOS', 'Flutter', 'React Native', 'GraphQL', 'Redux',
             'Bootstrap', 'Sass', 'Less', 'jQuery', 'webpack', 'Babel', 'Jenkins', 'CRM', 'Agile', 'GitLab', 'OOP', 'Apache Kafka',
             'Confluent Kafka', 'Helm', 'NodeJS', 'APIs', 'JUnit', 'Selenium', 'TestNG',
-            // Added education-related keywords
             'Bachelor', "Bachelor's", 'Bachelors', 'B\\.E', 'B\\.Tech', 'Computer Science', 'Engineering',
             'Masters', "Master's", 'M\\.Tech', 'M\\.E', 'Information Technology', 'IT',
-            // Added role-related keywords
             'QA', 'Quality Assurance', 'Quality Analyst', 'Test Engineer', 'SDET',
             'Architect', 'Software Architect', 'Solutions Architect', 'Technical Architect',
             'Lead', 'Senior', 'Developer', 'Engineer', 'Analyst', 'Manager'
@@ -688,7 +1016,7 @@ class JobDetailsManager {
             return `
                 <ul class="qualifications-list">
                     ${qualifications.map(point => `
-                        <li class="qualification-point animate__animated animate__fadeIn">
+                        <li class="qualification-point">
                             <i class="bi bi-check2-circle text-success"></i>
                             ${boldTechTerms(point.trim())}
                         </li>
@@ -702,7 +1030,7 @@ class JobDetailsManager {
             return `
                 <ul class="qualifications-list">
                     ${points.map(point => `
-                        <li class="qualification-point animate__animated animate__fadeIn">
+                        <li class="qualification-point">
                             <i class="bi bi-check2-circle text-success"></i>
                             ${boldTechTerms(point.trim())}
                         </li>
@@ -717,7 +1045,7 @@ class JobDetailsManager {
     async handleApplyClick(job) {
         try {
             const user = auth.currentUser;
-
+    
             if (user) {
                 const applicationRef = doc(db, 'jobApplications', `${this.jobId}_${user.uid}`);
                 await setDoc(applicationRef, {
@@ -730,8 +1058,7 @@ class JobDetailsManager {
                     status: 'applied'
                 });
             }
-
-            // Fix for Apply Now button - use ensureHttp method for consistent URL handling
+    
             if (job.applicationLink) {
                 window.open(this.ensureHttp(job.applicationLink), '_blank');
             } else {
@@ -742,23 +1069,6 @@ class JobDetailsManager {
             if (auth.currentUser) {
                 this.showToast('Error recording application', 'error');
             }
-        }
-    }
-
-    handleShare(platform) {
-        const url = window.location.href;
-        const title = document.getElementById('jobTitle').textContent;
-        const shareText = `Check out this job: ${title}`;
-
-        const shareUrls = {
-            facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`,
-            linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-            whatsapp: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + url)}`
-        };
-
-        if (shareUrls[platform]) {
-            window.open(shareUrls[platform], '_blank', 'width=600,height=400');
         }
     }
 
@@ -786,7 +1096,6 @@ class JobDetailsManager {
     }
 }
 
-// Initialize the job details manager
 document.addEventListener('DOMContentLoaded', () => {
     new JobDetailsManager();
 });

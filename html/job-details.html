@@ -4,141 +4,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <!-- Primary Meta Tags -->
     <title>Latest Jobs 2025 | IT | Fresher | freshers Jobs | Experience jobs | BCVWorld</title>
     <meta name="description"
         content="Apply for latest jobs in IT, Fresher, freshers Jobs Experience jobs. 100+ active job vacancies. Work from home jobs, freshers jobs, and experienced positions available. Join top MNCs & startups. Apply now!">
 
-    <!-- Resource Hints -->
-    <link rel="preconnect" href="https://www.gstatic.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bcvworld.com/">
+    <meta property="og:title" content="Latest Jobs 2025 | IT | Fresher | Experience Jobs | BCVWorld">
+    <meta property="og:description" 
+        content="Apply for latest jobs in IT, Fresher, freshers Jobs Experience jobs. 100+ active job vacancies. Work from home jobs, freshers jobs, and experienced positions available. Join top MNCs & startups. Apply now!">
+    <meta property="og:image" content="https://bcvworld.com/assets/images/og-job-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="BCVWorld">
+    <meta property="og:locale" content="en_IN">
 
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bcvworld.com/">
+    <meta property="twitter:title" content="Latest Jobs 2025 | IT | Fresher | Experience Jobs | BCVWorld">
+    <meta property="twitter:description" 
+        content="Apply for latest jobs in IT, Fresher, freshers Jobs Experience jobs. 100+ active job vacancies. Work from home jobs, freshers jobs, and experienced positions available.">
+    <meta property="twitter:image" content="https://bcvworld.com/assets/images/og-job-image.jpg">
+
+    <!-- Additional Meta Tags -->
+    <meta name="keywords" content="jobs, IT jobs, fresher jobs, experienced jobs, work from home, MNC jobs, startup jobs, career, employment">
+    <meta name="author" content="BCVWorld">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#007bff">
     <!-- Primary Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/social-share.css">
     <link href="/css/job-details.css" rel="stylesheet">
-    <link href="/css/banners.css" rel="stylesheet">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
         crossorigin="anonymous"></script>
 
     <style>
-        /* Critical above-the-fold styles */
-        .main-container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 24px;
+        .page-loader-minimal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
         }
 
-        .job-header {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: none;
-            border: none;
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f8f8f8;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .company-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 16px;
-            background: #fff;
-        }
-
-        .job-title-section h1 {
-            font-size: 32px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0;
-        }
-
-        /* Clean UI styles - removing borders */
-        .content-block,
-        .content-wrapper {
-            border: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Ad spacing */
-        .ad-section-responsive {
-            margin: 24px 0;
-        }
-
-        .ad-section {
-            margin: 24px 0;
-        }
-
-        .ad-column {
-            width: 120px;
-            min-height: 600px;
-        }
-
-        .ad-label {
-            display: block;
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-
-        @media (max-width: 768px) {
-
-            .ad-left,
-            .ad-right {
-                display: none !important;
-            }
-        }
-
-        /* Mobile responsive styles */
-        @media (max-width: 576px) {
-            .job-header {
-                padding: 16px;
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
 
-            .company-logo {
-                width: 80px;
-                height: 80px;
-            }
-
-            .job-title-section h1 {
-                font-size: 24px;
-            }
-
-            .main-container {
-                padding: 12px;
-            }
-
-            .overview-section {
-                padding: 16px;
+            100% {
+                transform: rotate(360deg);
             }
         }
     </style>
-
-    <!-- Google Tag Manager -->
-    <script>
-        (function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-TXQNPNWJ');
-    </script>
-    <!-- End Google Tag Manager -->
 </head>
 
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQNPNWJ" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     <div id="pageLoader" class="page-loader-minimal">
         <div class="loader-spinner"></div>
     </div>
@@ -149,7 +90,7 @@
         <!-- Left Ad Column -->
         <div class="ad-left ad-column">
             <span class="ad-label">Sponsored</span>
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+            <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
                 data-ad-slot="6685159350" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
@@ -173,16 +114,16 @@
                         <div class="company-info">
                             <div id="companyLogo" class="company-logo"></div>
                             <div class="job-title-section">
-                                <h1 id="jobTitle" class="text-capitalize job-title-gradient"></h1>
-                                <h2 id="companyName" class="text-capitalize company-name-style"></h2>
+                                <h1 id="jobTitle"></h1>
+                                <h2 id="companyName" class="company-name-style"></h2>
                                 <div class="job-meta">
                                     <span id="locationWrapper" class="meta-item">
                                         <i class="bi bi-geo-alt-fill"></i>
-                                        <span id="location" class="text-capitalize"></span>
+                                        <span id="location"></span>
                                     </span>
                                     <span id="experienceWrapper" class="meta-item">
                                         <i class="bi bi-briefcase-fill"></i>
-                                        <span id="experience" class="text-capitalize"></span>
+                                        <span id="experience"></span>
                                     </span>
                                     <span id="salaryWrapper" class="meta-item" style="display: none;">
                                         <i class="bi bi-currency-rupee"></i>
@@ -190,11 +131,11 @@
                                     </span>
                                 </div>
                                 <div class="job-stats-container">
-                                    <div class="stats-row d-flex align-items-center justify-content-start gap-4">
+                                    <div class="stats-row">
                                         <div id="jobCodeWrapper" class="stat-item job-code-referal">
-                                            <i class="bi bi-ticket-perforated text-info"></i>
+                                            <i class="bi bi-ticket-perforated"></i>
                                             <span>Job Code: </span>
-                                            <span id="jobCode" class="fw-semibold">Loading...</span>
+                                            <span id="jobCode">Loading...</span>
                                         </div>
 
                                         <div class="stat-item views">
@@ -215,111 +156,187 @@
 
                     <!-- Ad Section After Header -->
                     <div class="ad-section-responsive">
-                            <ins class="adsbygoogle" style="display:block" data-ad-format="fluid"
-                                data-ad-layout-key="-ef+6k-30-ac+ty" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="2637263123"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
-                        
+                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                            data-ad-slot="8664433668" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
                     </div>
 
                     <!-- Job Description Content -->
                     <div class="content-section">
                         <div class="content-wrapper">
                             <div class="job-description content-block">
-                                <!-- Job Overview Container - Will be populated by JS -->
-                                <div class="job-overview-container animate-fade-in">
+                                <div class="job-overview-container">
                                     <!-- Quick Actions -->
-                                    <div class="quick-actions">
-                                        <button id="applyNowBtn" class="action-btn apply-now pulse-animation">
-                                            <i class="bi bi-box-arrow-up-right"></i>
-                                            Apply Now
-                                        </button>
-                                    </div>
+
 
                                     <!-- Job Description Section -->
-                                    <div id="jobDescriptionSection" class="overview-section slide-in-left">
+                                    <div id="jobDescriptionSection" class="overview-section">
                                         <h4 class="section-title">
-                                            <i class="bi bi-file-text gradient-icon"></i>
-                                            <span class="gradient-text">Job Description</span>
+                                            <i class="bi bi-file-text"></i>
+                                            <span>Job Description</span>
                                         </h4>
-                                        <div id="descriptionContent" class="description-content">
-                                            <!-- Will be populated by JS -->
-                                        </div>
+                                        <div id="descriptionContent" class="description-content"></div>
                                     </div>
 
                                     <!-- Ad Section After Description -->
                                     <div class="ad-section-responsive">
-                                            <ins class="adsbygoogle" style="display:block"
-                                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="7430424807"
-                                                data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                            <script>
-                                                (adsbygoogle = window.adsbygoogle || []).push({});
-                                            </script>
-                                        
+                                        <ins class="adsbygoogle" style="display:block"
+                                            data-ad-client="ca-pub-6284022198338659" data-ad-slot="7430424807"
+                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Job Details Section -->
                                     <div id="jobDetailsSection" class="overview-section">
                                         <h4 class="section-title">
-                                            <i class="bi bi-briefcase gradient-icon"></i>
-                                            <span class="gradient-text">Job Details</span>
+                                            <i class="bi bi-briefcase"></i>
+                                            <span>Job Details</span>
                                         </h4>
-                                        <div id="jobDetailsContainer" class="job-details-container">
-                                            <!-- Will be populated by JS -->
-                                        </div>
+                                        <div id="jobDetailsContainer" class="job-details-container"></div>
                                     </div>
 
                                     <!-- Ad Section After Job Details -->
                                     <div class="ad-section-responsive">
-                                            <ins class="adsbygoogle" style="display:block"
-                                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="7785524311"
-                                                data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                            <script>
-                                                (adsbygoogle = window.adsbygoogle || []).push({});
-                                            </script>
-                                       
+
+                                        <ins class="adsbygoogle" style="display:block"
+                                            data-ad-client="ca-pub-6284022198338659" data-ad-slot="7785524311"
+                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Skills Section -->
                                     <div id="skillsSection" class="overview-section content-section">
                                         <h4 class="section-title">
-                                            <i class="bi bi-gear-fill gradient-icon"></i>
-                                            <span class="gradient-text">Required Skills</span>
+                                            <i class="bi bi-gear-fill"></i>
+                                            <span>Required Skills</span>
                                         </h4>
-                                        <div id="skillsContainer" class="skills-container">
-                                            <!-- Will be populated by JS -->
-                                        </div>
+                                        <div id="skillsContainer" class="skills-container"></div>
                                     </div>
 
                                     <!-- Ad Section After Skills -->
                                     <div class="ad-section-responsive">
-                                            <ins class="adsbygoogle" style="display:block"
-                                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="5159360971"
-                                                data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                            <script>
-                                                (adsbygoogle = window.adsbygoogle || []).push({});
-                                            </script>
-                                        
+
+                                        <ins class="adsbygoogle" style="display:block"
+                                            data-ad-client="ca-pub-6284022198338659" data-ad-slot="5159360971"
+                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
+                                    </div>
+                                    <!-- Social Share Section -->
+                                    <!-- Social Share Section - Enhanced for Mobile -->
+                                    <div class="social-share-section mt-4">
+                                        <div class="card shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="card-title mb-3 d-flex align-items-center">
+                                                    <i class="bi bi-share-fill me-2 text-primary"></i>Share this job
+                                                </h6>
+
+                                                <!-- Desktop Layout -->
+                                                <div class="d-none d-md-flex social-share-buttons gap-2 flex-wrap">
+                                                    <button class="btn btn-success btn-sm social-share-btn"
+                                                        data-platform="whatsapp">
+                                                        <i class="bi bi-whatsapp me-1"></i>WhatsApp
+                                                    </button>
+
+                                                    <button class="btn btn-primary btn-sm social-share-btn"
+                                                        data-platform="linkedin">
+                                                        <i class="bi bi-linkedin me-1"></i>LinkedIn
+                                                    </button>
+
+                                                    <button class="btn btn-info btn-sm social-share-btn"
+                                                        data-platform="telegram">
+                                                        <i class="bi bi-telegram me-1"></i>Telegram
+                                                    </button>
+
+                                                    <button class="btn btn-primary btn-sm social-share-btn"
+                                                        data-platform="facebook">
+                                                        <i class="bi bi-facebook me-1"></i>Facebook
+                                                    </button>
+
+                                                    <button class="btn btn-info btn-sm social-share-btn"
+                                                        data-platform="twitter">
+                                                        <i class="bi bi-twitter me-1"></i>Twitter
+                                                    </button>
+
+                                                    <button class="btn btn-outline-secondary btn-sm social-share-btn"
+                                                        data-platform="copy">
+                                                        <i class="bi bi-link-45deg me-1"></i>Copy Link
+                                                    </button>
+                                                </div>
+
+                                                <!-- Mobile Layout - Icon Only -->
+                                                <div class="d-md-none social-share-buttons-mobile">
+                                                    <div class="row g-2 text-center">
+                                                        <div class="col-4">
+                                                            <button class="btn btn-success w-100 social-share-btn"
+                                                                data-platform="whatsapp">
+                                                                <i class="bi bi-whatsapp"></i>
+                                                                <small class="d-block mt-1">WhatsApp</small>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button class="btn btn-primary w-100 social-share-btn"
+                                                                data-platform="linkedin">
+                                                                <i class="bi bi-linkedin"></i>
+                                                                <small class="d-block mt-1">LinkedIn</small>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button class="btn btn-info w-100 social-share-btn"
+                                                                data-platform="telegram">
+                                                                <i class="bi bi-telegram"></i>
+                                                                <small class="d-block mt-1">Telegram</small>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button class="btn btn-primary w-100 social-share-btn"
+                                                                data-platform="facebook">
+                                                                <i class="bi bi-facebook"></i>
+                                                                <small class="d-block mt-1">Facebook</small>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button class="btn btn-info w-100 social-share-btn"
+                                                                data-platform="twitter">
+                                                                <i class="bi bi-twitter"></i>
+                                                                <small class="d-block mt-1">Twitter</small>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button
+                                                                class="btn btn-outline-secondary w-100 social-share-btn"
+                                                                data-platform="copy">
+                                                                <i class="bi bi-link-45deg"></i>
+                                                                <small class="d-block mt-1">Copy Link</small>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Qualifications Section -->
                                     <div id="qualificationsSection" class="overview-section content-section">
                                         <h4 class="section-title">
-                                            <i class="bi bi-mortarboard-fill gradient-icon"></i>
-                                            <span class="gradient-text">Desired Qualifications</span>
+                                            <i class="bi bi-mortarboard-fill"></i>
+                                            <span>Desired Qualifications</span>
                                         </h4>
-                                        <div id="qualificationsContent" class="qualifications-content">
-                                            <!-- Will be populated by JS -->
-                                        </div>
+                                        <div id="qualificationsContent" class="qualifications-content"></div>
                                     </div>
 
                                     <!-- Community Section -->
                                     <div class="community-section content-section">
                                         <h4 class="section-title">
-                                            <i class="bi bi-people-fill gradient-icon"></i>
-                                            <span class="gradient-text">Join Our Community</span>
+                                            <i class="bi bi-people-fill"></i>
+                                            <span>Join Our Community</span>
                                         </h4>
                                         <div class="community-links">
                                             <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o"
@@ -335,20 +352,20 @@
 
                                     <!-- Ad Section Before Apply Button -->
                                     <div class="ad-section-responsive">
-                                            <ins class="adsbygoogle" style="display:block"
-                                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="2533197631"
-                                                data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                            <script>
-                                                (adsbygoogle = window.adsbygoogle || []).push({});
-                                            </script>
-                                       
+
+                                        <ins class="adsbygoogle" style="display:block"
+                                            data-ad-client="ca-pub-6284022198338659" data-ad-slot="2533197631"
+                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Bottom Apply Button -->
                                     <div class="quick-actions mt-4 text-center">
-                                        <button id="bottomApplyBtn" class="action-btn apply-now pulse-animation">
+                                        <button id="bottomApplyBtn" class="action-btn apply-now">
                                             <i class="bi bi-box-arrow-up-right"></i>
-                                            Apply Now
+                                            Click here to Apply Now
                                         </button>
                                     </div>
                                 </div>
@@ -373,7 +390,7 @@
         <!-- Right Ad Column -->
         <div class="ad-right ad-column">
             <span class="ad-label">Sponsored</span>
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+            <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
                 data-ad-slot="8917135672" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
@@ -381,15 +398,11 @@
         </div>
     </div>
 
-    <div class="notification-container"></div>
     <div id="footer-container"></div>
 
     <!-- Essential Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/js/components/component-loader.js"></script>
     <script type="module" src="/js/job-details.js"></script>
-    <script type="module" src="/js/job-stats.js"></script>
-    <script src="/js/social-share.js" defer></script>
 
     <script>
         // Show loader immediately
@@ -397,12 +410,10 @@
 
         // Hide loader when content is loaded
         document.addEventListener('DOMContentLoaded', function () {
-            // Wait for job details to be populated
             const jobTitle = document.getElementById('jobTitle');
             const observer = new MutationObserver(function (mutations) {
                 mutations.forEach(function (mutation) {
                     if (mutation.target.textContent.trim() !== '') {
-                        // Job details are loaded, hide the loader
                         pageLoader.style.opacity = '0';
                         setTimeout(() => {
                             pageLoader.style.display = 'none';
@@ -418,7 +429,7 @@
                 subtree: true
             });
 
-            // Fallback: Hide loader after 5 seconds if content doesn't load
+            // Fallback: Hide loader after 5 seconds
             setTimeout(() => {
                 pageLoader.style.opacity = '0';
                 setTimeout(() => {
