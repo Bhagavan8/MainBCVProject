@@ -8,7 +8,6 @@
     --bg-white: #ffffff;
     --bg-gray: #f8f8f8;
     --border-radius: 8px;
-    --transition: all 0.3s ease;
 }
 
 * {
@@ -29,16 +28,18 @@ body {
 .page-wrapper {
     display: flex;
     min-height: 100vh;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 16px;
     width: 100%;
+    gap: 20px;
 }
 
 .main-container {
     flex: 1;
     width: 100%;
     padding: 20px 0;
+    min-width: 0; /* Prevent flex item overflow */
 }
 
 .page-layout {
@@ -64,7 +65,6 @@ body {
     color: var(--text-secondary);
     text-decoration: none;
     border-radius: var(--border-radius);
-    transition: var(--transition);
     font-weight: 500;
     border: 1px solid #eee;
 }
@@ -192,40 +192,10 @@ body {
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 6px;
-    transition: var(--transition);
 }
 
 .like-btn:hover {
     background: var(--bg-gray);
-}
-
-/* ===== SHARE BUTTONS ===== */
-.share-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    margin-top: 16px;
-}
-
-.share-btn {
-    width: 40px;
-    height: 40px;
-    background: var(--bg-gray);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-    color: var(--text-secondary);
-    flex-shrink: 0;
-    border: none;
-}
-
-.share-btn:hover {
-    background: #e5e5e5;
 }
 
 /* ===== CONTENT SECTIONS ===== */
@@ -261,7 +231,6 @@ body {
     border-radius: var(--border-radius);
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
     text-decoration: none;
     max-width: 100%;
     font-size: 16px;
@@ -370,7 +339,6 @@ body {
     border-radius: 20px;
     font-size: 14px;
     font-weight: 500;
-    transition: var(--transition);
     word-break: break-word;
 }
 
@@ -425,7 +393,6 @@ body {
     border-radius: var(--border-radius);
     text-decoration: none;
     font-weight: 500;
-    transition: var(--transition);
     max-width: 100%;
 }
 
@@ -447,7 +414,7 @@ body {
     background: #006699;
 }
 
-/* ===== ADS STYLES ===== */
+/* ===== ADS STYLES - FIXED ===== */
 .ad-section-responsive {
     margin: 24px 0;
     text-align: center;
@@ -459,10 +426,11 @@ body {
     border-radius: var(--border-radius);
     padding: 20px;
     width: 100%;
-    min-height: 200px;
+    min-height: 250px; /* Increased minimum height */
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .ad-label {
@@ -475,18 +443,45 @@ body {
     text-align: center;
 }
 
-/* Sidebar Ads */
+/* Sidebar Ads - FIXED */
 .ad-left, .ad-right {
     width: 160px;
+    min-width: 160px; /* Ensure minimum width */
     position: sticky;
     top: 100px;
     height: fit-content;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .ad-column {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
+}
+
+/* Ensure ads have proper dimensions */
+.adsbygoogle {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 200px !important;
+}
+
+/* Fallback for ad blocks */
+.ad-fallback {
+    display: none;
+    padding: 20px;
+    background: #f0f0f0;
+    border-radius: var(--border-radius);
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.ad-container:empty + .ad-fallback,
+.ad-box-job:empty + .ad-fallback {
+    display: block;
 }
 
 /* ===== LOADER ===== */
@@ -520,10 +515,23 @@ body {
 
 /* ===== RESPONSIVE DESIGN ===== */
 
+/* Large Desktops (1200px+) */
+@media (min-width: 1200px) {
+    .page-wrapper {
+        gap: 24px;
+    }
+    
+    .ad-left, .ad-right {
+        width: 200px;
+        min-width: 200px;
+    }
+}
+
 /* Tablets (768px - 1023px) */
 @media (max-width: 1023px) {
     .page-wrapper {
         padding: 0 12px;
+        gap: 16px;
     }
     
     .company-logo {
@@ -541,6 +549,11 @@ body {
     
     .ad-left, .ad-right {
         width: 140px;
+        min-width: 140px;
+    }
+    
+    .ad-container, .ad-box-job {
+        min-height: 200px;
     }
 }
 
@@ -597,8 +610,27 @@ body {
         font-size: 20px;
     }
     
+    /* Show sidebar ads on mobile but make them horizontal */
     .ad-left, .ad-right {
-        display: none;
+        display: block !important;
+        width: 100%;
+        position: static;
+        min-width: auto;
+    }
+    
+    .page-wrapper {
+        flex-direction: column;
+    }
+    
+    .ad-column {
+        flex-direction: row;
+        gap: 16px;
+        overflow-x: auto;
+    }
+    
+    .ad-left .ad-column,
+    .ad-right .ad-column {
+        flex-direction: column;
     }
 }
 
@@ -606,6 +638,7 @@ body {
 @media (max-width: 575px) {
     .page-wrapper {
         padding: 0 12px;
+        gap: 12px;
     }
     
     .main-container {
@@ -651,6 +684,11 @@ body {
         width: 100%;
         justify-content: center;
     }
+    
+    .ad-container, .ad-box-job {
+        min-height: 150px;
+        padding: 16px;
+    }
 }
 
 /* Extra Small Mobile Devices (under 360px) */
@@ -680,32 +718,4 @@ body {
     .section-title {
         font-size: 18px;
     }
-}
-
-/* Focus Styles for Accessibility */
-button:focus-visible,
-a:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* Loading States */
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--bg-gray);
-    border-top: 2px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    transform: translate(-50%, -50%);
 }

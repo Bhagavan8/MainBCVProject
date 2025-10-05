@@ -10,6 +10,75 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 const auth = getAuth();
 
 class JobDetailsManager {
+
+    initializeAds() {
+        console.log('Initializing ads...');
+
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initAdsAfterLoad());
+        } else {
+            this.initAdsAfterLoad();
+        }
+    }
+    initAdsAfterLoad() {
+        // Multiple attempts to ensure ads load properly
+        const initAttempts = [100, 500, 1000, 2000];
+
+        initAttempts.forEach((delay, index) => {
+            setTimeout(() => {
+                console.log(`Ad initialization attempt ${index + 1} after ${delay}ms`);
+                this.forceAdInitialization();
+            }, delay);
+        });
+    }
+    forceAdInitialization() {
+        try {
+            // Get all ad containers
+            const adContainers = document.querySelectorAll('.adsbygoogle');
+            console.log(`Found ${adContainers.length} ad containers`);
+
+            adContainers.forEach((container, index) => {
+                // Force container to have dimensions
+                const parent = container.parentElement;
+                if (parent) {
+                    parent.style.minHeight = '250px';
+                    parent.style.display = 'block';
+                    parent.style.visibility = 'visible';
+                }
+
+                container.style.display = 'block';
+                container.style.visibility = 'visible';
+                container.style.minHeight = '250px';
+                container.style.width = '100%';
+
+                // Check if ad script is loaded and initialize
+                if (window.adsbygoogle) {
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        console.log(`Ad container ${index + 1} initialized`);
+                    } catch (error) {
+                        console.error(`Error initializing ad container ${index + 1}:`, error);
+                    }
+                } else {
+                    console.warn('adsbygoogle not available yet');
+                }
+            });
+
+            // Additional initialization for responsive ads
+            if (window.adsbygoogle) {
+                setTimeout(() => {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    console.log('Additional ad push completed');
+                }, 1000);
+            }
+        } catch (error) {
+            console.error('Error in forceAdInitialization:', error);
+        }
+    }
+
+
+    // Modify the constructor to call this new method
     constructor() {
         if (typeof JobDetailsManager.instance === 'object') {
             return JobDetailsManager.instance;
@@ -25,6 +94,7 @@ class JobDetailsManager {
 
         this.init();
         this.initializeCopyLink();
+        this.initializeAds(); // Add this line
 
         return this;
     }
@@ -449,7 +519,7 @@ class JobDetailsManager {
         // Hide skills and qualifications sections for bank jobs
         const skillsSection = document.getElementById('skillsSection');
         const qualificationsSection = document.getElementById('qualificationsSection');
-        
+
         if (skillsSection) skillsSection.style.display = 'none';
         if (qualificationsSection) qualificationsSection.style.display = 'none';
 
@@ -488,7 +558,7 @@ class JobDetailsManager {
         if (!detailsContainer) return;
 
         let html = '';
-        
+
         if (job.experience) {
             html += `
                 <div class="detail-item">
@@ -496,7 +566,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
                 </div>`;
         }
-        
+
         if (job.educationLevel) {
             html += `
                 <div class="detail-item">
@@ -504,7 +574,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
                 </div>`;
         }
-        
+
         if (job.location) {
             html += `
                 <div class="detail-item">
@@ -512,7 +582,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.formatLocation(job.location)}</span>
                 </div>`;
         }
-        
+
         if (job.lastDate) {
             html += `
                 <div class="detail-item">
@@ -520,7 +590,7 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeFirstLetter(job.lastDate)}</span>
                 </div>`;
         }
-        
+
         if (job.salary) {
             html += `
                 <div class="detail-item">
@@ -528,21 +598,21 @@ class JobDetailsManager {
                     <span class="detail-value">${this.capitalizeFirstLetter(job.salary)}</span>
                 </div>`;
         }
-        
+
         detailsContainer.innerHTML = html;
     }
 
     updateSkillsSection(job) {
         const skillsSection = document.getElementById('skillsSection');
         const skillsContainer = document.getElementById('skillsContainer');
-        
+
         if (!skillsSection || !skillsContainer) return;
-        
+
         if (!job.skills || !job.skills.length) {
             skillsSection.style.display = 'none';
             return;
         }
-        
+
         skillsContainer.innerHTML = job.skills.map(skill => `
             <span class="skill-tag">
                 ${this.capitalizeFirstLetter(skill)}
@@ -553,14 +623,14 @@ class JobDetailsManager {
     updateQualificationsSection(job) {
         const qualificationsSection = document.getElementById('qualificationsSection');
         const qualificationsContent = document.getElementById('qualificationsContent');
-        
+
         if (!qualificationsSection || !qualificationsContent) return;
-        
+
         if (!job.qualifications) {
             qualificationsSection.style.display = 'none';
             return;
         }
-        
+
         qualificationsContent.innerHTML = this.formatQualifications(job.qualifications);
     }
 
@@ -647,7 +717,7 @@ class JobDetailsManager {
     async handleApplyClick(job) {
         try {
             const user = auth.currentUser;
-    
+
             if (user) {
                 const applicationRef = doc(db, 'jobApplications', `${this.jobId}_${user.uid}`);
                 await setDoc(applicationRef, {
@@ -660,7 +730,7 @@ class JobDetailsManager {
                     status: 'applied'
                 });
             }
-    
+
             // Fix for Apply Now button - use ensureHttp method for consistent URL handling
             if (job.applicationLink) {
                 window.open(this.ensureHttp(job.applicationLink), '_blank');
