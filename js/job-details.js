@@ -206,9 +206,7 @@ class JobDetailsManager {
 
     // NEW METHOD: Generate OG Image URL
     generateOGImageUrl(jobTitle, companyName) {
-        // Use your existing OG image or create a dynamic one
-        // For now, using a static image - replace with your actual OG image URL
-        const baseImageUrl = 'https://bcvworld.com/assets/images/og-job-image.jpg';
+        const baseImageUrl = 'https://bcvworld.com/assets/images/bcvworld-og.png';
         
         // If you want to add parameters for dynamic generation later
         const params = new URLSearchParams({
