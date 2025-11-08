@@ -4,7 +4,13 @@ import {
     getDoc,
     updateDoc,
     serverTimestamp,
-    setDoc
+    setDoc,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
+    getDocs
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 const auth = getAuth();
@@ -94,6 +100,7 @@ class JobDetailsManager {
         if (this.currentJob) {
             this.setupEventListeners();
             this.initializeAds();
+            this.setupNavigationScroll();
         }
     }
 
@@ -152,6 +159,9 @@ class JobDetailsManager {
         
         // UPDATE: Add meta tags update for social sharing
         this.updateMetaTagsForSharing(this.currentJob);
+        
+        // NEW: Load before/after jobs navigation
+        await this.loadBeforeAfterJobs();
         
         this.initializeSocialShare();
         this.setupEventListeners();
@@ -216,6 +226,215 @@ class JobDetailsManager {
         });
         
         return `${baseImageUrl}?${params.toString()}`;
+    }
+
+    // NEW METHOD: Load before/after jobs navigation
+    async loadBeforeAfterJobs() {
+        try {
+            if (!this.currentJob) return;
+
+            const previousJobCard = document.getElementById('previousJobCard');
+            const nextJobCard = document.getElementById('nextJobCard');
+
+            if (!previousJobCard || !nextJobCard) return;
+
+            // Add loading state
+            previousJobCard.classList.add('loading');
+            nextJobCard.classList.add('loading');
+
+            // Get current job's creation timestamp or use current time as fallback
+            const currentJobTimestamp = this.currentJob.createdAt || new Date();
+            const jobType = this.jobType || 'private';
+
+            // Query for previous job (created before current job)
+            const previousJobQuery = query(
+                collection(db, this.getCollectionName()),
+                where('createdAt', '<', currentJobTimestamp),
+                orderBy('createdAt', 'desc'),
+                limit(1)
+            );
+
+            // Query for next job (created after current job)
+            const nextJobQuery = query(
+                collection(db, this.getCollectionName()),
+                where('createdAt', '>', currentJobTimestamp),
+                orderBy('createdAt', 'asc'),
+                limit(1)
+            );
+
+            // Execute both queries with timeout protection
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Navigation query timeout')), 5000)
+            );
+
+            const navigationPromise = Promise.all([
+                getDocs(previousJobQuery),
+                getDocs(nextJobQuery)
+            ]);
+
+            const [previousSnapshot, nextSnapshot] = await Promise.race([
+                navigationPromise,
+                timeoutPromise
+            ]);
+
+            // Handle previous job
+            if (!previousSnapshot.empty) {
+                const previousJobDoc = previousSnapshot.docs[0];
+                const previousJob = { id: previousJobDoc.id, ...previousJobDoc.data() };
+                await this.populateNavigationCard(previousJobCard, previousJob, 'previous', jobType);
+            } else {
+                // Fallback: try to get the most recent job if no previous job found
+                const fallbackQuery = query(
+                    collection(db, this.getCollectionName()),
+                    orderBy('createdAt', 'desc'),
+                    limit(2)
+                );
+                const fallbackSnapshot = await getDocs(fallbackQuery);
+                
+                if (fallbackSnapshot.docs.length > 1) {
+                    const fallbackJob = fallbackSnapshot.docs[1];
+                    const fallbackJobData = { id: fallbackJob.id, ...fallbackJob.data() };
+                    await this.populateNavigationCard(previousJobCard, fallbackJobData, 'previous', jobType);
+                } else {
+                    this.showEmptyNavigationCard(previousJobCard, 'No previous job available');
+                }
+            }
+
+            // Handle next job
+            if (!nextSnapshot.empty) {
+                const nextJobDoc = nextSnapshot.docs[0];
+                const nextJob = { id: nextJobDoc.id, ...nextJobDoc.data() };
+                await this.populateNavigationCard(nextJobCard, nextJob, 'next', jobType);
+            } else {
+                // Fallback: try to get the oldest job if no next job found
+                const fallbackQuery = query(
+                    collection(db, this.getCollectionName()),
+                    orderBy('createdAt', 'asc'),
+                    limit(2)
+                );
+                const fallbackSnapshot = await getDocs(fallbackQuery);
+                
+                if (fallbackSnapshot.docs.length > 1) {
+                    const fallbackJob = fallbackSnapshot.docs[1];
+                    const fallbackJobData = { id: fallbackJob.id, ...fallbackJob.data() };
+                    await this.populateNavigationCard(nextJobCard, fallbackJobData, 'next', jobType);
+                } else {
+                    this.showEmptyNavigationCard(nextJobCard, 'No next job available');
+                }
+            }
+
+        } catch (error) {
+            console.error('Error loading before/after jobs:', error);
+            
+            // Show user-friendly error messages
+            const errorMessage = error.message === 'Navigation query timeout' 
+                ? 'Loading timeout - please refresh' 
+                : 'Unable to load navigation';
+                
+            this.showEmptyNavigationCard(document.getElementById('previousJobCard'), errorMessage);
+            this.showEmptyNavigationCard(document.getElementById('nextJobCard'), errorMessage);
+        } finally {
+            // Remove loading state
+            const previousJobCard = document.getElementById('previousJobCard');
+            const nextJobCard = document.getElementById('nextJobCard');
+            if (previousJobCard) previousJobCard.classList.remove('loading');
+            if (nextJobCard) nextJobCard.classList.remove('loading');
+        }
+    }
+
+    // NEW METHOD: Populate navigation card with job data
+    async populateNavigationCard(cardElement, job, direction, jobType) {
+        try {
+            // Get company data if available
+            let companyData = {};
+            if (job.companyId) {
+                const companyDocRef = doc(db, 'companies', job.companyId);
+                const companyDoc = await getDoc(companyDocRef);
+                if (companyDoc.exists()) {
+                    companyData = companyDoc.data();
+                }
+            }
+
+            // Update card elements
+            const jobTitle = job.jobTitle || job.postName || 'Job Title';
+            const companyName = companyData.name || job.companyName || job.bankName || 'Company Name';
+            const education = job.educationLevel || job.qualification || 'Education requirements not specified';
+            const companyLogo = companyData.logo || job.companyLogo;
+
+            // Update job title
+            const jobTitleEl = cardElement.querySelector('.nav-job-title');
+            if (jobTitleEl) jobTitleEl.textContent = jobTitle;
+
+            // Update company name
+            const companyNameEl = cardElement.querySelector('.nav-company-name');
+            if (companyNameEl) companyNameEl.textContent = companyName;
+
+            // Update education
+            const educationEl = cardElement.querySelector('.nav-education');
+            if (educationEl) {
+                const formattedEducation = this.capitalizeEducationFirstLetter(education);
+                educationEl.textContent = formattedEducation;
+            }
+
+            // Update company logo
+            const logoImg = cardElement.querySelector('.nav-logo-img');
+            if (logoImg) {
+                const logoSrc = companyLogo?.startsWith('http') 
+                    ? companyLogo 
+                    : `/assets/images/companies/${companyLogo || 'default-company.webp'}`;
+                logoImg.src = logoSrc;
+                logoImg.alt = `${companyName} Logo`;
+                
+                // Add error handling for logo
+                logoImg.onerror = function() {
+                    this.src = '/assets/images/companies/default-company.webp';
+                };
+            }
+
+            // Update view button link
+            const viewBtn = cardElement.querySelector('.nav-view-btn');
+            if (viewBtn) {
+                const jobUrl = `/html/job-details.html?id=${job.id}&type=${jobType}`;
+                viewBtn.setAttribute('onclick', `window.location.href='${jobUrl}'`);
+            }
+
+            // Add click handler to entire card
+            cardElement.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-view-btn')) {
+                    const jobUrl = `/html/job-details.html?id=${job.id}&type=${jobType}`;
+                    window.location.href = jobUrl;
+                }
+            });
+
+            // Remove any empty state classes
+            cardElement.classList.remove('empty', 'hidden');
+
+        } catch (error) {
+            console.error(`Error populating ${direction} navigation card:`, error);
+            this.showEmptyNavigationCard(cardElement, 'Error loading job details');
+        }
+    }
+
+    // NEW METHOD: Show empty navigation card
+    showEmptyNavigationCard(cardElement, message) {
+        cardElement.classList.add('empty');
+        
+        const jobTitleEl = cardElement.querySelector('.nav-job-title');
+        const companyNameEl = cardElement.querySelector('.nav-company-name');
+        const educationEl = cardElement.querySelector('.nav-education');
+        const viewBtn = cardElement.querySelector('.nav-view-btn');
+        const logoImg = cardElement.querySelector('.nav-logo-img');
+
+        if (jobTitleEl) jobTitleEl.textContent = message;
+        if (companyNameEl) companyNameEl.textContent = '';
+        if (educationEl) educationEl.textContent = '';
+        if (viewBtn) {
+            viewBtn.style.display = 'none';
+        }
+        if (logoImg) {
+            logoImg.src = '/assets/images/default-company.webp';
+            logoImg.alt = 'No company logo';
+        }
     }
 
     initializeSocialShare() {
@@ -1090,6 +1309,20 @@ class JobDetailsManager {
         }).catch(error => {
             console.error('Failed to copy link:', error);
             this.showToast('Failed to copy link', 'error');
+        });
+    }
+
+    // NEW METHOD: Smooth scroll to top when navigating between jobs
+    setupNavigationScroll() {
+        // Add smooth scrolling behavior for navigation
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-job-card') && !e.target.closest('.nav-view-btn')) {
+                // Scroll to top with smooth behavior
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
         });
     }
 }
