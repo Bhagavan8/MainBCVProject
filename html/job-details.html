@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="/css/job-details.css" rel="stylesheet">
+    <link href="/css/notifications.css" rel="stylesheet">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
         crossorigin="anonymous"></script>
@@ -78,9 +79,13 @@
             }
         }
     </style>
+    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
 </head>
 
 <body>
+    <amp-auto-ads type="adsense" data-ad-client="ca-pub-6284022198338659">
+    </amp-auto-ads>
     <div id="pageLoader" class="page-loader-minimal">
         <div class="loader-spinner"></div>
     </div>
@@ -475,7 +480,7 @@
                             </script>
                         </div>
                     </div>
-                    
+
                     <div class="ad-section mt-5">
                         <div class="ad-box-job">
                             <!-- After Last but one -->
@@ -501,49 +506,86 @@
             </script>
         </div>
 
-    </div>
+        <div class="cache-notice hidden" id="cacheNotice">
+            <div class="notice-content">
+                <div class="notice-text" id="noticeText">
+                    <strong>Clear Browser Cache:</strong> For optimal performance
+                </div>
+                <div class="notice-actions">
+                    <button id="clearCache" class="clear-btn">
+                        <div class="btn-content">
+                            <span class="btn-text" id="btnText">Clear Cache</span>
+                            <div class="loader" id="cacheLoader"></div>
+                            <span class="status-msg success-msg" id="successMsg">Cleared!</span>
+                            <span class="status-msg info-msg" id="ignoreMsg">Already Cleared</span>
+                        </div>
+                    </button>
+                    <button id="closeNotice" class="close-btn">Dismiss</button>
+                </div>
+            </div>
+        </div>
 
-    <div id="footer-container"></div>
+        <!-- Google Ads Container -->
+        <div id="googleAds" class="ads-popup">
+            <div class="ads-header">
+                <button class="ads-close">&times;</button>
+                <p>Sponsored Content</p>
+            </div>
+            <div class="ads-body">
+                <p>To skip this ad, click the X button or wait for <strong>1 minute</strong> for it to close automatically.</p>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <div class="ads-timer">Ad closes in <span id="adsTime">60</span>s</div>
+            </div>
+        </div>
+        </div>
 
-    <!-- Essential Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/js/job-details.js"></script>
-    <script type="module" src="/js/job-stats.js"></script>
+        <div id="footer-container"></div>
 
-    <script>
-        // Show loader immediately
-        const pageLoader = document.getElementById('pageLoader');
 
-        // Hide loader when content is loaded
-        document.addEventListener('DOMContentLoaded', function () {
-            const jobTitle = document.getElementById('jobTitle');
-            const observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
-                    if (mutation.target.textContent.trim() !== '') {
-                        pageLoader.style.opacity = '0';
-                        setTimeout(() => {
-                            pageLoader.style.display = 'none';
-                        }, 300);
-                        observer.disconnect();
-                    }
+        <!-- Essential Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script type="module" src="/js/job-details.js"></script>
+        <script src="/js/notifications.js"></script>
+        <script type="module" src="/js/job-stats.js"></script>
+
+        <script>
+            // Show loader immediately
+            const pageLoader = document.getElementById('pageLoader');
+
+            // Hide loader when content is loaded
+            document.addEventListener('DOMContentLoaded', function () {
+                const jobTitle = document.getElementById('jobTitle');
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.target.textContent.trim() !== '') {
+                            pageLoader.style.opacity = '0';
+                            setTimeout(() => {
+                                pageLoader.style.display = 'none';
+                            }, 300);
+                            observer.disconnect();
+                        }
+                    });
                 });
-            });
 
-            observer.observe(jobTitle, {
-                childList: true,
-                characterData: true,
-                subtree: true
-            });
+                observer.observe(jobTitle, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
 
-            // Fallback: Hide loader after 5 seconds
-            setTimeout(() => {
-                pageLoader.style.opacity = '0';
+                // Fallback: Hide loader after 5 seconds
                 setTimeout(() => {
-                    pageLoader.style.display = 'none';
-                }, 300);
-            }, 5000);
-        });
-    </script>
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+        </script>
 </body>
 
 </html>
