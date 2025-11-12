@@ -2,7 +2,7 @@
 (function () {
   // Element references with guards
   const cacheNotice = document.getElementById('cacheNotice');
-  const clearCacheBtn = document.getElementById('clearCache');
+  const clearCacheBtn = "";
   const closeNoticeBtn = document.getElementById('closeNotice');
   const googleAds = document.getElementById('googleAds');
   const adsCloseBtn = document.querySelector('.ads-close');
@@ -132,13 +132,11 @@
       if (btnText) btnText.style.display = 'none';
       if (successMsg) successMsg.style.display = 'none';
       if (cacheLoader) cacheLoader.style.display = 'none';
-      if (ignoreMsg) ignoreMsg.style.display = 'inline';
       if (noticeText) noticeText.innerHTML = '<strong>✓ Cache Status:</strong> Already cleared - Your good to go!';
     } else {
       cacheNotice.classList.remove('cleared');
       if (clearCacheBtn) clearCacheBtn.disabled = false;
       if (btnText) btnText.style.display = 'inline';
-      if (ignoreMsg) ignoreMsg.style.display = 'none';
       if (successMsg) successMsg.style.display = 'none';
       if (cacheLoader) cacheLoader.style.display = 'none';
       if (noticeText) noticeText.innerHTML = ' <strong>Clear Browser Cache:</strong> Clear your browser cache for the best and most up-to-date viewing experience';
