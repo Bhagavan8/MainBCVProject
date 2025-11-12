@@ -141,7 +141,7 @@
       if (ignoreMsg) ignoreMsg.style.display = 'none';
       if (successMsg) successMsg.style.display = 'none';
       if (cacheLoader) cacheLoader.style.display = 'none';
-      if (noticeText) noticeText.innerHTML = '<strong>Clear Browser Cache:</strong> For optimal performance';
+      if (noticeText) noticeText.innerHTML = ' <strong>Clear Browser Cache:</strong> Clear your browser cache for the best and most up-to-date viewing experience';
     }
   }
 
