@@ -1,301 +1,380 @@
 * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        body {
-            background: transparent;
-            min-height: 100vh;
-            padding: 20px;
-        }
+body {
+    background: transparent;
+    min-height: 100vh;
+    padding: 20px;
+}
 
-        /* Cache Notification Bar */
-        .cache-notice {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
-            width: auto;
-            transition: all 0.3s ease;
-        }
+/* Cache Notification Bar */
+.cache-notice {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 90%;
+    width: auto;
+    transition: all 0.3s ease;
+}
 
-        .cache-notice.hidden {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateX(-50%) translateY(20px);
-        }
+.cache-notice.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(20px);
+}
 
-        .cache-notice.cleared {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        }
+.cache-notice.cleared {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+}
 
-        .notice-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+.notice-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
-        .notice-text {
-            font-size: 14px;
-            line-height: 1.4;
-            white-space: nowrap;
-        }
+.notice-text {
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: nowrap;
+}
 
-        .notice-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+.notice-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
-        .clear-btn {
-            background: white;
-            color: #27ae60;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            white-space: nowrap;
-            font-size: 13px;
-            min-width: 100px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
+.clear-btn {
+    background: white;
+    color: #27ae60;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-size: 13px;
+    min-width: 100px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
 
-        .clear-btn:hover:not(:disabled) {
-            background: #f8f9fa;
-            transform: translateY(-1px);
-        }
+.clear-btn:hover:not(:disabled) {
+    background: #f8f9fa;
+    transform: translateY(-1px);
+}
 
-        .clear-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            background: #ecf0f1;
-            color: #7f8c8d;
-        }
+.clear-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background: #ecf0f1;
+    color: #7f8c8d;
+}
 
-        .close-btn {
-            background: transparent;
-            color: white;
-            border: 1px solid white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            white-space: nowrap;
-            font-size: 13px;
-        }
+.close-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-size: 13px;
+}
 
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 
-        /* Google Ads Container */
-        .ads-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s ease;
-            max-width: 400px;
-            width: 90%;
-            overflow: hidden;
-        }
+/* Google Ads Container */
+.ads-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    z-index: 10003; /* overlay above header and sticky */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+    max-width: 400px;
+    width: 90%;
+    overflow: hidden;
+}
 
-        .ads-popup.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
+.ads-popup.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
 
-        .ads-header {
-            background: linear-gradient(135deg, #4285f4, #34a853);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
+.ads-header {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
 
-        .ads-header h3 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
+.ads-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
 
-        .ads-body {
-            padding: 25px;
-            text-align: center;
-        }
+.ads-body {
+    padding: 25px;
+    text-align: center;
+}
 
-        .ads-body p {
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
+.ads-body p {
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
 
-        .ads-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 20px;
-            cursor: pointer;
-            color: white;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            transition: all 0.3s;
-        }
+.ads-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    transition: all 0.3s;
+}
 
-        .ads-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+.ads-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
 
-        .ads-timer {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #7f8c8d;
-            padding: 8px 12px;
-            background: #f8f9fa;
-            border-radius: 20px;
-            display: inline-block;
-        }
+.ads-timer {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #7f8c8d;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    display: inline-block;
+}
 
-        /* Loading Animation */
-        .loader {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #27ae60;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
+/* Loading Animation */
+.loader {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #27ae60;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
-        /* Status Messages */
-        .status-msg {
-            display: none;
-            font-weight: 600;
-            font-size: 13px;
-        }
+/* Status Messages */
+.status-msg {
+    display: none;
+    font-weight: 600;
+    font-size: 13px;
+}
 
-        .success-msg {
-            color: #27ae60;
-        }
+.success-msg {
+    color: #27ae60;
+}
 
-        .info-msg {
-            color: #e74c3c;
-            font-weight: 600;
-        }
+.info-msg {
+    color: #e74c3c;
+    font-weight: 600;
+}
 
-        .btn-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
+.btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .cache-notice {
-                bottom: 15px;
-                padding: 12px 20px;
-                max-width: 95%;
-            }
-            
-            .notice-content {
-                gap: 10px;
-            }
-            
-            .notice-text {
-                font-size: 13px;
-                white-space: normal;
-                text-align: center;
-            }
-            
-            .ads-popup {
-                width: 95%;
-            }
-        }
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cache-notice {
+        bottom: 15px;
+        padding: 12px 20px;
+        max-width: 95%;
+    }
 
-        @media (max-width: 480px) {
-            .cache-notice {
-                padding: 10px 15px;
-                border-radius: 25px;
-            }
-            
-            .notice-content {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .notice-text {
-                font-size: 12px;
-            }
-            
-            .clear-btn,
-            .close-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-                min-width: 90px;
-            }
-            
-            .ads-header h3 {
-                font-size: 1.3rem;
-            }
-            
-            .ads-body {
-                padding: 20px;
-            }
-            
-            .ads-body p {
-                font-size: 14px;
-            }
-        }
+    .notice-content {
+        gap: 10px;
+    }
 
-        @media (max-width: 360px) {
-            .cache-notice {
-                padding: 8px 12px;
-            }
-            
-            .notice-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .clear-btn,
-            .close-btn {
-                width: 100%;
-            }
-        }
+    .notice-text {
+        font-size: 13px;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .ads-popup {
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .cache-notice {
+        padding: 10px 15px;
+        border-radius: 25px;
+    }
+
+    .notice-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .notice-text {
+        font-size: 12px;
+    }
+
+    .clear-btn,
+    .close-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-width: 90px;
+    }
+
+    .ads-header h3 {
+        font-size: 1.3rem;
+    }
+
+    .ads-body {
+        padding: 20px;
+    }
+
+    .ads-body p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 360px) {
+    .cache-notice {
+        padding: 8px 12px;
+    }
+
+    .notice-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .clear-btn,
+    .close-btn {
+        width: 100%;
+    }
+}
+
+
+.sticky-bottom-ad {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 8px;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  will-change: transform, opacity;
+  /* CSS variable for height (managed by JS) */
+  --sticky-ad-height: 80px;
+  min-height: var(--sticky-ad-height);
+  max-height: calc(var(--sticky-ad-height) * 1.6); /* safety cap */
+  overflow: hidden;
+}
+
+/* Inner wrapper limits how wide the ad grows on large screens */
+.sticky-ad-inner {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+/* Cap the inner ad iframe/ins height for safety */
+.sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe {
+  max-height: 120px !important; /* absolute cap */
+  overflow: hidden;
+  display: block;
+}
+
+/* Close button (placed inside top sticky) */
+.sticky-ad-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: rgba(255,255,255,0.9);
+  border: 0;
+  font-size: 18px;
+  padding: 4px 8px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10001;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* When "hidden" class added, slide up and hide */
+.sticky-bottom-ad.hidden {
+  transform: translateY(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* body padding so content isn't hidden under ad (apply padding-top now) */
+html.has-sticky-ad, body.has-sticky-ad {
+  padding-top: var(--sticky-ad-height) !important;
+}
+
+/* Smaller caps for small screens */
+@media (max-width: 420px) {
+  .sticky-bottom-ad { --sticky-ad-height: 0px; }
+  .sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe { max-height: 96px !important; }
+}
+
+/* Desktop slightly taller */
+@media (min-width: 1200px) {
+  .sticky-bottom-ad { --sticky-ad-height: 90px; }
+  .sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe { max-height: 130px !important; }
+}
