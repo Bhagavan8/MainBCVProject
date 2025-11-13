@@ -117,7 +117,7 @@ body {
     background: white;
     border-radius: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    z-index: 10003; /* overlay above header and sticky */
+    z-index: 10003;
     opacity: 0;
     visibility: hidden;
     transition: all 0.5s ease;
@@ -228,6 +228,126 @@ body {
     gap: 5px;
 }
 
+/* Sticky Bottom Ad */
+.sticky-bottom-ad {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 8px;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+    will-change: transform, opacity;
+    --sticky-ad-height: 80px;
+    min-height: var(--sticky-ad-height);
+    max-height: calc(var(--sticky-ad-height) * 1.6);
+    overflow: hidden;
+}
+
+.sticky-ad-inner {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe {
+    max-height: 120px !important;
+    overflow: hidden;
+    display: block;
+}
+
+.sticky-ad-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: saturate(180%) blur(8px);
+    color: #111827;
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+    cursor: pointer;
+    line-height: 1;
+    pointer-events: auto;
+    -webkit-user-select: none;
+    user-select: none;
+    font-size: 18px;
+}
+
+.sticky-ad-close:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+    border-color: rgba(17, 24, 39, 0.12);
+}
+
+.sticky-ad-close:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+.sticky-ad-close:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.sticky-bottom-ad.hidden {
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+html.has-sticky-ad, body.has-sticky-ad {
+    padding-top: var(--sticky-ad-height) !important;
+}
+
+body.with-bottom-anchor-ad {
+    padding-bottom: var(--bottom-ad-height, 0px);
+}
+
+.apply-cta-guard {
+    position: relative;
+    isolation: isolate;
+    z-index: 2;
+}
+
+/* Prevent ad overlays from blocking page clicks */
+.ads-popup {
+  pointer-events: none; /* clicks pass through outside the inner box */
+}
+
+.ads-popup .notification-popup,
+.ads-popup .ad-inner,
+.ads-popup .popup-inner,
+.ads-popup .ads-header,
+.ads-popup .ads-body,
+.ads-popup .ads-close,
+.ads-popup ins,
+.ads-popup iframe {
+  pointer-events: auto; /* only ad box and its controls are interactive */
+}
+
+.sticky-bottom-ad {
+    pointer-events: auto;
+}
+
+.sticky-bottom-ad .sticky-ad-inner,
+.sticky-bottom-ad .sticky-ad-close {
+    pointer-events: auto;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .cache-notice {
@@ -284,6 +404,13 @@ body {
     .ads-body p {
         font-size: 14px;
     }
+    
+    .sticky-bottom-ad { 
+        --sticky-ad-height: 70px; 
+    }
+    .sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe { 
+        max-height: 96px !important; 
+    }
 }
 
 @media (max-width: 360px) {
@@ -302,130 +429,34 @@ body {
     }
 }
 
-
-.sticky-bottom-ad {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9999;
-  background: #fff;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 6px 8px;
-  transition: transform 0.28s ease, opacity 0.28s ease;
-  will-change: transform, opacity;
-  /* CSS variable for height (managed by JS) */
-  --sticky-ad-height: 80px;
-  min-height: var(--sticky-ad-height);
-  max-height: calc(var(--sticky-ad-height) * 1.6); /* safety cap */
-  overflow: hidden;
-}
-
-/* Inner wrapper limits how wide the ad grows on large screens */
-.sticky-ad-inner {
-  width: 100%;
-  max-width: 980px;
-  margin: 0 auto;
-}
-
-/* Cap the inner ad iframe/ins height for safety */
-.sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe {
-  max-height: 120px !important; /* absolute cap */
-  overflow: hidden;
-  display: block;
-}
-
-/* Close button (placed inside top sticky) */
-/* Sticky Ad Close - redesigned */
-.sticky-ad-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: saturate(180%) blur(8px);
-  color: #111827;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
-  cursor: pointer;
-  line-height: 1;
-  pointer-events: auto; /* ensure clickable */
-  /* Prevent accidental text selection on rapid taps */
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.sticky-ad-close:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
-  border-color: rgba(17, 24, 39, 0.12);
-}
-
-.sticky-ad-close:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
-}
-
-.sticky-ad-close:focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 2px;
-}
-
-.sticky-ad-close i {
-  font-size: 18px;
-  display: inline-block;
-  vertical-align: middle;
+@media (min-width: 1200px) {
+    .sticky-bottom-ad { 
+        --sticky-ad-height: 90px; 
+    }
+    .sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe { 
+        max-height: 130px !important; 
+    }
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .sticky-ad-close { width: 40px; height: 40px; }
-  .sticky-ad-close i { font-size: 20px; }
+    .sticky-ad-close { 
+        width: 40px; 
+        height: 40px; 
+    }
+    .sticky-ad-close i { 
+        font-size: 20px; 
+    }
 }
 
 @media (prefers-color-scheme: dark) {
-  .sticky-ad-close {
-    background: rgba(31, 41, 55, 0.9);
-    color: #f9fafb;
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  }
-  .sticky-ad-close:hover {
-    background: rgba(31, 41, 55, 1);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-}
-
-/* When "hidden" class added, slide up and hide */
-.sticky-bottom-ad.hidden {
-  transform: translateY(-120%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* body padding so content isn't hidden under ad (apply padding-top now) */
-html.has-sticky-ad, body.has-sticky-ad {
-  padding-top: var(--sticky-ad-height) !important;
-}
-
-/* Smaller caps for small screens */
-@media (max-width: 420px) {
-  .sticky-bottom-ad { --sticky-ad-height: 0px; }
-  .sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe { max-height: 96px !important; }
-}
-
-/* Desktop slightly taller */
-@media (min-width: 1200px) {
-  .sticky-bottom-ad { --sticky-ad-height: 90px; }
-  .sticky-ad-inner > ins, .sticky-ad-inner > ins > iframe { max-height: 130px !important; }
+    .sticky-ad-close {
+        background: rgba(31, 41, 55, 0.9);
+        color: #f9fafb;
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+    .sticky-ad-close:hover {
+        background: rgba(31, 41, 55, 1);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
 }
