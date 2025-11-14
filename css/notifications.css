@@ -461,3 +461,60 @@ body.with-bottom-anchor-ad {
         border-color: rgba(255, 255, 255, 0.12);
     }
 }
+
+/* Fix for button click issues - ADD THIS TO YOUR EXISTING CSS */
+.apply-cta-guard {
+    position: relative;
+    z-index: 1000;
+}
+
+#bottomApplyBtn, .back-btn-enhanced, .nav-view-btn, .social-share-btn {
+    position: relative;
+    z-index: 1001;
+    pointer-events: auto !important;
+}
+
+/* Prevent ads from blocking buttons */
+.adsbygoogle, .ad-section, .ad-column, .ad-section-responsive {
+    pointer-events: none;
+}
+
+.adsbygoogle iframe {
+    pointer-events: none !important;
+}
+
+/* Ensure buttons are always clickable */
+.action-btn.apply-now {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 1001 !important;
+}
+
+.back-btn-enhanced {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 1001 !important;
+}
+/* === CRITICAL BUTTON FIXES - ADD THIS === */
+    .apply-cta-guard {
+        position: relative;
+        z-index: 10050;
+    }
+
+    #bottomApplyBtn, .back-btn-enhanced, .nav-view-btn, .social-share-btn,
+    .action-btn.apply-now, .community-btn {
+        position: relative !important;
+        z-index: 10051 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+    }
+
+    /* Prevent ALL ads from blocking buttons */
+    .adsbygoogle, .ad-section, .ad-column, .ad-section-responsive,
+    .ad-box-job, .ad-left, .ad-right, ins[class*="adsbygoogle"] {
+        pointer-events: none !important;
+    }
+
+    .adsbygoogle iframe, ins iframe {
+        pointer-events: none !important;
+    }
