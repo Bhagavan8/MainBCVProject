@@ -39,7 +39,8 @@ body {
     flex: 1;
     width: 100%;
     padding: 20px 0;
-    min-width: 0; /* Prevent flex item overflow */
+    min-width: 0;
+    /* Prevent flex item overflow */
 }
 
 .page-layout {
@@ -96,7 +97,7 @@ body {
     .back-navigation-wrapper {
         padding: 0 10px 15px;
     }
-    
+
     .back-btn-enhanced {
         padding: 8px 12px;
         min-height: 36px;
@@ -177,6 +178,7 @@ body {
     font-size: 14px;
     flex-shrink: 0;
 }
+
 /* ===== JOB STATS - FIXED ===== */
 .job-stats-container {
     border-top: 1px solid #eee;
@@ -216,13 +218,15 @@ body {
     color: var(--primary-color);
 }
 
-.views, .likes {
+.views,
+.likes {
     display: flex !important;
     align-items: center;
     gap: 6px;
 }
 
-.views i, .likes i {
+.views i,
+.likes i {
     color: var(--primary-color);
 }
 
@@ -281,6 +285,7 @@ body {
     width: 100%;
     text-align: center;
 }
+
 /* Compact Quick Actions Button */
 .quick-actions {
     padding: 0 15px;
@@ -295,7 +300,8 @@ body {
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 25px; /* More rounded for modern look */
+    border-radius: 25px;
+    /* More rounded for modern look */
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -378,7 +384,8 @@ body {
     word-wrap: break-word;
 }
 
-.description-content ul, .description-content ol {
+.description-content ul,
+.description-content ol {
     margin: 16px 0;
     padding-left: 24px;
 }
@@ -485,55 +492,55 @@ body {
         grid-template-columns: 1fr;
         gap: 16px;
     }
-    
+
     .nav-job-card {
         padding: 16px;
     }
-    
+
     .nav-job-content {
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
-    
+
     .nav-company-logo {
         width: 50px;
         height: 50px;
         margin-bottom: 12px;
     }
-    
+
     .nav-job-title {
         font-size: 16px;
     }
-    
+
     .nav-company-name {
         font-size: 14px;
     }
-    
+
     .nav-education {
         font-size: 12px;
     }
-    
+
     .nav-view-btn {
         padding: 8px 16px;
         font-size: 14px;
     }
-    
+
     .job-navigation-section {
         padding: 16px;
         margin-top: 16px;
     }
-    
+
     .job-navigation-section .section-title {
         font-size: 16px;
         margin-bottom: 12px;
     }
-    
+
     .nav-job-header {
         margin-bottom: 12px;
         font-size: 12px;
     }
-    
+
     .nav-job-content {
         margin-bottom: 12px;
     }
@@ -544,40 +551,40 @@ body {
     .nav-job-card {
         padding: 14px !important;
     }
-    
+
     .nav-job-content {
         gap: 12px !important;
     }
-    
+
     .nav-company-logo {
         width: 45px !important;
         height: 45px !important;
     }
-    
+
     .nav-job-title {
         font-size: 15px !important;
         -webkit-line-clamp: 3;
     }
-    
+
     .nav-company-name {
         font-size: 13px !important;
     }
-    
+
     .nav-education {
         font-size: 12px !important;
         padding: 3px 6px !important;
     }
-    
+
     .nav-view-btn {
         padding: 8px 14px !important;
         font-size: 13px !important;
     }
-    
+
     .job-navigation-section {
         padding: 16px !important;
         margin: 16px 0 !important;
     }
-    
+
     .job-navigation-section .section-title {
         font-size: 16px !important;
         margin-bottom: 16px !important;
@@ -588,37 +595,37 @@ body {
     .job-navigation-grid {
         gap: 12px !important;
     }
-    
+
     .nav-job-card {
         padding: 12px !important;
     }
-    
+
     .nav-job-content {
         gap: 10px !important;
     }
-    
+
     .nav-company-logo {
         width: 40px !important;
         height: 40px !important;
     }
-    
+
     .nav-job-title {
         font-size: 14px !important;
     }
-    
+
     .nav-company-name {
         font-size: 12px !important;
     }
-    
+
     .nav-education {
         font-size: 11px !important;
     }
-    
+
     .nav-view-btn {
         padding: 6px 12px !important;
         font-size: 12px !important;
     }
-    
+
     .nav-job-header {
         font-size: 12px !important;
         margin-bottom: 10px !important;
@@ -669,12 +676,14 @@ body {
     width: 100%;
 }
 
-.ad-container, .ad-box-job {
+.ad-container,
+.ad-box-job {
     background: var(--bg-gray);
     border-radius: var(--border-radius);
     padding: 20px;
     width: 100%;
-    min-height: 250px; /* Increased minimum height */
+    min-height: 250px;
+    /* Increased minimum height */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -692,13 +701,16 @@ body {
 }
 
 /* Sidebar Ads - FIXED */
-.ad-left, .ad-right {
+.ad-left,
+.ad-right {
     width: 160px;
-    min-width: 160px; /* Ensure minimum width */
+    min-width: 160px;
+    /* Ensure minimum width */
     position: sticky;
     top: 100px;
     height: fit-content;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .ad-column {
@@ -727,8 +739,8 @@ body {
     font-size: 14px;
 }
 
-.ad-container:empty + .ad-fallback,
-.ad-box-job:empty + .ad-fallback {
+.ad-container:empty+.ad-fallback,
+.ad-box-job:empty+.ad-fallback {
     display: block;
 }
 
@@ -757,8 +769,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* ===== JOB NAVIGATION STYLES ===== */
@@ -917,6 +934,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -945,8 +963,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
 
 /* Enhanced hover effects */
@@ -1024,8 +1047,9 @@ body {
     .page-wrapper {
         gap: 24px;
     }
-    
-    .ad-left, .ad-right {
+
+    .ad-left,
+    .ad-right {
         width: 200px;
         min-width: 200px;
     }
@@ -1037,26 +1061,28 @@ body {
         padding: 0 12px;
         gap: 16px;
     }
-    
+
     .company-logo {
         width: 90px;
         height: 90px;
     }
-    
+
     .job-title-section h1 {
         font-size: 24px;
     }
-    
+
     .job-meta {
         gap: 16px;
     }
-    
-    .ad-left, .ad-right {
+
+    .ad-left,
+    .ad-right {
         width: 140px;
         min-width: 140px;
     }
-    
-    .ad-container, .ad-box-job {
+
+    .ad-container,
+    .ad-box-job {
         min-height: 200px;
     }
 }
@@ -1066,72 +1092,73 @@ body {
     .main-container {
         padding: 16px 0;
     }
-    
+
     .job-header {
         padding: 20px 0;
     }
-    
+
     .company-logo {
         width: 80px;
         height: 80px;
     }
-    
+
     .job-title-section h1 {
         font-size: 22px;
     }
-    
+
     .company-name-style {
         font-size: 18px;
     }
-    
+
     .job-meta {
         gap: 12px;
         flex-direction: column;
     }
-    
+
     .stats-row {
         gap: 12px;
         flex-direction: column;
     }
-    
+
     .overview-section {
         padding: 20px 0;
     }
-    
+
     .quick-actions {
         padding: 16px 0;
     }
-    
+
     .community-links {
         flex-direction: column;
     }
-    
+
     .job-details-container {
         grid-template-columns: 1fr;
     }
-    
+
     .section-title {
         font-size: 20px;
     }
-    
+
     /* Show sidebar ads on mobile but make them horizontal */
-    .ad-left, .ad-right {
+    .ad-left,
+    .ad-right {
         display: block !important;
         width: 100%;
         position: static;
         min-width: auto;
     }
-    
+
     .page-wrapper {
         flex-direction: column;
     }
-    
+
     .ad-column {
         flex-direction: row;
         gap: 16px;
         overflow-x: auto;
     }
-    
+
     .ad-left .ad-column,
     .ad-right .ad-column {
         flex-direction: column;
@@ -1144,52 +1171,54 @@ body {
         padding: 0 12px;
         gap: 12px;
     }
-    
+
     .main-container {
         padding: 12px 0;
     }
-    
+
     .job-title-section h1 {
         font-size: 20px;
         line-height: 1.3;
     }
-    
+
     .company-name-style {
         font-size: 16px;
     }
-    
+
     .meta-item {
         font-size: 13px;
     }
-    
+
     .action-btn {
         width: 100%;
         max-width: 300px;
         padding: 16px 20px;
         font-size: 16px;
     }
-    
+
     .job-details-container {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
-    .description-content, .qualifications-content {
+
+    .description-content,
+    .qualifications-content {
         font-size: 14px;
         line-height: 1.6;
     }
-    
+
     .skill-tag {
         font-size: 12px;
         padding: 6px 12px;
     }
-    
+
     .community-btn {
         width: 100%;
         justify-content: center;
     }
-    
-    .ad-container, .ad-box-job {
+
+    .ad-container,
+    .ad-box-job {
         min-height: 150px;
         padding: 16px;
     }
@@ -1200,25 +1229,25 @@ body {
     .page-wrapper {
         padding: 0 10px;
     }
-    
+
     .job-title-section h1 {
         font-size: 18px;
     }
-    
+
     .company-name-style {
         font-size: 15px;
     }
-    
+
     .company-logo {
         width: 70px;
         height: 70px;
     }
-    
+
     .action-btn {
         padding: 14px 16px;
         font-size: 15px;
     }
-    
+
     .section-title {
         font-size: 18px;
     }
@@ -1230,26 +1259,28 @@ body {
         padding: 0 12px;
         gap: 16px;
     }
-    
+
     .company-logo {
         width: 90px;
         height: 90px;
     }
-    
+
     .job-title-section h1 {
         font-size: 24px;
     }
-    
+
     .job-meta {
         gap: 16px;
     }
-    
-    .ad-left, .ad-right {
+
+    .ad-left,
+    .ad-right {
         width: 140px;
         min-width: 140px;
     }
-    
-    .ad-container, .ad-box-job {
+
+    .ad-container,
+    .ad-box-job {
         min-height: 200px;
     }
 }
@@ -1259,72 +1290,73 @@ body {
     .main-container {
         padding: 16px 0;
     }
-    
+
     .job-header {
         padding: 20px 0;
     }
-    
+
     .company-logo {
         width: 80px;
         height: 80px;
     }
-    
+
     .job-title-section h1 {
         font-size: 22px;
     }
-    
+
     .company-name-style {
         font-size: 18px;
     }
-    
+
     .job-meta {
         gap: 12px;
         flex-direction: column;
     }
-    
+
     .stats-row {
         gap: 12px;
         flex-direction: column;
     }
-    
+
     .overview-section {
         padding: 20px 0;
     }
-    
+
     .quick-actions {
         padding: 16px 0;
     }
-    
+
     .community-links {
         flex-direction: column;
     }
-    
+
     .job-details-container {
         grid-template-columns: 1fr;
     }
-    
+
     .section-title {
         font-size: 20px;
     }
-    
+
     /* Show sidebar ads on mobile but make them horizontal */
-    .ad-left, .ad-right {
+    .ad-left,
+    .ad-right {
         display: block !important;
         width: 100%;
         position: static;
         min-width: auto;
     }
-    
+
     .page-wrapper {
         flex-direction: column;
     }
-    
+
     .ad-column {
         flex-direction: row;
         gap: 16px;
         overflow-x: auto;
     }
-    
+
     .ad-left .ad-column,
     .ad-right .ad-column {
         flex-direction: column;
@@ -1337,52 +1369,54 @@ body {
         padding: 0 12px;
         gap: 12px;
     }
-    
+
     .main-container {
         padding: 12px 0;
     }
-    
+
     .job-title-section h1 {
         font-size: 20px;
         line-height: 1.3;
     }
-    
+
     .company-name-style {
         font-size: 16px;
     }
-    
+
     .meta-item {
         font-size: 13px;
     }
-    
+
     .action-btn {
         width: 100%;
         max-width: 300px;
         padding: 16px 20px;
         font-size: 16px;
     }
-    
+
     .job-details-container {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
-    .description-content, .qualifications-content {
+
+    .description-content,
+    .qualifications-content {
         font-size: 14px;
         line-height: 1.6;
     }
-    
+
     .skill-tag {
         font-size: 12px;
         padding: 6px 12px;
     }
-    
+
     .community-btn {
         width: 100%;
         justify-content: center;
     }
-    
-    .ad-container, .ad-box-job {
+
+    .ad-container,
+    .ad-box-job {
         min-height: 150px;
         padding: 16px;
     }
@@ -1393,25 +1427,25 @@ body {
     .page-wrapper {
         padding: 0 10px;
     }
-    
+
     .job-title-section h1 {
         font-size: 18px;
     }
-    
+
     .company-name-style {
         font-size: 15px;
     }
-    
+
     .company-logo {
         width: 70px;
         height: 70px;
     }
-    
+
     .action-btn {
         padding: 14px 16px;
         font-size: 15px;
     }
-    
+
     .section-title {
         font-size: 18px;
     }
@@ -1423,26 +1457,28 @@ body {
         padding: 0 12px;
         gap: 16px;
     }
-    
+
     .company-logo {
         width: 90px;
         height: 90px;
     }
-    
+
     .job-title-section h1 {
         font-size: 24px;
     }
-    
+
     .job-meta {
         gap: 16px;
     }
-    
-    .ad-left, .ad-right {
+
+    .ad-left,
+    .ad-right {
         width: 140px;
         min-width: 140px;
     }
-    
-    .ad-container, .ad-box-job {
+
+    .ad-container,
+    .ad-box-job {
         min-height: 200px;
     }
 }
@@ -1452,72 +1488,73 @@ body {
     .main-container {
         padding: 16px 0;
     }
-    
+
     .job-header {
         padding: 20px 0;
     }
-    
+
     .company-logo {
         width: 80px;
         height: 80px;
     }
-    
+
     .job-title-section h1 {
         font-size: 22px;
     }
-    
+
     .company-name-style {
         font-size: 18px;
     }
-    
+
     .job-meta {
         gap: 12px;
         flex-direction: column;
     }
-    
+
     .stats-row {
         gap: 12px;
         flex-direction: column;
     }
-    
+
     .overview-section {
         padding: 20px 0;
     }
-    
+
     .quick-actions {
         padding: 16px 0;
     }
-    
+
     .community-links {
         flex-direction: column;
     }
-    
+
     .job-details-container {
         grid-template-columns: 1fr;
     }
-    
+
     .section-title {
         font-size: 20px;
     }
-    
+
     /* Show sidebar ads on mobile but make them horizontal */
-    .ad-left, .ad-right {
+    .ad-left,
+    .ad-right {
         display: block !important;
         width: 100%;
         position: static;
         min-width: auto;
     }
-    
+
     .page-wrapper {
         flex-direction: column;
     }
-    
+
     .ad-column {
         flex-direction: row;
         gap: 16px;
         overflow-x: auto;
     }
-    
+
     .ad-left .ad-column,
     .ad-right .ad-column {
         flex-direction: column;
@@ -1530,52 +1567,54 @@ body {
         padding: 0 12px;
         gap: 12px;
     }
-    
+
     .main-container {
         padding: 12px 0;
     }
-    
+
     .job-title-section h1 {
         font-size: 20px;
         line-height: 1.3;
     }
-    
+
     .company-name-style {
         font-size: 16px;
     }
-    
+
     .meta-item {
         font-size: 13px;
     }
-    
+
     .action-btn {
         width: 100%;
         max-width: 300px;
         padding: 16px 20px;
         font-size: 16px;
     }
-    
+
     .job-details-container {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
-    .description-content, .qualifications-content {
+
+    .description-content,
+    .qualifications-content {
         font-size: 14px;
         line-height: 1.6;
     }
-    
+
     .skill-tag {
         font-size: 12px;
         padding: 6px 12px;
     }
-    
+
     .community-btn {
         width: 100%;
         justify-content: center;
     }
-    
-    .ad-container, .ad-box-job {
+
+    .ad-container,
+    .ad-box-job {
         min-height: 150px;
         padding: 16px;
     }
@@ -1586,33 +1625,33 @@ body {
     .page-wrapper {
         padding: 0 10px;
     }
-    
+
     .job-title-section h1 {
         font-size: 18px;
     }
-    
+
     .company-name-style {
         font-size: 15px;
     }
-    
+
     .company-logo {
         width: 70px;
         height: 70px;
     }
-    
+
     .action-btn {
         padding: 14px 16px;
         font-size: 15px;
     }
-    
+
     .section-title {
         font-size: 18px;
     }
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 /* Social Share Section - Mobile Responsive */
@@ -1666,7 +1705,7 @@ a {
 /* Hover Effects */
 .social-share-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .social-share-btn:active {
@@ -1674,32 +1713,32 @@ a {
 }
 
 /* Platform Specific Colors */
-.btn-success.social-share-btn { 
+.btn-success.social-share-btn {
     background: linear-gradient(135deg, #25D366, #128C7E);
     border-color: #128C7E;
 }
 
-.btn-primary.social-share-btn { 
+.btn-primary.social-share-btn {
     background: linear-gradient(135deg, #0077B5, #0a66c2);
     border-color: #0a66c2;
 }
 
-.btn-info.social-share-btn { 
+.btn-info.social-share-btn {
     background: linear-gradient(135deg, #0088cc, #229ED9);
     border-color: #229ED9;
 }
 
-.btn-success.social-share-btn:hover { 
+.btn-success.social-share-btn:hover {
     background: linear-gradient(135deg, #128C7E, #25D366);
     border-color: #25D366;
 }
 
-.btn-primary.social-share-btn:hover { 
+.btn-primary.social-share-btn:hover {
     background: linear-gradient(135deg, #0a66c2, #0077B5);
     border-color: #0077B5;
 }
 
-.btn-info.social-share-btn:hover { 
+.btn-info.social-share-btn:hover {
     background: linear-gradient(135deg, #229ED9, #0088cc);
     border-color: #0088cc;
 }
@@ -1712,12 +1751,12 @@ a {
         border-left: none;
         border-top: 4px solid #007bff;
     }
-    
+
     .social-share-section .card {
         border-radius: 0;
         margin: 0;
     }
-    
+
     .social-share-buttons-mobile .col-4 {
         margin-bottom: 0.5rem;
     }
@@ -1728,11 +1767,11 @@ a {
         padding: 0.6rem 0.3rem;
         min-height: 65px;
     }
-    
+
     .social-share-buttons-mobile .bi {
         font-size: 1.1rem;
     }
-    
+
     .social-share-buttons-mobile small {
         font-size: 0.65rem;
     }
@@ -1740,11 +1779,223 @@ a {
 
 /* Animation for better UX */
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .social-share-btn:focus {
     animation: pulse 0.6s ease-in-out;
+}
+
+
+.cache-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.cache-icon {
+    background: #007bff;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.5rem;
+}
+
+.cache-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.why-clear {
+    background: #f0f7ff;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-left: 4px solid #007bff;
+}
+
+.why-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.reason-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.reason-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.reason-icon {
+    color: #007bff;
+    margin-right: 0.75rem;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+}
+
+.browser-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+}
+
+.browser-tab {
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    background: white;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.browser-tab:hover {
+    background: #f8f9fa;
+}
+
+.browser-tab.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.browser-content {
+    display: none;
+}
+
+.browser-content.active {
+    display: block;
+}
+
+.steps-container {
+    counter-reset: step-counter;
+}
+
+.step {
+    display: flex;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    background: #007bff;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.step-description {
+    color: #6c757d;
+}
+
+.shortcut-tip {
+    background: #e7f3ff;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.shortcut-tip strong {
+    color: #007bff;
+}
+
+.refresh-action {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eaeaea;
+}
+
+.refresh-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s ease;
+}
+
+.refresh-btn:hover {
+    background: #0069d9;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .cache-section {
+        padding: 1.5rem;
+        margin: 1.5rem 1rem;
+    }
+
+    .cache-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cache-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .browser-tabs {
+        flex-direction: column;
+    }
+
+    .browser-tab {
+        justify-content: center;
+    }
 }
