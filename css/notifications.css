@@ -1,301 +1,75 @@
-* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+.notification-panel {
+    position: relative;
+    margin-top: auto;
+    border-top: 1px solid rgba(229, 231, 235, 1);
+}
 
-        body {
-            background: transparent;
-            min-height: 100vh;
-            padding: 20px;
-        }
+.notifications-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
 
-        /* Cache Notification Bar */
-        .cache-notice {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
-            width: auto;
-            transition: all 0.3s ease;
-        }
+.notifications-container::-webkit-scrollbar {
+    width: 4px;
+}
 
-        .cache-notice.hidden {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateX(-50%) translateY(20px);
-        }
+.notifications-container::-webkit-scrollbar-track {
+    background: transparent;
+}
 
-        .cache-notice.cleared {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        }
+.notifications-container::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 20px;
+}
 
-        .notice-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+.notification-item {
+    animation: slideIn 0.3s ease-out;
+}
 
-        .notice-text {
-            font-size: 14px;
-            line-height: 1.4;
-            white-space: nowrap;
-        }
+.notification-icon {
+    transition: transform 0.2s ease;
+}
 
-        .notice-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+.notification-item:hover .notification-icon {
+    transform: scale(1.1);
+}
 
-        .clear-btn {
-            background: white;
-            color: #27ae60;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            white-space: nowrap;
-            font-size: 13px;
-            min-width: 100px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .clear-btn:hover:not(:disabled) {
-            background: #f8f9fa;
-            transform: translateY(-1px);
-        }
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 
-        .clear-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            background: #ecf0f1;
-            color: #7f8c8d;
-        }
+.notification-panel.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
 
-        .close-btn {
-            background: transparent;
-            color: white;
-            border: 1px solid white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            white-space: nowrap;
-            font-size: 13px;
-        }
+.notification-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
+.notification-item:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
 
-        /* Google Ads Container */
-        .ads-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s ease;
-            max-width: 400px;
-            width: 90%;
-            overflow: hidden;
-        }
-
-        .ads-popup.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .ads-header {
-            background: linear-gradient(135deg, #4285f4, #34a853);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .ads-header h3 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-
-        .ads-body {
-            padding: 25px;
-            text-align: center;
-        }
-
-        .ads-body p {
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .ads-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 20px;
-            cursor: pointer;
-            color: white;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            transition: all 0.3s;
-        }
-
-        .ads-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .ads-timer {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #7f8c8d;
-            padding: 8px 12px;
-            background: #f8f9fa;
-            border-radius: 20px;
-            display: inline-block;
-        }
-
-        /* Loading Animation */
-        .loader {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #27ae60;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Status Messages */
-        .status-msg {
-            display: none;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .success-msg {
-            color: #27ae60;
-        }
-
-        .info-msg {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .btn-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .cache-notice {
-                bottom: 15px;
-                padding: 12px 20px;
-                max-width: 95%;
-            }
-            
-            .notice-content {
-                gap: 10px;
-            }
-            
-            .notice-text {
-                font-size: 13px;
-                white-space: normal;
-                text-align: center;
-            }
-            
-            .ads-popup {
-                width: 95%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .cache-notice {
-                padding: 10px 15px;
-                border-radius: 25px;
-            }
-            
-            .notice-content {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .notice-text {
-                font-size: 12px;
-            }
-            
-            .clear-btn,
-            .close-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-                min-width: 90px;
-            }
-            
-            .ads-header h3 {
-                font-size: 1.3rem;
-            }
-            
-            .ads-body {
-                padding: 20px;
-            }
-            
-            .ads-body p {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .cache-notice {
-                padding: 8px 12px;
-            }
-            
-            .notice-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .clear-btn,
-            .close-btn {
-                width: 100%;
-            }
-        }
+.unread-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+}

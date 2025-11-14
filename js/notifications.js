@@ -1,413 +1,239 @@
-// notifications.js - Improved ad close functionality and notifications
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔔 Notifications and ad close functionality loaded');
-    
-    // Element references
-    const cacheNotice = document.getElementById('cacheNotice');
-    const clearCacheBtn = document.getElementById('clearCacheBtn');
-    const closeNoticeBtn = document.getElementById('closeNotice');
-    const googleAds = document.getElementById('googleAds');
-    const adsCloseBtn = document.querySelector('.ads-close');
-    const cacheLoader = document.getElementById('cacheLoader');
-    const btnText = document.getElementById('btnText');
-    const successMsg = document.getElementById('successMsg');
-    const ignoreMsg = document.getElementById('ignoreMsg');
-    const noticeText = document.getElementById('noticeText');
-    const adsTime = document.getElementById('adsTime');
+import { auth, db } from './firebase-config.js';
+import { collection, query, where, orderBy, limit, getDocs, doc, updateDoc, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    // Sticky top ad elements
-    const topStickyAd = document.getElementById('topStickyAd');
-    const stickyCloseBtn = document.querySelector('.sticky-ad-close');
-
-    // State & timers
-    let adsTimerInterval = null;
-    let adsSecondsLeft = 60;
-    let adInterval = null;
-    let dismissTimer = null;
-
-    // Real-time state tracking
-    const state = {
-        cacheCleared: false,
-        noticeDismissed: false,
-        lastCleared: null,
-        lastDismissed: null
-    };
-
-    // === IMPROVED AD CLOSE FUNCTIONALITY ===
-    
-    // Fix for sticky ad close button
-    if (stickyCloseBtn && topStickyAd) {
-        stickyCloseBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Closing sticky ad');
-            topStickyAd.classList.add('hidden');
-            removeStickyPadding();
-        });
+class NotificationManager {
+    constructor() {
+        this.userId = null;
+        this.notifications = [];
+        this.init();
     }
 
-    // Fix for popup ad close button
-    if (adsCloseBtn && googleAds) {
-        adsCloseBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Closing popup ad');
-            closeGoogleAds(false);
-        });
-    }
-
-    // Improved close function for popup ads
-    function closeGoogleAds(isAutoClose = false) {
-        if (!googleAds) return;
-        googleAds.classList.remove('active');
-        if (adsTimerInterval) {
-            clearInterval(adsTimerInterval);
-            adsTimerInterval = null;
-        }
-
-        if (isAutoClose) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('cacheCleared', 'true');
-            url.searchParams.set('adShown', 'true');
-            url.searchParams.delete('_');
-            window.history.replaceState({}, document.title, url.toString());
-        }
-    }
-
-    // Improved sticky padding functions
-    function applyStickyPadding() {
-        if (!topStickyAd) return;
-        const height = Math.max(topStickyAd.getBoundingClientRect().height, 72);
-        document.documentElement.classList.add('has-sticky-ad');
-        document.body.classList.add('has-sticky-ad');
-        document.documentElement.style.setProperty('--sticky-ad-height', `${height}px`);
-        document.body.style.setProperty('--sticky-ad-height', `${height}px`);
-    }
-
-    function removeStickyPadding() {
-        document.documentElement.classList.remove('has-sticky-ad');
-        document.body.classList.remove('has-sticky-ad');
-        document.documentElement.style.removeProperty('--sticky-ad-height');
-        document.body.style.removeProperty('--sticky-ad-height');
-    }
-
-    // Initialize sticky ad
-    function initStickyAd() {
-        if (!topStickyAd) return;
-        topStickyAd.classList.remove('hidden');
-        setTimeout(applyStickyPadding, 50);
-        setTimeout(applyStickyPadding, 1500);
-    }
-
-    // === EXISTING NOTIFICATIONS FUNCTIONALITY ===
-
-    // Check URL parameters
-    function checkURLParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const cacheCleared = urlParams.get('cacheCleared');
-        const adShown = urlParams.get('adShown');
-
-        if (cacheCleared === 'true' && adShown === 'true') {
-            return false;
-        }
-
-        if (cacheCleared === 'true' && adShown !== 'true') {
-            setTimeout(() => {
-                showGoogleAds();
-            }, 1000);
-            return false;
-        }
-
-        return true;
-    }
-
-    // Load state from localStorage
-    function loadState() {
-        try {
-            const savedState = localStorage.getItem('cacheNoticeState');
-            if (savedState) {
-                const parsed = JSON.parse(savedState);
-                state.cacheCleared = parsed.cacheCleared || false;
-                state.noticeDismissed = parsed.noticeDismissed || false;
-                state.lastCleared = parsed.lastCleared || null;
-                state.lastDismissed = parsed.lastDismissed || null;
-
-                if (state.lastDismissed && (Date.now() - state.lastDismissed) < 60000) {
-                    state.noticeDismissed = true;
+    init() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Change the selector to match the notifications link in settings
+            const notificationBtn = document.querySelector('.accordion-content a[href="#"]');
+            if (notificationBtn) {
+                notificationBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.toggleNotifications();
+                });
+            }
+            
+            // Initialize Firebase Auth listener
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    this.setUserId(user.uid);
                 } else {
-                    state.noticeDismissed = false;
+                    this.userId = null;
+                    this.notifications = [];
+                    this.updateNotificationUI();
+                }
+            });
+        });
+    }
+
+    setUserId(userId) {
+        this.userId = userId;
+        this.loadNotifications();
+    }
+
+    async loadNotifications() {
+        try {
+            // Use the correct Firestore v9 syntax
+            const notificationsRef = collection(db, 'notifications');
+            const q = query(
+                notificationsRef,
+                where('userId', '==', this.userId),
+                orderBy('timestamp', 'desc'),
+                limit(1)
+            );
+
+            const snapshot = await getDocs(q);
+            this.notifications = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            this.updateNotificationUI();
+        } catch (error) {
+            console.error('Error loading notifications:', error);
+        }
+    }
+
+    toggleNotifications() {
+        const notificationPanel = document.querySelector('.notification-panel');
+        if (!notificationPanel) {
+            this.createNotificationPanel();
+        } else {
+            notificationPanel.classList.toggle('hidden');
+        }
+    }
+
+    createNotificationPanel() {
+        const accordionContent = document.querySelector('.accordion-content');
+        const panel = document.createElement('div');
+        panel.className = 'notification-panel mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700';
+        
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 rounded-t-lg';
+        header.innerHTML = `
+            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200">Recent Notifications</h3>
+            <button class="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200" onclick="notificationManager.markAllAsRead()">
+                Mark all as read
+            </button>
+        `;
+        
+        const content = document.createElement('div');
+        content.className = 'notifications-container max-h-[300px] overflow-y-auto p-2 space-y-2';
+        
+        if (this.notifications.length === 0) {
+            content.innerHTML = `
+                <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+                    <i class="bi bi-bell text-2xl mb-2"></i>
+                    <p class="text-sm">No notifications yet</p>
+                </div>
+            `;
+        } else {
+            this.notifications.forEach(notification => {
+                content.appendChild(this.createNotificationItem(notification));
+            });
+        }
+        
+        panel.appendChild(header);
+        panel.appendChild(content);
+        accordionContent.appendChild(panel);
+    }
+
+    createNotificationItem(notification) {
+        const item = document.createElement('div');
+        item.className = `notification-item rounded-lg p-3 ${notification.read ? 'bg-gray-50 dark:bg-gray-700' : 'bg-blue-50 dark:bg-gray-600'} hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 cursor-pointer`;
+        
+        const timeAgo = this.getTimeAgo(new Date(notification.timestamp));
+        
+        item.innerHTML = `
+            <div class="flex items-start gap-3">
+                <div class="notification-icon shrink-0 ${this.getNotificationIconClass(notification.type)}">
+                    <i class="${this.getNotificationIcon(notification.type)}"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900 dark:text-gray-100 font-medium mb-1">${notification.title || 'Notification'}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">${notification.message}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${timeAgo}</p>
+                </div>
+                ${!notification.read ? '<span class="shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></span>' : ''}
+            </div>
+        `;
+        
+        item.addEventListener('click', () => this.markAsRead(notification.id));
+        return item;
+    }
+
+    getNotificationIcon(type) {
+        const icons = {
+            'account_created': 'bi bi-person-plus',
+            'profile_view': 'bi bi-eye',
+            'job_match': 'bi bi-briefcase',
+            'message': 'bi bi-chat',
+            'application_status': 'bi bi-file-earmark-text'
+        };
+        return icons[type] || 'bi bi-bell';
+    }
+
+    getNotificationIconClass(type) {
+        const classes = {
+            'account_created': 'bg-green-100 text-green-600',
+            'profile_view': 'bg-blue-100 text-blue-600',
+            'job_match': 'bg-purple-100 text-purple-600',
+            'message': 'bg-yellow-100 text-yellow-600',
+            'application_status': 'bg-red-100 text-red-600'
+        };
+        return `w-8 h-8 rounded-full flex items-center justify-center ${classes[type] || 'bg-gray-100 text-gray-600'}`;
+    }
+
+    async markAsRead(notificationId) {
+        try {
+            // Use the correct Firestore v9 syntax
+            const notificationRef = doc(db, 'notifications', notificationId);
+            await updateDoc(notificationRef, {
+                read: true
+            });
+            
+            const notification = this.notifications.find(n => n.id === notificationId);
+            if (notification) {
+                notification.read = true;
+                this.updateNotificationUI();
+            }
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    }
+
+    async markAllAsRead() {
+        try {
+            // Use the correct Firestore v9 syntax
+            const batch = writeBatch(db);
+            
+            this.notifications.forEach(notification => {
+                if (!notification.read) {
+                    const notificationRef = doc(db, 'notifications', notification.id);
+                    batch.update(notificationRef, { read: true });
+                }
+            });
+            
+            await batch.commit();
+            this.notifications.forEach(n => n.read = true);
+            this.updateNotificationUI();
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+        }
+    }
+
+    getTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + ' years ago';
+        
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + ' months ago';
+        
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + ' days ago';
+        
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + ' hours ago';
+        
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + ' minutes ago';
+        
+        return Math.floor(seconds) + ' seconds ago';
+    }
+
+    updateNotificationUI() {
+        const panel = document.querySelector('.notification-panel');
+        if (panel) {
+            const content = panel.querySelector('.notifications-container');
+            if (content) {
+                content.innerHTML = '';
+                if (this.notifications.length === 0) {
+                    content.innerHTML = `
+                        <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+                            <i class="bi bi-bell text-2xl mb-2"></i>
+                            <p class="text-sm">No notifications yet</p>
+                        </div>
+                    `;
+                } else {
+                    this.notifications.forEach(notification => {
+                        content.appendChild(this.createNotificationItem(notification));
+                    });
                 }
             }
-        } catch (e) {
-            console.warn('Failed to load cacheNoticeState from localStorage', e);
         }
     }
+}
 
-    // Save state to localStorage
-    function saveState() {
-        try {
-            localStorage.setItem('cacheNoticeState', JSON.stringify(state));
-        } catch (e) {
-            console.warn('Failed to save cacheNoticeState to localStorage', e);
-        }
-    }
+// Initialize the notification manager
+const notificationManager = new NotificationManager();
 
-    // UI helpers
-    function showCacheNotice() {
-        if (!cacheNotice) return;
-        cacheNotice.classList.remove('hidden');
-    }
-
-    function updateUI() {
-        if (!cacheNotice) return;
-
-        if (state.noticeDismissed) {
-            cacheNotice.classList.add('hidden');
-        } else {
-            cacheNotice.classList.remove('hidden');
-        }
-
-        if (state.cacheCleared) {
-            cacheNotice.classList.add('cleared');
-            if (clearCacheBtn) clearCacheBtn.disabled = true;
-            if (btnText) btnText.style.display = 'none';
-            if (successMsg) successMsg.style.display = 'none';
-            if (cacheLoader) cacheLoader.style.display = 'none';
-            if (noticeText) noticeText.innerHTML = '<strong>✓ Cache Status:</strong> Already cleared - Your good to go!';
-        } else {
-            cacheNotice.classList.remove('cleared');
-            if (clearCacheBtn) clearCacheBtn.disabled = false;
-            if (btnText) btnText.style.display = 'inline';
-            if (successMsg) successMsg.style.display = 'none';
-            if (cacheLoader) cacheLoader.style.display = 'none';
-            if (noticeText) noticeText.innerHTML = ' <strong>Clear Browser Cache:</strong> Clear your browser cache for the best and most up-to-date viewing experience';
-        }
-    }
-
-    // Show temporary message
-    function showTemporaryMessage(element, duration) {
-        if (!element) return;
-        element.style.display = 'inline';
-        setTimeout(() => {
-            if (!state.cacheCleared) {
-                element.style.display = 'none';
-            }
-        }, duration);
-    }
-
-    // Clear browser cache without page refresh
-    function clearBrowserCache() {
-        try {
-            localStorage.clear();
-            sessionStorage.clear();
-
-            // Clear cookies
-            document.cookie.split(";").forEach(function (c) {
-                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-            });
-
-            // Clear service worker caches if available
-            if ('caches' in window) {
-                caches.keys().then(function (names) {
-                    for (let name of names) {
-                        caches.delete(name);
-                    }
-                }).catch(() => { /* ignore */ });
-            }
-
-            console.log('Browser cache cleared successfully');
-        } catch (e) {
-            console.warn('Error clearing cache', e);
-        }
-    }
-
-    // Show Google Ads popup
-    function showGoogleAds() {
-        if (!googleAds) return;
-        googleAds.classList.add('active');
-        startAdsTimer();
-    }
-
-    // Start ads timer
-    function startAdsTimer() {
-        if (!adsTime) return;
-        adsSecondsLeft = 60;
-        adsTime.textContent = adsSecondsLeft;
-
-        if (adsTimerInterval) clearInterval(adsTimerInterval);
-        adsTimerInterval = setInterval(() => {
-            adsSecondsLeft--;
-            if (adsTime) adsTime.textContent = adsSecondsLeft;
-
-            if (adsSecondsLeft <= 0) {
-                closeGoogleAds(true);
-            }
-        }, 1000);
-    }
-
-    // Start Google Ads interval
-    function startAdsInterval() {
-        if (adInterval) clearInterval(adInterval);
-        adInterval = setInterval(() => {
-            if (googleAds && !googleAds.classList.contains('active')) {
-                showGoogleAds();
-            }
-        }, 40000);
-    }
-
-    // Guard apply buttons from ad triggers
-    function guardApplyButtons() {
-        const applyButtons = document.querySelectorAll('.action-btn.apply-now, #bottomApplyBtn');
-        applyButtons.forEach(btn => {
-            btn.setAttribute('data-ads-ignore', 'true');
-            btn.style.touchAction = 'manipulation';
-        });
-    }
-
-    // Observe fixed bottom ads for safe area calculation
-    function observeFixedBottomAds() {
-        const updateBottomPadding = () => {
-            const candidates = Array.from(document.body.querySelectorAll('div, ins'))
-                .filter(el => {
-                    const style = getComputedStyle(el);
-                    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
-                    const isFixed = style.position === 'fixed';
-                    const touchesBottom = (style.bottom && style.bottom !== 'auto') || (el.getBoundingClientRect().bottom >= window.innerHeight - 2);
-                    const tallEnough = el.getBoundingClientRect().height >= 40;
-                    return isFixed && touchesBottom && tallEnough;
-                });
-
-            if (candidates.length) {
-                const height = Math.max(...candidates.map(el => el.getBoundingClientRect().height));
-                document.documentElement.style.setProperty('--bottom-ad-height', `${Math.ceil(height)}px`);
-                document.body.classList.add('with-bottom-anchor-ad');
-            } else {
-                document.documentElement.style.removeProperty('--bottom-ad-height');
-                document.body.classList.remove('with-bottom-anchor-ad');
-            }
-        };
-
-        updateBottomPadding();
-        window.addEventListener('resize', updateBottomPadding);
-
-        const mo = new MutationObserver(updateBottomPadding);
-        mo.observe(document.body, { childList: true, subtree: true });
-    }
-
-    // Initialize
-    function initialize() {
-        initStickyAd();
-        const shouldShowCacheNotice = true;
-        loadState();
-        updateUI();
-
-        if (shouldShowCacheNotice) {
-            showCacheNotice();
-        }
-
-        setTimeout(() => {
-            if (googleAds && !googleAds.classList.contains('active')) {
-                showGoogleAds();
-            }
-        }, 60000);
-
-        startAdsInterval();
-        guardApplyButtons();
-        observeFixedBottomAds();
-    }
-
-    // Event Listeners
-    if (closeNoticeBtn) {
-        closeNoticeBtn.addEventListener('click', () => {
-            state.noticeDismissed = true;
-            state.lastDismissed = Date.now();
-            saveState();
-            updateUI();
-
-            clearTimeout(dismissTimer);
-            dismissTimer = setTimeout(() => {
-                state.noticeDismissed = false;
-                saveState();
-                updateUI();
-            }, 60000);
-        });
-    }
-
-    if (clearCacheBtn) {
-        clearCacheBtn.addEventListener('click', () => {
-            if (state.cacheCleared) {
-                showTemporaryMessage(ignoreMsg, 2000);
-                return;
-            }
-
-            if (btnText) btnText.style.display = 'none';
-            if (cacheLoader) cacheLoader.style.display = 'block';
-            if (clearCacheBtn) clearCacheBtn.disabled = true;
-
-            setTimeout(() => {
-                if (cacheLoader) cacheLoader.style.display = 'none';
-                if (successMsg) successMsg.style.display = 'inline';
-
-                clearBrowserCache();
-
-                state.cacheCleared = true;
-                state.lastCleared = Date.now();
-                saveState();
-
-                setTimeout(() => {
-                    updateUI();
-                    setTimeout(() => {
-                        showGoogleAds();
-                    }, 500);
-                }, 2000);
-
-            }, 2000);
-        });
-    }
-
-    // Also handle clicks via delegation (robust if markup changes)
-    if (googleAds) {
-        googleAds.addEventListener('click', (e) => {
-            // Close when the "X" is clicked
-            if (e.target.closest('.ads-close')) {
-                e.preventDefault();
-                e.stopPropagation();
-                closeGoogleAds(false);
-                return;
-            }
-            // Optional: close when clicking backdrop (only if you want that)
-            if (e.target === googleAds) {
-                closeGoogleAds(false);
-            }
-        });
-    }
-
-    // Fallback: delegate close click in case button renders later
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.sticky-ad-close');
-        if (btn && topStickyAd) {
-            e.preventDefault();
-            e.stopPropagation();
-            topStickyAd.classList.add('hidden');
-            removeStickyPadding();
-        }
-    });
-
-    // Initialize early so handlers attach before interaction
-    document.addEventListener('DOMContentLoaded', initialize);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && googleAds && googleAds.classList.contains('active')) {
-            closeGoogleAds(false);
-        }
-    });
-
-    setInterval(() => {
-        if (state.lastDismissed && (Date.now() - state.lastDismissed) >= 60000) {
-            state.noticeDismissed = false;
-            saveState();
-            updateUI();
-        }
-    }, 1000);
-
-    window.addEventListener('load', initialize);
-});
+// Export for use in other files
+export default notificationManager;
