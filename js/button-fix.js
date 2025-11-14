@@ -1,102 +1,230 @@
-// button-fix.js - Ultimate fix for button click issues
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 Button fix script loaded');
-    
-    // ULTIMATE Apply Button Fix
-    function fixApplyButton() {
+// button-fix-permanent.js - PERMANENT SOLUTION
+class ButtonFixManager {
+    constructor() {
+        this.initialized = false;
+        this.init();
+    }
+
+    init() {
+        if (this.initialized) return;
+        
+        console.log('🔧 PERMANENT BUTTON FIX MANAGER LOADED');
+        
+        // Fix apply button immediately
+        this.fixApplyButton();
+        
+        // Set up monitoring for dynamic changes
+        this.setupMutationObserver();
+        
+        // Final cleanup after page load
+        window.addEventListener('load', () => this.finalCleanup());
+        
+        this.initialized = true;
+    }
+
+    fixApplyButton() {
         const applyButton = document.getElementById('bottomApplyBtn');
         if (!applyButton) {
-            console.log('❌ Apply button not found');
+            console.log('⏳ Apply button not found yet, retrying...');
+            setTimeout(() => this.fixApplyButton(), 500);
             return;
         }
 
-        // Clone and replace to remove any existing event listeners
-        const newApplyButton = applyButton.cloneNode(true);
-        applyButton.parentNode.replaceChild(newApplyButton, applyButton);
+        console.log('✅ Apply button found, applying permanent fix...');
 
-        // Add robust click handler
-        newApplyButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            
-            console.log('✅ Apply Now button clicked successfully!');
-            
-            // Show loading state
-            const originalHTML = this.innerHTML;
-            this.innerHTML = '<i class="bi bi-hourglass"></i> Processing...';
-            this.disabled = true;
-            
-            // Your actual application logic here
-            setTimeout(() => {
-                // Restore button
-                this.innerHTML = originalHTML;
-                this.disabled = false;
-                
-                // Redirect to application (replace with your actual URL)
-                alert('Redirecting to application form...');
-                // window.location.href = 'https://your-application-url.com';
-            }, 1000);
+        // Remove ALL existing event listeners by complete replacement
+        const newButton = applyButton.cloneNode(true);
+        applyButton.parentNode.replaceChild(newButton, applyButton);
+
+        // Add the permanent click handler
+        newButton.addEventListener('click', (e) => {
+            this.handleApplyClick(e);
         }, true); // Use capture phase
 
-        // Force styles
-        newApplyButton.style.cssText = `
-            pointer-events: auto !important;
-            z-index: 10051 !important;
-            position: relative !important;
-            cursor: pointer !important;
-        `;
+        // Ensure button is always clickable
+        this.applyButtonStyles(newButton);
+        
+        console.log('✅ Apply button permanently fixed');
     }
 
-    // Fix Back Button
-    function fixBackButton() {
-        const backButton = document.getElementById('backToJobsBtn');
-        if (backButton) {
-            backButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🔙 Back to Jobs clicked');
-                // Your navigation logic
-            });
+    handleApplyClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🎯 PERMANENT BUTTON HANDLER TRIGGERED');
+
+        // Get job data
+        const jobManager = window.jobDetailsManager;
+        
+        if (!jobManager || !jobManager.currentJob) {
+            this.showEmergencyToast('⚠️ Job data still loading...', 'warning');
+            console.log('❌ Job data not ready:', jobManager);
+            return;
+        }
+
+        const job = jobManager.currentJob;
+        console.log('📋 Job data:', job);
+
+        if (!job.applicationLink) {
+            this.showEmergencyToast('❌ Application link not available', 'error');
+            console.log('❌ No application link in job data');
+            return;
+        }
+
+        // Build the URL
+        let applicationUrl = job.applicationLink;
+        if (!applicationUrl.startsWith('http')) {
+            applicationUrl = 'https://' + applicationUrl;
+        }
+
+        console.log('🚀 Opening application URL:', applicationUrl);
+        this.showEmergencyToast('🚀 Opening application form...', 'success');
+
+        // Open the URL - MULTIPLE FALLBACK METHODS
+        this.openApplicationUrl(applicationUrl);
+
+        // Also call the original handler for tracking
+        if (jobManager.handleApplyClick) {
+            setTimeout(() => {
+                jobManager.handleApplyClick(job);
+            }, 100);
         }
     }
 
-    // Fix Navigation Buttons
-    function fixNavigationButtons() {
-        const prevBtn = document.getElementById('prevJobBtn');
-        const nextBtn = document.getElementById('nextJobBtn');
+    openApplicationUrl(url) {
+        // Method 1: Standard window.open
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
         
-        [prevBtn, nextBtn].forEach(btn => {
-            if (btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('📄 Navigation button clicked');
-                    // Your navigation logic
-                });
+        if (!newWindow) {
+            console.log('❌ Popup blocked, trying Method 2...');
+            
+            // Method 2: Create a temporary link and click it
+            const tempLink = document.createElement('a');
+            tempLink.href = url;
+            tempLink.target = '_blank';
+            tempLink.rel = 'noopener noreferrer';
+            tempLink.style.display = 'none';
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+            
+            console.log('✅ Method 2 executed');
+        } else {
+            console.log('✅ Method 1 executed successfully');
+        }
+    }
+
+    applyButtonStyles(button) {
+        button.style.cssText = `
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            z-index: 10000 !important;
+            position: relative !important;
+        `;
+    }
+
+    showEmergencyToast(message, type = 'info') {
+        // Remove existing toasts
+        document.querySelectorAll('.emergency-toast').forEach(toast => toast.remove());
+        
+        const toast = document.createElement('div');
+        toast.className = `emergency-toast ${type}`;
+        toast.innerHTML = message;
+        
+        // Inline styles for reliability
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${this.getToastColor(type)};
+            color: ${this.getToastTextColor(type)};
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid ${this.getToastBorderColor(type)};
+            z-index: 10060;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
+
+    getToastColor(type) {
+        const colors = {
+            success: '#d4edda',
+            warning: '#fff3cd', 
+            error: '#f8d7da',
+            info: '#d1ecf1'
+        };
+        return colors[type] || colors.info;
+    }
+
+    getToastTextColor(type) {
+        const colors = {
+            success: '#155724',
+            warning: '#856404',
+            error: '#721c24', 
+            info: '#0c5460'
+        };
+        return colors[type] || colors.info;
+    }
+
+    getToastBorderColor(type) {
+        const colors = {
+            success: '#c3e6cb',
+            warning: '#ffeaa7',
+            error: '#f5c6cb',
+            info: '#bee5eb'
+        };
+        return colors[type] || colors.info;
+    }
+
+    setupMutationObserver() {
+        const observer = new MutationObserver((mutations) => {
+            let shouldFix = false;
+            
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) {
+                            // Check if apply button was added/modified
+                            if (node.id === 'bottomApplyBtn' || 
+                                node.querySelector?.('#bottomApplyBtn') ||
+                                node.classList?.contains('action-btn')) {
+                                shouldFix = true;
+                            }
+                        }
+                    });
+                }
+            });
+
+            if (shouldFix) {
+                console.log('🔄 DOM changed, reapplying button fix...');
+                setTimeout(() => this.fixApplyButton(), 100);
             }
         });
-    }
 
-    // Fix Social Share Buttons
-    function fixSocialButtons() {
-        const shareButtons = document.querySelectorAll('.social-share-btn');
-        shareButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const platform = this.dataset.platform;
-                console.log(`📱 Share button clicked: ${platform}`);
-                // Your share logic
-            });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['id', 'class', 'style']
         });
     }
 
-    // NUCLEAR OPTION: Disable ALL ad interference
-    function nuclearAdDisable() {
-        console.log('🚀 Applying nuclear ad disable...');
+    finalCleanup() {
+        console.log('🎯 Final cleanup started...');
         
-        // Disable pointer events for ALL ad elements
+        // Disable all ad interference
         const adSelectors = [
             '.adsbygoogle', '.ad-section', '.ad-column', 
             '.ad-section-responsive', '.ad-box-job', 
@@ -104,102 +232,45 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
         
         adSelectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.style.pointerEvents = 'none';
-                el.style.zIndex = '1';
+            document.querySelectorAll(selector).forEach(ad => {
+                ad.style.pointerEvents = 'none';
+                ad.style.zIndex = '1';
             });
         });
         
-        // Enable ALL buttons
+        // Ensure all buttons are clickable
         const buttonSelectors = [
-            '#bottomApplyBtn', '.back-btn-enhanced', 
-            '.nav-view-btn', '.social-share-btn',
-            '.action-btn', '.apply-now', '.community-btn',
-            'button', 'a', '[onclick]'
+            '#bottomApplyBtn', '.action-btn', '.apply-now',
+            '.back-btn-enhanced', '.nav-view-btn', '.social-share-btn'
         ];
         
         buttonSelectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.style.pointerEvents = 'auto';
-                el.style.zIndex = '10051';
-                el.style.position = 'relative';
+            document.querySelectorAll(selector).forEach(btn => {
+                btn.style.pointerEvents = 'auto';
+                btn.style.zIndex = '10000';
+                btn.style.cursor = 'pointer';
+                btn.style.position = 'relative';
             });
         });
+        
+        console.log('✅ Final cleanup completed');
     }
+}
 
-    // Initialize all fixes
-    function initializeFixes() {
-        console.log('🔄 Initializing button fixes...');
-        
-        fixApplyButton();
-        fixBackButton();
-        fixNavigationButtons();
-        fixSocialButtons();
-        nuclearAdDisable();
-        
-        console.log('✅ All button fixes applied');
-    }
-
-    // Run immediately
-    initializeFixes();
-    
-    // Run again after short delay (for dynamic content)
-    setTimeout(initializeFixes, 500);
-    setTimeout(initializeFixes, 2000);
-    
-    // Continuous monitoring for dynamically loaded ads
-    const observer = new MutationObserver(function(mutations) {
-        let shouldFix = false;
-        mutations.forEach(function(mutation) {
-            if (mutation.addedNodes.length) {
-                mutation.addedNodes.forEach(function(node) {
-                    if (node.nodeType === 1) {
-                        if (node.classList && 
-                            (node.classList.contains('adsbygoogle') || 
-                             node.querySelector && node.querySelector('.adsbygoogle') ||
-                             node.tagName === 'INS' || 
-                             node.tagName === 'IFRAME')) {
-                            shouldFix = true;
-                        }
-                    }
-                });
-            }
-        });
-        
-        if (shouldFix) {
-            setTimeout(() => {
-                nuclearAdDisable();
-                fixApplyButton();
-            }, 100);
-        }
-    });
-    
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['class', 'style']
-    });
+// Initialize the permanent fix
+document.addEventListener('DOMContentLoaded', () => {
+    window.buttonFixManager = new ButtonFixManager();
 });
 
-// Final protection after page load
-window.addEventListener('load', function() {
-    console.log('🎯 Page loaded - applying final button protection');
-    
-    // One final nuclear option
-    setTimeout(() => {
-        const allAds = document.querySelectorAll('.adsbygoogle, ins, iframe, .ad-section');
-        allAds.forEach(ad => {
-            ad.style.pointerEvents = 'none';
-            ad.style.zIndex = '1';
-        });
-        
-        const allButtons = document.querySelectorAll('button, a, .action-btn');
-        allButtons.forEach(btn => {
-            btn.style.pointerEvents = 'auto';
-            btn.style.zIndex = '10051';
-        });
-    }, 3000);
-});
+// Emergency global fallback
+window.applyForJob = function() {
+    const jobManager = window.jobDetailsManager;
+    if (jobManager?.currentJob?.applicationLink) {
+        let url = jobManager.currentJob.applicationLink;
+        if (!url.startsWith('http')) url = 'https://' + url;
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return true;
+    }
+    alert('Application link not available');
+    return false;
+};

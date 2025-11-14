@@ -1,4 +1,7 @@
-(function () {
+// notifications.js - Improved ad close functionality and notifications
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔔 Notifications and ad close functionality loaded');
+    
     // Element references
     const cacheNotice = document.getElementById('cacheNotice');
     const clearCacheBtn = document.getElementById('clearCacheBtn');
@@ -30,7 +33,48 @@
         lastDismissed: null
     };
 
-    // Apply padding based on sticky ad height
+    // === IMPROVED AD CLOSE FUNCTIONALITY ===
+    
+    // Fix for sticky ad close button
+    if (stickyCloseBtn && topStickyAd) {
+        stickyCloseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Closing sticky ad');
+            topStickyAd.classList.add('hidden');
+            removeStickyPadding();
+        });
+    }
+
+    // Fix for popup ad close button
+    if (adsCloseBtn && googleAds) {
+        adsCloseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Closing popup ad');
+            closeGoogleAds(false);
+        });
+    }
+
+    // Improved close function for popup ads
+    function closeGoogleAds(isAutoClose = false) {
+        if (!googleAds) return;
+        googleAds.classList.remove('active');
+        if (adsTimerInterval) {
+            clearInterval(adsTimerInterval);
+            adsTimerInterval = null;
+        }
+
+        if (isAutoClose) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('cacheCleared', 'true');
+            url.searchParams.set('adShown', 'true');
+            url.searchParams.delete('_');
+            window.history.replaceState({}, document.title, url.toString());
+        }
+    }
+
+    // Improved sticky padding functions
     function applyStickyPadding() {
         if (!topStickyAd) return;
         const height = Math.max(topStickyAd.getBoundingClientRect().height, 72);
@@ -47,12 +91,15 @@
         document.body.style.removeProperty('--sticky-ad-height');
     }
 
+    // Initialize sticky ad
     function initStickyAd() {
         if (!topStickyAd) return;
         topStickyAd.classList.remove('hidden');
         setTimeout(applyStickyPadding, 50);
         setTimeout(applyStickyPadding, 1500);
     }
+
+    // === EXISTING NOTIFICATIONS FUNCTIONALITY ===
 
     // Check URL parameters
     function checkURLParams() {
@@ -198,24 +245,6 @@
         }, 1000);
     }
 
-    // Close Google Ads
-    function closeGoogleAds(isAutoClose = false) {
-        if (!googleAds) return;
-        googleAds.classList.remove('active');
-        if (adsTimerInterval) {
-            clearInterval(adsTimerInterval);
-            adsTimerInterval = null;
-        }
-
-        if (isAutoClose) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('cacheCleared', 'true');
-            url.searchParams.set('adShown', 'true');
-            url.searchParams.delete('_');
-            window.history.replaceState({}, document.title, url.toString());
-        }
-    }
-
     // Start Google Ads interval
     function startAdsInterval() {
         if (adInterval) clearInterval(adInterval);
@@ -232,7 +261,6 @@
         applyButtons.forEach(btn => {
             btn.setAttribute('data-ads-ignore', 'true');
             btn.style.touchAction = 'manipulation';
-            btn.addEventListener('click', (e) => { e.stopPropagation(); }, { capture: true });
         });
     }
 
@@ -337,55 +365,35 @@
         });
     }
 
-    // Close ads manually (direct button binding)
-    if (adsCloseBtn) {
-    adsCloseBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    closeGoogleAds(false);
-    });
-    }
-    
     // Also handle clicks via delegation (robust if markup changes)
     if (googleAds) {
-    googleAds.addEventListener('click', (e) => {
-    // Close when the "X" is clicked
-    if (e.target.closest('.ads-close')) {
-    e.preventDefault();
-    e.stopPropagation();
-    closeGoogleAds(false);
-    return;
+        googleAds.addEventListener('click', (e) => {
+            // Close when the "X" is clicked
+            if (e.target.closest('.ads-close')) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeGoogleAds(false);
+                return;
+            }
+            // Optional: close when clicking backdrop (only if you want that)
+            if (e.target === googleAds) {
+                closeGoogleAds(false);
+            }
+        });
     }
-    // Optional: close when clicking backdrop (only if you want that)
-    if (e.target === googleAds) {
-    closeGoogleAds(false);
-    }
-    });
-    }
-    
-    // Sticky ad close button
-    if (stickyCloseBtn && topStickyAd) {
-    stickyCloseBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    topStickyAd.classList.add('hidden'); // hide sticky ad
-    removeStickyPadding();               // restore header/content position
-    });
-    }
-    
+
     // Fallback: delegate close click in case button renders later
     document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.sticky-ad-close');
-    if (btn && topStickyAd) {
-    e.preventDefault();
-    e.stopPropagation();
-    topStickyAd.classList.add('hidden');
-    removeStickyPadding();
-    }
+        const btn = e.target.closest('.sticky-ad-close');
+        if (btn && topStickyAd) {
+            e.preventDefault();
+            e.stopPropagation();
+            topStickyAd.classList.add('hidden');
+            removeStickyPadding();
+        }
     });
-    
+
     // Initialize early so handlers attach before interaction
-    // window.addEventListener('load', initialize);
     document.addEventListener('DOMContentLoaded', initialize);
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && googleAds && googleAds.classList.contains('active')) {
@@ -402,4 +410,4 @@
     }, 1000);
 
     window.addEventListener('load', initialize);
-})();
+});
