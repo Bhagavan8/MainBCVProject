@@ -228,9 +228,11 @@
 
     // Guard apply buttons from ad triggers
     function guardApplyButtons() {
-        const applyButtons = document.querySelectorAll('.apply-now, #bottomApplyBtn');
+        const applyButtons = document.querySelectorAll('.action-btn.apply-now, #bottomApplyBtn');
         applyButtons.forEach(btn => {
-            btn.replaceWith(btn.cloneNode(true));
+            btn.setAttribute('data-ads-ignore', 'true');
+            btn.style.touchAction = 'manipulation';
+            btn.addEventListener('click', (e) => { e.stopPropagation(); }, { capture: true });
         });
     }
 
