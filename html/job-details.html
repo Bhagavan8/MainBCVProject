@@ -78,9 +78,14 @@
             }
         }
     </style>
+    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
 </head>
 
 <body>
+    <amp-auto-ads type="adsense" data-ad-client="ca-pub-6284022198338659">
+    </amp-auto-ads>
+
     <div id="pageLoader" class="page-loader-minimal">
         <div class="loader-spinner"></div>
     </div>
@@ -139,11 +144,11 @@
                                             <span id="jobCode">Loading...</span>
                                         </div>
 
-                                        <div class="stat-item views">
+                                        <div class="stat-item views"  style="display: none !important;">
                                             <i class="bi bi-eye-fill"></i>
                                             <span id="viewCount">-</span>
                                         </div>
-                                        <div class="stat-item likes">
+                                        <div class="stat-item likes"  style="display: none !important;">
                                             <button id="likeButton" class="like-btn">
                                                 <i class="bi bi-heart"></i>
                                                 <span id="likeCount">-</span>
