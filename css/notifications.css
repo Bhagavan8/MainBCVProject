@@ -319,8 +319,9 @@ body.with-bottom-anchor-ad {
 
 .apply-cta-guard {
     position: relative;
-    isolation: isolate;
-    z-index: 2;
+    z-index: 10050;
+    pointer-events: auto;
+    margin-bottom: var(--bottom-ad-height, 0px);
 }
 
 /* Prevent ad overlays from blocking page clicks */
