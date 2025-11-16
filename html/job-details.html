@@ -44,8 +44,7 @@
     <link href="/css/job-details.css" rel="stylesheet">
 
     <!-- AdSense (keep async) -->
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
         crossorigin="anonymous"></script>
 
     <!-- Preload hero/OG image to help LCP -->
@@ -102,9 +101,18 @@
 
         /* In-article ads */
         .ad-in-article {
-            min-height: 280px;
-            aspect-ratio: 4 / 3;
+            min-height: 48px;
+            /* small default reserve */
+            aspect-ratio: auto;
+            transition: min-height 220ms ease;
         }
+
+        @media (min-width: 1024px) {
+            .ad-in-article {
+                min-height: 120px;
+            }
+        }
+
 
         /* Sidebar ads */
         .ad-sidebar {
@@ -144,7 +152,9 @@
             }
 
             .ad-in-article {
-                min-height: 200px;
+                .ad-in-article {
+                    min-height: 48px;
+                }
             }
         }
     </style>
@@ -154,10 +164,11 @@
     <!-- CONSENT BANNER PLACEHOLDER -->
     <div id="consent-banner"
         style="position:fixed;left:0;right:0;bottom:0;z-index:99999;background:white;padding:10px 16px;border-top:1px solid #ddd;display:none;">
-        <div style="max-width:1200px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;">
+        <div
+            style="max-width:1200px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;">
             <div style="font-size:14px;color:#333;">
-                We use cookies and similar technologies to deliver ads. By using this site you accept our <a href="/privacy"
-                    style="color:#2563eb;text-decoration:underline">privacy policy</a>.
+                We use cookies and similar technologies to deliver ads. By using this site you accept our <a
+                    href="/privacy" style="color:#2563eb;text-decoration:underline">privacy policy</a>.
             </div>
             <div style="display:flex;gap:8px;">
                 <button id="consent-accept"
@@ -271,11 +282,13 @@
                                             <span>Job Description</span>
                                         </h4>
                                         <div id="descriptionContent" class="description-content"></div>
-                                        <div class="ad-section-responsive ad-in-article ad-slot" style="min-height:280px;">
-                                            <ins class="adsbygoogle" style="display:block; width:100%; height:100%;"
+                                        <div class="ad-section-responsive ad-in-article ad-slot"
+                                            style="min-height:48px;">
+                                            <ins class="adsbygoogle" style="display:block; width:100%; height:auto;"
                                                 data-ad-client="ca-pub-6284022198338659" data-ad-slot="8079574689"
-                                                data-ad-format="auto" loading="lazy"></ins>
+                                                data-ad-format="fluid" data-ad-layout="in-article" loading="lazy"></ins>
                                         </div>
+
 
                                     </div>
 
@@ -299,7 +312,8 @@
                                     <div class="ad-section-responsive ad-slot">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="3556810083"
-                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                            data-ad-format="auto" data-full-width-responsive="true"
+                                            loading="lazy"></ins>
 
                                     </div>
                                     <div class="cache-section">
@@ -395,7 +409,8 @@
                                                     + <kbd>Delete</kbd> (Windows) or <kbd>Cmd</kbd> + <kbd>Shift</kbd> +
                                                     <kbd>Delete</kbd> (Mac) to quickly open the Clear Browsing Data
                                                     window.
-                                                    <button class="copy-shortcut btn btn-sm" data-shortcut="Ctrl + Shift + Delete"
+                                                    <button class="copy-shortcut btn btn-sm"
+                                                        data-shortcut="Ctrl + Shift + Delete"
                                                         style="margin-left:12px;">Copy</button>
                                                 </div>
                                             </div>
@@ -441,7 +456,8 @@
                                                     + <kbd>Delete</kbd> (Windows) or <kbd>Cmd</kbd> + <kbd>Shift</kbd> +
                                                     <kbd>Delete</kbd> (Mac) to quickly open the Clear Recent History
                                                     window.
-                                                    <button class="copy-shortcut btn btn-sm" data-shortcut="Ctrl + Shift + Delete"
+                                                    <button class="copy-shortcut btn btn-sm"
+                                                        data-shortcut="Ctrl + Shift + Delete"
                                                         style="margin-left:12px;">Copy</button>
                                                 </div>
                                             </div>
@@ -486,7 +502,8 @@
                                                     <strong>Quick Tip:</strong> Press <kbd>Cmd</kbd> + <kbd>Option</kbd>
                                                     + <kbd>E</kbd> to quickly empty the cache in Safari (requires
                                                     enabling the Develop menu).
-                                                    <button class="copy-shortcut btn btn-sm" data-shortcut="Cmd + Option + E"
+                                                    <button class="copy-shortcut btn btn-sm"
+                                                        data-shortcut="Cmd + Option + E"
                                                         style="margin-left:12px;">Copy</button>
                                                 </div>
                                             </div>
@@ -531,7 +548,8 @@
                                                 <div class="shortcut-tip">
                                                     <strong>Quick Tip:</strong> Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd>
                                                     + <kbd>Delete</kbd>.
-                                                    <button class="copy-shortcut btn btn-sm" data-shortcut="Ctrl + Shift + Delete"
+                                                    <button class="copy-shortcut btn btn-sm"
+                                                        data-shortcut="Ctrl + Shift + Delete"
                                                         style="margin-left:12px;">Copy</button>
                                                 </div>
                                             </div>
@@ -597,7 +615,8 @@
                                     <div class="ad-section-responsive ad-slot">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="7785524311"
-                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                            data-ad-format="auto" data-full-width-responsive="true"
+                                            loading="lazy"></ins>
 
                                     </div>
 
@@ -614,7 +633,8 @@
                                     <div class="ad-section-responsive ad-slot">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="5159360971"
-                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                            data-ad-format="auto" data-full-width-responsive="true"
+                                            loading="lazy"></ins>
 
                                     </div>
                                     <!-- Social Share Section -->
@@ -714,7 +734,8 @@
                                     <div class="ad-section-responsive ad-slot">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="8788556740"
-                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                            data-ad-format="auto" data-full-width-responsive="true"
+                                            loading="lazy"></ins>
 
                                     </div>
 
@@ -741,7 +762,8 @@
                                     <div class="ad-section-responsive ad-slot">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="4769420682"
-                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                            data-ad-format="auto" data-full-width-responsive="true"
+                                            loading="lazy"></ins>
 
                                     </div>
 
@@ -767,7 +789,8 @@
                                     <div class="ad-section-responsive ad-slot">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="2533197631"
-                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                            data-ad-format="auto" data-full-width-responsive="true"
+                                            loading="lazy"></ins>
 
                                     </div>
 
@@ -877,7 +900,8 @@
         <div class="ad-right ad-column" aria-hidden="true">
             <div class="ad-section-responsive ad-sidebar" style="min-height:300px;">
                 <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="8917135672" data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                    data-ad-slot="8917135672" data-ad-format="auto" data-full-width-responsive="true"
+                    loading="lazy"></ins>
             </div>
         </div>
 
@@ -1114,6 +1138,69 @@
             };
 
             wrappers.forEach(w => trackVisibleAd(w));
+        })();
+        (function () {
+            // Shrink ad wrapper to the real iframe height after ad loads
+            const selectors = '.ad-in-article.ad-slot, .ad-in-article';
+            function attachResize(wrapper) {
+                const ins = wrapper.querySelector('ins.adsbygoogle');
+                if (!ins) return;
+
+                // Poll for iframe inserted by AdSense
+                let attempts = 0;
+                const poll = setInterval(() => {
+                    attempts++;
+                    const iframe = ins.querySelector('iframe');
+                    if (iframe) {
+                        clearInterval(poll);
+                        // initial sizing
+                        function applySize() {
+                            try {
+                                const h = iframe.offsetHeight || iframe.getBoundingClientRect().height;
+                                if (h && h > 0) {
+                                    // set minHeight to actual ad height (plus small padding)
+                                    wrapper.style.minHeight = Math.max(48, Math.round(h)) + 'px';
+                                    wrapper.style.height = 'auto';
+                                    wrapper.classList.add('ad-loaded');
+                                }
+                            } catch (e) {
+                                console.warn('ad sizing error', e);
+                            }
+                        }
+                        iframe.addEventListener('load', applySize);
+                        applySize();
+                        // observe size changes if available
+                        if (window.ResizeObserver) {
+                            const ro = new ResizeObserver(entries => {
+                                for (const entry of entries) {
+                                    const h = entry.contentRect?.height;
+                                    if (h && h > 0) {
+                                        wrapper.style.minHeight = Math.max(48, Math.round(h)) + 'px';
+                                    }
+                                }
+                            });
+                            ro.observe(iframe);
+                        }
+                    }
+                    // stop after ~10s
+                    if (attempts > 70) clearInterval(poll);
+                }, 150);
+            }
+
+            // Attach to existing wrappers
+            document.querySelectorAll(selectors).forEach(attachResize);
+
+            // Attach to wrappers added later (SPA navigation)
+            const mo = new MutationObserver(muts => {
+                muts.forEach(m => {
+                    m.addedNodes.forEach(n => {
+                        if (!(n instanceof HTMLElement)) return;
+                        if (n.matches && n.matches(selectors)) attachResize(n);
+                        n.querySelectorAll && n.querySelectorAll(selectors).forEach(attachResize);
+                    });
+                });
+            });
+            mo.observe(document.body, { childList: true, subtree: true });
         })();
     </script>
 
