@@ -1324,6 +1324,57 @@
             setTimeout(update, 600);
             setTimeout(update, 1600);
         })();
+        function stickElement(el, side) {
+            if (!el) return;
+            const wrapper = document.querySelector('.page-wrapper');
+            const wrapRect = wrapper.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            const elHeight = elRect.height;
+            const viewportH = window.innerHeight;
+            const scrollY = window.scrollY;
+
+            // if taller than viewport - fallback to sticky
+            if (elHeight > viewportH - 20) {
+                el.style.position = 'sticky';
+                el.style.top = offsetTop + 'px';
+                el.style.left = '';
+                el.style.right = '';
+                el.style.width = '';
+                return;
+            }
+
+            if (scrollY + offsetTop > (wrapRect.top + scrollY)) {
+                const maxTop = (wrapRect.top + scrollY + wrapper.offsetHeight) - elHeight - offsetTop;
+                const finalTop = scrollY > maxTop ? (maxTop - scrollY + offsetTop) : offsetTop;
+
+                el.style.position = 'fixed';
+                el.style.top = Math.round(finalTop) + 'px';
+                el.style.width = Math.round(elRect.width) + 'px';
+
+                // compute left/right inside the centered wrapper
+                if (side === 'left') {
+                    // align the right edge of ad to wrapper left minus gutter
+                    const gutter = 16; // tweak as you like
+                    const leftPx = Math.round(wrapRect.left - elRect.width - gutter);
+                    el.style.left = leftPx + 'px';
+                    el.style.right = '';
+                } else {
+                    // place ad to the right of wrapper
+                    const gutter = 16;
+                    const leftPx = Math.round(wrapRect.left + wrapRect.width + gutter);
+                    el.style.left = leftPx + 'px';
+                    el.style.right = '';
+                }
+            } else {
+                // revert
+                el.style.position = '';
+                el.style.top = '';
+                el.style.left = '';
+                el.style.right = '';
+                el.style.width = '';
+            }
+        }
+
     </script>
 
 </body>
