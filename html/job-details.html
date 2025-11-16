@@ -78,13 +78,11 @@
             }
         }
     </style>
-    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-    </script>
+
 </head>
 
 <body>
-    <amp-auto-ads type="adsense" data-ad-client="ca-pub-6284022198338659">
-    </amp-auto-ads>
+
 
     <div id="pageLoader" class="page-loader-minimal">
         <div class="loader-spinner"></div>
@@ -98,9 +96,7 @@
             <span class="ad-label">Sponsored</span>
             <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
                 data-ad-slot="6685159350" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+           
         </div>
 
         <!-- Main Content -->
@@ -121,6 +117,19 @@
                             <div id="companyLogo" class="company-logo"></div>
                             <div class="job-title-section">
                                 <h1 id="jobTitle"></h1>
+                                <!-- Ad block under job title - lazy loaded via IntersectionObserver -->
+                                <div id="ad-below-title" class="ad-slot ad-below-title" aria-hidden="true"
+                                    style="min-height:90px;">
+                                    <!-- placeholder shown until ad loads -->
+                                    <div class="ad-placeholder">Sponsored</div>
+                                    <ins class="adsbygoogle" style="display:block"
+                                        data-ad-client="ca-pub-6284022198338659" data-ad-slot="5568606190"
+                                        data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                    <script>
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                                    </script>
+                                </div>
+
                                 <h2 id="companyName" class="company-name-style"></h2>
                                 <div class="job-meta">
                                     <span id="locationWrapper" class="meta-item">
@@ -163,10 +172,8 @@
                     <!-- Ad Section After Header -->
                     <div class="ad-section-responsive">
                         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="8664433668" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                            data-ad-slot="8664433668" data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                       
                     </div>
 
                     <!-- Job Description Content -->
@@ -188,10 +195,8 @@
                                             <ins class="adsbygoogle" style="display:block; text-align:center;"
                                                 data-ad-layout="in-article" data-ad-format="fluid"
                                                 data-ad-client="ca-pub-6284022198338659"
-                                                data-ad-slot="8079574689"></ins>
-                                            <script>
-                                                (adsbygoogle = window.adsbygoogle || []).push({});
-                                            </script>
+                                                data-ad-slot="8079574689" loading="lazy"></ins>
+                                           
                                         </div>
                                     </div>
 
@@ -199,10 +204,8 @@
                                     <div class="ad-section-responsive">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="7430424807"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                       
                                     </div>
 
                                     <!-- Job Details Section -->
@@ -216,10 +219,8 @@
                                     <div class="ad-section-responsive">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="3556810083"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                        
                                     </div>
                                     <div class="cache-section">
                                         <div class="cache-header">
@@ -510,10 +511,8 @@
 
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="7785524311"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                        
                                     </div>
 
                                     <!-- Skills Section -->
@@ -530,10 +529,8 @@
 
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="5159360971"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                        
                                     </div>
                                     <!-- Social Share Section -->
                                     <!-- Social Share Section - Enhanced for Mobile -->
@@ -632,10 +629,8 @@
                                     <div class="ad-section-responsive">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="8788556740"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                       
                                     </div>
 
                                     <!-- Qualifications Section -->
@@ -645,16 +640,24 @@
                                             <span>Desired Qualifications</span>
                                         </h4>
                                         <div id="qualificationsContent" class="qualifications-content"></div>
+                                        <!-- In-article ad inside job description -->
+                                        <div class="ad-inline ad-in-article" aria-hidden="true"
+                                            style="min-height:250px; margin:20px 0;">
+                                            <ins class="adsbygoogle" style="display:block; text-align:center;"
+                                                data-ad-layout="in-article" data-ad-format="fluid"
+                                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="7264831248"
+                                                loading="lazy"></ins>
+                                           
+                                        </div>
+
                                     </div>
 
                                     <!-- Ad Section After Desired Qualifications -->
                                     <div class="ad-section-responsive">
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="4769420682"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                       
                                     </div>
 
                                     <!-- Community Section -->
@@ -680,10 +683,8 @@
 
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="2533197631"
-                                            data-ad-format="auto" data-full-width-responsive="true"></ins>
-                                        <script>
-                                            (adsbygoogle = window.adsbygoogle || []).push({});
-                                        </script>
+                                            data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                                        
                                     </div>
 
                                     <!-- Bottom Apply Button -->
@@ -702,10 +703,8 @@
                     <div class="ad-section mt-4">
                         <div class="ad-box-job">
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="8907034293" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
+                                data-ad-slot="8907034293" data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                           
                         </div>
                     </div>
 
@@ -713,10 +712,8 @@
                         <div class="ad-box-job">
                             <!-- After Last but one -->
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="4892258277" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
+                                data-ad-slot="4892258277" data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                            
                         </div>
                     </div>
 
@@ -771,10 +768,8 @@
                         <div class="ad-box-job">
                             <!-- After Last but one -->
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="8256788217" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
+                                data-ad-slot="8256788217" data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+                           
                         </div>
                     </div>
 
@@ -782,10 +777,8 @@
                         <div class="ad-box-job">
                             <!-- After Last but one -->
                             <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
-                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="5327372547"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
+                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="5327372547" loading="lazy"></ins>
+                            
                         </div>
                     </div>
 
@@ -797,10 +790,8 @@
         <div class="ad-right ad-column">
             <span class="ad-label">Sponsored</span>
             <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                data-ad-slot="8917135672" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+                data-ad-slot="8917135672" data-ad-format="auto" data-full-width-responsive="true" loading="lazy"></ins>
+           
         </div>
 
     </div>
@@ -870,6 +861,46 @@
                 window.location.reload();
             });
         });
+        // Lazy-load single ad when visible
+
+        (function () {
+            const adWrappers = Array.from(document.querySelectorAll('.ad-slot'));
+            if (!adWrappers.length) return;
+
+            const pushAd = (ins) => {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    ins.closest('.ad-slot').classList.add('ad-loaded');
+                } catch (err) {
+                    console.warn('ads push failed', err);
+                }
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    const wrapper = entry.target;
+                    if (entry.isIntersecting) {
+                        const ins = wrapper.querySelector('ins.adsbygoogle');
+                        if (ins && !wrapper.classList.contains('ad-loaded')) {
+                            setTimeout(() => pushAd(ins), 50);
+                        }
+                        obs.unobserve(wrapper);
+                    }
+                });
+            }, {
+                rootMargin: '300px',
+                threshold: 0.01
+            });
+
+            adWrappers.forEach(w => observer.observe(w));
+
+            // Eager-load first 1–2 visible slots to ensure above-the-fold ads appear quickly
+            const eagerSlots = adWrappers.slice(0, 2);
+            eagerSlots.forEach(w => {
+                const ins = w.querySelector('ins.adsbygoogle');
+                if (ins && !w.classList.contains('ad-loaded')) pushAd(ins);
+            });
+        })();
     </script>
 </body>
 
