@@ -1998,7 +1998,6 @@ a {
         justify-content: center;
     }
 }
-
 /* ===========================
    HIGH-REVENUE AD RESERVE CSS
    (ADD BELOW YOUR STYLESHEET)
@@ -2018,10 +2017,9 @@ a {
 
 /* In-article ads */
 .ad-in-article {
-    min-height: 180px;
-    /* desktop default */
-    aspect-ratio: auto;
-    transition: min-height 220ms ease;
+  min-height: 180px;   /* desktop default */
+  aspect-ratio: auto;
+  transition: min-height 220ms ease;
 }
 
 /* Sidebar ads */
@@ -2046,8 +2044,7 @@ a {
 ins.adsbygoogle {
     display: block !important;
     width: 100% !important;
-    min-height: inherit !important;
-    /* inherit from reserved container */
+    min-height: inherit !important;  /* inherit from reserved container */
     height: auto !important;
 }
 
@@ -2063,7 +2060,7 @@ ins.adsbygoogle {
     }
 
     .ad-in-article {
-        min-height: 120px;
+         min-height: 120px;
     }
 }
 
@@ -2071,57 +2068,46 @@ ins.adsbygoogle {
 /* Make sure this block comes last so it overrides duplicates above */
 
 /* 1) General mobile typography + spacing */
-html {
-    -webkit-text-size-adjust: 100%;
-}
-
+html { -webkit-text-size-adjust: 100%; }
 body {
-    font-size: 14px;
-    /* base */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    padding-bottom: 56px;
-    /* space for consent/footer on small screens */
+  font-size: 14px; /* base */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: 56px; /* space for consent/footer on small screens */
 }
 
 /* 2) Convert layout to single column on small screens */
 @media (max-width: 991.98px) {
-    .page-wrapper {
-        flex-direction: column;
-        gap: 12px;
-        padding: 0 12px;
-        max-width: 100%;
-    }
-
-    .ad-left,
-    .ad-right {
-        display: none !important;
-        /* hide sticky sidebars under tablet */
-        width: 100%;
-        min-width: 0;
-        position: static;
-    }
-
-    .main-container {
-        padding: 12px 0;
-    }
+  .page-wrapper {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 12px;
+    max-width: 100%;
+  }
+  .ad-left, .ad-right {
+    display: none !important; /* hide sticky sidebars under tablet */
+    width: 100%;
+    min-width: 0;
+    position: static;
+  }
+  .main-container {
+    padding: 12px 0;
+  }
 }
 
 /* 3) At phone sizes make ad columns horizontally scrollable (if you want to keep them) */
 @media (max-width: 575.98px) {
-    .ad-column {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        padding: 8px 0;
-    }
-
-    .ad-column .ad-section-responsive {
-        min-width: 300px;
-        /* narrow card for carousel feel */
-        flex: 0 0 auto;
-        margin: 0 6px;
-    }
+  .ad-column {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+  .ad-column .ad-section-responsive {
+    min-width: 300px; /* narrow card for carousel feel */
+    flex: 0 0 auto;
+    margin: 0 6px;
+  }
 }
 
 /* 4) Ad reserves - small, responsive, consistent */
@@ -2130,235 +2116,161 @@ body {
 .ad-inline,
 .ad-box-job,
 .ad-container {
-    transition: min-height 260ms ease, opacity 200ms ease;
-    min-height: 48px !important;
-    /* default tiny reserve on mobile */
-    height: auto !important;
-    padding: 0 !important;
-    margin: 12px 0 !important;
+  transition: min-height 260ms ease, opacity 200ms ease;
+  min-height: 48px !important; /* default tiny reserve on mobile */
+  height: auto !important;
+  padding: 0 !important;
+  margin: 12px 0 !important;
 }
 
 /* Desktop: slightly larger reserves for in-article where layout allows */
 @media (min-width: 992px) {
-    .ad-in-article {
-        min-height: 120px !important;
-    }
-
-    .ad-box-job {
-        min-height: 220px !important;
-        padding: 12px !important;
-    }
-
-    .ad-sidebar {
-        min-height: 300px !important;
-    }
+  .ad-in-article { min-height: 120px !important; }
+  .ad-box-job { min-height: 220px !important; padding: 12px !important; }
+  .ad-sidebar { min-height: 300px !important; }
 }
 
 /* Force ads to size to child iframe when it appears (works with your resize script) */
 .ad-in-article.ad-loaded,
 .ad-box-job.ad-loaded,
 .ad-section-responsive.ad-loaded {
-    min-height: 0 !important;
+  min-height: 0 !important;
 }
 
 /* 5) Buttons full width & spacing on small screens */
 @media (max-width: 575.98px) {
-
-    .action-btn,
-    .nav-view-btn {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 12px 14px !important;
-        font-size: 15px !important;
-        border-radius: 10px !important;
-    }
-
-    .social-share-buttons-mobile .btn {
-        min-height: 64px !important;
-        padding: 10px 6px !important;
-    }
+  .action-btn, .nav-view-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
+  }
+  .social-share-buttons-mobile .btn {
+    min-height: 64px !important;
+    padding: 10px 6px !important;
+  }
 }
 
 /* 6) Reduce large card paddings & fonts for mobile */
 @media (max-width: 767.98px) {
-    .job-header {
-        padding: 16px !important;
-    }
-
-    .section-title {
-        font-size: 18px !important;
-    }
-
-    .description-content,
-    .qualifications-content {
-        font-size: 15px !important;
-    }
-
-    .company-logo {
-        width: 72px;
-        height: 72px;
-    }
-
-    .cache-section {
-        margin: 12px 0;
-        padding: 12px !important;
-    }
+  .job-header { padding: 16px !important; }
+  .section-title { font-size: 18px !important; }
+  .description-content, .qualifications-content { font-size: 15px !important; }
+  .company-logo { width: 72px; height: 72px; }
+  .cache-section { margin: 12px 0; padding: 12px !important; }
 }
 
 /* 7) Avoid fixed width forcing horizontal scroll */
-.ad-left,
-.ad-right,
-.page-wrapper,
-.main-container {
-    max-width: 100%;
-    box-sizing: border-box;
+.ad-left, .ad-right, .page-wrapper, .main-container {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* 8) Accessibility: mark ad wrappers for screen readers (non-intrusive) */
-.ad-section-responsive[aria-hidden="true"] {
-    aria-hidden: true;
-}
-
-.ad-section-responsive[role="complementary"] {
-    outline: none;
-}
+.ad-section-responsive[aria-hidden="true"] { aria-hidden: true; }
+.ad-section-responsive[role="complementary"] { outline: none; }
 
 /* 9) Remove duplicate / bloated ad rules by using !important where necessary to override earlier duplicates */
 ins.adsbygoogle {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  min-height: 0 !important;
 }
 
 /* 10) Clean-up repeated animation names: keep a single spin keyframe (avoid duplicates) */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* Desktop only: keep sidebars sticky */
 @media (min-width: 992px) {
+  /* Make sidebars scroll with the page and stick after a gap from top */
+  .ad-left,
+  .ad-right {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 100px; /* distance from top (adjust to header height) */
+    align-self: start;        /* ensure it starts at container top in flex/grid */
+  }
 
-    /* Make sidebars scroll with the page and stick after a gap from top */
-    .ad-left,
-    .ad-right {
-        position: -webkit-sticky;
-        /* Safari */
-        position: sticky;
-        top: 100px;
-        /* distance from top (adjust to header height) */
-        align-self: start;
-        /* ensure it starts at container top in flex/grid */
-    }
-
-    /* Ensure wrapper doesn't create clipping (no overflow on ancestors) */
-    .page-wrapper,
-    .main-container,
-    .page-layout {
-        overflow: visible;
-    }
+  /* Ensure wrapper doesn't create clipping (no overflow on ancestors) */
+  .page-wrapper,
+  .main-container,
+  .page-layout {
+    overflow: visible;
+  }
 }
 
 /* ===== STABLE SIDEBAR + MOBILE SAFEGUARDS (Paste at the end of job-details.css) ===== */
 
 /* Fix page-level overflow / touch behaviour to avoid shaky scroll on mobile */
-html,
-body {
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
+html, body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 /* Prevent layout parents from creating new stacking contexts which break fixed/sticky */
 .page-wrapper,
+.page-layout,
 .main-container,
-.page-layout {
+.content-wrapper {
+  transform: none !important;
+  will-change: auto !important;
   overflow: visible !important;
-  transform: none !important;    /* removes accidental stacking context */
-  -webkit-transform: none !important;
-}
-
-/* keep sidebars fully visible and on top */
-.ad-left, .ad-right {
-  box-sizing: border-box;
-  z-index: 9999;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-/* make sure ad iframe scales inside container */
-.ad-left .adsbygoogle,
-.ad-right .adsbygoogle,
-.ad-left ins.adsbygoogle,
-.ad-right ins.adsbygoogle {
-  width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  box-sizing: border-box;
 }
 
 /* Desktop sticky sidebars (use sticky where possible) */
 @media (min-width: 992px) {
+  .ad-left,
+  .ad-right {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 100px; /* adjust to header height */
+    align-self: start;
+    max-width: 200px;
+    width: auto;
+    box-sizing: border-box;
+    -webkit-backface-visibility: hidden; /* reduce rendering issues */
+    backface-visibility: hidden;
+  }
 
-    .ad-left,
-    .ad-right {
-        position: -webkit-sticky;
-        /* Safari */
-        position: sticky;
-        top: 100px;
-        /* adjust to header height */
-        align-self: start;
-        max-width: 200px;
-        width: auto;
-        box-sizing: border-box;
-        -webkit-backface-visibility: hidden;
-        /* reduce rendering issues */
-        backface-visibility: hidden;
-    }
-
-    /* Ensure page wrapper doesn't clip sticky children */
-    .page-wrapper,
-    .main-container,
-    .page-layout {
-        overflow: visible;
-    }
+  /* Ensure page wrapper doesn't clip sticky children */
+  .page-wrapper,
+  .main-container,
+  .page-layout {
+    overflow: visible;
+  }
 }
 
 /* Hide/disable sidebars on tablet & mobile to avoid layout jumps and horizontal scroll */
 @media (max-width: 991.98px) {
-
-    .ad-left,
-    .ad-right {
-        display: none !important;
-        position: static !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        width: 100% !important;
-        min-width: 0 !important;
-    }
+  .ad-left,
+  .ad-right {
+    display: none !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
 }
 
 /* Mobile ad-column carousel (if you keep ads visible on very small screens) */
 @media (max-width: 575.98px) {
-    .ad-column {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: 8px 0;
-    }
-
-    .ad-column .ad-section-responsive {
-        min-width: 300px;
-        flex: 0 0 auto;
-        margin: 0 6px;
-    }
+  .ad-column {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 0;
+  }
+  .ad-column .ad-section-responsive {
+    min-width: 300px;
+    flex: 0 0 auto;
+    margin: 0 6px;
+  }
 }
 
 /* Ad reserves + smooth transitions to reduce layout jump when iframe loads */
@@ -2367,36 +2279,26 @@ body {
 .ad-inline,
 .ad-box-job,
 .ad-container {
-    transition: min-height 220ms ease, opacity 160ms ease;
-    min-height: 48px !important;
-    /* default reserve on mobile */
-    height: auto !important;
-    padding: 0 !important;
-    margin: 12px 0 !important;
-    will-change: height;
+  transition: min-height 220ms ease, opacity 160ms ease;
+  min-height: 48px !important; /* default reserve on mobile */
+  height: auto !important;
+  padding: 0 !important;
+  margin: 12px 0 !important;
+  will-change: height;
 }
 
 /* Desktop reserves */
 @media (min-width: 992px) {
-    .ad-in-article {
-        min-height: 120px !important;
-    }
-
-    .ad-box-job {
-        min-height: 220px !important;
-        padding: 12px !important;
-    }
-
-    .ad-sidebar {
-        min-height: 300px !important;
-    }
+  .ad-in-article { min-height: 120px !important; }
+  .ad-box-job { min-height: 220px !important; padding: 12px !important; }
+  .ad-sidebar { min-height: 300px !important; }
 }
 
 /* When ad script sets .ad-loaded (your JS) allow the ad to size to iframe */
 .ad-in-article.ad-loaded,
 .ad-box-job.ad-loaded,
 .ad-section-responsive.ad-loaded {
-    min-height: 0 !important;
+  min-height: 0 !important;
 }
 
 /* Prevent horizontal overflow caused by fixed-width elements */
@@ -2405,37 +2307,34 @@ body {
 .ad-left,
 .ad-right,
 .ad-column {
-    max-width: 100%;
-    box-sizing: border-box;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Force adsbygoogle to be responsive and not push layout unexpectedly */
 ins.adsbygoogle {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
 }
 
 /* Accessibility: don't try to set aria-* in CSS (kept only as class markers) */
-.ad-section-responsive[aria-hidden="true"] {
-    pointer-events: none;
-}
+.ad-section-responsive[aria-hidden="true"] { pointer-events: none; }
 
 /* Buttons / CTAs: mobile-friendly final adjustments */
 @media (max-width: 575.98px) {
-
-    .action-btn,
-    .nav-view-btn {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 12px 14px !important;
-        font-size: 15px !important;
-        border-radius: 10px !important;
-    }
+  .action-btn, .nav-view-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
+  }
 }
 
 /* Small optimization: reduce repaint area for animations */
 * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+
