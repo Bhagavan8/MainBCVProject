@@ -2063,3 +2063,122 @@ ins.adsbygoogle {
          min-height: 120px;
     }
 }
+
+/* ===== MOBILE-FIRST OVERRIDES (Place at end of stylesheet) ===== */
+/* Make sure this block comes last so it overrides duplicates above */
+
+/* 1) General mobile typography + spacing */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-size: 14px; /* base */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: 56px; /* space for consent/footer on small screens */
+}
+
+/* 2) Convert layout to single column on small screens */
+@media (max-width: 991.98px) {
+  .page-wrapper {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 12px;
+    max-width: 100%;
+  }
+  .ad-left, .ad-right {
+    display: none !important; /* hide sticky sidebars under tablet */
+    width: 100%;
+    min-width: 0;
+    position: static;
+  }
+  .main-container {
+    padding: 12px 0;
+  }
+}
+
+/* 3) At phone sizes make ad columns horizontally scrollable (if you want to keep them) */
+@media (max-width: 575.98px) {
+  .ad-column {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+  .ad-column .ad-section-responsive {
+    min-width: 300px; /* narrow card for carousel feel */
+    flex: 0 0 auto;
+    margin: 0 6px;
+  }
+}
+
+/* 4) Ad reserves - small, responsive, consistent */
+.ad-in-article,
+.ad-section-responsive.ad-in-article,
+.ad-inline,
+.ad-box-job,
+.ad-container {
+  transition: min-height 260ms ease, opacity 200ms ease;
+  min-height: 48px !important; /* default tiny reserve on mobile */
+  height: auto !important;
+  padding: 0 !important;
+  margin: 12px 0 !important;
+}
+
+/* Desktop: slightly larger reserves for in-article where layout allows */
+@media (min-width: 992px) {
+  .ad-in-article { min-height: 120px !important; }
+  .ad-box-job { min-height: 220px !important; padding: 12px !important; }
+  .ad-sidebar { min-height: 300px !important; }
+}
+
+/* Force ads to size to child iframe when it appears (works with your resize script) */
+.ad-in-article.ad-loaded,
+.ad-box-job.ad-loaded,
+.ad-section-responsive.ad-loaded {
+  min-height: 0 !important;
+}
+
+/* 5) Buttons full width & spacing on small screens */
+@media (max-width: 575.98px) {
+  .action-btn, .nav-view-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
+  }
+  .social-share-buttons-mobile .btn {
+    min-height: 64px !important;
+    padding: 10px 6px !important;
+  }
+}
+
+/* 6) Reduce large card paddings & fonts for mobile */
+@media (max-width: 767.98px) {
+  .job-header { padding: 16px !important; }
+  .section-title { font-size: 18px !important; }
+  .description-content, .qualifications-content { font-size: 15px !important; }
+  .company-logo { width: 72px; height: 72px; }
+  .cache-section { margin: 12px 0; padding: 12px !important; }
+}
+
+/* 7) Avoid fixed width forcing horizontal scroll */
+.ad-left, .ad-right, .page-wrapper, .main-container {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 8) Accessibility: mark ad wrappers for screen readers (non-intrusive) */
+.ad-section-responsive[aria-hidden="true"] { aria-hidden: true; }
+.ad-section-responsive[role="complementary"] { outline: none; }
+
+/* 9) Remove duplicate / bloated ad rules by using !important where necessary to override earlier duplicates */
+ins.adsbygoogle {
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  min-height: 0 !important;
+}
+
+/* 10) Clean-up repeated animation names: keep a single spin keyframe (avoid duplicates) */
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
