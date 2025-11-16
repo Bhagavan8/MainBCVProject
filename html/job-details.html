@@ -1207,6 +1207,123 @@
             });
             mo.observe(document.body, { childList: true, subtree: true });
         })();
+        (function () {
+            const left = document.querySelector('.ad-left');
+            const right = document.querySelector('.ad-right');
+            const content = document.querySelector('.main-container'); // constrain vertical range
+            const offsetTop = 100; // adjust if you have a taller header
+            const minDesktop = 992;
+
+            if (!content || (!left && !right)) return;
+
+            // Helper to clear inline styles applied when fixed
+            function clearFixed(el) {
+                if (!el) return;
+                el.style.position = '';
+                el.style.top = '';
+                el.style.left = '';
+                el.style.right = '';
+                el.style.width = '';
+                el.classList.remove('ad-manual-fixed');
+            }
+
+            function isDesktop() {
+                return window.innerWidth >= minDesktop;
+            }
+
+            // gets element position relative to document top/left
+            function rectDoc(el) {
+                const r = el.getBoundingClientRect();
+                return {
+                    top: window.scrollY + r.top,
+                    left: window.scrollX + r.left,
+                    width: Math.round(r.width),
+                    height: Math.round(r.height)
+                };
+            }
+
+            function update() {
+                if (!isDesktop()) {
+                    // reset any inline fixed styles for mobile
+                    [left, right].forEach(clearFixed);
+                    return;
+                }
+
+                const contentRect = content.getBoundingClientRect();
+                const contentTopDoc = window.scrollY + contentRect.top;
+                const contentBottomDoc = contentTopDoc + contentRect.height;
+                const viewportH = window.innerHeight;
+                const scrollY = window.scrollY;
+
+                function stick(el, side) {
+                    if (!el) return;
+                    const elDoc = rectDoc(el);
+                    const elHeight = elDoc.height;
+
+                    // If element is taller than viewport, prefer CSS sticky or keep it normal
+                    if (elHeight > viewportH - 20) {
+                        el.style.position = '';
+                        el.style.top = '';
+                        el.style.width = '';
+                        el.style.left = '';
+                        el.style.right = '';
+                        return;
+                    }
+
+                    // when page scrolled past the element top (plus offsetTop), fix it
+                    if (scrollY + offsetTop > elDoc.top) {
+                        const maxTop = contentBottomDoc - elHeight - offsetTop; // last allowed scrollY before overlap
+                        // if content ended already, compute a clipped top so element doesn't overflow
+                        const desiredTop = Math.min(offsetTop, Math.max(0, maxTop - scrollY + offsetTop));
+
+                        // set fixed
+                        el.style.position = 'fixed';
+                        el.style.top = desiredTop + 'px';
+                        el.style.width = elDoc.width + 'px';
+                        el.classList.add('ad-manual-fixed');
+
+                        // position horizontally: preserve same visual spot
+                        const initialLeft = elDoc.left - window.scrollX; // viewport x when measured
+                        if (side === 'left') {
+                            // compute computed left in viewport — use original left relative to viewport
+                            const leftInViewport = elDoc.left - window.scrollX;
+                            el.style.left = leftInViewport + 'px';
+                            el.style.right = '';
+                        } else {
+                            // compute right offset so it sits same relative to window right edge
+                            const rightOffset = window.innerWidth - (elDoc.left + elDoc.width);
+                            el.style.right = Math.max(0, rightOffset) + 'px';
+                            el.style.left = '';
+                        }
+                    } else {
+                        // revert to flow
+                        clearFixed(el);
+                    }
+                }
+
+                stick(left, 'left');
+                stick(right, 'right');
+            }
+
+            // throttle with rAF
+            let scheduled = false;
+            function tick() {
+                if (scheduled) return;
+                scheduled = true;
+                requestAnimationFrame(() => {
+                    update();
+                    scheduled = false;
+                });
+            }
+
+            window.addEventListener('scroll', tick, { passive: true });
+            window.addEventListener('resize', tick);
+
+            // in case page loads after fonts/images shift layout, run a few times
+            update();
+            setTimeout(update, 600);
+            setTimeout(update, 1600);
+        })();
     </script>
 
 </body>
