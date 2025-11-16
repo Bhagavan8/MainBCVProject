@@ -703,14 +703,31 @@ body {
 /* Sidebar Ads - FIXED */
 .ad-left,
 .ad-right {
-    width: 160px;
-    min-width: 160px;
-    /* Ensure minimum width */
+    width: 180px;
+    /* slightly larger for better ad sizes */
+    min-width: 180px;
     position: sticky;
     top: 100px;
+    /* distance from top when sticking */
+    align-self: start;
     height: fit-content;
+    z-index: 30;
     flex-shrink: 0;
-    /* Prevent shrinking */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px;
+}
+
+.ad-left .ad-box-job,
+.ad-right .ad-box-job,
+.ad-left .ad-sidebar,
+.ad-right .ad-sidebar {
+    width: 100% !important;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .ad-column {
@@ -725,7 +742,7 @@ body {
     display: block !important;
     width: 100% !important;
     height: auto !important;
-    min-height: 200px !important;
+    min-height: 250px !important;
 }
 
 /* Fallback for ad blocks */
@@ -737,6 +754,41 @@ body {
     text-align: center;
     color: #666;
     font-size: 14px;
+}
+
+@media (max-width: 991.98px) {
+
+    .ad-left,
+    .ad-right {
+        position: static;
+        width: auto;
+        min-width: 0;
+        display: block;
+        padding: 0;
+    }
+
+    .ad-column {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 0 12px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ad-box-job {
+        min-height: 150px;
+        padding: 12px;
+        min-width: 300px;
+        /* keep ad units tappable/responsive */
+    }
+}
+
+/* Desktop safeguard: prevent overlap with main content */
+@media (min-width: 1200px) {
+    .page-wrapper {
+        max-width: 1280px;
+        /* shrink main container so side ads are visible */
+    }
 }
 
 .ad-container:empty+.ad-fallback,
