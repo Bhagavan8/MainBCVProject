@@ -2182,3 +2182,21 @@ ins.adsbygoogle {
 /* 10) Clean-up repeated animation names: keep a single spin keyframe (avoid duplicates) */
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+/* Desktop only: keep sidebars sticky */
+@media (min-width: 992px) {
+  /* Make sidebars scroll with the page and stick after a gap from top */
+  .ad-left,
+  .ad-right {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 100px; /* distance from top (adjust to header height) */
+    align-self: start;        /* ensure it starts at container top in flex/grid */
+  }
+
+  /* Ensure wrapper doesn't create clipping (no overflow on ancestors) */
+  .page-wrapper,
+  .main-container,
+  .page-layout {
+    overflow: visible;
+  }
+}
