@@ -725,7 +725,6 @@ body {
     display: block !important;
     width: 100% !important;
     height: auto !important;
-    min-height: 200px !important;
 }
 
 /* Fallback for ad blocks */
@@ -1997,5 +1996,69 @@ a {
 
     .browser-tab {
         justify-content: center;
+    }
+}
+/* ===========================
+   HIGH-REVENUE AD RESERVE CSS
+   (ADD BELOW YOUR STYLESHEET)
+   =========================== */
+
+/* 1. Global ad wrapper – prevents CLS */
+.ad-slot,
+.ad-section-responsive,
+.ad-box-job,
+.ad-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* 2. Reserve height for different slot types */
+
+/* In-article ads */
+.ad-in-article {
+    min-height: 280px;
+    aspect-ratio: 4 / 3;
+}
+
+/* Sidebar ads */
+.ad-sidebar {
+    min-height: 300px;
+    aspect-ratio: 160 / 300;
+}
+
+/* Under-title ads */
+.ad-below-title {
+    min-height: 120px;
+    aspect-ratio: 1000 / 120;
+}
+
+/* Large rectangle blocks */
+.ad-box-job {
+    min-height: 250px;
+    aspect-ratio: 4 / 1;
+}
+
+/* 3. Responsive Google AdSense INS tag fix */
+ins.adsbygoogle {
+    display: block !important;
+    width: 100% !important;
+    min-height: inherit !important;  /* inherit from reserved container */
+    height: auto !important;
+}
+
+/* 4. Mobile improvements */
+@media (max-width: 576px) {
+    .ad-sidebar {
+        min-height: 120px;
+        aspect-ratio: auto;
+    }
+
+    .ad-box-job {
+        min-height: 180px;
+    }
+
+    .ad-in-article {
+        min-height: 200px;
     }
 }
