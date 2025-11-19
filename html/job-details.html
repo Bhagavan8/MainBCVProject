@@ -36,7 +36,7 @@
     <meta name="author" content="BCVWorld">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#007bff">
-    
+
     <!-- Primary Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
@@ -74,6 +74,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -159,18 +160,18 @@
             .ads-popup {
                 padding: 0.5rem;
             }
-            
+
             .ads-popup-content {
                 width: 98%;
                 max-width: 100%;
                 min-height: 200px;
             }
-            
+
             .ads-popup-body {
                 padding: 1rem;
                 min-height: 150px;
             }
-            
+
             .ads-popup-body ins.adsbygoogle {
                 min-width: 250px;
                 min-height: 200px;
@@ -620,6 +621,7 @@
                 <button class="ads-popup-close" id="adsPopupClose">&times;</button>
             </div>
             <div class="ads-popup-body">
+                <!-- This is where the actual ad should display -->
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                     data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
@@ -634,14 +636,14 @@
     <script type="module" src="/js/job-stats.js"></script>
 
     <script>
-        // Fixed ads popup functionality
+        // Fixed ads popup functionality - COMPLETE FIXED VERSION
         document.addEventListener('DOMContentLoaded', function () {
             const pageLoader = document.getElementById('pageLoader');
             const jobTitle = document.getElementById('jobTitle');
-            
+
             // Show loader immediately
             pageLoader.style.display = 'flex';
-            
+
             // Hide loader when content is loaded
             if (jobTitle) {
                 const observer = new MutationObserver(function (mutations) {
@@ -678,109 +680,133 @@
         function initializeAdsPopup() {
             const adsPopup = document.getElementById('adsPopup');
             const adsPopupClose = document.getElementById('adsPopupClose');
-            
-            console.log('Initializing ads popup...');
-            console.log('Popup element:', adsPopup);
-            console.log('Close button:', adsPopupClose);
 
-            if (!adsPopup) {
-                console.error('Ads popup element not found!');
-                return;
-            }
-
-            if (!adsPopupClose) {
-                console.error('Ads popup close button not found!');
+            if (!adsPopup || !adsPopupClose) {
+                console.error('Ads popup elements not found!');
                 return;
             }
 
             let adsPopupTimer;
+            let fallbackShown = false;
 
             function openAdsPopup() {
                 console.log('Opening ads popup');
                 adsPopup.style.display = 'flex';
                 document.body.classList.add('ads-popup-active');
-                
-                // Force reflow to ensure display change is applied
-                adsPopup.offsetHeight;
-                
-                // Load the ad with proper timing
-                setTimeout(() => {
-                    try {
-                        if (typeof adsbygoogle !== 'undefined') {
-                            // First, try to push the ad
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                            console.log('Ad script executed successfully');
-                            
-                            // If ad doesn't load within 3 seconds, show fallback
-                            setTimeout(() => {
-                                const adIframe = adsPopup.querySelector('ins.adsbygoogle iframe');
-                                if (!adIframe || adIframe.offsetHeight === 0) {
-                                    console.log('Ad not loaded, showing fallback');
-                                    showAdBlockerMessage();
-                                }
-                            }, 3000);
-                        } else {
-                            console.error('adsbygoogle not defined');
-                            showAdBlockerMessage();
-                        }
-                    } catch (e) {
-                        console.error('Ad script error:', e);
-                        showAdBlockerMessage();
-                    }
-                }, 100);
-                
+
+                // Reset fallback flag
+                fallbackShown = false;
+
+                // Load the ad immediately
+                loadAdInPopup();
+
                 clearTimeout(adsPopupTimer);
-                adsPopupTimer = setTimeout(closeAdsPopup, 10000);
+                adsPopupTimer = setTimeout(closeAdsPopup, 10000); // Auto close after 10 seconds
+            }
+
+            function loadAdInPopup() {
+                try {
+                    if (typeof adsbygoogle !== 'undefined') {
+                        console.log('Loading ad in popup...');
+
+                        // CRITICAL FIX: Execute the ad script for the popup ad
+                        const popupAd = adsPopup.querySelector('ins.adsbygoogle');
+                        if (popupAd) {
+                            // This line actually loads the ad in the popup
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                            console.log('Ad script executed for popup');
+                        }
+
+                        // Check after 3 seconds if ad loaded
+                        setTimeout(() => {
+                            if (!fallbackShown) {
+                                checkAdLoaded();
+                            }
+                        }, 3000);
+
+                    } else {
+                        console.error('adsbygoogle not defined');
+                        showAdBlockerFallback();
+                    }
+                } catch (e) {
+                    console.error('Ad script error:', e);
+                    showAdBlockerFallback();
+                }
+            }
+
+            function checkAdLoaded() {
+                const adIframe = adsPopup.querySelector('ins.adsbygoogle iframe');
+                const adContainer = adsPopup.querySelector('ins.adsbygoogle');
+
+                console.log('Checking if ad loaded...');
+                console.log('Ad iframe found:', !!adIframe);
+                if (adIframe) {
+                    console.log('Ad iframe dimensions:', adIframe.offsetWidth, 'x', adIframe.offsetHeight);
+                }
+
+                // If no iframe or iframe has zero height, ad is likely blocked
+                if (!adIframe || adIframe.offsetHeight === 0) {
+                    console.log('Ad not loaded, showing fallback message');
+                    showAdBlockerFallback();
+                } else {
+                    console.log('Ad loaded successfully!');
+                }
+            }
+
+            function showAdBlockerFallback() {
+                // Don't show multiple fallbacks
+                if (fallbackShown) return;
+                fallbackShown = true;
+
+                const popupBody = document.querySelector('.ads-popup-body');
+                if (popupBody) {
+                    // Create a new div for fallback instead of replacing the entire content
+                    const existingFallback = popupBody.querySelector('.ad-blocker-fallback');
+                    if (!existingFallback) {
+                        const fallbackDiv = document.createElement('div');
+                        fallbackDiv.className = 'ad-blocker-fallback';
+                        fallbackDiv.innerHTML = `
+                            <div style="text-align: center; padding: 1rem; color: #666; background: #f8f9fa; border-radius: 4px; margin-top: 1rem;">
+                                <p style="margin: 0; font-size: 0.9rem;">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Ad blocker detected. Please consider disabling it to support our site.
+                                </p>
+                            </div>
+                        `;
+                        popupBody.appendChild(fallbackDiv);
+                    }
+                }
             }
 
             function closeAdsPopup() {
                 console.log('Closing ads popup');
                 adsPopup.style.display = 'none';
                 document.body.classList.remove('ads-popup-active');
-            }
 
-            function showAdBlockerMessage() {
-                const popupBody = document.querySelector('.ads-popup-body');
-                if (popupBody) {
-                    popupBody.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: #666; width: 100%;">
-                            <h4>Advertisement</h4>
-                            <p>Please consider disabling your ad blocker to support our site.</p>
-                            <p><small>This space is reserved for advertisements</small></p>
-                            <button onclick="closeAdsPopup()" class="btn btn-primary mt-3">Close</button>
-                        </div>
-                    `;
+                // Remove any fallback messages when closing
+                const fallback = document.querySelector('.ad-blocker-fallback');
+                if (fallback) {
+                    fallback.remove();
                 }
             }
 
-            // FIXED: Proper event listener for close button
-            adsPopupClose.addEventListener('click', function(e) {
+            // Event listeners - FIXED
+            adsPopupClose.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Close button clicked');
                 closeAdsPopup();
             });
-            
+
             // Close popup when clicking outside
-            adsPopup.addEventListener('click', function(e) {
+            adsPopup.addEventListener('click', function (e) {
                 if (e.target === adsPopup) {
-                    console.log('Clicked outside popup');
                     closeAdsPopup();
                 }
             });
 
-            // FIXED: Prevent event propagation for ad triggers
-            const adTriggers = document.querySelectorAll('.ad-section-responsive, .ad-section, .ad-box-job, .ad-left, .ad-right');
-            adTriggers.forEach(el => {
-                el.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    setTimeout(openAdsPopup, 100);
-                });
-            });
-
             // Auto-open popup after page load
             setTimeout(openAdsPopup, 3000);
-            
+
             // Auto-open periodically (every 60 seconds)
             setInterval(() => {
                 if (adsPopup.style.display !== 'flex') {
@@ -789,16 +815,22 @@
             }, 60000);
         }
 
-        // Make closeAdsPopup available globally for the fallback button
-        window.closeAdsPopup = function() {
+        // Make close function available globally
+        window.closeAdsPopup = function () {
             const adsPopup = document.getElementById('adsPopup');
             if (adsPopup) {
                 adsPopup.style.display = 'none';
                 document.body.classList.remove('ads-popup-active');
+                
+                // Remove any fallback messages when closing
+                const fallback = document.querySelector('.ad-blocker-fallback');
+                if (fallback) {
+                    fallback.remove();
+                }
             }
         };
 
-        // Test function to check ad status
+        // Debug function to test ad display
         window.testAdDisplay = function() {
             console.log('=== AD DISPLAY TEST ===');
             console.log('Google Ads loaded:', typeof adsbygoogle !== 'undefined');
@@ -813,9 +845,6 @@
                 console.log(`Iframe ${index}: ${iframe.offsetWidth}x${iframe.offsetHeight} - visible: ${iframe.offsetHeight > 0}`);
             });
         };
-
-        // Uncomment to test
-        // setTimeout(testAdDisplay, 5000);
     </script>
 </body>
 </html>
