@@ -123,6 +123,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
+            flex-direction: column;
         }
 
         .ads-popup-body ins.adsbygoogle {
@@ -130,6 +131,17 @@
             min-height: 250px;
             min-width: 300px;
             width: 100% !important;
+        }
+
+        .ad-blocker-fallback {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 1rem;
+            width: 100%;
         }
 
         .ads-popup-close {
@@ -624,6 +636,13 @@
                 <!-- This is where the actual ad should display -->
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                     data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <!-- Pre-existing fallback that's hidden by default -->
+                <div class="ad-blocker-fallback" id="adBlockerFallback">
+                    <p style="margin: 0; font-size: 0.9rem;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Ad blocker detected. Please consider disabling it to support our site.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -636,7 +655,7 @@
     <script type="module" src="/js/job-stats.js"></script>
 
     <script>
-        // Fixed ads popup functionality - COMPLETE FIXED VERSION
+        // Fixed ads popup functionality - PROPERLY FIXED VERSION
         document.addEventListener('DOMContentLoaded', function () {
             const pageLoader = document.getElementById('pageLoader');
             const jobTitle = document.getElementById('jobTitle');
@@ -680,6 +699,7 @@
         function initializeAdsPopup() {
             const adsPopup = document.getElementById('adsPopup');
             const adsPopupClose = document.getElementById('adsPopupClose');
+            const adBlockerFallback = document.getElementById('adBlockerFallback');
 
             if (!adsPopup || !adsPopupClose) {
                 console.error('Ads popup elements not found!');
@@ -687,21 +707,32 @@
             }
 
             let adsPopupTimer;
-            let fallbackShown = false;
+            let adCheckAttempts = 0;
+            const maxAdCheckAttempts = 3;
+
+            // Hide fallback by default
+            if (adBlockerFallback) {
+                adBlockerFallback.style.display = 'none';
+            }
 
             function openAdsPopup() {
                 console.log('Opening ads popup');
                 adsPopup.style.display = 'flex';
                 document.body.classList.add('ads-popup-active');
 
-                // Reset fallback flag
-                fallbackShown = false;
+                // Reset attempts
+                adCheckAttempts = 0;
+                
+                // Hide fallback when opening
+                if (adBlockerFallback) {
+                    adBlockerFallback.style.display = 'none';
+                }
 
                 // Load the ad immediately
                 loadAdInPopup();
 
                 clearTimeout(adsPopupTimer);
-                adsPopupTimer = setTimeout(closeAdsPopup, 10000); // Auto close after 10 seconds
+                adsPopupTimer = setTimeout(closeAdsPopup, 10000);
             }
 
             function loadAdInPopup() {
@@ -709,20 +740,12 @@
                     if (typeof adsbygoogle !== 'undefined') {
                         console.log('Loading ad in popup...');
 
-                        // CRITICAL FIX: Execute the ad script for the popup ad
-                        const popupAd = adsPopup.querySelector('ins.adsbygoogle');
-                        if (popupAd) {
-                            // This line actually loads the ad in the popup
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                            console.log('Ad script executed for popup');
-                        }
+                        // Execute the ad script for the popup ad
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        console.log('Ad script executed for popup');
 
-                        // Check after 3 seconds if ad loaded
-                        setTimeout(() => {
-                            if (!fallbackShown) {
-                                checkAdLoaded();
-                            }
-                        }, 3000);
+                        // Check ad status with progressive delays
+                        checkAdStatus();
 
                     } else {
                         console.error('adsbygoogle not defined');
@@ -734,47 +757,42 @@
                 }
             }
 
-            function checkAdLoaded() {
+            function checkAdStatus() {
+                adCheckAttempts++;
                 const adIframe = adsPopup.querySelector('ins.adsbygoogle iframe');
                 const adContainer = adsPopup.querySelector('ins.adsbygoogle');
 
-                console.log('Checking if ad loaded...');
+                console.log(`Ad check attempt ${adCheckAttempts}`);
                 console.log('Ad iframe found:', !!adIframe);
+                
                 if (adIframe) {
                     console.log('Ad iframe dimensions:', adIframe.offsetWidth, 'x', adIframe.offsetHeight);
+                    console.log('Ad iframe src:', adIframe.src);
                 }
 
-                // If no iframe or iframe has zero height, ad is likely blocked
-                if (!adIframe || adIframe.offsetHeight === 0) {
-                    console.log('Ad not loaded, showing fallback message');
-                    showAdBlockerFallback();
-                } else {
+                // Check if ad is actually loaded and visible
+                if (adIframe && adIframe.offsetHeight > 50 && adIframe.offsetWidth > 50) {
                     console.log('Ad loaded successfully!');
+                    // Ad is loaded, keep fallback hidden
+                    if (adBlockerFallback) {
+                        adBlockerFallback.style.display = 'none';
+                    }
+                } else if (adCheckAttempts < maxAdCheckAttempts) {
+                    // Try again after delay (progressive: 2s, 4s, 6s)
+                    const nextDelay = adCheckAttempts * 2000;
+                    console.log(`Ad not loaded yet, checking again in ${nextDelay}ms`);
+                    setTimeout(checkAdStatus, nextDelay);
+                } else {
+                    // Final attempt failed - show fallback
+                    console.log('Ad failed to load after all attempts, showing fallback');
+                    showAdBlockerFallback();
                 }
             }
 
             function showAdBlockerFallback() {
-                // Don't show multiple fallbacks
-                if (fallbackShown) return;
-                fallbackShown = true;
-
-                const popupBody = document.querySelector('.ads-popup-body');
-                if (popupBody) {
-                    // Create a new div for fallback instead of replacing the entire content
-                    const existingFallback = popupBody.querySelector('.ad-blocker-fallback');
-                    if (!existingFallback) {
-                        const fallbackDiv = document.createElement('div');
-                        fallbackDiv.className = 'ad-blocker-fallback';
-                        fallbackDiv.innerHTML = `
-                            <div style="text-align: center; padding: 1rem; color: #666; background: #f8f9fa; border-radius: 4px; margin-top: 1rem;">
-                                <p style="margin: 0; font-size: 0.9rem;">
-                                    <i class="bi bi-exclamation-triangle"></i>
-                                    Ad blocker detected. Please consider disabling it to support our site.
-                                </p>
-                            </div>
-                        `;
-                        popupBody.appendChild(fallbackDiv);
-                    }
+                console.log('Showing ad blocker fallback');
+                if (adBlockerFallback) {
+                    adBlockerFallback.style.display = 'block';
                 }
             }
 
@@ -782,15 +800,14 @@
                 console.log('Closing ads popup');
                 adsPopup.style.display = 'none';
                 document.body.classList.remove('ads-popup-active');
-
-                // Remove any fallback messages when closing
-                const fallback = document.querySelector('.ad-blocker-fallback');
-                if (fallback) {
-                    fallback.remove();
+                
+                // Hide fallback when closing
+                if (adBlockerFallback) {
+                    adBlockerFallback.style.display = 'none';
                 }
             }
 
-            // Event listeners - FIXED
+            // Event listeners
             adsPopupClose.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -818,32 +835,17 @@
         // Make close function available globally
         window.closeAdsPopup = function () {
             const adsPopup = document.getElementById('adsPopup');
+            const adBlockerFallback = document.getElementById('adBlockerFallback');
+            
             if (adsPopup) {
                 adsPopup.style.display = 'none';
                 document.body.classList.remove('ads-popup-active');
                 
-                // Remove any fallback messages when closing
-                const fallback = document.querySelector('.ad-blocker-fallback');
-                if (fallback) {
-                    fallback.remove();
+                // Hide fallback when closing
+                if (adBlockerFallback) {
+                    adBlockerFallback.style.display = 'none';
                 }
             }
-        };
-
-        // Debug function to test ad display
-        window.testAdDisplay = function() {
-            console.log('=== AD DISPLAY TEST ===');
-            console.log('Google Ads loaded:', typeof adsbygoogle !== 'undefined');
-            
-            const adsPopup = document.getElementById('adsPopup');
-            console.log('Popup visible:', adsPopup.style.display === 'flex');
-            
-            const adIframes = document.querySelectorAll('ins.adsbygoogle iframe');
-            console.log('Total ad iframes:', adIframes.length);
-            
-            adIframes.forEach((iframe, index) => {
-                console.log(`Iframe ${index}: ${iframe.offsetWidth}x${iframe.offsetHeight} - visible: ${iframe.offsetHeight > 0}`);
-            });
         };
     </script>
 </body>
