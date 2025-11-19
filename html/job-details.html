@@ -80,7 +80,7 @@
             }
         }
 
-        /* Ads Popup Styles */
+        /* Ads Popup Styles - IMPROVED */
         .ads-popup {
             display: none;
             position: fixed;
@@ -93,27 +93,46 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ads-popup.active {
+            display: flex;
+            opacity: 1;
         }
 
         .ads-popup-content {
             background: #ffffff;
-            border-radius: 8px;
+            border-radius: 12px;
             width: 95%;
             max-width: 720px;
             min-height: 250px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .ads-popup.active .ads-popup-content {
+            transform: translateY(0);
         }
 
         .ads-popup-header {
             background: #0d6efd;
             color: #fff;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #dee2e6;
+        }
+
+        .ads-popup-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
         .ads-popup-body {
@@ -124,6 +143,7 @@
             justify-content: center;
             width: 100%;
             flex-direction: column;
+            position: relative;
         }
 
         .ads-popup-body ins.adsbygoogle {
@@ -136,36 +156,92 @@
         .ad-blocker-fallback {
             display: none;
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
             color: #666;
             background: #f8f9fa;
-            border-radius: 4px;
+            border-radius: 8px;
             margin-top: 1rem;
             width: 100%;
+            border: 1px dashed #dee2e6;
+        }
+
+        .ad-blocker-fallback p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .ad-blocker-fallback i {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #ffc107;
         }
 
         .ads-popup-close {
-            background: none;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             color: #fff;
             font-size: 1.5rem;
             line-height: 1;
             cursor: pointer;
             padding: 0;
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s;
+            border-radius: 50%;
+            transition: all 0.2s;
         }
 
         .ads-popup-close:hover {
-            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .ads-popup-footer {
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .ads-popup-footer .countdown {
+            font-weight: 600;
+            color: #0d6efd;
         }
 
         body.ads-popup-active {
             overflow: hidden;
+        }
+
+        .ad-status-message {
+            text-align: center;
+            padding: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .ad-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+
+        .ad-loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 576px) {
@@ -179,6 +255,14 @@
                 min-height: 200px;
             }
 
+            .ads-popup-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .ads-popup-header h5 {
+                font-size: 1rem;
+            }
+
             .ads-popup-body {
                 padding: 1rem;
                 min-height: 150px;
@@ -187,6 +271,17 @@
             .ads-popup-body ins.adsbygoogle {
                 min-width: 250px;
                 min-height: 200px;
+            }
+
+            .ads-popup-footer {
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .ads-popup-close {
+                width: 32px;
+                height: 32px;
+                font-size: 1.3rem;
             }
         }
     </style>
@@ -625,24 +720,33 @@
         </div>
     </div>
 
-    <!-- Ads Popup -->
+    <!-- IMPROVED Ads Popup -->
     <div class="ads-popup" id="adsPopup">
         <div class="ads-popup-content">
             <div class="ads-popup-header">
-                <span>Advertisement</span>
+                <h5>Advertisement</h5>
                 <button class="ads-popup-close" id="adsPopupClose">&times;</button>
             </div>
             <div class="ads-popup-body">
+                <!-- Loading indicator -->
+                <div class="ad-loading" id="adLoading">
+                    <div class="ad-loading-spinner"></div>
+                    <p>Loading advertisement...</p>
+                </div>
+                
                 <!-- This is where the actual ad should display -->
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                     data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <!-- Pre-existing fallback that's hidden by default -->
+                
+                <!-- Improved fallback message -->
                 <div class="ad-blocker-fallback" id="adBlockerFallback">
-                    <p style="margin: 0; font-size: 0.9rem;">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Ad blocker detected. Please consider disabling it to support our site.
-                    </p>
+                    <i class="bi bi-info-circle"></i>
+                    <p>Advertisement not available</p>
+                    <p class="small">This popup will close automatically in <span id="countdownTimer">15</span> seconds</p>
                 </div>
+            </div>
+            <div class="ads-popup-footer">
+                <p>Advertisement supports our free service. This popup will close automatically in <span class="countdown" id="autoCloseCountdown">15</span> seconds.</p>
             </div>
         </div>
     </div>
@@ -655,7 +759,7 @@
     <script type="module" src="/js/job-stats.js"></script>
 
     <script>
-        // Fixed ads popup functionality - PROPERLY FIXED VERSION
+        // Fixed ads popup functionality - COMPLETELY REWRITTEN
         document.addEventListener('DOMContentLoaded', function () {
             const pageLoader = document.getElementById('pageLoader');
             const jobTitle = document.getElementById('jobTitle');
@@ -700,6 +804,9 @@
             const adsPopup = document.getElementById('adsPopup');
             const adsPopupClose = document.getElementById('adsPopupClose');
             const adBlockerFallback = document.getElementById('adBlockerFallback');
+            const adLoading = document.getElementById('adLoading');
+            const countdownTimer = document.getElementById('countdownTimer');
+            const autoCloseCountdown = document.getElementById('autoCloseCountdown');
 
             if (!adsPopup || !adsPopupClose) {
                 console.error('Ads popup elements not found!');
@@ -707,38 +814,62 @@
             }
 
             let adsPopupTimer;
-            let adCheckAttempts = 0;
-            const maxAdCheckAttempts = 3;
+            let countdownInterval;
+            let autoCloseTime = 15; // seconds
 
-            // Hide fallback by default
+            // Hide elements by default
             if (adBlockerFallback) {
                 adBlockerFallback.style.display = 'none';
+            }
+            if (adLoading) {
+                adLoading.style.display = 'flex';
             }
 
             function openAdsPopup() {
                 console.log('Opening ads popup');
-                adsPopup.style.display = 'flex';
+                adsPopup.classList.add('active');
                 document.body.classList.add('ads-popup-active');
 
-                // Reset attempts
-                adCheckAttempts = 0;
-                
-                // Hide fallback when opening
-                if (adBlockerFallback) {
-                    adBlockerFallback.style.display = 'none';
-                }
+                // Reset countdown
+                autoCloseTime = 15;
+                updateCountdown();
 
-                // Load the ad immediately
+                // Start countdown
+                countdownInterval = setInterval(() => {
+                    autoCloseTime--;
+                    updateCountdown();
+                    
+                    if (autoCloseTime <= 0) {
+                        closeAdsPopup();
+                    }
+                }, 1000);
+
+                // Load the ad
                 loadAdInPopup();
 
+                // Set timeout to close popup after 15 seconds
                 clearTimeout(adsPopupTimer);
-                adsPopupTimer = setTimeout(closeAdsPopup, 10000);
+                adsPopupTimer = setTimeout(closeAdsPopup, 15000);
+            }
+
+            function updateCountdown() {
+                if (countdownTimer) {
+                    countdownTimer.textContent = autoCloseTime;
+                }
+                if (autoCloseCountdown) {
+                    autoCloseCountdown.textContent = autoCloseTime;
+                }
             }
 
             function loadAdInPopup() {
                 try {
                     if (typeof adsbygoogle !== 'undefined') {
                         console.log('Loading ad in popup...');
+
+                        // Hide loading and show ad container
+                        if (adLoading) {
+                            adLoading.style.display = 'none';
+                        }
 
                         // Execute the ad script for the popup ad
                         (adsbygoogle = window.adsbygoogle || []).push({});
@@ -758,52 +889,58 @@
             }
 
             function checkAdStatus() {
-                adCheckAttempts++;
                 const adIframe = adsPopup.querySelector('ins.adsbygoogle iframe');
                 const adContainer = adsPopup.querySelector('ins.adsbygoogle');
 
-                console.log(`Ad check attempt ${adCheckAttempts}`);
+                console.log('Checking ad status...');
                 console.log('Ad iframe found:', !!adIframe);
                 
                 if (adIframe) {
                     console.log('Ad iframe dimensions:', adIframe.offsetWidth, 'x', adIframe.offsetHeight);
-                    console.log('Ad iframe src:', adIframe.src);
+                    
+                    // Check if ad is actually loaded and visible
+                    if (adIframe.offsetHeight > 50 && adIframe.offsetWidth > 50) {
+                        console.log('Ad loaded successfully!');
+                        // Ad is loaded, keep fallback hidden
+                        if (adBlockerFallback) {
+                            adBlockerFallback.style.display = 'none';
+                        }
+                        return;
+                    }
                 }
 
-                // Check if ad is actually loaded and visible
-                if (adIframe && adIframe.offsetHeight > 50 && adIframe.offsetWidth > 50) {
-                    console.log('Ad loaded successfully!');
-                    // Ad is loaded, keep fallback hidden
-                    if (adBlockerFallback) {
-                        adBlockerFallback.style.display = 'none';
-                    }
-                } else if (adCheckAttempts < maxAdCheckAttempts) {
-                    // Try again after delay (progressive: 2s, 4s, 6s)
-                    const nextDelay = adCheckAttempts * 2000;
-                    console.log(`Ad not loaded yet, checking again in ${nextDelay}ms`);
-                    setTimeout(checkAdStatus, nextDelay);
-                } else {
-                    // Final attempt failed - show fallback
-                    console.log('Ad failed to load after all attempts, showing fallback');
-                    showAdBlockerFallback();
-                }
+                // If we reach here, ad didn't load properly
+                console.log('Ad failed to load, showing fallback');
+                setTimeout(showAdBlockerFallback, 2000);
             }
 
             function showAdBlockerFallback() {
-                console.log('Showing ad blocker fallback');
+                console.log('Showing ad fallback message');
                 if (adBlockerFallback) {
                     adBlockerFallback.style.display = 'block';
+                }
+                if (adLoading) {
+                    adLoading.style.display = 'none';
                 }
             }
 
             function closeAdsPopup() {
                 console.log('Closing ads popup');
-                adsPopup.style.display = 'none';
+                adsPopup.classList.remove('active');
                 document.body.classList.remove('ads-popup-active');
+                
+                // Clear intervals
+                clearInterval(countdownInterval);
+                clearTimeout(adsPopupTimer);
                 
                 // Hide fallback when closing
                 if (adBlockerFallback) {
                     adBlockerFallback.style.display = 'none';
+                }
+                
+                // Reset loading state
+                if (adLoading) {
+                    adLoading.style.display = 'flex';
                 }
             }
 
@@ -826,7 +963,7 @@
 
             // Auto-open periodically (every 60 seconds)
             setInterval(() => {
-                if (adsPopup.style.display !== 'flex') {
+                if (!adsPopup.classList.contains('active')) {
                     openAdsPopup();
                 }
             }, 60000);
@@ -836,14 +973,20 @@
         window.closeAdsPopup = function () {
             const adsPopup = document.getElementById('adsPopup');
             const adBlockerFallback = document.getElementById('adBlockerFallback');
+            const adLoading = document.getElementById('adLoading');
             
             if (adsPopup) {
-                adsPopup.style.display = 'none';
+                adsPopup.classList.remove('active');
                 document.body.classList.remove('ads-popup-active');
                 
                 // Hide fallback when closing
                 if (adBlockerFallback) {
                     adBlockerFallback.style.display = 'none';
+                }
+                
+                // Reset loading state
+                if (adLoading) {
+                    adLoading.style.display = 'flex';
                 }
             }
         };
