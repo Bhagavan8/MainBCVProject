@@ -107,7 +107,7 @@
         /* Main Content */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 3fr 1fr;
+            grid-template-columns: 250px 1fr 250px;
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -115,6 +115,10 @@
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
+            }
+            
+            .ads-section {
+                display: none !important;
             }
         }
 
@@ -229,7 +233,7 @@
             background: var(--primary-dark);
         }
 
-        /* Ads Section - No padding, no cards */
+        /* Ads Section */
         .ads-section {
             display: flex;
             flex-direction: column;
@@ -247,27 +251,38 @@
             padding: 0.5rem;
             font-size: 0.8rem;
             margin-bottom: 0.5rem;
+            border-radius: 4px 4px 0 0;
         }
 
         .ad-content {
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f0f0f0;
-            border: 1px dashed #ccc;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0 0 4px 4px;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* Responsive ad containers - let Google Ads handle sizing */
         .ad-content.responsive-ad {
-            min-height: 250px;
+            min-height: 100px;
+            height: auto;
         }
 
         .ad-content.horizontal-ad {
             min-height: 90px;
+            height: auto;
         }
 
         .ad-content.tall-ad {
             min-height: 600px;
+            height: auto;
+        }
+
+        .ad-content .adsbygoogle {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
         }
 
         .section-ad {
@@ -332,13 +347,14 @@
 
         .ad-video-placeholder {
             width: 100%;
-            height: 200px;
+            min-height: 200px;
             background: #ddd;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 4px;
             margin-bottom: 1rem;
+            position: relative;
         }
 
         .download-progress {
@@ -416,6 +432,7 @@
             justify-content: center;
             background: #f0f0f0;
             border-radius: 4px;
+            position: relative;
         }
 
         .popup-timer {
@@ -508,12 +525,47 @@
                 grid-template-columns: 1fr;
             }
 
-            .ad-content.responsive-ad {
-                min-height: 200px;
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .ad-content.tall-ad {
-                min-height: 300px;
+            .ad-content.responsive-ad,
+            .ad-content.tall-ad,
+            .ad-content.horizontal-ad {
+                min-height: 100px;
+            }
+
+            .ad-content .adsbygoogle {
+                min-height: 100px;
+            }
+
+            .popup-ad {
+                width: 95%;
+                max-width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+
+            .download-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .pagination-controls {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -569,25 +621,24 @@
                 <div class="ad-container">
                     <div class="ad-label">Advertisement</div>
                     <div class="ad-content responsive-ad">
-                        <!-- Google Ad placeholder - will be automatically responsive -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="7091309532" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                        <ins class="adsbygoogle" 
+                             style="display:block"
+                             data-ad-client="ca-pub-6284022198338659"
+                             data-ad-slot="7091309532"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                 </div>
 
                 <div class="ad-container">
                     <div class="ad-label">Sponsored</div>
                     <div class="ad-content tall-ad">
-                        <!-- Google Ad placeholder - will be automatically responsive -->
-                        <!-- <p>Tall Responsive Google Ad</p> -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="4465146196" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6284022198338659"
+                             data-ad-slot="4465146196"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                 </div>
             </aside>
@@ -601,126 +652,18 @@
                     <div class="ad-container">
                         <div class="ad-label">Advertisement</div>
                         <div class="ad-content horizontal-ad">
-                            <!-- Google Ad placeholder - will be automatically responsive -->
-                            <!-- <p>Horizontal Responsive Google Ad</p> -->
-                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="8659542079" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="8659542079"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
                         </div>
                     </div>
                 </div>
 
                 <div class="download-cards">
-                    <!-- Card 1 -->
-                    <div class="download-card">
-                        <div class="card-header">
-                            <h3>Java Basics</h3>
-                        </div>
-                        <div class="card-body">
-                            <p>Complete guide to Java fundamentals including syntax, data types, operators, and control
-                                structures.</p>
-                            <div class="file-info">
-                                <span>File Size: 2.5 MB</span>
-                                <span>PDF</span>
-                            </div>
-                            <button class="download-btn" data-file="java-basics.pdf">Download Now</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="download-card">
-                        <div class="card-header">
-                            <h3>OOP Concepts</h3>
-                        </div>
-                        <div class="card-body">
-                            <p>Master Object-Oriented Programming with examples on classes, objects, inheritance, and
-                                polymorphism.</p>
-                            <div class="file-info">
-                                <span>File Size: 3.1 MB</span>
-                                <span>PDF</span>
-                            </div>
-                            <button class="download-btn" data-file="oop-concepts.pdf">Download Now</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="download-card">
-                        <div class="card-header">
-                            <h3>Java Collections</h3>
-                        </div>
-                        <div class="card-body">
-                            <p>Comprehensive guide to Java Collections Framework with practical examples and use cases.
-                            </p>
-                            <div class="file-info">
-                                <span>File Size: 2.8 MB</span>
-                                <span>PDF</span>
-                            </div>
-                            <button class="download-btn" data-file="java-collections.pdf">Download Now</button>
-                        </div>
-                    </div>
-
-                    <!-- Ad between cards -->
-                    <div class="ad-container">
-                        <div class="ad-label">Advertisement</div>
-                        <div class="ad-content horizontal-ad">
-                            <!-- Google Ad placeholder - will be automatically responsive -->
-                            <!-- <p>Horizontal Responsive Google Ad</p> -->
-                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="download-card">
-                        <div class="card-header">
-                            <h3>Practice Projects</h3>
-                        </div>
-                        <div class="card-body">
-                            <p>10 real-world Java projects with source code to practice and enhance your programming
-                                skills.</p>
-                            <div class="file-info">
-                                <span>File Size: 5.2 MB</span>
-                                <span>ZIP</span>
-                            </div>
-                            <button class="download-btn" data-file="practice-projects.zip">Download Now</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 5 -->
-                    <div class="download-card">
-                        <div class="card-header">
-                            <h3>Interview Questions</h3>
-                        </div>
-                        <div class="card-body">
-                            <p>Top 100 Java interview questions with detailed answers to help you prepare for job
-                                interviews.</p>
-                            <div class="file-info">
-                                <span>File Size: 1.9 MB</span>
-                                <span>PDF</span>
-                            </div>
-                            <button class="download-btn" data-file="interview-questions.pdf">Download Now</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 6 -->
-                    <div class="download-card">
-                        <div class="card-header">
-                            <h3>Cheat Sheets</h3>
-                        </div>
-                        <div class="card-body">
-                            <p>Quick reference guides for Java syntax, collections, streams, and common patterns.</p>
-                            <div class="file-info">
-                                <span>File Size: 1.5 MB</span>
-                                <span>PDF</span>
-                            </div>
-                            <button class="download-btn" data-file="cheat-sheets.pdf">Download Now</button>
-                        </div>
-                    </div>
+                    <!-- Cards will be dynamically generated here -->
                 </div>
 
                 <!-- Ad after cards -->
@@ -728,13 +671,12 @@
                     <div class="ad-container">
                         <div class="ad-label">Advertisement</div>
                         <div class="ad-content horizontal-ad">
-                            <!-- Google Ad placeholder - will be automatically responsive -->
-                            <!-- <p>Horizontal Responsive Google Ad</p> -->
-                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                                data-ad-slot="2303400170" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-6284022198338659"
+                                 data-ad-slot="2303400170"
+                                 data-ad-format="auto"
+                                 data-full-width-responsive="true"></ins>
                         </div>
                     </div>
                 </div>
@@ -745,26 +687,24 @@
                 <div class="ad-container">
                     <div class="ad-label">Advertisement</div>
                     <div class="ad-content responsive-ad">
-                        <!-- Google Ad placeholder - will be automatically responsive -->
-                        <!-- <p>Responsive Google Ad</p> -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="3421040729" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6284022198338659"
+                             data-ad-slot="3421040729"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                 </div>
 
                 <div class="ad-container">
                     <div class="ad-label">Sponsored</div>
                     <div class="ad-content tall-ad">
-                        <!-- Google Ad placeholder - will be automatically responsive -->
-                        <!-- <p>Tall Responsive Google Ad</p> -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="6983498326" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6284022198338659"
+                             data-ad-slot="6983498326"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                 </div>
             </aside>
@@ -781,12 +721,12 @@
             <div class="modal-body">
                 <div class="ad-video-container">
                     <div class="ad-video-placeholder">
-                        <!-- <p>Advertisement Video Player</p> -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                            data-ad-slot="9603305692" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6284022198338659"
+                             data-ad-slot="9603305692"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                     <p>Please watch the ad completely to enable download.</p>
                 </div>
@@ -814,13 +754,12 @@
         </div>
         <div class="popup-body">
             <div class="popup-ad-content">
-                <!-- Popup ad content -->
-                <!-- <p>Popup Advertisement</p> -->
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="9525901183" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-6284022198338659"
+                     data-ad-slot="9525901183"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
             </div>
             <p>Check out this exclusive offer for Java developers!</p>
             <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">10</span> seconds</div>
@@ -969,11 +908,26 @@
         }
 
         function buildInlineAd(index) {
+            const adSlots = [
+                '7551857423', // Ad slot 1 for inline ads
+                '2303400170', // Ad slot 2 for inline ads  
+                '8659542079', // Ad slot 3 for inline ads
+                '9603305692'  // Ad slot 4 for inline ads
+            ];
+            
+            // Cycle through ad slots based on index to show different ads
+            const adSlot = adSlots[index % adSlots.length];
+            
             return `
                 <div class="ad-container">
                     <div class="ad-label">Advertisement</div>
                     <div class="ad-content horizontal-ad">
-                        <p>Ad placement ${index}</p>
+                        <ins class="adsbygoogle" 
+                             style="display:block"
+                             data-ad-client="ca-pub-6284022198338659" 
+                             data-ad-slot="${adSlot}" 
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                 </div>
             `;
@@ -1007,6 +961,12 @@
             });
             html += buildPagination();
             cardsContainer.innerHTML = html;
+            
+            // Refresh ads after DOM update
+            setTimeout(() => {
+                loadAllAds();
+            }, 100);
+            
             attachPaginationHandlers();
             attachDownloadHandlers();
         }
@@ -1050,14 +1010,28 @@
             });
         }
 
+        function loadAllAds() {
+            const adElements = document.querySelectorAll('.adsbygoogle[data-ad-client]:not([data-adsbygoogle-status])');
+            adElements.forEach(ad => {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error('Ad loading error:', e);
+                }
+            });
+        }
+
+        // Initialize the page
         if (cardsContainer) {
             renderPage(1);
         }
 
+        // Mobile menu functionality
         document.querySelector('.mobile-menu-btn').addEventListener('click', function () {
             document.querySelector('.nav-links').classList.toggle('active');
         });
 
+        // Download modal functionality
         const downloadModal = document.getElementById('downloadModal');
         const closeModal = document.querySelector('.close-modal');
         const progressBar = document.getElementById('adProgress');
@@ -1065,34 +1039,6 @@
         const downloadReady = document.getElementById('downloadReady');
         const finalDownload = document.getElementById('finalDownload');
         let currentFile = '';
-
-        document.querySelectorAll('.download-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const file = this.getAttribute('data-file');
-                currentFile = file;
-                downloadModal.style.display = 'flex';
-
-                progressBar.style.width = '0%';
-                progressText.textContent = '0%';
-                downloadReady.style.display = 'none';
-
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += 1;
-                    progressBar.style.width = progress + '%';
-                    progressText.textContent = progress + '%';
-
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            downloadReady.style.display = 'block';
-                            finalDownload.href = basePath + currentFile;
-                            finalDownload.setAttribute('download', currentFile);
-                        }, 300);
-                    }
-                }, 40);
-            });
-        });
 
         closeModal.addEventListener('click', function () {
             downloadModal.style.display = 'none';
@@ -1108,6 +1054,7 @@
             }
         });
 
+        // Popup ad functionality
         const popupAd = document.getElementById('popupAd');
         const popupClose = document.querySelector('.popup-close');
         const timerCount = document.getElementById('timerCount');
@@ -1140,6 +1087,20 @@
                 }
             }, 1000);
         }
+
+        // Initial ad load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                loadAllAds();
+            }, 1000);
+        });
+
+        // Handle window resize for ads
+        window.addEventListener('resize', function() {
+            setTimeout(() => {
+                loadAllAds();
+            }, 500);
+        });
     </script>
 </body>
 
