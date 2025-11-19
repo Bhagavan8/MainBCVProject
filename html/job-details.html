@@ -83,7 +83,10 @@
         .ads-popup {
             display: none;
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.85);
             z-index: 10000;
             align-items: center;
@@ -96,9 +99,10 @@
             border-radius: 8px;
             width: 95%;
             max-width: 720px;
-            min-height: 200px;
+            min-height: 250px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            position: relative;
         }
 
         .ads-popup-header {
@@ -108,14 +112,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-bottom: 1px solid #dee2e6;
         }
 
         .ads-popup-body {
-            padding: 1rem;
-            min-height: 150px;
+            padding: 1.5rem;
+            min-height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
         }
 
         .ads-popup-body ins.adsbygoogle {
@@ -138,6 +144,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: opacity 0.2s;
+        }
+
+        .ads-popup-close:hover {
+            opacity: 0.8;
         }
 
         body.ads-popup-active {
@@ -152,19 +163,17 @@
             .ads-popup-content {
                 width: 98%;
                 max-width: 100%;
+                min-height: 200px;
             }
             
             .ads-popup-body {
-                padding: 0.75rem;
+                padding: 1rem;
+                min-height: 150px;
             }
             
             .ads-popup-body ins.adsbygoogle {
                 min-width: 250px;
                 min-height: 200px;
-            }
-            
-            .ads-popup-close {
-                font-size: 1.75rem;
             }
         }
     </style>
@@ -613,9 +622,6 @@
             <div class="ads-popup-body">
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                     data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
             </div>
         </div>
     </div>
@@ -628,7 +634,7 @@
     <script type="module" src="/js/job-stats.js"></script>
 
     <script>
-        // Enhanced ads popup functionality with error handling
+        // Fixed ads popup functionality
         document.addEventListener('DOMContentLoaded', function () {
             const pageLoader = document.getElementById('pageLoader');
             const jobTitle = document.getElementById('jobTitle');
@@ -637,23 +643,25 @@
             pageLoader.style.display = 'flex';
             
             // Hide loader when content is loaded
-            const observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
-                    if (mutation.target.textContent.trim() !== '') {
-                        pageLoader.style.opacity = '0';
-                        setTimeout(() => {
-                            pageLoader.style.display = 'none';
-                        }, 300);
-                        observer.disconnect();
-                    }
+            if (jobTitle) {
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.target.textContent.trim() !== '') {
+                            pageLoader.style.opacity = '0';
+                            setTimeout(() => {
+                                pageLoader.style.display = 'none';
+                            }, 300);
+                            observer.disconnect();
+                        }
+                    });
                 });
-            });
 
-            observer.observe(jobTitle, {
-                childList: true,
-                characterData: true,
-                subtree: true
-            });
+                observer.observe(jobTitle, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+            }
 
             // Fallback: Hide loader after 5 seconds
             setTimeout(() => {
@@ -663,38 +671,66 @@
                 }, 300);
             }, 5000);
 
-            // Initialize ads popup
-            initializeAdsPopup();
-            
-            // Check for ad blockers
-            setTimeout(checkAdBlocker, 2000);
+            // Initialize ads popup with proper timing
+            setTimeout(initializeAdsPopup, 1000);
         });
 
         function initializeAdsPopup() {
             const adsPopup = document.getElementById('adsPopup');
             const adsPopupClose = document.getElementById('adsPopupClose');
-            let adsPopupTimer;
+            
+            console.log('Initializing ads popup...');
+            console.log('Popup element:', adsPopup);
+            console.log('Close button:', adsPopupClose);
 
-            if (!adsPopup || !adsPopupClose) {
-                console.error('Ads popup elements not found');
+            if (!adsPopup) {
+                console.error('Ads popup element not found!');
                 return;
             }
+
+            if (!adsPopupClose) {
+                console.error('Ads popup close button not found!');
+                return;
+            }
+
+            let adsPopupTimer;
 
             function openAdsPopup() {
                 console.log('Opening ads popup');
                 adsPopup.style.display = 'flex';
                 document.body.classList.add('ads-popup-active');
                 
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    console.log('Ad script executed successfully');
-                } catch (e) {
-                    console.error('Ad script error:', e);
-                    showAdBlockerMessage();
-                }
+                // Force reflow to ensure display change is applied
+                adsPopup.offsetHeight;
+                
+                // Load the ad with proper timing
+                setTimeout(() => {
+                    try {
+                        if (typeof adsbygoogle !== 'undefined') {
+                            // First, try to push the ad
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                            console.log('Ad script executed successfully');
+                            
+                            // If ad doesn't load within 3 seconds, show fallback
+                            setTimeout(() => {
+                                const adIframe = adsPopup.querySelector('ins.adsbygoogle iframe');
+                                if (!adIframe || adIframe.offsetHeight === 0) {
+                                    console.log('Ad not loaded, showing fallback');
+                                    showAdBlockerMessage();
+                                }
+                            }, 3000);
+                        } else {
+                            console.error('adsbygoogle not defined');
+                            showAdBlockerMessage();
+                        }
+                    } catch (e) {
+                        console.error('Ad script error:', e);
+                        showAdBlockerMessage();
+                    }
+                }, 100);
                 
                 clearTimeout(adsPopupTimer);
-                adsPopupTimer = setTimeout(closeAdsPopup, 10000); // Auto close after 10 seconds
+                adsPopupTimer = setTimeout(closeAdsPopup, 10000);
             }
 
             function closeAdsPopup() {
@@ -707,7 +743,7 @@
                 const popupBody = document.querySelector('.ads-popup-body');
                 if (popupBody) {
                     popupBody.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: #666;">
+                        <div style="text-align: center; padding: 2rem; color: #666; width: 100%;">
                             <h4>Advertisement</h4>
                             <p>Please consider disabling your ad blocker to support our site.</p>
                             <p><small>This space is reserved for advertisements</small></p>
@@ -717,20 +753,27 @@
                 }
             }
 
-            // Event listeners
-            adsPopupClose.addEventListener('click', closeAdsPopup);
+            // FIXED: Proper event listener for close button
+            adsPopupClose.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Close button clicked');
+                closeAdsPopup();
+            });
             
             // Close popup when clicking outside
             adsPopup.addEventListener('click', function(e) {
                 if (e.target === adsPopup) {
+                    console.log('Clicked outside popup');
                     closeAdsPopup();
                 }
             });
 
-            // Open popup when clicking on ad sections
+            // FIXED: Prevent event propagation for ad triggers
             const adTriggers = document.querySelectorAll('.ad-section-responsive, .ad-section, .ad-box-job, .ad-left, .ad-right');
             adTriggers.forEach(el => {
-                el.addEventListener('click', () => {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     setTimeout(openAdsPopup, 100);
                 });
             });
@@ -746,38 +789,32 @@
             }, 60000);
         }
 
-        function checkAdBlocker() {
-            const testAd = document.createElement('div');
-            testAd.innerHTML = '&nbsp;';
-            testAd.className = 'adsbygoogle';
-            testAd.style.cssText = 'height: 1px; width: 1px; position: absolute; left: -9999px; top: -9999px;';
-            document.body.appendChild(testAd);
-            
-            setTimeout(() => {
-                const isBlocked = testAd.offsetHeight === 0 || testAd.offsetWidth === 0;
-                console.log('Ad blocker detected:', isBlocked);
-                document.body.removeChild(testAd);
-                
-                if (isBlocked) {
-                    console.warn('Ad blocker is active. Ads may not display properly.');
-                }
-            }, 100);
-        }
+        // Make closeAdsPopup available globally for the fallback button
+        window.closeAdsPopup = function() {
+            const adsPopup = document.getElementById('adsPopup');
+            if (adsPopup) {
+                adsPopup.style.display = 'none';
+                document.body.classList.remove('ads-popup-active');
+            }
+        };
 
-        // Debug function to test ad display
-        function testAdDisplay() {
-            console.log('Google Ads object:', typeof adsbygoogle !== 'undefined' ? 'Loaded' : 'Not loaded');
-            console.log('Ads popup element:', document.getElementById('adsPopup'));
+        // Test function to check ad status
+        window.testAdDisplay = function() {
+            console.log('=== AD DISPLAY TEST ===');
+            console.log('Google Ads loaded:', typeof adsbygoogle !== 'undefined');
+            
+            const adsPopup = document.getElementById('adsPopup');
+            console.log('Popup visible:', adsPopup.style.display === 'flex');
             
             const adIframes = document.querySelectorAll('ins.adsbygoogle iframe');
-            console.log('Number of ad iframes found:', adIframes.length);
+            console.log('Total ad iframes:', adIframes.length);
             
             adIframes.forEach((iframe, index) => {
-                console.log(`Iframe ${index}:`, iframe.offsetWidth, 'x', iframe.offsetHeight);
+                console.log(`Iframe ${index}: ${iframe.offsetWidth}x${iframe.offsetHeight} - visible: ${iframe.offsetHeight > 0}`);
             });
-        }
+        };
 
-        // Uncomment to test ad display
+        // Uncomment to test
         // setTimeout(testAdDisplay, 5000);
     </script>
 </body>
