@@ -738,12 +738,6 @@
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                     data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
                 
-                <!-- Improved fallback message -->
-                <div class="ad-blocker-fallback" id="adBlockerFallback">
-                    <i class="bi bi-info-circle"></i>
-                    <p>Advertisement not available</p>
-                    <p class="small">This popup will close automatically in <span id="countdownTimer">15</span> seconds</p>
-                </div>
             </div>
             <div class="ads-popup-footer">
                 <p>Advertisement supports our free service. This popup will close automatically in <span class="countdown" id="autoCloseCountdown">15</span> seconds.</p>
@@ -803,9 +797,7 @@
         function initializeAdsPopup() {
             const adsPopup = document.getElementById('adsPopup');
             const adsPopupClose = document.getElementById('adsPopupClose');
-            const adBlockerFallback = document.getElementById('adBlockerFallback');
             const adLoading = document.getElementById('adLoading');
-            const countdownTimer = document.getElementById('countdownTimer');
             const autoCloseCountdown = document.getElementById('autoCloseCountdown');
 
             if (!adsPopup || !adsPopupClose) {
@@ -817,10 +809,7 @@
             let countdownInterval;
             let autoCloseTime = 15; // seconds
 
-            // Hide elements by default
-            if (adBlockerFallback) {
-                adBlockerFallback.style.display = 'none';
-            }
+          
             if (adLoading) {
                 adLoading.style.display = 'flex';
             }
@@ -853,9 +842,6 @@
             }
 
             function updateCountdown() {
-                if (countdownTimer) {
-                    countdownTimer.textContent = autoCloseTime;
-                }
                 if (autoCloseCountdown) {
                     autoCloseCountdown.textContent = autoCloseTime;
                 }
@@ -880,11 +866,9 @@
 
                     } else {
                         console.error('adsbygoogle not defined');
-                        showAdBlockerFallback();
                     }
                 } catch (e) {
                     console.error('Ad script error:', e);
-                    showAdBlockerFallback();
                 }
             }
 
@@ -902,27 +886,17 @@
                     if (adIframe.offsetHeight > 50 && adIframe.offsetWidth > 50) {
                         console.log('Ad loaded successfully!');
                         // Ad is loaded, keep fallback hidden
-                        if (adBlockerFallback) {
-                            adBlockerFallback.style.display = 'none';
-                        }
+                        
                         return;
                     }
                 }
 
                 // If we reach here, ad didn't load properly
                 console.log('Ad failed to load, showing fallback');
-                setTimeout(showAdBlockerFallback, 2000);
+              
             }
 
-            function showAdBlockerFallback() {
-                console.log('Showing ad fallback message');
-                if (adBlockerFallback) {
-                    adBlockerFallback.style.display = 'block';
-                }
-                if (adLoading) {
-                    adLoading.style.display = 'none';
-                }
-            }
+           
 
             function closeAdsPopup() {
                 console.log('Closing ads popup');
@@ -933,10 +907,7 @@
                 clearInterval(countdownInterval);
                 clearTimeout(adsPopupTimer);
                 
-                // Hide fallback when closing
-                if (adBlockerFallback) {
-                    adBlockerFallback.style.display = 'none';
-                }
+                
                 
                 // Reset loading state
                 if (adLoading) {
@@ -972,18 +943,13 @@
         // Make close function available globally
         window.closeAdsPopup = function () {
             const adsPopup = document.getElementById('adsPopup');
-            const adBlockerFallback = document.getElementById('adBlockerFallback');
             const adLoading = document.getElementById('adLoading');
             
             if (adsPopup) {
                 adsPopup.classList.remove('active');
                 document.body.classList.remove('ads-popup-active');
                 
-                // Hide fallback when closing
-                if (adBlockerFallback) {
-                    adBlockerFallback.style.display = 'none';
-                }
-                
+               
                 // Reset loading state
                 if (adLoading) {
                     adLoading.style.display = 'flex';
