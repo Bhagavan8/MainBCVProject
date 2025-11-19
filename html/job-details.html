@@ -544,6 +544,22 @@
     <script type="module" src="/js/job-details.js"></script>
     <script type="module" src="/js/job-stats.js"></script>
 
+    <div class="ads-popup" id="adsPopup">
+        <div class="ads-popup-content">
+            <div class="ads-popup-header">
+                <span>Advertisement</span>
+                <button class="ads-popup-close" id="adsPopupClose">&times;</button>
+            </div>
+            <div class="ads-popup-body">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Show loader immediately
         const pageLoader = document.getElementById('pageLoader');
@@ -576,8 +592,44 @@
                     pageLoader.style.display = 'none';
                 }, 300);
             }, 5000);
+
+            const adsPopup = document.getElementById('adsPopup');
+            const adsPopupClose = document.getElementById('adsPopupClose');
+            let adsPopupTimer;
+
+            function openAdsPopup() {
+                if (!adsPopup) return;
+                adsPopup.style.display = 'flex';
+                document.body.classList.add('ads-popup-active');
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
+                clearTimeout(adsPopupTimer);
+                adsPopupTimer = setTimeout(closeAdsPopup, 10000);
+            }
+
+            function closeAdsPopup() {
+                if (!adsPopup) return;
+                adsPopup.style.display = 'none';
+                document.body.classList.remove('ads-popup-active');
+            }
+
+            if (adsPopupClose) {
+                adsPopupClose.addEventListener('click', closeAdsPopup);
+            }
+
+            const adTriggers = document.querySelectorAll('.ad-section-responsive, .ad-section, .ad-box-job, .ad-left, .ad-right');
+            adTriggers.forEach(el => {
+                el.addEventListener('click', () => openAdsPopup());
+            });
+
+            openAdsPopup();
+            setInterval(() => {
+                if (adsPopup.style.display !== 'flex') {
+                    openAdsPopup();
+                }
+            }, 60000);
         });
 
     </script>
 </body>
+
 </html>

@@ -1795,3 +1795,67 @@ a {
 .social-share-btn:focus {
     animation: pulse 0.6s ease-in-out;
 }
+
+.ads-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.ads-popup-content {
+    background: #ffffff;
+    border-radius: 8px;
+    width: 95%;
+    max-width: 720px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.ads-popup-header {
+    background: #0d6efd;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ads-popup-body {
+    padding: 1rem;
+}
+
+.ads-popup-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+body.ads-popup-active {
+    overflow: hidden;
+}
+
+@media (max-width: 576px) {
+    .ads-popup-content {
+        width: 96%;
+        max-width: 95%;
+    }
+
+    .ads-popup-header {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .ads-popup-body {
+        padding: 0.75rem;
+    }
+
+    .ads-popup-close {
+        font-size: 1.75rem;
+    }
+}
