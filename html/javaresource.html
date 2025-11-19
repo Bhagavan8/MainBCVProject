@@ -441,6 +441,66 @@
             color: var(--gray);
         }
 
+        /* Ads Popup */
+        .ads-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ads-popup-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .ads-popup-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ads-popup-header span {
+            font-weight: 600;
+        }
+
+        .ads-popup-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ads-popup-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .ads-popup-body .adsbygoogle {
+            width: 100%;
+            min-height: 200px;
+        }
+
         /* Footer */
         footer {
             background: var(--dark);
@@ -540,9 +600,14 @@
                 min-height: 100px;
             }
 
-            .popup-ad {
+            .popup-ad,
+            .ads-popup-content {
                 width: 95%;
                 max-width: 95%;
+            }
+
+            .ads-popup-body {
+                padding: 1rem;
             }
         }
 
@@ -763,6 +828,20 @@
             </div>
             <p>Check out this exclusive offer for Java developers!</p>
             <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">10</span> seconds</div>
+        </div>
+    </div>
+
+    <!-- Ads Popup -->
+    <div class="ads-popup" id="adsPopup">
+        <div class="ads-popup-content">
+            <div class="ads-popup-header">
+                <span>Advertisement</span>
+                <button class="ads-popup-close" id="adsPopupClose">&times;</button>
+            </div>
+            <div class="ads-popup-body">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
         </div>
     </div>
 
@@ -1087,6 +1166,50 @@
                 }
             }, 1000);
         }
+
+        // Ads Popup functionality
+        const adsPopup = document.getElementById('adsPopup');
+        const adsPopupClose = document.getElementById('adsPopupClose');
+
+        function showAdsPopup() {
+            adsPopup.style.display = 'flex';
+            // Load the ad when popup is shown
+            setTimeout(() => {
+                const adElement = adsPopup.querySelector('.adsbygoogle');
+                if (adElement && !adElement.getAttribute('data-adsbygoogle-status')) {
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch (e) {
+                        console.error('Ads popup ad loading error:', e);
+                    }
+                }
+            }, 100);
+        }
+
+        function closeAdsPopup() {
+            adsPopup.style.display = 'none';
+        }
+
+        adsPopupClose.addEventListener('click', closeAdsPopup);
+
+        // Show ads popup after 15 seconds
+        setTimeout(() => {
+            showAdsPopup();
+        }, 15000);
+
+        // Show ads popup every 2 minutes
+        setInterval(() => {
+            if (!adsPopup.style.display || adsPopup.style.display === 'none') {
+                showAdsPopup();
+            }
+        }, 120000);
+
+        // Close ads popup when clicking outside
+        window.addEventListener('click', function (e) {
+            if (e.target === adsPopup) {
+                closeAdsPopup();
+            }
+        });
 
         // Initial ad load
         window.addEventListener('load', function() {
