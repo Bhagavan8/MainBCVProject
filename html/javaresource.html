@@ -61,7 +61,7 @@
 
     /* Optional focus outlines for accessibility */
     button:focus, a:focus { outline: 3px solid rgba(37,99,235,0.25); outline-offset: 2px; }
-  </style>
+    </style>
 </head>
 <body>
   <!-- Header -->
@@ -473,6 +473,7 @@
           finalDownload = document.getElementById('finalDownload');
 
           if (downloadModal) downloadModal.style.display = 'flex';
+          renderAdIn('.ad-video-placeholder', 4831035752);
           if (progressBar) progressBar.style.width = '0%';
           if (progressText) progressText.textContent = '0%';
           if (downloadReady) downloadReady.style.display = 'none';
@@ -510,6 +511,21 @@
           console.error('Ad loading error:', e);
         }
       });
+    }
+
+    function renderAdIn(containerSelector, slotId) {
+      const container = document.querySelector(containerSelector);
+      if (!container) return;
+      container.innerHTML = '';
+      const ins = document.createElement('ins');
+      ins.className = 'adsbygoogle';
+      ins.style.display = 'block';
+      ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+      ins.setAttribute('data-ad-slot', String(slotId));
+      ins.setAttribute('data-ad-format', 'auto');
+      ins.setAttribute('data-full-width-responsive', 'true');
+      container.appendChild(ins);
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
     }
 
     // ---------- DOM ready init ----------
@@ -550,8 +566,8 @@
       }
 
       if (popupAd) {
-        setTimeout(() => { popupAd.style.display = 'block'; startPopupTimer(); }, 30000);
-        setInterval(() => { if (!popupAd.style.display || popupAd.style.display === 'none') { popupAd.style.display = 'block'; startPopupTimer(); } }, 60000);
+        setTimeout(() => { popupAd.style.display = 'block'; renderAdIn('.popup-ad-content', 9525901183); startPopupTimer(); }, 30000);
+        setInterval(() => { if (!popupAd.style.display || popupAd.style.display === 'none') { popupAd.style.display = 'block'; renderAdIn('.popup-ad-content', 9525901183); startPopupTimer(); } }, 60000);
         if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.style.display = 'none'; });
       }
 
@@ -562,12 +578,7 @@
       function showAdsPopup() {
         if (!adsPopup) return;
         adsPopup.style.display = 'flex';
-        setTimeout(() => {
-          const adElement = adsPopup.querySelector('.adsbygoogle');
-          if (adElement && !adElement.getAttribute('data-adsbygoogle-status')) {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { console.error('Ads popup ad loading error:', e); }
-          }
-        }, 100);
+        renderAdIn('.ads-popup-body', 4089957271);
       }
       function closeAdsPopup() { if (!adsPopup) return; adsPopup.style.display = 'none'; }
 
