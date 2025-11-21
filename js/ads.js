@@ -1,170 +1,165 @@
- /******************************
-     * Config
-     ******************************/
-    const CONFIG = {
-      popupDelayMsDesktop: 4000,   // show popup after this delay on desktop
-      popupDelayMsMobile: 6000,    // on mobile a bit later
-      popupAutoCloseSec: 15,       // auto close popup after N seconds (0 = no autoclose)
-      stickyShowDelayMsDesktop: 12000, // show sticky after delay
-      stickyShowDelayMsMobile: 8000,
-      stickyAutoCloseMsMobile: 30000, // hide sticky automatically on mobile after this ms (0 = don't auto-close)
-      scrollTriggerPx: 420,        // show popup on mobile after user scrolls this many px
-      minDesktopWidth: 769
-    };
+/******************************
+ * Robust Popup + Sticky (drop-in)
+ ******************************/
+(function(){
+  const popup = document.getElementById('adPopup');
+  const popupClose = document.getElementById('adPopupClose');
+  const sticky = document.getElementById('stickyAd');
+  const stickyClose = document.getElementById('stickyClose');
 
-    /******************************
-     * Helpers
-     ******************************/
-    function isMobile() { return window.innerWidth < CONFIG.minDesktopWidth; }
-    function safeQuery(selector, ctx=document){ return ctx.querySelector(selector); }
+  if (!popup) { console.warn('adPopup not found'); }
+  if (!sticky) { console.warn('stickyAd not found'); }
 
-    /******************************
-     * Popup Logic
-     ******************************/
-    (function(){
-      const popup = document.getElementById('adPopup');
-      const popupClose = document.getElementById('adPopupClose');
-      const popupIns = safeQuery('ins.adsbygoogle', popup);
+  // helpers
+  const isMobile = () => window.innerWidth < (typeof CONFIG !== 'undefined' ? CONFIG.minDesktopWidth : 769);
+  const showFallbackIfBlocked = (container) => {
+    try {
+      const ins = container.querySelector && container.querySelector('ins.adsbygoogle');
+      const fallback = container.querySelector && (container.querySelector('.ad-fallback') || container.querySelector('.ad-blocker-fallback'));
+      const visible = ins && ins.offsetParent !== null && ins.clientHeight > 0 && ins.clientWidth > 0;
+      if (!visible && fallback) fallback.style.display = 'block';
+      if (visible && fallback) fallback.style.display = 'none';
+      return visible;
+    } catch (e) {
+      console.warn('showFallbackIfBlocked error', e);
+      return false;
+    }
+  };
+  const safePushAds = () => {
+    try { (adsbygoogle = window.adsbygoogle || []).push({}); console.log('adsbygoogle push attempted'); } 
+    catch(e){ console.warn('adsbygoogle push failed', e); }
+  };
 
-      let popupTimer = null;
-      let popupCountdownTimer = null;
+  /*** POPUP ***/
+  (function(){
+    if (!popup) return;
+    const popupBody = popup.querySelector('.ads-popup-body') || popup;
+    const popupFallback = popup.querySelector('.ad-fallback, .ad-blocker-fallback');
+    let popupTimer = null, popupCountdownTimer = null;
+    let shown = false;
 
-      function showPopup(force=false){
-        // on mobile require force OR scroll trigger (handled elsewhere)
-        if (!force && isMobile()) return;
-        if (popup.classList.contains('active')) return;
-        // Decide whether ins element is present and visible
-        let insVisible = popupIns && popupIns.offsetParent !== null && popupIns.clientHeight > 0;
-        // If ad is blocked, show fallback content
-       
-        popup.classList.add('active');
-        popup.setAttribute('aria-hidden','false');
+    function showPopup(force=false){
+      // Removed strict mobile early-return — allow scheduled/mobile triggers to show popup.
+      if (shown) return;
+      shown = true;
+      console.log('showPopup called', { force, isMobile: isMobile() });
 
-        // focus management
-        popupClose.focus();
+      // Show UI
+      popup.classList.add('active');
+      popup.setAttribute('aria-hidden','false');
 
-        // auto-close if configured
-        if (CONFIG.popupAutoCloseSec && CONFIG.popupAutoCloseSec > 0) {
-          let t = CONFIG.popupAutoCloseSec;
-          popupCountdownTimer = setInterval(()=>{
-            t--;
-            if (t <= 0) {
-              closePopup();
-            }
-          }, 1000);
+      // Try loading ad slot
+      safePushAds();
+
+      // After short delay show fallback if necessary
+      setTimeout(()=> {
+        const visible = showFallbackIfBlocked(popupBody);
+        if (!visible && popupFallback) popupFallback.style.display = 'block';
+        // hide ad-loading spinner if present
+        const adLoading = popup.querySelector('#adLoading') || document.getElementById('adLoading');
+        if (adLoading) adLoading.style.display = 'none';
+      }, 800);
+
+      // Focus management (only if exists)
+      try { if (popupClose && typeof popupClose.focus === 'function') popupClose.focus(); } catch(e){}
+
+      // Auto-close countdown
+      const autoCloseSec = (typeof CONFIG !== 'undefined' ? CONFIG.popupAutoCloseSec : 15);
+      if (autoCloseSec && autoCloseSec > 0) {
+        let t = autoCloseSec;
+        // update countdown display if present
+        const countdownEl = popup.querySelector('#autoCloseCountdown') || document.getElementById('autoCloseCountdown');
+        if (countdownEl) countdownEl.textContent = t;
+        popupCountdownTimer = setInterval(()=> {
+          t--;
+          if (countdownEl) countdownEl.textContent = Math.max(0,t);
+          if (t <= 0) closePopup();
+        }, 1000);
+      }
+    }
+
+    function closePopup(){
+      if (!popup) return;
+      popup.classList.remove('active');
+      popup.setAttribute('aria-hidden','true');
+      if (popupCountdownTimer) { clearInterval(popupCountdownTimer); popupCountdownTimer = null; }
+      shown = false;
+    }
+
+    // Schedule initial show (desktop + mobile)
+    document.addEventListener('DOMContentLoaded', function(){
+      const delay = isMobile() ? (CONFIG ? CONFIG.popupDelayMsMobile : 6000) : (CONFIG ? CONFIG.popupDelayMsDesktop : 4000);
+      popupTimer = setTimeout(()=> showPopup(false), delay);
+    });
+
+    // Close handlers
+    if (popupClose) popupClose.addEventListener('click', closePopup);
+    popup.addEventListener('click', function(e){ if (e.target === popup) closePopup(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && popup.classList.contains('active')) closePopup(); });
+
+    // On mobile: also show after user scrolls some px (engagement)
+    let scrolled = false;
+    window.addEventListener('scroll', function(){
+      if (!scrolled && isMobile() && (CONFIG ? window.scrollY > CONFIG.scrollTriggerPx : window.scrollY > 420)) {
+        scrolled = true;
+        showPopup(true);
+      }
+    }, { passive: true });
+
+    // debug helper
+    window.showAdPopupNow = () => showPopup(true);
+    window.closeAdPopupNow = () => closePopup();
+  })();
+
+  /*** STICKY ***/
+  (function(){
+    if (!sticky) return;
+    const stickyInner = sticky.querySelector('.sticky-inner') || sticky;
+    const stickyFallback = sticky.querySelector('.ad-fallback, .ad-blocker-fallback');
+    let stickyTimer = null;
+
+    function showSticky(force=false){
+      if (sticky.classList.contains('active')) return;
+      console.log('showSticky', { force, isMobile: isMobile() });
+      // attempt ad push
+      safePushAds();
+      // show
+      sticky.classList.add('active');
+      sticky.setAttribute('aria-hidden','false');
+      // show fallback if ad blocked
+      setTimeout(()=> showFallbackIfBlocked(stickyInner), 900);
+    }
+    function hideSticky(){ sticky.classList.remove('active'); sticky.setAttribute('aria-hidden','true'); }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      const delay = isMobile() ? (CONFIG ? CONFIG.stickyShowDelayMsMobile : 8000) : (CONFIG ? CONFIG.stickyShowDelayMsDesktop : 12000);
+      stickyTimer = setTimeout(()=> showSticky(false), delay);
+      // auto-close on mobile
+      if (isMobile() && CONFIG && CONFIG.stickyAutoCloseMsMobile && CONFIG.stickyAutoCloseMsMobile > 0) {
+        setTimeout(()=> hideSticky(), delay + CONFIG.stickyAutoCloseMsMobile);
+      }
+    });
+
+    if (stickyClose) stickyClose.addEventListener('click', hideSticky);
+    sticky.addEventListener('click', function(e){
+      // close when clicking outside actual ins element
+      if (e.target === sticky || e.target === stickyClose) hideSticky();
+    });
+
+    window.showStickyNow = () => showSticky(true);
+    window.hideStickyNow = () => hideSticky();
+  })();
+
+  // Final defensive check: after load, ensure fallback shown for any blocked ins elements
+  window.addEventListener('load', function(){
+    setTimeout(()=> {
+      document.querySelectorAll('ins.adsbygoogle').forEach(ins => {
+        if (!ins || ins.offsetParent === null || ins.clientHeight === 0 || ins.clientWidth === 0) {
+          const fb = ins && ins.parentElement && ins.parentElement.querySelector('.ad-fallback, .ad-blocker-fallback');
+          if (fb) fb.style.display = 'block';
         }
-      }
-
-      function closePopup(){
-        popup.classList.remove('active');
-        popup.setAttribute('aria-hidden','true');
-        if (popupCountdownTimer) { clearInterval(popupCountdownTimer); popupCountdownTimer = null; }
-      }
-
-      // schedule initial show
-      document.addEventListener('DOMContentLoaded', function(){
-        const delay = isMobile() ? CONFIG.popupDelayMsMobile : CONFIG.popupDelayMsDesktop;
-        popupTimer = setTimeout(()=> showPopup(false), delay);
       });
+    }, 1200);
+  });
 
-      // close handlers
-      popupClose.addEventListener('click', closePopup);
-      // ESC to close
-      document.addEventListener('keydown', function(e){
-        if (e.key === 'Escape' && popup.classList.contains('active')) closePopup();
-      });
-
-      // On mobile, show popup after user scrolls a bit (simulate engagement)
-      let scrolled = false;
-      window.addEventListener('scroll', function onScroll(){
-        if (!scrolled && isMobile() && window.scrollY > CONFIG.scrollTriggerPx) {
-          scrolled = true;
-          showPopup(true);
-        }
-      }, { passive: true });
-
-      // Expose debug force method
-      window.showAdPopupNow = function(){ showPopup(true); };
-    })();
-
-    /******************************
-     * Sticky Logic
-     ******************************/
-    (function(){
-      const sticky = document.getElementById('stickyAd');
-      const stickyClose = document.getElementById('stickyClose');
-      const stickyFallback = document.getElementById('stickyFallback');
-      const stickyIns = safeQuery('ins.adsbygoogle', sticky);
-
-      let stickyTimer = null;
-      function showSticky(force=false){
-        if (sticky.classList.contains('active')) return;
-        // If on mobile and not forced show after scroll or delay (handled by timers)
-        // Check if ad slot shows — if blocked, reveal fallback
-        let insVisible = stickyIns && stickyIns.offsetParent !== null && stickyIns.clientHeight > 0;
-        if (!insVisible) stickyFallback.style.display = 'block'; else stickyFallback.style.display = 'none';
-
-        // try push ads
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
-
-        sticky.classList.add('active');
-        sticky.setAttribute('aria-hidden','false');
-      }
-
-      function hideSticky(){
-        sticky.classList.remove('active');
-        sticky.setAttribute('aria-hidden','true');
-      }
-
-      // schedule show
-      document.addEventListener('DOMContentLoaded', function(){
-        const delay = isMobile() ? CONFIG.stickyShowDelayMsMobile : CONFIG.stickyShowDelayMsDesktop;
-        stickyTimer = setTimeout(()=> showSticky(false), delay);
-        // If on mobile auto-close later (if configured)
-        if (isMobile() && CONFIG.stickyAutoCloseMsMobile && CONFIG.stickyAutoCloseMsMobile > 0) {
-          setTimeout(()=> hideSticky(), CONFIG.stickyAutoCloseMsMobile + delay);
-        }
-      });
-
-      // close btn
-      stickyClose.addEventListener('click', hideSticky);
-
-      // tap on mobile to hide
-      sticky.addEventListener('click', function(e){
-        // avoid closing if user clicks the ad itself (ins). Only close when clicking spacer or outside ins.
-        if (e.target === sticky || e.target === stickyClose) {
-          hideSticky();
-        }
-      });
-
-      // Expose debug
-      window.showStickyNow = function(){ showSticky(true); };
-    })();
-
-    /******************************
-     * Detect when ads are blocked and ensure placeholders are visible
-     ******************************/
-    (function(){
-      // After some time, if ins tags have no size, show fallback containers (helps when AdBlock hides them)
-      window.addEventListener('load', function(){
-        setTimeout(()=> {
-          document.querySelectorAll('ins.adsbygoogle').forEach(ins => {
-            // If the element is not in layout or has zero size, reveal sibling fallback if exists
-            if (!ins || ins.offsetParent === null || ins.clientHeight === 0 || ins.clientWidth === 0) {
-              const fallback = ins && ins.parentElement && ins.parentElement.querySelector('.ad-fallback');
-              if (fallback) fallback.style.display = 'block';
-            }
-          });
-        }, 1200);
-      });
-    })();
-
-    /******************************
-     * Optional: Respect reduced-motion preference (clean UX)
-     ******************************/
-    (function(){
-      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReduced) {
-        document.documentElement.style.scrollBehavior = 'auto';
-      }
-    })();
+})();
