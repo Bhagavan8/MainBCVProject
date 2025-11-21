@@ -552,8 +552,34 @@
       }
 
       if (popupAd) {
-        setTimeout(() => { popupAd.style.display = 'block'; renderAdIn('.popup-ad-content', 9525901183); startPopupTimer(); }, 30000);
-        setInterval(() => { if (!popupAd.style.display || popupAd.style.display === 'none') { popupAd.style.display = 'block'; renderAdIn('.popup-ad-content', 9525901183); startPopupTimer(); } }, 60000);
+        setTimeout(() => {
+          popupAd.style.display = 'flex';
+          requestAnimationFrame(() => {
+            renderAdIn('.popup-ad-content', 9525901183);
+            setTimeout(() => {
+              const ins = document.querySelector('.popup-ad-content .adsbygoogle');
+              if (ins && !ins.getAttribute('data-adsbygoogle-status')) {
+                renderAdIn('.popup-ad-content', 9525901183);
+              }
+            }, 1200);
+          });
+          startPopupTimer();
+        }, 30000);
+        setInterval(() => {
+          if (!popupAd.style.display || popupAd.style.display === 'none') {
+            popupAd.style.display = 'flex';
+            requestAnimationFrame(() => {
+              renderAdIn('.popup-ad-content', 9525901183);
+              setTimeout(() => {
+                const ins = document.querySelector('.popup-ad-content .adsbygoogle');
+                if (ins && !ins.getAttribute('data-adsbygoogle-status')) {
+                  renderAdIn('.popup-ad-content', 9525901183);
+                }
+              }, 1200);
+            });
+            startPopupTimer();
+          }
+        }, 60000);
         if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.style.display = 'none'; });
       }
 
