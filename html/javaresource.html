@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Java Resources for Freshers - Download Center</title>
 
-  <!-- === MISSING SINGLE LINE: global CONFIG (must be before any script using CONFIG) === -->
+  <!-- Global CONFIG (must be before scripts that read CONFIG) -->
   <script>
-    // Global configuration used by popup/sticky code (placed early)
     window.CONFIG = {
       popupDelayMsDesktop: 4000,
       popupDelayMsMobile: 6000,
@@ -17,7 +16,6 @@
       stickyAutoCloseMsMobile: 30000,
       scrollTriggerPx: 420,
       minDesktopWidth: 769,
-      // optional: adsense client id if you want the script to attempt reloads with the client id
       adsenseClientId: 'ca-pub-6284022198338659'
     };
   </script>
@@ -30,7 +28,6 @@
   <link href="/css/javaresource.css" rel="stylesheet">
 
   <style>
-    /* Minimal inline styles (kept from your CSS) for demo; your external css is still used */
     :root {
       --primary: #e76f00;
       --primary-dark: #b35900;
@@ -48,7 +45,6 @@
     .nav-links{display:flex;gap:16px}
     .mobile-menu-btn{display:none}
     @media(max-width:768px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-links.active{display:flex;flex-direction:column}}
-    /* Minimal layout for cards */
     .main-content{display:grid;grid-template-columns:250px 1fr 250px;gap:16px;margin:24px 0}
     @media(max-width:1024px){.main-content{grid-template-columns:1fr}.ads-section{display:none!important}}
     .download-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
@@ -57,12 +53,14 @@
     .card-body{padding:12px}
     .download-btn{background:var(--primary);color:#fff;padding:10px;border:none;width:100%;border-radius:6px;cursor:pointer}
     .ad-container{margin:0 0 8px 0}
-    /* Modal + popup */
     .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
     .modal-content{background:#fff;border-radius:8px;max-width:520px;width:90%;overflow:hidden}
     .popup-ad{display:none;position:fixed;z-index:3000;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:8px;padding:12px;max-width:480px;width:92%}
     .ads-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:4000;align-items:center;justify-content:center}
     .ads-popup-content{background:#fff;border-radius:8px;max-width:420px;width:90%;overflow:hidden}
+
+    /* Optional focus outlines for accessibility */
+    button:focus, a:focus { outline: 3px solid rgba(37,99,235,0.25); outline-offset: 2px; }
   </style>
 </head>
 <body>
@@ -76,8 +74,8 @@
           </svg>
           <h1 style="font-size:1.1rem;margin:0">Java Fresher Resources</h1>
         </div>
-        <button class="mobile-menu-btn">☰</button>
-        <nav class="nav-links">
+        <button class="mobile-menu-btn" aria-label="Open navigation">☰</button>
+        <nav class="nav-links" id="main-nav">
           <a href="/index.html" style="color:white;text-decoration:none">Home</a>
           <a href="/html/javaresource.html" style="color:white;text-decoration:none">Resources</a>
           <a href="/html/about.html" style="color:white;text-decoration:none">About</a>
@@ -191,7 +189,7 @@
     <div class="modal-content">
       <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
         <h3 style="margin:0">Complete Ad to Download</h3>
-        <button class="close-modal" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">&times;</button>
+        <button class="close-modal" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body" style="padding:12px">
         <div class="ad-video-container">
@@ -225,7 +223,7 @@
   <div class="popup-ad" id="popupAd" role="dialog" aria-modal="true">
     <div class="popup-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:10px">
       <h3 style="margin:0">Special Offer</h3>
-      <button class="popup-close" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">&times;</button>
+      <button class="popup-close" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" aria-label="Close">&times;</button>
     </div>
     <div class="popup-body" style="padding:12px;text-align:center">
       <div class="popup-ad-content">
@@ -246,7 +244,7 @@
     <div class="ads-popup-content">
       <div class="ads-popup-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
         <span>Advertisement</span>
-        <button class="ads-popup-close" id="adsPopupClose" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">&times;</button>
+        <button class="ads-popup-close" id="adsPopupClose" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" aria-label="Close">&times;</button>
       </div>
       <div class="ads-popup-body" style="padding:18px;text-align:center">
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
@@ -292,7 +290,7 @@
     </div>
   </footer>
 
-  <!-- Corrected JS (runs after DOM) -->
+  <!-- Corrected JS (robust init) -->
   <script>
   (function(){
     'use strict';
@@ -384,18 +382,16 @@
     const totalPages = Math.ceil(pdfFiles.length / pageSize);
 
     // Modal & popup elements (queried before render)
-    const downloadModal = document.getElementById('downloadModal');
-    const closeModal = document.querySelector('.close-modal');
-    const progressBar = document.getElementById('adProgress');
-    const progressText = document.getElementById('progressText');
-    const downloadReady = document.getElementById('downloadReady');
-    const finalDownload = document.getElementById('finalDownload');
+    let downloadModal = document.getElementById('downloadModal');
+    let closeModal = document.querySelector('.close-modal');
+    let progressBar = document.getElementById('adProgress');
+    let progressText = document.getElementById('progressText');
+    let downloadReady = document.getElementById('downloadReady');
+    let finalDownload = document.getElementById('finalDownload');
     let currentFile = '';
 
-    // Utility safe query
     function safeQuery(selector, ctx=document){ try { return ctx.querySelector(selector); } catch(e) { return null; } }
 
-    // Build card / ad html
     function buildCard(file) {
       const title = toTitle(file);
       return `
@@ -463,17 +459,27 @@
       if (!cardsContainer) return;
       const buttons = cardsContainer.querySelectorAll('.download-btn');
       buttons.forEach(button => {
-        // replace to avoid duplicate handlers
         const newBtn = button.cloneNode(true);
         button.parentNode.replaceChild(newBtn, button);
         newBtn.addEventListener('click', function () {
           const file = this.getAttribute('data-file');
           currentFile = file;
+          // re-query fresh nodes
+          downloadModal = document.getElementById('downloadModal');
+          closeModal = document.querySelector('.close-modal');
+          progressBar = document.getElementById('adProgress');
+          progressText = document.getElementById('progressText');
+          downloadReady = document.getElementById('downloadReady');
+          finalDownload = document.getElementById('finalDownload');
+
           if (downloadModal) downloadModal.style.display = 'flex';
           if (progressBar) progressBar.style.width = '0%';
           if (progressText) progressText.textContent = '0%';
           if (downloadReady) downloadReady.style.display = 'none';
           if (finalDownload) finalDownload.removeAttribute('href');
+
+          // try to load ads
+          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
 
           let progress = 0;
           const interval = setInterval(() => {
@@ -507,7 +513,7 @@
     }
 
     // ---------- DOM ready init ----------
-    document.addEventListener('DOMContentLoaded', function () {
+    function initUIHandlers(){
       if (cardsContainer) renderPage(1);
 
       // mobile menu
@@ -516,6 +522,10 @@
       if (mobileBtn) mobileBtn.addEventListener('click', () => { if (navLinks) navLinks.classList.toggle('active'); });
 
       // modal close handlers
+      closeModal = document.querySelector('.close-modal');
+      finalDownload = document.getElementById('finalDownload');
+      downloadModal = document.getElementById('downloadModal');
+
       if (closeModal) closeModal.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
       if (finalDownload) finalDownload.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
       window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) downloadModal.style.display = 'none'; });
@@ -569,7 +579,25 @@
       // initial ad load + responsive reload
       window.addEventListener('load', function () { setTimeout(loadAllAds, 1000); });
       window.addEventListener('resize', function () { setTimeout(loadAllAds, 500); });
-    });
+
+      // expose debug helpers
+      window.showAdsPopupNow = showAdsPopup;
+      window.showPopupAdNow = function(){ const p = document.getElementById('popupAd'); if (p) p.style.display='block'; };
+      window.testOpenDownloadModal = function(url){ const p = document.getElementById('downloadModal'); if (p) p.style.display='flex'; const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download',(url||'file').split('/').pop()); } };
+
+      console.log('UI handlers attached. adsbygoogle defined:', !!window.adsbygoogle);
+    }
+
+    function init(){
+      // call handler attach and initial render
+      initUIHandlers();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
 
   })();
   </script>
