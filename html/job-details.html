@@ -80,53 +80,7 @@
             }
         }
 
-        /* FIXED AD STYLES */
-        .ad-left,
-        .ad-right {
-            width: 300px;
-            min-width: 300px;
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-            flex-shrink: 0;
-        }
-
-        .ad-column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            width: 100%;
-        }
-
-        /* Ensure ads have proper minimum dimensions */
-        .adsbygoogle {
-            display: block !important;
-            width: 100% !important;
-            min-width: 250px !important;
-            min-height: 250px !important;
-        }
-
-        /* Fix for sidebar ads */
-        .ad-sidebar {
-            min-width: 250px !important;
-            min-height: 600px !important;
-        }
-
-        /* Popup ad specific styles */
-        .popup-ad {
-            min-width: 300px !important;
-            min-height: 250px !important;
-            width: 100% !important;
-        }
-
-        /* Sticky ad specific styles */
-        .sticky-ad {
-            min-width: 320px !important;
-            min-height: 100px !important;
-            width: 100% !important;
-        }
-
-        /* Ads Popup Styles */
+        /* Ads Popup Styles - IMPROVED */
         .ads-popup {
             display: none;
             position: fixed;
@@ -190,6 +144,13 @@
             width: 100%;
             flex-direction: column;
             position: relative;
+        }
+
+        .ads-popup-body ins.adsbygoogle {
+            display: block !important;
+            min-height: 250px;
+            min-width: 300px;
+            width: 100% !important;
         }
 
         .ad-blocker-fallback {
@@ -283,24 +244,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Sticky Bottom Ad */
-        .sticky-ad-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 9998;
-            padding: 10px;
-            display: none;
-            text-align: center;
-        }
-
-        .sticky-ad-bottom.active {
-            display: block;
-        }
-
         @media (max-width: 576px) {
             .ads-popup {
                 padding: 0.5rem;
@@ -325,6 +268,11 @@
                 min-height: 150px;
             }
 
+            .ads-popup-body ins.adsbygoogle {
+                min-width: 250px;
+                min-height: 200px;
+            }
+
             .ads-popup-footer {
                 padding: 0.75rem 1rem;
                 font-size: 0.8rem;
@@ -334,29 +282,6 @@
                 width: 32px;
                 height: 32px;
                 font-size: 1.3rem;
-            }
-
-            .sticky-ad-bottom {
-                padding: 8px;
-            }
-
-            .sticky-ad-bottom ins.adsbygoogle {
-                min-height: 50px !important;
-                max-height: 100px !important;
-            }
-        }
-
-        @media (max-width: 767px) {
-
-            .ad-left,
-            .ad-right {
-                width: 100%;
-                min-width: 100%;
-                position: static;
-            }
-
-            .ad-sidebar {
-                min-height: 250px !important;
             }
         }
     </style>
@@ -375,6 +300,9 @@
             <span class="ad-label">Sponsored</span>
             <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
                 data-ad-slot="6685159350" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         </div>
 
         <!-- Main Content -->
@@ -399,6 +327,9 @@
                                     <ins class="adsbygoogle" style="display:block"
                                         data-ad-client="ca-pub-6284022198338659" data-ad-slot="5568606190"
                                         data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                    <script>
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                                    </script>
                                 </div>
                                 <h2 id="companyName" class="company-name-style"></h2>
                                 <div class="job-meta">
@@ -443,6 +374,9 @@
                     <div class="ad-section-responsive">
                         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                             data-ad-slot="8664433668" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
                     </div>
 
                     <!-- Job Description Content -->
@@ -462,6 +396,9 @@
                                                 data-ad-layout="in-article" data-ad-format="fluid"
                                                 data-ad-client="ca-pub-6284022198338659"
                                                 data-ad-slot="8079574689"></ins>
+                                            <script>
+                                                (adsbygoogle = window.adsbygoogle || []).push({});
+                                            </script>
                                         </div>
                                     </div>
 
@@ -470,6 +407,9 @@
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="7430424807"
                                             data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Job Details Section -->
@@ -484,6 +424,9 @@
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="3556810083"
                                             data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Skills Section -->
@@ -500,6 +443,9 @@
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="5159360971"
                                             data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Social Share Section -->
@@ -600,6 +546,9 @@
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="8788556740"
                                             data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Qualifications Section -->
@@ -614,6 +563,9 @@
                                                 data-ad-layout="in-article" data-ad-format="fluid"
                                                 data-ad-client="ca-pub-6284022198338659"
                                                 data-ad-slot="7264831248"></ins>
+                                            <script>
+                                                (adsbygoogle = window.adsbygoogle || []).push({});
+                                            </script>
                                         </div>
                                     </div>
 
@@ -622,6 +574,9 @@
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="4769420682"
                                             data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Community Section -->
@@ -647,6 +602,9 @@
                                         <ins class="adsbygoogle" style="display:block"
                                             data-ad-client="ca-pub-6284022198338659" data-ad-slot="2533197631"
                                             data-ad-format="auto" data-full-width-responsive="true"></ins>
+                                        <script>
+                                            (adsbygoogle = window.adsbygoogle || []).push({});
+                                        </script>
                                     </div>
 
                                     <!-- Bottom Apply Button -->
@@ -666,6 +624,9 @@
                         <div class="ad-box-job">
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                                 data-ad-slot="8907034293" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
                         </div>
                     </div>
 
@@ -673,6 +634,9 @@
                         <div class="ad-box-job">
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                                 data-ad-slot="4892258277" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
                         </div>
                     </div>
 
@@ -684,6 +648,9 @@
                         <div class="ad-section-responsive mb-4">
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                                 data-ad-slot="9321547746" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
                         </div>
                         <div class="job-navigation-grid">
                             <!-- Previous Job -->
@@ -730,6 +697,9 @@
                         <div class="ad-box-job">
                             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                                 data-ad-slot="8256788217" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
                         </div>
                     </div>
 
@@ -737,6 +707,9 @@
                         <div class="ad-box-job">
                             <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
                                 data-ad-client="ca-pub-6284022198338659" data-ad-slot="5327372547"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -748,10 +721,13 @@
             <span class="ad-label">Sponsored</span>
             <ins class="adsbygoogle ad-sidebar" style="display:block" data-ad-client="ca-pub-6284022198338659"
                 data-ad-slot="8917135672" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         </div>
     </div>
 
-    <!-- Ads Popup -->
+    <!-- IMPROVED Ads Popup -->
     <div class="ads-popup" id="adsPopup">
         <div class="ads-popup-content">
             <div class="ads-popup-header">
@@ -759,29 +735,32 @@
                 <button class="ads-popup-close" id="adsPopupClose">&times;</button>
             </div>
             <div class="ads-popup-body">
+                <!-- Loading indicator -->
                 <div class="ad-loading" id="adLoading">
                     <div class="ad-loading-spinner"></div>
                     <p>Loading advertisement...</p>
                 </div>
-                <ins class="adsbygoogle popup-ad" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true">
-                </ins>
+
+                <!-- This is where the actual ad should display -->
+                <ins class="adsbygoogle" data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
             </div>
             <div class="ads-popup-footer">
-                <p>Advertisement supports our free service. This popup will close automatically in
-                    <span class="countdown" id="autoCloseCountdown">15</span> seconds.
-                </p>
+                <p>Advertisement supports our free service. This popup will close automatically in <span
+                        class="countdown" id="autoCloseCountdown">15</span> seconds.</p>
             </div>
         </div>
     </div>
 
     <!-- Sticky Bottom Ad -->
-    <div class="sticky-ad-bottom" id="stickyAdBottom">
-        <ins class="adsbygoogle sticky-ad" style="display:block" data-ad-client="ca-pub-6284022198338659"
-            data-ad-slot="6672824367" data-ad-format="auto" data-full-width-responsive="true">
-        </ins>
+    <div class="sticky-ad-bottom">
+        <ins class="adsbygoogle"  data-ad-client="ca-pub-6284022198338659"
+            data-ad-slot="6672824367" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
-
     <div id="footer-container"></div>
 
     <!-- Essential Scripts -->
@@ -790,399 +769,191 @@
     <script type="module" src="/js/job-stats.js"></script>
 
     <script>
-        // Global ad management
-        const AdManager = {
-            initialized: false,
-            adSlots: new Set(),
+        // IMPROVED Ads Popup functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const pageLoader = document.getElementById('pageLoader');
+            const jobTitle = document.getElementById('jobTitle');
 
-            init() {
-                if (this.initialized) return;
+            // Show loader immediately
+            pageLoader.style.display = 'flex';
 
-                console.log('AdManager: Initializing ads...');
-
-                // Initialize page loader
-                this.initPageLoader();
-
-                // Initialize ads with proper sequencing
-                this.initializeAds();
-
-                this.initialized = true;
-            },
-
-            initPageLoader() {
-                const pageLoader = document.getElementById('pageLoader');
-                const jobTitle = document.getElementById('jobTitle');
-
-                if (pageLoader) {
-                    pageLoader.style.display = 'flex';
-
-                    // Hide loader when content loads or after timeout
-                    const hideLoader = () => {
-                        pageLoader.style.opacity = '0';
-                        setTimeout(() => {
-                            pageLoader.style.display = 'none';
-                        }, 300);
-                    };
-
-                    if (jobTitle && jobTitle.textContent.trim() !== '') {
-                        hideLoader();
-                    } else {
-                        setTimeout(hideLoader, 3000);
-                    }
-                }
-            },
-
-            initializeAds() {
-                // Initialize main ads first
-                this.initializeMainAds();
-
-                // Then initialize special ads (popup, sticky)
+            // Hide loader when content is loaded
+            if (jobTitle && jobTitle.textContent.trim() !== '') {
+                pageLoader.style.opacity = '0';
                 setTimeout(() => {
-                    this.initializePopupAd();
-                    this.initializeStickyAd();
-                }, 2000);
-            },
-
-            initializeMainAds() {
-                console.log('AdManager: Initializing main ads...');
-
-                // Get all ad containers that are visible and have proper dimensions
-                const adContainers = document.querySelectorAll('.adsbygoogle:not(.popup-ad):not(.sticky-ad)');
-
-                adContainers.forEach((ad, index) => {
-                    // Check if ad is visible and has proper dimensions
-                    if (this.isAdContainerValid(ad)) {
-                        setTimeout(() => {
-                            this.loadAd(ad, `main-ad-${index}`);
-                        }, index * 800); // Stagger ad loading
-                    } else {
-                        console.warn(`AdManager: Skipping invalid ad container ${index}`, ad);
-                    }
-                });
-            },
-
-            initializePopupAd() {
-                console.log('AdManager: Initializing popup ad system...');
-                const popupManager = new PopupAdManager();
-                popupManager.init();
-            },
-
-            initializeStickyAd() {
-                console.log('AdManager: Initializing sticky ad...');
-                const stickyManager = new StickyAdManager();
-                stickyManager.init();
-            },
-
-            isAdContainerValid(adElement) {
-                const rect = adElement.getBoundingClientRect();
-                const isVisible = rect.width > 0 && rect.height > 0;
-                const hasMinWidth = rect.width >= 250;
-
-                if (!isVisible) {
-                    console.warn('AdManager: Ad container not visible', rect);
-                    return false;
-                }
-
-                if (!hasMinWidth) {
-                    console.warn('AdManager: Ad container too small', rect.width);
-                    return false;
-                }
-
-                return true;
-            },
-
-            loadAd(adElement, id) {
-                // Check if ad is already loaded
-                if (adElement.hasAttribute('data-adsbygoogle-status') ||
-                    this.adSlots.has(adElement.getAttribute('data-ad-slot'))) {
-                    console.log(`AdManager: Ad ${id} already loaded, skipping`);
-                    return;
-                }
-
-                console.log(`AdManager: Loading ad ${id}`, {
-                    width: adElement.offsetWidth,
-                    height: adElement.offsetHeight,
-                    slot: adElement.getAttribute('data-ad-slot')
-                });
-
-                try {
-                    // Mark this slot as loading
-                    this.adSlots.add(adElement.getAttribute('data-ad-slot'));
-
-                    // Load the ad
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-
-                    console.log(`AdManager: Successfully initialized ad ${id}`);
-                } catch (error) {
-                    console.error(`AdManager: Error loading ad ${id}:`, error);
-                    this.adSlots.delete(adElement.getAttribute('data-ad-slot'));
-                }
-            }
-        };
-
-        // Popup Ad Manager
-        class PopupAdManager {
-            constructor() {
-                this.popup = document.getElementById('adsPopup');
-                this.closeBtn = document.getElementById('adsPopupClose');
-                this.loadingElement = document.getElementById('adLoading');
-                this.countdownElement = document.getElementById('autoCloseCountdown');
-                this.popupAd = document.querySelector('.popup-ad');
-                this.shown = false;
-                this.countdownInterval = null;
-            }
-
-            init() {
-                if (!this.popup) {
-                    console.error('PopupAdManager: Popup element not found');
-                    return;
-                }
-
-                this.setupEventListeners();
-                this.setupTriggers();
-            }
-
-            setupEventListeners() {
-                // Close button
-                if (this.closeBtn) {
-                    this.closeBtn.addEventListener('click', () => this.close());
-                }
-
-                // Close on background click
-                this.popup.addEventListener('click', (e) => {
-                    if (e.target === this.popup) this.close();
-                });
-
-                // Escape key to close
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.shown) this.close();
-                });
-            }
-
-            setupTriggers() {
-                // Show after delay (desktop only)
+                    pageLoader.style.display = 'none';
+                }, 300);
+            } else {
+                // Fallback: Hide loader after 3 seconds
                 setTimeout(() => {
-                    if (window.innerWidth > 768) this.show();
-                }, 10000);
-
-                // Show on scroll
-                let scrollTriggered = false;
-                window.addEventListener('scroll', () => {
-                    if (!scrollTriggered && window.scrollY > 800 && window.innerWidth > 768) {
-                        this.show();
-                        scrollTriggered = true;
-                    }
-                });
-
-                // Periodic show (every 3 minutes)
-                setInterval(() => {
-                    if (!this.shown && window.innerWidth > 768) {
-                        this.show();
-                    }
-                }, 180000);
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 300);
+                }, 3000);
             }
 
-            show() {
-                if (this.shown) return;
+            // Initialize ads popup
+            initializeAdsPopup();
+            initStickyAd();
+        });
 
-                console.log('PopupAdManager: Showing popup');
-                this.shown = true;
+        function initializeAdsPopup() {
+            const adsPopup = document.getElementById('adsPopup');
+            const adsPopupClose = document.getElementById('adsPopupClose');
+            const adLoading = document.getElementById('adLoading');
+            const autoCloseCountdown = document.getElementById('autoCloseCountdown');
 
-                // Show popup
-                this.popup.classList.add('active');
+            if (!adsPopup) {
+                console.error('Ads popup element not found!');
+                return;
+            }
+
+            let popupShown = false;
+            let countdownInterval;
+            const autoCloseTime = 15; // seconds
+
+            function showAdsPopup() {
+                if (popupShown) return;
+
+                console.log('Showing ads popup');
+                adsPopup.classList.add('active');
                 document.body.classList.add('ads-popup-active');
-
-                // Load ad if not already loaded
-                this.loadPopupAd();
+                popupShown = true;
 
                 // Start countdown
-                this.startCountdown();
-            }
+                let timeLeft = autoCloseTime;
+                updateCountdown(timeLeft);
 
-            loadPopupAd() {
-                if (!this.popupAd) {
-                    console.error('PopupAdManager: Popup ad element not found');
-                    return;
-                }
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    updateCountdown(timeLeft);
 
-                // Check if already loaded
-                if (this.popupAd.hasAttribute('data-adsbygoogle-status')) {
-                    console.log('PopupAdManager: Popup ad already loaded');
-                    if (this.loadingElement) this.loadingElement.style.display = 'none';
-                    return;
-                }
-
-                console.log('PopupAdManager: Loading popup ad...');
-
-                // Hide loading after a delay
-                setTimeout(() => {
-                    if (this.loadingElement) this.loadingElement.style.display = 'none';
-                }, 2000);
-
-                // Load the ad
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    console.log('PopupAdManager: Popup ad loaded successfully');
-                } catch (error) {
-                    console.error('PopupAdManager: Error loading popup ad:', error);
-                }
-            }
-
-            startCountdown() {
-                if (!this.countdownElement) return;
-
-                let countdown = 15;
-                this.countdownElement.textContent = countdown;
-
-                this.countdownInterval = setInterval(() => {
-                    countdown--;
-                    this.countdownElement.textContent = countdown;
-
-                    if (countdown <= 0) {
-                        this.close();
+                    if (timeLeft <= 0) {
+                        closeAdsPopup();
                     }
                 }, 1000);
+
+                // Load ad with better timing
+                setTimeout(loadAdInPopup, 500);
             }
 
-            close() {
-                console.log('PopupAdManager: Closing popup');
-                this.shown = false;
-
-                // Clear countdown
-                if (this.countdownInterval) {
-                    clearInterval(this.countdownInterval);
-                    this.countdownInterval = null;
+            function updateCountdown(time) {
+                if (autoCloseCountdown) {
+                    autoCloseCountdown.textContent = time;
                 }
-
-                // Reset countdown display
-                if (this.countdownElement) {
-                    this.countdownElement.textContent = '15';
-                }
-
-                // Show loading for next time
-                if (this.loadingElement) {
-                    this.loadingElement.style.display = 'flex';
-                }
-
-                // Hide popup
-                this.popup.classList.remove('active');
-                document.body.classList.remove('ads-popup-active');
             }
-        }
+            function loadAdInPopup() {
+                try {
+                    // Hide loading after a short delay
+                    setTimeout(() => {
+                        if (adLoading) {
+                            adLoading.style.display = 'none';
+                        }
+                    }, 1000);
 
-        // Sticky Ad Manager
-        class StickyAdManager {
-            constructor() {
-                this.stickyAd = document.getElementById('stickyAdBottom');
-                this.stickyAdElement = document.querySelector('.sticky-ad');
-                this.shown = false;
-                this.autoCloseTimeout = null;
-            }
-
-            init() {
-                if (!this.stickyAd) {
-                    console.error('StickyAdManager: Sticky ad element not found');
-                    return;
-                }
-
-                this.setupEventListeners();
-                this.scheduleShow();
-            }
-
-            setupEventListeners() {
-                // Close on tap for mobile
-                if (window.innerWidth <= 768) {
-                    this.stickyAd.addEventListener('click', () => this.hide());
-                }
-
-                // Re-initialize on resize
-                window.addEventListener('resize', () => {
-                    if (!this.shown) {
-                        this.scheduleShow();
+                    // Force ad refresh
+                    if (typeof adsbygoogle !== 'undefined') {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        console.log('Ad loaded in popup');
                     }
+                } catch (error) {
+                    console.error('Error loading ad:', error);
+                    if (adLoading) {
+                        adLoading.style.display = 'none';
+                    }
+                }
+            }
+
+            function closeAdsPopup() {
+                console.log('Closing ads popup');
+                adsPopup.classList.remove('active');
+                document.body.classList.remove('ads-popup-active');
+
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Reset loading for next time
+                if (adLoading) {
+                    adLoading.style.display = 'flex';
+                }
+
+                popupShown = false;
+            }
+
+            // Event listeners
+            if (adsPopupClose) {
+                adsPopupClose.addEventListener('click', closeAdsPopup);
+            }
+
+            // Close when clicking outside
+            adsPopup.addEventListener('click', function (e) {
+                if (e.target === adsPopup) {
+                    closeAdsPopup();
+                }
+            });
+
+            // Show popup after delay - DESKTOP FIX
+            setTimeout(() => {
+                // Check if desktop (width > 768px)
+                if (window.innerWidth > 768) {
+                    showAdsPopup();
+                }
+            }, 5000);
+
+            // Show popup on scroll for mobile
+            let scrollTriggered = false;
+            window.addEventListener('scroll', function () {
+                if (!scrollTriggered && window.scrollY > 500) {
+                    showAdsPopup();
+                    scrollTriggered = true;
+                }
+            });
+
+            // Periodic popup (every 2 minutes)
+            setInterval(() => {
+                if (!adsPopup.classList.contains('active')) {
+                    showAdsPopup();
+                }
+            }, 120000);
+        }
+        function initStickyAd() {
+            const stickyAd = document.querySelector('.sticky-ad-bottom');
+
+            if (!stickyAd) return;
+
+            // Different timing for mobile vs desktop
+            const isMobile = window.innerWidth <= 768;
+            const showDelay = isMobile ? 10000 : 15000; // 10s mobile, 15s desktop
+
+            // Show sticky ad after delay
+            setTimeout(() => {
+                stickyAd.classList.add('active');
+
+                // Auto-close after 30 seconds on mobile
+                if (isMobile) {
+                    setTimeout(() => {
+                        stickyAd.classList.remove('active');
+                    }, 30000);
+                }
+            }, showDelay);
+
+            // Close on tap for mobile
+            if (isMobile) {
+                stickyAd.addEventListener('click', function () {
+                    this.classList.remove('active');
                 });
             }
-
-            scheduleShow() {
-                const isMobile = window.innerWidth <= 768;
-                const delay = isMobile ? 8000 : 12000;
-
-                console.log(`StickyAdManager: Scheduling show in ${delay}ms`);
-
-                setTimeout(() => {
-                    this.show();
-                }, delay);
-            }
-
-            show() {
-                if (this.shown) return;
-
-                console.log('StickyAdManager: Showing sticky ad');
-                this.shown = true;
-                this.stickyAd.classList.add('active');
-
-                // Load ad if not already loaded
-                this.loadStickyAd();
-
-                // Auto-close on mobile
-                if (window.innerWidth <= 768) {
-                    this.autoCloseTimeout = setTimeout(() => {
-                        this.hide();
-                    }, 25000);
-                }
-            }
-
-            loadStickyAd() {
-                if (!this.stickyAdElement) {
-                    console.error('StickyAdManager: Sticky ad element not found');
-                    return;
-                }
-
-                // Check if already loaded
-                if (this.stickyAdElement.hasAttribute('data-adsbygoogle-status')) {
-                    console.log('StickyAdManager: Sticky ad already loaded');
-                    return;
-                }
-
-                console.log('StickyAdManager: Loading sticky ad...');
-
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    console.log('StickyAdManager: Sticky ad loaded successfully');
-                } catch (error) {
-                    console.error('StickyAdManager: Error loading sticky ad:', error);
-                }
-            }
-
-            hide() {
-                console.log('StickyAdManager: Hiding sticky ad');
-                this.shown = false;
-                this.stickyAd.classList.remove('active');
-
-                // Clear auto-close timeout
-                if (this.autoCloseTimeout) {
-                    clearTimeout(this.autoCloseTimeout);
-                    this.autoCloseTimeout = null;
-                }
-            }
         }
-
-        // Initialize everything when DOM is ready
-        document.addEventListener('DOMContentLoaded', function () {
-            AdManager.init();
-        });
-
-        // Re-initialize ads when page becomes visible again
-        document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible') {
-                // Re-check and initialize any unloaded ads after a delay
-                setTimeout(() => {
-                    if (!AdManager.initialized) {
-                        AdManager.init();
-                    }
-                }, 1000);
+        // Re-initialize on resize (orientation change)
+        window.addEventListener('resize', function () {
+            const stickyAd = document.querySelector('.sticky-ad-bottom');
+            if (stickyAd && !stickyAd.classList.contains('active')) {
+                initStickyAd();
             }
         });
+
     </script>
 </body>
 

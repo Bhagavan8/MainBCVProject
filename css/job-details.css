@@ -703,12 +703,14 @@ body {
 /* Sidebar Ads - FIXED */
 .ad-left,
 .ad-right {
-    width: 300px; /* Increased from 160px */
-    min-width: 300px;
+    width: 160px;
+    min-width: 160px;
+    /* Ensure minimum width */
     position: sticky;
     top: 100px;
     height: fit-content;
     flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .ad-column {
@@ -717,18 +719,15 @@ body {
     gap: 16px;
     width: 100%;
 }
-.ad-sidebar {
-    min-width: 250px !important;
-    min-height: 600px !important; /* For vertical ads */
-}
 
 /* Ensure ads have proper dimensions */
 .adsbygoogle {
     display: block !important;
     width: 100% !important;
-    min-width: 250px !important; /* Minimum required width */
-    min-height: 250px !important;
+    height: auto !important;
+    min-height: 200px !important;
 }
+
 /* Fallback for ad blocks */
 .ad-fallback {
     display: none;
@@ -1860,7 +1859,6 @@ body.ads-popup-active {
         font-size: 1.75rem;
     }
 }
-
 /* Sticky bottom ad - Mobile Responsive */
 .sticky-ad-bottom {
     position: fixed;
@@ -1910,47 +1908,12 @@ body.ads-popup-active {
 /* Prevent overlap with mobile browsers */
 @media (max-width: 768px) {
     .sticky-ad-bottom {
+        /* Safe area for mobile browsers */
         padding-bottom: max(6px, env(safe-area-inset-bottom));
     }
     
     body {
+        /* Add padding to prevent content being hidden behind sticky ad */
         padding-bottom: 70px;
-    }
-}
-popup-ad {
-    min-width: 300px !important;
-    min-height: 250px !important;
-    width: 100% !important;
-}
-
-/* Sticky ad specific styles */
-.sticky-ad {
-    min-width: 320px !important;
-    min-height: 100px !important;
-    width: 100% !important;
-}
-
-/* Hide ad containers that are too small */
-.ad-container[style*="width: 0"],
-.ad-container[style*="height: 0"] {
-    display: none !important;
-}
-
-/* Responsive fixes */
-@media (max-width: 767px) {
-    .ad-left,
-    .ad-right {
-        width: 100%;
-        min-width: 100%;
-        position: static;
-    }
-    
-    .ad-sidebar {
-        min-height: 250px !important;
-    }
-    
-    .sticky-ad {
-        min-width: 300px !important;
-        min-height: 50px !important;
     }
 }
