@@ -645,6 +645,13 @@
                             <i class="bi bi-arrow-left-right"></i>
                             <span>More Opportunities</span>
                         </h4>
+                        <div class="ad-section-responsive mb-4">
+                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                                data-ad-slot="9321547746" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                        </div>
                         <div class="job-navigation-grid">
                             <!-- Previous Job -->
                             <div class="nav-job-card previous-job" id="previousJobCard">
@@ -733,18 +740,27 @@
                     <div class="ad-loading-spinner"></div>
                     <p>Loading advertisement...</p>
                 </div>
-                
+
                 <!-- This is where the actual ad should display -->
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
                     data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                
+
             </div>
             <div class="ads-popup-footer">
-                <p>Advertisement supports our free service. This popup will close automatically in <span class="countdown" id="autoCloseCountdown">15</span> seconds.</p>
+                <p>Advertisement supports our free service. This popup will close automatically in <span
+                        class="countdown" id="autoCloseCountdown">15</span> seconds.</p>
             </div>
         </div>
     </div>
 
+    <!-- Sticky Bottom Ad -->
+    <div class="sticky-ad-bottom">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+            data-ad-slot="NEW_SLOT_1" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
     <div id="footer-container"></div>
 
     <!-- Essential Scripts -->
@@ -753,7 +769,7 @@
     <script type="module" src="/js/job-stats.js"></script>
 
     <script>
-        // Fixed ads popup functionality - COMPLETELY REWRITTEN
+        // IMPROVED Ads Popup functionality
         document.addEventListener('DOMContentLoaded', function () {
             const pageLoader = document.getElementById('pageLoader');
             const jobTitle = document.getElementById('jobTitle');
@@ -762,36 +778,24 @@
             pageLoader.style.display = 'flex';
 
             // Hide loader when content is loaded
-            if (jobTitle) {
-                const observer = new MutationObserver(function (mutations) {
-                    mutations.forEach(function (mutation) {
-                        if (mutation.target.textContent.trim() !== '') {
-                            pageLoader.style.opacity = '0';
-                            setTimeout(() => {
-                                pageLoader.style.display = 'none';
-                            }, 300);
-                            observer.disconnect();
-                        }
-                    });
-                });
-
-                observer.observe(jobTitle, {
-                    childList: true,
-                    characterData: true,
-                    subtree: true
-                });
-            }
-
-            // Fallback: Hide loader after 5 seconds
-            setTimeout(() => {
+            if (jobTitle && jobTitle.textContent.trim() !== '') {
                 pageLoader.style.opacity = '0';
                 setTimeout(() => {
                     pageLoader.style.display = 'none';
                 }, 300);
-            }, 5000);
+            } else {
+                // Fallback: Hide loader after 3 seconds
+                setTimeout(() => {
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 300);
+                }, 3000);
+            }
 
-            // Initialize ads popup with proper timing
-            setTimeout(initializeAdsPopup, 1000);
+            // Initialize ads popup
+            initializeAdsPopup();
+            initStickyAd();
         });
 
         function initializeAdsPopup() {
@@ -800,162 +804,157 @@
             const adLoading = document.getElementById('adLoading');
             const autoCloseCountdown = document.getElementById('autoCloseCountdown');
 
-            if (!adsPopup || !adsPopupClose) {
-                console.error('Ads popup elements not found!');
+            if (!adsPopup) {
+                console.error('Ads popup element not found!');
                 return;
             }
 
-            let adsPopupTimer;
+            let popupShown = false;
             let countdownInterval;
-            let autoCloseTime = 15; // seconds
+            const autoCloseTime = 15; // seconds
 
-          
-            if (adLoading) {
-                adLoading.style.display = 'flex';
-            }
+            function showAdsPopup() {
+                if (popupShown) return;
 
-            function openAdsPopup() {
-                console.log('Opening ads popup');
+                console.log('Showing ads popup');
                 adsPopup.classList.add('active');
                 document.body.classList.add('ads-popup-active');
-
-                // Reset countdown
-                autoCloseTime = 15;
-                updateCountdown();
+                popupShown = true;
 
                 // Start countdown
+                let timeLeft = autoCloseTime;
+                updateCountdown(timeLeft);
+
                 countdownInterval = setInterval(() => {
-                    autoCloseTime--;
-                    updateCountdown();
-                    
-                    if (autoCloseTime <= 0) {
+                    timeLeft--;
+                    updateCountdown(timeLeft);
+
+                    if (timeLeft <= 0) {
                         closeAdsPopup();
                     }
                 }, 1000);
 
-                // Load the ad
-                loadAdInPopup();
-
-                // Set timeout to close popup after 15 seconds
-                clearTimeout(adsPopupTimer);
-                adsPopupTimer = setTimeout(closeAdsPopup, 15000);
+                // Load ad with better timing
+                setTimeout(loadAdInPopup, 500);
             }
 
-            function updateCountdown() {
+            function updateCountdown(time) {
                 if (autoCloseCountdown) {
-                    autoCloseCountdown.textContent = autoCloseTime;
+                    autoCloseCountdown.textContent = time;
                 }
             }
-
             function loadAdInPopup() {
                 try {
-                    if (typeof adsbygoogle !== 'undefined') {
-                        console.log('Loading ad in popup...');
-
-                        // Hide loading and show ad container
+                    // Hide loading after a short delay
+                    setTimeout(() => {
                         if (adLoading) {
                             adLoading.style.display = 'none';
                         }
+                    }, 1000);
 
-                        // Execute the ad script for the popup ad
+                    // Force ad refresh
+                    if (typeof adsbygoogle !== 'undefined') {
                         (adsbygoogle = window.adsbygoogle || []).push({});
-                        console.log('Ad script executed for popup');
-
-                        // Check ad status with progressive delays
-                        checkAdStatus();
-
-                    } else {
-                        console.error('adsbygoogle not defined');
+                        console.log('Ad loaded in popup');
                     }
-                } catch (e) {
-                    console.error('Ad script error:', e);
-                }
-            }
-
-            function checkAdStatus() {
-                const adIframe = adsPopup.querySelector('ins.adsbygoogle iframe');
-                const adContainer = adsPopup.querySelector('ins.adsbygoogle');
-
-                console.log('Checking ad status...');
-                console.log('Ad iframe found:', !!adIframe);
-                
-                if (adIframe) {
-                    console.log('Ad iframe dimensions:', adIframe.offsetWidth, 'x', adIframe.offsetHeight);
-                    
-                    // Check if ad is actually loaded and visible
-                    if (adIframe.offsetHeight > 50 && adIframe.offsetWidth > 50) {
-                        console.log('Ad loaded successfully!');
-                        // Ad is loaded, keep fallback hidden
-                        
-                        return;
+                } catch (error) {
+                    console.error('Error loading ad:', error);
+                    if (adLoading) {
+                        adLoading.style.display = 'none';
                     }
                 }
-
-                // If we reach here, ad didn't load properly
-                console.log('Ad failed to load, showing fallback');
-              
             }
-
-           
 
             function closeAdsPopup() {
                 console.log('Closing ads popup');
                 adsPopup.classList.remove('active');
                 document.body.classList.remove('ads-popup-active');
-                
-                // Clear intervals
-                clearInterval(countdownInterval);
-                clearTimeout(adsPopupTimer);
-                
-                
-                
-                // Reset loading state
+
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Reset loading for next time
                 if (adLoading) {
                     adLoading.style.display = 'flex';
                 }
+
+                popupShown = false;
             }
 
             // Event listeners
-            adsPopupClose.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                closeAdsPopup();
-            });
+            if (adsPopupClose) {
+                adsPopupClose.addEventListener('click', closeAdsPopup);
+            }
 
-            // Close popup when clicking outside
+            // Close when clicking outside
             adsPopup.addEventListener('click', function (e) {
                 if (e.target === adsPopup) {
                     closeAdsPopup();
                 }
             });
 
-            // Auto-open popup after page load
-            setTimeout(openAdsPopup, 3000);
+            // Show popup after delay - DESKTOP FIX
+            setTimeout(() => {
+                // Check if desktop (width > 768px)
+                if (window.innerWidth > 768) {
+                    showAdsPopup();
+                }
+            }, 5000);
 
-            // Auto-open periodically (every 60 seconds)
+            // Show popup on scroll for mobile
+            let scrollTriggered = false;
+            window.addEventListener('scroll', function () {
+                if (!scrollTriggered && window.scrollY > 500) {
+                    showAdsPopup();
+                    scrollTriggered = true;
+                }
+            });
+
+            // Periodic popup (every 2 minutes)
             setInterval(() => {
                 if (!adsPopup.classList.contains('active')) {
-                    openAdsPopup();
+                    showAdsPopup();
                 }
-            }, 60000);
+            }, 120000);
         }
+        function initStickyAd() {
+            const stickyAd = document.querySelector('.sticky-ad-bottom');
 
-        // Make close function available globally
-        window.closeAdsPopup = function () {
-            const adsPopup = document.getElementById('adsPopup');
-            const adLoading = document.getElementById('adLoading');
-            
-            if (adsPopup) {
-                adsPopup.classList.remove('active');
-                document.body.classList.remove('ads-popup-active');
-                
-               
-                // Reset loading state
-                if (adLoading) {
-                    adLoading.style.display = 'flex';
+            if (!stickyAd) return;
+
+            // Different timing for mobile vs desktop
+            const isMobile = window.innerWidth <= 768;
+            const showDelay = isMobile ? 10000 : 15000; // 10s mobile, 15s desktop
+
+            // Show sticky ad after delay
+            setTimeout(() => {
+                stickyAd.classList.add('active');
+
+                // Auto-close after 30 seconds on mobile
+                if (isMobile) {
+                    setTimeout(() => {
+                        stickyAd.classList.remove('active');
+                    }, 30000);
                 }
+            }, showDelay);
+
+            // Close on tap for mobile
+            if (isMobile) {
+                stickyAd.addEventListener('click', function () {
+                    this.classList.remove('active');
+                });
             }
-        };
+        }
+        // Re-initialize on resize (orientation change)
+        window.addEventListener('resize', function () {
+            const stickyAd = document.querySelector('.sticky-ad-bottom');
+            if (stickyAd && !stickyAd.classList.contains('active')) {
+                initStickyAd();
+            }
+        });
+
     </script>
 </body>
+
 </html>
