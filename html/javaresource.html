@@ -460,8 +460,10 @@
           downloadReady = document.getElementById('downloadReady');
           finalDownload = document.getElementById('finalDownload');
 
-          if (downloadModal) downloadModal.style.display = 'flex';
-          ensureAdOrFallback('.ad-video-placeholder', 4831035752);
+          if (downloadModal) {
+            downloadModal.style.display = 'flex';
+            requestAnimationFrame(() => ensureAdOrFallback('.ad-video-placeholder', 4831035752));
+          }
           if (progressBar) progressBar.style.width = '0%';
           if (progressText) progressText.textContent = '0%';
           if (downloadReady) downloadReady.style.display = 'none';
@@ -514,6 +516,29 @@
       ins.setAttribute('data-full-width-responsive', 'true');
       container.appendChild(ins);
       try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+    }
+
+    function ensureAdOrFallback(containerSelector, slotId) {
+      const container = document.querySelector(containerSelector);
+      if (!container) return;
+      function attempt(tries) {
+        const w = container.offsetWidth;
+        if (w && w > 0) {
+          renderAdIn(containerSelector, slotId);
+          setTimeout(() => {
+            const ins = container.querySelector('.adsbygoogle');
+            const filled = ins && ins.getAttribute('data-adsbygoogle-status');
+            if (!filled) {
+              container.innerHTML = '<div style="min-height:160px;display:flex;align-items:center;justify-content:center;background:#eee;border:1px dashed #ccc;border-radius:4px;color:#666">Advertisement</div>';
+            }
+          }, 1500);
+        } else if (tries > 0) {
+          setTimeout(() => attempt(tries - 1), 120);
+        } else {
+          container.innerHTML = '<div style="min-height:160px;display:flex;align-items:center;justify-content:center;background:#eee;border:1px dashed #ccc;border-radius:4px;color:#666">Advertisement</div>';
+        }
+      }
+      attempt(5);
     }
 
     // ---------- DOM ready init ----------
