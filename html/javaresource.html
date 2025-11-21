@@ -1,1230 +1,577 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java Resources for Freshers - Download Center</title>
-    <style>
-        :root {
-            --primary: #e76f00;
-            --primary-dark: #b35900;
-            --secondary: #5382a1;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --success: #28a745;
-            --gray: #6c757d;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        /* Header Styles */
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1rem 0;
-            box-shadow: var(--shadow);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo img {
-            height: 40px;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 4rem 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            display: grid;
-            grid-template-columns: 250px 1fr 250px;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .ads-section {
-                display: none !important;
-            }
-        }
-
-        /* Download Cards */
-        .download-section h2 {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .download-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .download-cards .ad-container {
-            grid-column: 1 / -1;
-        }
-
-        .pagination-controls {
-            grid-column: 1 / -1;
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .pagination-controls .page-link,
-        .pagination-controls .page-prev,
-        .pagination-controls .page-next {
-            background: white;
-            border: 1px solid #ddd;
-            color: var(--dark);
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            min-width: 40px;
-        }
-
-        .pagination-controls .page-link.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        .pagination-controls button[disabled] {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .download-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s;
-        }
-
-        .download-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            background: var(--secondary);
-            color: white;
-            padding: 1rem;
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        .card-body h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .card-body p {
-            color: var(--gray);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .file-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--gray);
-            margin-bottom: 1rem;
-        }
-
-        .download-btn {
-            display: block;
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .download-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Ads Section */
-        .ads-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .ad-container {
-            text-align: center;
-            margin: 0;
-        }
-
-        .ad-label {
-            background: var(--gray);
-            color: white;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            margin-bottom: 0.5rem;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .ad-content {
-            width: 100%;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 0 0 4px 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Responsive ad containers - let Google Ads handle sizing */
-        .ad-content.responsive-ad {
-            min-height: 100px;
-            height: auto;
-        }
-
-        .ad-content.horizontal-ad {
-            min-height: 90px;
-            height: auto;
-        }
-
-        .ad-content.tall-ad {
-            min-height: 600px;
-            height: auto;
-        }
-
-        .ad-content .adsbygoogle {
-            display: block !important;
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        .section-ad {
-            margin: 2rem 0;
-        }
-
-        /* Download Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .ad-video-container {
-            background: #f0f0f0;
-            border-radius: 4px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .ad-video-placeholder {
-            width: 100%;
-            min-height: 200px;
-            background: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .download-progress {
-            margin: 1rem 0;
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: #e9ecef;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: var(--success);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .download-ready {
-            display: none;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .download-ready h4 {
-            color: var(--success);
-            margin-bottom: 1rem;
-        }
-
-        /* Popup Ad */
-        .popup-ad {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 500px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-            z-index: 2000;
-            overflow: hidden;
-        }
-
-        .popup-header {
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .popup-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .popup-body {
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .popup-ad-content {
-            margin: 1rem 0;
-            min-height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f0f0f0;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .popup-timer {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        /* Ads Popup */
-        .ads-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .ads-popup-content {
-            background: white;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .ads-popup-header {
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .ads-popup-header span {
-            font-weight: 600;
-        }
-
-        .ads-popup-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .ads-popup-body {
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .ads-popup-body .adsbygoogle {
-            width: 100%;
-            min-height: 200px;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 2rem 0;
-            margin-top: 2rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-section a:hover {
-            color: white;
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #555;
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                margin-top: 1rem;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .hero h2 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .download-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .ad-content.responsive-ad,
-            .ad-content.tall-ad,
-            .ad-content.horizontal-ad {
-                min-height: 100px;
-            }
-
-            .ad-content .adsbygoogle {
-                min-height: 100px;
-            }
-
-            .popup-ad,
-            .ads-popup-content {
-                width: 95%;
-                max-width: 95%;
-            }
-
-            .ads-popup-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                padding: 2rem 1rem;
-            }
-
-            .hero h2 {
-                font-size: 1.5rem;
-            }
-
-            .download-cards {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .card-body {
-                padding: 1rem;
-            }
-
-            .pagination-controls {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
-        crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Java Resources for Freshers - Download Center</title>
+
+  <!-- === MISSING SINGLE LINE: global CONFIG (must be before any script using CONFIG) === -->
+  <script>
+    // Global configuration used by popup/sticky code (placed early)
+    window.CONFIG = {
+      popupDelayMsDesktop: 4000,
+      popupDelayMsMobile: 6000,
+      popupAutoCloseSec: 15,
+      stickyShowDelayMsDesktop: 12000,
+      stickyShowDelayMsMobile: 8000,
+      stickyAutoCloseMsMobile: 30000,
+      scrollTriggerPx: 420,
+      minDesktopWidth: 769,
+      // optional: adsense client id if you want the script to attempt reloads with the client id
+      adsenseClientId: 'ca-pub-6284022198338659'
+    };
+  </script>
+
+  <!-- AdSense script -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
+    crossorigin="anonymous"></script>
+
+  <link href="/css/javaresource.css" rel="stylesheet">
+
+  <style>
+    /* Minimal inline styles (kept from your CSS) for demo; your external css is still used */
+    :root {
+      --primary: #e76f00;
+      --primary-dark: #b35900;
+      --secondary: #5382a1;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --success: #28a745;
+      --gray: #6c757d;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    html,body{margin:0;padding:0;font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:#f5f5f5;color:var(--dark)}
+    .container{max-width:1200px;margin:0 auto;padding:0 15px}
+    header{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:1rem 0}
+    .header-content{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .nav-links{display:flex;gap:16px}
+    .mobile-menu-btn{display:none}
+    @media(max-width:768px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-links.active{display:flex;flex-direction:column}}
+    /* Minimal layout for cards */
+    .main-content{display:grid;grid-template-columns:250px 1fr 250px;gap:16px;margin:24px 0}
+    @media(max-width:1024px){.main-content{grid-template-columns:1fr}.ads-section{display:none!important}}
+    .download-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+    .download-card{background:#fff;border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+    .card-header{background:var(--secondary);color:#fff;padding:12px}
+    .card-body{padding:12px}
+    .download-btn{background:var(--primary);color:#fff;padding:10px;border:none;width:100%;border-radius:6px;cursor:pointer}
+    .ad-container{margin:0 0 8px 0}
+    /* Modal + popup */
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
+    .modal-content{background:#fff;border-radius:8px;max-width:520px;width:90%;overflow:hidden}
+    .popup-ad{display:none;position:fixed;z-index:3000;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:8px;padding:12px;max-width:480px;width:92%}
+    .ads-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:4000;align-items:center;justify-content:center}
+    .ads-popup-content{background:#fff;border-radius:8px;max-width:420px;width:90%;overflow:hidden}
+  </style>
 </head>
-
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                            stroke="white" stroke-width="2" />
-                        <path
-                            d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
-                            stroke="white" stroke-width="2" />
-                        <path d="M12 8V2" stroke="white" stroke-width="2" />
-                        <path d="M12 22V16" stroke="white" stroke-width="2" />
-                        <path d="M2 12H8" stroke="white" stroke-width="2" />
-                        <path d="M16 12H22" stroke="white" stroke-width="2" />
-                    </svg>
-                    <h1>Java Fresher Resources</h1>
-                </div>
-                <button class="mobile-menu-btn">☰</button>
-                <nav class="nav-links">
-                    <a href="/index.html">Home</a>
-                    <a href="/html/javaresource.html">Resources</a>
-                    <a href="/html/about.html">About</a>
-                    <a href="/html/contact.html">Contact</a>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h2>Master Java with Our Complete Resource Pack</h2>
-            <p>Download comprehensive Java learning materials, code examples, and projects specifically designed for
-                freshers. Everything you need to kickstart your Java programming journey.</p>
-        </div>
-    </section>
-
-    <!-- Main Content -->
+  <!-- Header -->
+  <header>
     <div class="container">
-        <div class="main-content">
-            <!-- Left Ads -->
-            <aside class="ads-section">
-                <div class="ad-container">
-                    <div class="ad-label">Advertisement</div>
-                    <div class="ad-content responsive-ad">
-                        <ins class="adsbygoogle" 
-                             style="display:block"
-                             data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="7091309532"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                    </div>
-                </div>
-
-                <div class="ad-container">
-                    <div class="ad-label">Sponsored</div>
-                    <div class="ad-content tall-ad">
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="4465146196"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Download Section -->
-            <section class="download-section">
-                <h2>Available Resources</h2>
-
-                <!-- Ad between sections -->
-                <div class="section-ad">
-                    <div class="ad-container">
-                        <div class="ad-label">Advertisement</div>
-                        <div class="ad-content horizontal-ad">
-                            <ins class="adsbygoogle"
-                                 style="display:block"
-                                 data-ad-client="ca-pub-6284022198338659"
-                                 data-ad-slot="8659542079"
-                                 data-ad-format="auto"
-                                 data-full-width-responsive="true"></ins>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="download-cards">
-                    <!-- Cards will be dynamically generated here -->
-                </div>
-
-                <!-- Ad after cards -->
-                <div class="section-ad">
-                    <div class="ad-container">
-                        <div class="ad-label">Advertisement</div>
-                        <div class="ad-content horizontal-ad">
-                            <ins class="adsbygoogle"
-                                 style="display:block"
-                                 data-ad-client="ca-pub-6284022198338659"
-                                 data-ad-slot="2303400170"
-                                 data-ad-format="auto"
-                                 data-full-width-responsive="true"></ins>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Right Ads -->
-            <aside class="ads-section">
-                <div class="ad-container">
-                    <div class="ad-label">Advertisement</div>
-                    <div class="ad-content responsive-ad">
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="3421040729"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                    </div>
-                </div>
-
-                <div class="ad-container">
-                    <div class="ad-label">Sponsored</div>
-                    <div class="ad-content tall-ad">
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="6983498326"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                    </div>
-                </div>
-            </aside>
+      <div class="header-content">
+        <div class="logo" style="display:flex;align-items:center;gap:10px">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="1.8"/>
+          </svg>
+          <h1 style="font-size:1.1rem;margin:0">Java Fresher Resources</h1>
         </div>
+        <button class="mobile-menu-btn">☰</button>
+        <nav class="nav-links">
+          <a href="/index.html" style="color:white;text-decoration:none">Home</a>
+          <a href="/html/javaresource.html" style="color:white;text-decoration:none">Resources</a>
+          <a href="/html/about.html" style="color:white;text-decoration:none">About</a>
+          <a href="/html/contact.html" style="color:white;text-decoration:none">Contact</a>
+        </nav>
+      </div>
     </div>
+  </header>
 
-    <!-- Download Modal -->
-    <div class="modal" id="downloadModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Complete Ad to Download</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="ad-video-container">
-                    <div class="ad-video-placeholder">
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="4831035752"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                    </div>
-                    <p>Please watch the ad completely to enable download.</p>
-                </div>
-
-                <div class="download-progress">
-                    <p>Ad Progress: <span id="progressText">0%</span></p>
-                    <div class="progress-bar">
-                        <div class="progress" id="adProgress"></div>
-                    </div>
-                </div>
-
-                <div class="download-ready" id="downloadReady">
-                    <h4>Ad Completed! Your download is ready.</h4>
-                    <a href="#" class="download-btn" id="finalDownload">Download File</a>
-                </div>
-            </div>
-        </div>
+  <!-- Hero -->
+  <section class="hero" style="padding:40px 0;text-align:center;background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');color:#fff">
+    <div class="container">
+      <h2>Master Java with Our Complete Resource Pack</h2>
+      <p>Download comprehensive Java learning materials, code examples, and projects specifically designed for freshers.</p>
     </div>
+  </section>
 
-    <!-- Popup Ad -->
-    <div class="popup-ad" id="popupAd">
-        <div class="popup-header">
-            <h3>Special Offer</h3>
-            <button class="popup-close">&times;</button>
+  <div class="container">
+    <div class="main-content">
+      <!-- Left ads -->
+      <aside class="ads-section">
+        <div class="ad-container">
+          <div class="ad-label">Advertisement</div>
+          <div class="ad-content responsive-ad">
+            <ins class="adsbygoogle" 
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="7091309532"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
         </div>
-        <div class="popup-body">
-            <div class="popup-ad-content">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-6284022198338659"
-                     data-ad-slot="9525901183"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
+        <div class="ad-container">
+          <div class="ad-label">Sponsored</div>
+          <div class="ad-content tall-ad">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="4465146196"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Download cards area -->
+      <section class="download-section">
+        <h2 style="color:var(--primary);border-bottom:2px solid var(--primary);padding-bottom:6px">Available Resources</h2>
+
+        <div class="section-ad" style="margin:18px 0">
+          <div class="ad-container">
+            <div class="ad-label">Advertisement</div>
+            <div class="ad-content horizontal-ad">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-6284022198338659"
+                   data-ad-slot="8659542079"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
             </div>
-            <p>Check out this exclusive offer for Java developers!</p>
-            <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">10</span> seconds</div>
+          </div>
         </div>
+
+        <div class="download-cards"></div>
+
+        <div class="section-ad" style="margin:18px 0">
+          <div class="ad-container">
+            <div class="ad-label">Advertisement</div>
+            <div class="ad-content horizontal-ad">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-6284022198338659"
+                   data-ad-slot="2303400170"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right ads -->
+      <aside class="ads-section">
+        <div class="ad-container">
+          <div class="ad-label">Advertisement</div>
+          <div class="ad-content responsive-ad">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="3421040729"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+        <div class="ad-container">
+          <div class="ad-label">Sponsored</div>
+          <div class="ad-content tall-ad">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="6983498326"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+      </aside>
     </div>
+  </div>
 
-    <!-- Ads Popup -->
-    <div class="ads-popup" id="adsPopup">
-        <div class="ads-popup-content">
-            <div class="ads-popup-header">
-                <span>Advertisement</span>
-                <button class="ads-popup-close" id="adsPopupClose">&times;</button>
-            </div>
-            <div class="ads-popup-body">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            </div>
+  <!-- Download Modal -->
+  <div class="modal" id="downloadModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
+        <h3 style="margin:0">Complete Ad to Download</h3>
+        <button class="close-modal" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:12px">
+        <div class="ad-video-container">
+          <div class="ad-video-placeholder">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="4831035752"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
+          <p>Please watch the ad completely to enable download.</p>
         </div>
+
+        <div class="download-progress" style="margin:12px 0">
+          <p>Ad Progress: <span id="progressText">0%</span></p>
+          <div class="progress-bar" style="background:#e9ecef;height:10px;border-radius:6px;overflow:hidden">
+            <div class="progress" id="adProgress" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
+          </div>
+        </div>
+
+        <div class="download-ready" id="downloadReady" style="display:none;text-align:center;padding:12px">
+          <h4 style="color:var(--success)">Ad Completed! Your download is ready.</h4>
+          <a href="#" class="download-btn" id="finalDownload">Download File</a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Java Resources</h3>
-                    <ul>
-                        <li><a href="/html/javaresource.html">Core Java</a></li>
-                        <li><a href="/html/javaresource.html">Advanced Java</a></li>
-                        <li><a href="/html/javaresource.html">Java Frameworks</a></li>
-                        <li><a href="/html/javaresource.html">Java Projects</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/index.html">Home</a></li>
-                        <li><a href="/html/about.html">About Us</a></li>
-                        <li><a href="/html/contact.html">Contact</a></li>
-                        <li><a href="/html/privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="/html/contact.html">FAQ</a></li>
-                        <li><a href="/html/contact.html">Help Center</a></li>
-                        <li><a href="/html/sitemap.html">Community</a></li>
-                        <li><a href="/html/contact.html#feedback">Feedback</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 Java Fresher Resources. All rights reserved.</p>
-            </div>
+  <!-- Popup Ad -->
+  <div class="popup-ad" id="popupAd" role="dialog" aria-modal="true">
+    <div class="popup-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:10px">
+      <h3 style="margin:0">Special Offer</h3>
+      <button class="popup-close" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">&times;</button>
+    </div>
+    <div class="popup-body" style="padding:12px;text-align:center">
+      <div class="popup-ad-content">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6284022198338659"
+             data-ad-slot="9525901183"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+      <p>Check out this exclusive offer for Java developers!</p>
+      <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">10</span> seconds</div>
+    </div>
+  </div>
+
+  <!-- Ads Popup (center modal) -->
+  <div class="ads-popup" id="adsPopup" role="dialog" aria-modal="true">
+    <div class="ads-popup-content">
+      <div class="ads-popup-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
+        <span>Advertisement</span>
+        <button class="ads-popup-close" id="adsPopupClose" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">&times;</button>
+      </div>
+      <div class="ads-popup-body" style="padding:18px;text-align:center">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+            data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      </div>
+    </div>
+  </div>
+
+  <footer style="background:#343a40;color:#fff;padding:24px 0;margin-top:24px">
+    <div class="container">
+      <div class="footer-content" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px">
+        <div class="footer-section">
+          <h3 style="color:var(--primary)">Java Resources</h3>
+          <ul style="list-style:none;padding-left:0">
+            <li><a href="/html/javaresource.html" style="color:#ddd">Core Java</a></li>
+            <li><a href="/html/javaresource.html" style="color:#ddd">Advanced Java</a></li>
+            <li><a href="/html/javaresource.html" style="color:#ddd">Java Frameworks</a></li>
+            <li><a href="/html/javaresource.html" style="color:#ddd">Java Projects</a></li>
+          </ul>
         </div>
-    </footer>
+        <div class="footer-section">
+          <h3 style="color:var(--primary)">Quick Links</h3>
+          <ul style="list-style:none;padding-left:0">
+            <li><a href="/index.html" style="color:#ddd">Home</a></li>
+            <li><a href="/html/about.html" style="color:#ddd">About Us</a></li>
+            <li><a href="/html/contact.html" style="color:#ddd">Contact</a></li>
+            <li><a href="/html/privacy.html" style="color:#ddd">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3 style="color:var(--primary)">Support</h3>
+          <ul style="list-style:none;padding-left:0">
+            <li><a href="/html/contact.html" style="color:#ddd">FAQ</a></li>
+            <li><a href="/html/contact.html" style="color:#ddd">Help Center</a></li>
+            <li><a href="/html/sitemap.html" style="color:#ddd">Community</a></li>
+            <li><a href="/html/contact.html#feedback" style="color:#ddd">Feedback</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright" style="text-align:center;margin-top:18px;color:#aaa">
+        <p>&copy; 2025 Java Fresher Resources. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
-    <script>
-        const basePath = '/assets/javapdf/';
-        const pdfFiles = [
-            'Spring.pdf',
-            'Step-26-Non-Techincal-Lead-level-Questions.pdf',
-            'Step-25-Junit-and-Mockito.pdf',
-            'Step-23-Maven-and-Git-Level-I.pdf',
-            'Step-22-Microservices-Design-Patterns.pdf',
-            'Step-21-Microservices-Level-II.pdf',
-            'Step-20-Microservices-Level-I.pdf',
-            'Step-19-Kafka-Optional.pdf',
-            'Step-18-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
-            'Step-17-SQL.pdf',
-            'Step-16-Spring-MVC-Level-I-Optional.pdf',
-            'Step-15-Spring-Security-Level-II.pdf',
-            'Step-14-Spring-Security-Level-I.pdf',
-            'Step-13-Spring-Boot-Level-V-Expert.pdf',
-            'Step-12-Spring-Boot-level-IV-Advance.pdf',
-            'Step-11-Spring-Boot-Level-III-Scenario-Based.pdf',
-            'Step-10-Spring-Boot-Level-II.pdf',
-            'Step-9-Spring-Boot-Level-I.pdf',
-            'Step-8-Spring-framework-Level-II.pdf',
-            'Step-4-Core-Java-Level-IV-Advance-Level.pdf',
-            'Common-Step-Stream-API-Coding-Level-I-2.pdf',
-            'Common-Step-Java-Coding-2.pdf',
-            'Step-23-Junit-and-Mockito.pdf',
-            'Step-22-Maven-and-Git-Gradle-and-Deployments-Level-II.pdf',
-            'Step-21-Maven-and-Git-Level-I.pdf',
-            'Step-20-Microservices-Design-Patterns.pdf',
-            'Step-19-Microservices-Level-II.pdf',
-            'Step-18-Microservices-Level-I.pdf',
-            'Step-17-Kafka-Optional.pdf',
-            'Step-16-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
-            'Step-15-SQL.pdf',
-            'Step-14-Spring-MVC-Level-I-Optional.pdf',
-            'Step-13-Spring-Security-Level-II.pdf',
-            'Step-12-Spring-Security-Level-I.pdf',
-            'Step-11-Spring-Boot-level-IV-Advance.pdf',
-            'Step-10-Spring-Boot-Level-III-Scenario-Based.pdf',
-            'Step-9-Spring-Security-Level-II.pdf',
-            'Step-6-Spring-Framework-Level-I.pdf',
-            'Common-Step-Java-Coding-1.pdf',
-            'Step-17-Junit-and-Mockito.pdf',
-            'Step-16-Maven-and-Git-Gradle-and-Deployments-Level-II.pdf',
-            'Step-15-Maven-and-Git-Level-I.pdf',
-            'Step-14-Microservices-Level-I.pdf',
-            'Step-13-Kafka-Optional.pdf',
-            'Step-12-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
-            'Step-11-SQL.pdf',
-            'Step-10-Spring-MVC-Level-I-Optional.pdf',
-            'Step-9-Spring-Security-Level-I.pdf',
-            'Step-8-Spring-Boot-Level-III-Scenario-Based.pdf',
-            'Step-7-Spring-Boot-Level-II.pdf',
-            'Step-5-Spring-framework-Level-II.pdf',
-            'Step-3-Core-Java-Level-III.pdf',
-            'Common-Step-Stream-API-Coding-Level-II.pdf',
-            'Common-Step-Stream-API-Coding-Level-I.pdf',
-            'Common-Step-Java-Coding.pdf',
-            'Step-9-Maven-and-Git-Level-I.pdf',
-            'Step-8-Microservices-Level-I.pdf',
-            'Step-7-SQL.pdf',
-            'Step-4-Spring-Boot-Level-I.pdf',
-            'Step-2-Core-Java-Level-II.pdf',
-            'Step-1-Core-Java-Level-I.pdf',
-            'Common-Step-Stream-API-Coding-Questions-Level-I.pdf',
-            'Java-PDF-Notes.pdf',
-            'Spring-Framework-Notes.pdf',
-            'SQL-Hand-written-notes.pdf',
-            'SQL-PDF-Notes.pdf'
-        ];
+  <!-- Corrected JS (runs after DOM) -->
+  <script>
+  (function(){
+    'use strict';
 
-        function toTitle(name) {
-            return name
-                .replace(/\.pdf$/i, '')
-                .replace(/[-_]+/g, ' ')
-                .replace(/(^|\s)step\s*\d+(\s|$)/gi, ' ')
-                .replace(/\s{2,}/g, ' ')
-                .trim();
+    // ---------- Data ----------
+    const basePath = '/assets/javapdf/';
+    const pdfFiles = [
+      'Spring.pdf',
+      'Step-26-Non-Techincal-Lead-level-Questions.pdf',
+      'Step-25-Junit-and-Mockito.pdf',
+      'Step-23-Maven-and-Git-Level-I.pdf',
+      'Step-22-Microservices-Design-Patterns.pdf',
+      'Step-21-Microservices-Level-II.pdf',
+      'Step-20-Microservices-Level-I.pdf',
+      'Step-19-Kafka-Optional.pdf',
+      'Step-18-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
+      'Step-17-SQL.pdf',
+      'Step-16-Spring-MVC-Level-I-Optional.pdf',
+      'Step-15-Spring-Security-Level-II.pdf',
+      'Step-14-Spring-Security-Level-I.pdf',
+      'Step-13-Spring-Boot-Level-V-Expert.pdf',
+      'Step-12-Spring-Boot-level-IV-Advance.pdf',
+      'Step-11-Spring-Boot-Level-III-Scenario-Based.pdf',
+      'Step-10-Spring-Boot-Level-II.pdf',
+      'Step-9-Spring-Boot-Level-I.pdf',
+      'Step-8-Spring-framework-Level-II.pdf',
+      'Step-4-Core-Java-Level-IV-Advance-Level.pdf',
+      'Common-Step-Stream-API-Coding-Level-I-2.pdf',
+      'Common-Step-Java-Coding-2.pdf',
+      'Step-23-Junit-and-Mockito.pdf',
+      'Step-22-Maven-and-Git-Gradle-and-Deployments-Level-II.pdf',
+      'Step-21-Maven-and-Git-Level-I.pdf',
+      'Step-20-Microservices-Design-Patterns.pdf',
+      'Step-19-Microservices-Level-II.pdf',
+      'Step-18-Microservices-Level-I.pdf',
+      'Step-17-Kafka-Optional.pdf',
+      'Step-16-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
+      'Step-15-SQL.pdf',
+      'Step-14-Spring-MVC-Level-I-Optional.pdf',
+      'Step-13-Spring-Security-Level-II.pdf',
+      'Step-12-Spring-Security-Level-I.pdf',
+      'Step-11-Spring-Boot-level-IV-Advance.pdf',
+      'Step-10-Spring-Boot-Level-III-Scenario-Based.pdf',
+      'Step-9-Spring-Security-Level-II.pdf',
+      'Step-6-Spring-Framework-Level-I.pdf',
+      'Common-Step-Java-Coding-1.pdf',
+      'Step-17-Junit-and-Mockito.pdf',
+      'Step-16-Maven-and-Git-Gradle-and-Deployments-Level-II.pdf',
+      'Step-15-Maven-and-Git-Level-I.pdf',
+      'Step-14-Microservices-Level-I.pdf',
+      'Step-13-Kafka-Optional.pdf',
+      'Step-12-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
+      'Step-11-SQL.pdf',
+      'Step-10-Spring-MVC-Level-I-Optional.pdf',
+      'Step-9-Spring-Security-Level-I.pdf',
+      'Step-8-Spring-Boot-Level-III-Scenario-Based.pdf',
+      'Step-7-Spring-Boot-Level-II.pdf',
+      'Step-5-Spring-framework-Level-II.pdf',
+      'Step-3-Core-Java-Level-III.pdf',
+      'Common-Step-Stream-API-Coding-Level-II.pdf',
+      'Common-Step-Stream-API-Coding-Level-I.pdf',
+      'Common-Step-Java-Coding.pdf',
+      'Step-9-Maven-and-Git-Level-I.pdf',
+      'Step-8-Microservices-Level-I.pdf',
+      'Step-7-SQL.pdf',
+      'Step-4-Spring-Boot-Level-I.pdf',
+      'Step-2-Core-Java-Level-II.pdf',
+      'Step-1-Core-Java-Level-I.pdf',
+      'Common-Step-Stream-API-Coding-Questions-Level-I.pdf',
+      'Java-PDF-Notes.pdf',
+      'Spring-Framework-Notes.pdf',
+      'SQL-Hand-written-notes.pdf',
+      'SQL-PDF-Notes.pdf'
+    ];
+
+    function toTitle(name) {
+      return name
+        .replace(/\.pdf$/i, '')
+        .replace(/[-_]+/g, ' ')
+        .replace(/(^|\s)step\s*\d+(\s|$)/gi, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    }
+
+    // ---------- Query key nodes EARLY ----------
+    const cardsContainer = document.querySelector('.download-cards');
+    const pageSize = 10;
+    let currentPage = 1;
+    const totalPages = Math.ceil(pdfFiles.length / pageSize);
+
+    // Modal & popup elements (queried before render)
+    const downloadModal = document.getElementById('downloadModal');
+    const closeModal = document.querySelector('.close-modal');
+    const progressBar = document.getElementById('adProgress');
+    const progressText = document.getElementById('progressText');
+    const downloadReady = document.getElementById('downloadReady');
+    const finalDownload = document.getElementById('finalDownload');
+    let currentFile = '';
+
+    // Utility safe query
+    function safeQuery(selector, ctx=document){ try { return ctx.querySelector(selector); } catch(e) { return null; } }
+
+    // Build card / ad html
+    function buildCard(file) {
+      const title = toTitle(file);
+      return `
+        <div class="download-card">
+          <div class="card-header"><h3 style="margin:0">${title}</h3></div>
+          <div class="card-body">
+            <p style="color:var(--gray);margin-bottom:8px">${title} reference PDF</p>
+            <div class="file-info" style="margin-bottom:8px"><span>PDF</span></div>
+            <button class="download-btn" data-file="${file}">Download Now</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildInlineAd(index) {
+      const adSlots = ['7551857423','2303400170','8659542079','9603305692'];
+      const adSlot = adSlots[index % adSlots.length];
+      return `
+        <div class="ad-container">
+          <div class="ad-label">Advertisement</div>
+          <div class="ad-content horizontal-ad">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659" data-ad-slot="${adSlot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildPagination() {
+      const pages = Array.from({length: totalPages},(_,i) => i+1).map(p => `<button class="page-link ${p===currentPage ? 'active' : ''}" data-page="${p}" ${p===currentPage ? 'disabled' : ''}>${p}</button>`).join('');
+      return `<div class="pagination-controls"><button class="page-prev" ${currentPage===1 ? 'disabled' : ''}>Prev</button>${pages}<button class="page-next" ${currentPage===totalPages ? 'disabled' : ''}>Next</button></div>`;
+    }
+
+    function renderPage(page) {
+      currentPage = Math.max(1, Math.min(page, totalPages));
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const items = pdfFiles.slice(start, end);
+
+      let html = '';
+      items.forEach((file, idx) => {
+        html += buildCard(file);
+        if ((idx + 1) % 2 === 0) {
+          html += buildInlineAd(start + idx + 1);
         }
+      });
+      html += buildPagination();
+      if (cardsContainer) cardsContainer.innerHTML = html;
 
-        const cardsContainer = document.querySelector('.download-cards');
-        const pageSize = 10;
-        let currentPage = 1;
-        const totalPages = Math.ceil(pdfFiles.length / pageSize);
+      setTimeout(() => loadAllAds(), 150);
+      attachPaginationHandlers();
+      attachDownloadHandlers();
+    }
 
-        function buildCard(file) {
-            const title = toTitle(file);
-            return `
-                <div class="download-card">
-                    <div class="card-header">
-                        <h3>${title}</h3>
-                    </div>
-                    <div class="card-body">
-                        <p>${title} reference PDF</p>
-                        <div class="file-info">
-                            <span>PDF</span>
-                        </div>
-                        <button class="download-btn" data-file="${file}">Download Now</button>
-                    </div>
-                </div>
-            `;
-        }
+    function attachPaginationHandlers() {
+      if (!cardsContainer) return;
+      const prev = cardsContainer.querySelector('.page-prev');
+      const next = cardsContainer.querySelector('.page-next');
+      const links = cardsContainer.querySelectorAll('.page-link');
+      if (prev) prev.addEventListener('click', () => renderPage(currentPage - 1));
+      if (next) next.addEventListener('click', () => renderPage(currentPage + 1));
+      links.forEach(l => l.addEventListener('click', () => renderPage(parseInt(l.getAttribute('data-page'), 10))));
+    }
 
-        function buildInlineAd(index) {
-            const adSlots = [
-                '7551857423', // Ad slot 1 for inline ads
-                '2303400170', // Ad slot 2 for inline ads  
-                '8659542079', // Ad slot 3 for inline ads
-                '9603305692'  // Ad slot 4 for inline ads
-            ];
-            
-            // Cycle through ad slots based on index to show different ads
-            const adSlot = adSlots[index % adSlots.length];
-            
-            return `
-                <div class="ad-container">
-                    <div class="ad-label">Advertisement</div>
-                    <div class="ad-content horizontal-ad">
-                        <ins class="adsbygoogle" 
-                             style="display:block"
-                             data-ad-client="ca-pub-6284022198338659" 
-                             data-ad-slot="${adSlot}" 
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                    </div>
-                </div>
-            `;
-        }
+    function attachDownloadHandlers() {
+      if (!cardsContainer) return;
+      const buttons = cardsContainer.querySelectorAll('.download-btn');
+      buttons.forEach(button => {
+        // replace to avoid duplicate handlers
+        const newBtn = button.cloneNode(true);
+        button.parentNode.replaceChild(newBtn, button);
+        newBtn.addEventListener('click', function () {
+          const file = this.getAttribute('data-file');
+          currentFile = file;
+          if (downloadModal) downloadModal.style.display = 'flex';
+          if (progressBar) progressBar.style.width = '0%';
+          if (progressText) progressText.textContent = '0%';
+          if (downloadReady) downloadReady.style.display = 'none';
+          if (finalDownload) finalDownload.removeAttribute('href');
 
-        function buildPagination() {
-            const pages = Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
-                <button class="page-link ${p === currentPage ? 'active' : ''}" data-page="${p}" ${p === currentPage ? 'disabled' : ''}>${p}</button>
-            `).join('');
-            return `
-                <div class="pagination-controls">
-                    <button class="page-prev" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
-                    ${pages}
-                    <button class="page-next" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
-                </div>
-            `;
-        }
-
-        function renderPage(page) {
-            currentPage = Math.max(1, Math.min(page, totalPages));
-            const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const items = pdfFiles.slice(start, end);
-
-            let html = '';
-            items.forEach((file, idx) => {
-                html += buildCard(file);
-                if ((idx + 1) % 2 === 0) {
-                    html += buildInlineAd(start + idx + 1);
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 1;
+            if (progressBar) progressBar.style.width = progress + '%';
+            if (progressText) progressText.textContent = progress + '%';
+            if (progress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                if (downloadReady) downloadReady.style.display = 'block';
+                if (finalDownload) {
+                  finalDownload.href = basePath + currentFile;
+                  finalDownload.setAttribute('download', currentFile);
                 }
-            });
-            html += buildPagination();
-            cardsContainer.innerHTML = html;
-            
-            // Refresh ads after DOM update
-            setTimeout(() => {
-                loadAllAds();
-            }, 100);
-            
-            attachPaginationHandlers();
-            attachDownloadHandlers();
-        }
-
-        function attachPaginationHandlers() {
-            const prev = cardsContainer.querySelector('.page-prev');
-            const next = cardsContainer.querySelector('.page-next');
-            const links = cardsContainer.querySelectorAll('.page-link');
-            if (prev) prev.addEventListener('click', () => renderPage(currentPage - 1));
-            if (next) next.addEventListener('click', () => renderPage(currentPage + 1));
-            links.forEach(l => l.addEventListener('click', () => renderPage(parseInt(l.getAttribute('data-page'), 10))));
-        }
-
-        function attachDownloadHandlers() {
-            document.querySelectorAll('.download-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    const file = this.getAttribute('data-file');
-                    currentFile = file;
-                    downloadModal.style.display = 'flex';
-
-                    progressBar.style.width = '0%';
-                    progressText.textContent = '0%';
-                    downloadReady.style.display = 'none';
-
-                    let progress = 0;
-                    const interval = setInterval(() => {
-                        progress += 1;
-                        progressBar.style.width = progress + '%';
-                        progressText.textContent = progress + '%';
-
-                        if (progress >= 100) {
-                            clearInterval(interval);
-                            setTimeout(() => {
-                                downloadReady.style.display = 'block';
-                                finalDownload.href = basePath + currentFile;
-                                finalDownload.setAttribute('download', currentFile);
-                            }, 300);
-                        }
-                    }, 40);
-                });
-            });
-        }
-
-        function loadAllAds() {
-            const adElements = document.querySelectorAll('.adsbygoogle[data-ad-client]:not([data-adsbygoogle-status])');
-            adElements.forEach(ad => {
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error('Ad loading error:', e);
-                }
-            });
-        }
-
-        // Initialize the page
-        if (cardsContainer) {
-            renderPage(1);
-        }
-
-        // Mobile menu functionality
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function () {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // Download modal functionality
-        const downloadModal = document.getElementById('downloadModal');
-        const closeModal = document.querySelector('.close-modal');
-        const progressBar = document.getElementById('adProgress');
-        const progressText = document.getElementById('progressText');
-        const downloadReady = document.getElementById('downloadReady');
-        const finalDownload = document.getElementById('finalDownload');
-        let currentFile = '';
-
-        closeModal.addEventListener('click', function () {
-            downloadModal.style.display = 'none';
-        });
-
-        finalDownload.addEventListener('click', function () {
-            downloadModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', function (e) {
-            if (e.target === downloadModal) {
-                downloadModal.style.display = 'none';
+              }, 300);
             }
+          }, 40);
         });
+      });
+    }
 
-        // Popup ad functionality
-        const popupAd = document.getElementById('popupAd');
-        const popupClose = document.querySelector('.popup-close');
-        const timerCount = document.getElementById('timerCount');
+    function loadAllAds() {
+      const adElements = document.querySelectorAll('.adsbygoogle[data-ad-client]:not([data-adsbygoogle-status])');
+      adElements.forEach(ad => {
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+          console.error('Ad loading error:', e);
+        }
+      });
+    }
 
+    // ---------- DOM ready init ----------
+    document.addEventListener('DOMContentLoaded', function () {
+      if (cardsContainer) renderPage(1);
+
+      // mobile menu
+      const mobileBtn = document.querySelector('.mobile-menu-btn');
+      const navLinks = document.querySelector('.nav-links');
+      if (mobileBtn) mobileBtn.addEventListener('click', () => { if (navLinks) navLinks.classList.toggle('active'); });
+
+      // modal close handlers
+      if (closeModal) closeModal.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
+      if (finalDownload) finalDownload.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
+      window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) downloadModal.style.display = 'none'; });
+
+      // Popup ad logic (defensive)
+      const popupAd = document.getElementById('popupAd');
+      const popupClose = document.querySelector('.popup-close');
+      const timerCount = document.getElementById('timerCount');
+
+      function startPopupTimer() {
+        if (!timerCount) return;
+        let count = 10;
+        timerCount.textContent = count;
+        const timer = setInterval(() => {
+          count--;
+          timerCount.textContent = count;
+          if (count <= 0) {
+            clearInterval(timer);
+            if (popupAd) popupAd.style.display = 'none';
+          }
+        }, 1000);
+      }
+
+      if (popupAd) {
+        setTimeout(() => { popupAd.style.display = 'block'; startPopupTimer(); }, 30000);
+        setInterval(() => { if (!popupAd.style.display || popupAd.style.display === 'none') { popupAd.style.display = 'block'; startPopupTimer(); } }, 60000);
+        if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.style.display = 'none'; });
+      }
+
+      // Ads popup (center)
+      const adsPopup = document.getElementById('adsPopup');
+      const adsPopupClose = document.getElementById('adsPopupClose');
+
+      function showAdsPopup() {
+        if (!adsPopup) return;
+        adsPopup.style.display = 'flex';
         setTimeout(() => {
-            popupAd.style.display = 'block';
-            startPopupTimer();
-        }, 30000);
+          const adElement = adsPopup.querySelector('.adsbygoogle');
+          if (adElement && !adElement.getAttribute('data-adsbygoogle-status')) {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { console.error('Ads popup ad loading error:', e); }
+          }
+        }, 100);
+      }
+      function closeAdsPopup() { if (!adsPopup) return; adsPopup.style.display = 'none'; }
 
-        setInterval(() => {
-            if (!popupAd.style.display || popupAd.style.display === 'none') {
-                popupAd.style.display = 'block';
-                startPopupTimer();
-            }
-        }, 60000);
+      if (adsPopupClose) adsPopupClose.addEventListener('click', closeAdsPopup);
+      setTimeout(() => { if (adsPopup) showAdsPopup(); }, 15000);
+      setInterval(() => { if (adsPopup && (!adsPopup.style.display || adsPopup.style.display === 'none')) showAdsPopup(); }, 120000);
+      window.addEventListener('click', function (e) { if (adsPopup && e.target === adsPopup) closeAdsPopup(); });
 
-        popupClose.addEventListener('click', function () {
-            popupAd.style.display = 'none';
-        });
+      // initial ad load + responsive reload
+      window.addEventListener('load', function () { setTimeout(loadAllAds, 1000); });
+      window.addEventListener('resize', function () { setTimeout(loadAllAds, 500); });
+    });
 
-        function startPopupTimer() {
-            let count = 10;
-            timerCount.textContent = count;
-            const timer = setInterval(() => {
-                count--;
-                timerCount.textContent = count;
-                if (count <= 0) {
-                    clearInterval(timer);
-                    popupAd.style.display = 'none';
-                }
-            }, 1000);
-        }
-
-        // Ads Popup functionality
-        const adsPopup = document.getElementById('adsPopup');
-        const adsPopupClose = document.getElementById('adsPopupClose');
-
-        function showAdsPopup() {
-            adsPopup.style.display = 'flex';
-            // Load the ad when popup is shown
-            setTimeout(() => {
-                const adElement = adsPopup.querySelector('.adsbygoogle');
-                if (adElement && !adElement.getAttribute('data-adsbygoogle-status')) {
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    } catch (e) {
-                        console.error('Ads popup ad loading error:', e);
-                    }
-                }
-            }, 100);
-        }
-
-        function closeAdsPopup() {
-            adsPopup.style.display = 'none';
-        }
-
-        adsPopupClose.addEventListener('click', closeAdsPopup);
-
-        // Show ads popup after 15 seconds
-        setTimeout(() => {
-            showAdsPopup();
-        }, 15000);
-
-        // Show ads popup every 2 minutes
-        setInterval(() => {
-            if (!adsPopup.style.display || adsPopup.style.display === 'none') {
-                showAdsPopup();
-            }
-        }, 120000);
-
-        // Close ads popup when clicking outside
-        window.addEventListener('click', function (e) {
-            if (e.target === adsPopup) {
-                closeAdsPopup();
-            }
-        });
-
-        // Initial ad load
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                loadAllAds();
-            }, 1000);
-        });
-
-        // Handle window resize for ads
-        window.addEventListener('resize', function() {
-            setTimeout(() => {
-                loadAllAds();
-            }, 500);
-        });
-    </script>
+  })();
+  </script>
 </body>
-
 </html>
