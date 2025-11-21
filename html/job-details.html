@@ -770,189 +770,200 @@
 
     <script>
         // IMPROVED Ads Popup functionality
-        document.addEventListener('DOMContentLoaded', function () {
-            const pageLoader = document.getElementById('pageLoader');
-            const jobTitle = document.getElementById('jobTitle');
+    document.addEventListener('DOMContentLoaded', function () {
+        const pageLoader = document.getElementById('pageLoader');
+        const jobTitle = document.getElementById('jobTitle');
 
-            // Show loader immediately
-            pageLoader.style.display = 'flex';
+        // Show loader immediately
+        pageLoader.style.display = 'flex';
 
-            // Hide loader when content is loaded
-            if (jobTitle && jobTitle.textContent.trim() !== '') {
+        // Hide loader when content is loaded
+        if (jobTitle && jobTitle.textContent.trim() !== '') {
+            pageLoader.style.opacity = '0';
+            setTimeout(() => {
+                pageLoader.style.display = 'none';
+            }, 300);
+        } else {
+            // Fallback: Hide loader after 3 seconds
+            setTimeout(() => {
                 pageLoader.style.opacity = '0';
                 setTimeout(() => {
                     pageLoader.style.display = 'none';
                 }, 300);
-            } else {
-                // Fallback: Hide loader after 3 seconds
-                setTimeout(() => {
-                    pageLoader.style.opacity = '0';
-                    setTimeout(() => {
-                        pageLoader.style.display = 'none';
-                    }, 300);
-                }, 3000);
-            }
+            }, 3000);
+        }
 
-            // Initialize ads popup
-            initializeAdsPopup();
-            initStickyAd();
-        });
+        // Initialize ads popup
+        initializeAdsPopup();
+        initStickyAd();
+    });
 
-        function initializeAdsPopup() {
-            const adsPopup = document.getElementById('adsPopup');
-            const adsPopupClose = document.getElementById('adsPopupClose');
-            const adLoading = document.getElementById('adLoading');
-            const autoCloseCountdown = document.getElementById('autoCloseCountdown');
+    function initializeAdsPopup() {
+        const adsPopup = document.getElementById('adsPopup');
+        const adsPopupClose = document.getElementById('adsPopupClose');
+        const adLoading = document.getElementById('adLoading');
+        const autoCloseCountdown = document.getElementById('autoCloseCountdown');
 
-            if (!adsPopup) {
-                console.error('Ads popup element not found!');
-                return;
-            }
+        if (!adsPopup) {
+            console.error('Ads popup element not found!');
+            return;
+        }
 
-            let popupShown = false;
-            let countdownInterval;
-            const autoCloseTime = 15; // seconds
+        let popupShown = false;
+        let countdownInterval;
 
-            function showAdsPopup() {
-                if (popupShown) return;
+        function showAdsPopup() {
+            if (popupShown) return;
 
-                console.log('Showing ads popup');
-                adsPopup.classList.add('active');
-                document.body.classList.add('ads-popup-active');
-                popupShown = true;
+            console.log('Showing ads popup');
+            adsPopup.classList.add('active');
+            document.body.classList.add('ads-popup-active');
+            popupShown = true;
 
-                // Start countdown
-                let timeLeft = autoCloseTime;
+            // Start countdown
+            let timeLeft = 15;
+            updateCountdown(timeLeft);
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
                 updateCountdown(timeLeft);
 
-                countdownInterval = setInterval(() => {
-                    timeLeft--;
-                    updateCountdown(timeLeft);
-
-                    if (timeLeft <= 0) {
-                        closeAdsPopup();
-                    }
-                }, 1000);
-
-                // Load ad with better timing
-                setTimeout(loadAdInPopup, 500);
-            }
-
-            function updateCountdown(time) {
-                if (autoCloseCountdown) {
-                    autoCloseCountdown.textContent = time;
+                if (timeLeft <= 0) {
+                    closeAdsPopup();
                 }
-            }
-            function loadAdInPopup() {
-                try {
-                    // Hide loading after a short delay
-                    setTimeout(() => {
-                        if (adLoading) {
-                            adLoading.style.display = 'none';
-                        }
-                    }, 1000);
+            }, 1000);
 
-                    // Force ad refresh
-                    if (typeof adsbygoogle !== 'undefined') {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                        console.log('Ad loaded in popup');
-                    }
-                } catch (error) {
-                    console.error('Error loading ad:', error);
+            // Load ad with better timing
+            setTimeout(loadAdInPopup, 500);
+        }
+
+        function updateCountdown(time) {
+            if (autoCloseCountdown) {
+                autoCloseCountdown.textContent = time;
+            }
+        }
+
+        function loadAdInPopup() {
+            try {
+                // Hide loading after a short delay
+                setTimeout(() => {
                     if (adLoading) {
                         adLoading.style.display = 'none';
                     }
+                }, 1000);
+
+                // Force ad refresh
+                if (typeof adsbygoogle !== 'undefined') {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    console.log('Ad loaded in popup');
                 }
-            }
-
-            function closeAdsPopup() {
-                console.log('Closing ads popup');
-                adsPopup.classList.remove('active');
-                document.body.classList.remove('ads-popup-active');
-
-                if (countdownInterval) {
-                    clearInterval(countdownInterval);
-                }
-
-                // Reset loading for next time
+            } catch (error) {
+                console.error('Error loading ad:', error);
                 if (adLoading) {
-                    adLoading.style.display = 'flex';
+                    adLoading.style.display = 'none';
                 }
-
-                popupShown = false;
-            }
-
-            // Event listeners
-            if (adsPopupClose) {
-                adsPopupClose.addEventListener('click', closeAdsPopup);
-            }
-
-            // Close when clicking outside
-            adsPopup.addEventListener('click', function (e) {
-                if (e.target === adsPopup) {
-                    closeAdsPopup();
-                }
-            });
-
-            // Show popup after delay - DESKTOP FIX
-            setTimeout(() => {
-                // Check if desktop (width > 768px)
-                if (window.innerWidth > 768) {
-                    showAdsPopup();
-                }
-            }, 5000);
-
-            // Show popup on scroll for mobile
-            let scrollTriggered = false;
-            window.addEventListener('scroll', function () {
-                if (!scrollTriggered && window.scrollY > 500) {
-                    showAdsPopup();
-                    scrollTriggered = true;
-                }
-            });
-
-            // Periodic popup (every 2 minutes)
-            setInterval(() => {
-                if (!adsPopup.classList.contains('active')) {
-                    showAdsPopup();
-                }
-            }, 120000);
-        }
-        function initStickyAd() {
-            const stickyAd = document.querySelector('.sticky-ad-bottom');
-
-            if (!stickyAd) return;
-
-            // Different timing for mobile vs desktop
-            const isMobile = window.innerWidth <= 768;
-            const showDelay = isMobile ? 10000 : 15000; // 10s mobile, 15s desktop
-
-            // Show sticky ad after delay
-            setTimeout(() => {
-                stickyAd.classList.add('active');
-
-                // Auto-close after 30 seconds on mobile
-                if (isMobile) {
-                    setTimeout(() => {
-                        stickyAd.classList.remove('active');
-                    }, 30000);
-                }
-            }, showDelay);
-
-            // Close on tap for mobile
-            if (isMobile) {
-                stickyAd.addEventListener('click', function () {
-                    this.classList.remove('active');
-                });
             }
         }
-        // Re-initialize on resize (orientation change)
-        window.addEventListener('resize', function () {
-            const stickyAd = document.querySelector('.sticky-ad-bottom');
-            if (stickyAd && !stickyAd.classList.contains('active')) {
-                initStickyAd();
+
+        function closeAdsPopup() {
+            console.log('Closing ads popup');
+            adsPopup.classList.remove('active');
+            document.body.classList.remove('ads-popup-active');
+
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            // Reset loading for next time
+            if (adLoading) {
+                adLoading.style.display = 'flex';
+            }
+
+            popupShown = false;
+        }
+
+        // Event listeners
+        if (adsPopupClose) {
+            adsPopupClose.addEventListener('click', closeAdsPopup);
+        }
+
+        // Close when clicking outside
+        adsPopup.addEventListener('click', function (e) {
+            if (e.target === adsPopup) {
+                closeAdsPopup();
             }
         });
+
+        // Show popup after delay - DESKTOP FIX
+        setTimeout(() => {
+            // Check if desktop (width > 768px)
+            if (window.innerWidth > 768) {
+                showAdsPopup();
+            }
+        }, 5000);
+
+        // Show popup on scroll for mobile
+        let scrollTriggered = false;
+        window.addEventListener('scroll', function () {
+            if (!scrollTriggered && window.scrollY > 500) {
+                showAdsPopup();
+                scrollTriggered = true;
+            }
+        });
+
+        // Periodic popup (every 2 minutes)
+        setInterval(() => {
+            if (!adsPopup.classList.contains('active')) {
+                showAdsPopup();
+            }
+        }, 120000);
+    }
+
+    function initStickyAd() {
+        const stickyAd = document.querySelector('.sticky-ad-bottom');
+        
+        if (!stickyAd) {
+            console.error('Sticky ad element not found!');
+            return;
+        }
+
+        console.log('Initializing sticky ad...');
+        
+        // Different timing for mobile vs desktop
+        const isMobile = window.innerWidth <= 768;
+        const showDelay = isMobile ? 10000 : 15000; // 10s mobile, 15s desktop
+
+        // Show sticky ad after delay
+        setTimeout(() => {
+            console.log('Showing sticky ad');
+            stickyAd.classList.add('active');
+            
+            // Auto-close after 30 seconds on mobile
+            if (isMobile) {
+                setTimeout(() => {
+                    console.log('Auto-closing sticky ad on mobile');
+                    stickyAd.classList.remove('active');
+                }, 30000);
+            }
+        }, showDelay);
+
+        // Close on tap for mobile
+        if (isMobile) {
+            stickyAd.addEventListener('click', function () {
+                console.log('Closing sticky ad on tap');
+                this.classList.remove('active');
+            });
+        }
+    }
+
+    // Re-initialize on resize (orientation change)
+    window.addEventListener('resize', function () {
+        const stickyAd = document.querySelector('.sticky-ad-bottom');
+        if (stickyAd && !stickyAd.classList.contains('active')) {
+            console.log('Re-initializing sticky ad on resize');
+            initStickyAd();
+        }
+    });
 
     </script>
 </body>

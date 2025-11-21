@@ -1859,6 +1859,7 @@ body.ads-popup-active {
         font-size: 1.75rem;
     }
 }
+
 /* Sticky bottom ad - Mobile Responsive */
 .sticky-ad-bottom {
     position: fixed;
@@ -1908,12 +1909,10 @@ body.ads-popup-active {
 /* Prevent overlap with mobile browsers */
 @media (max-width: 768px) {
     .sticky-ad-bottom {
-        /* Safe area for mobile browsers */
         padding-bottom: max(6px, env(safe-area-inset-bottom));
     }
     
     body {
-        /* Add padding to prevent content being hidden behind sticky ad */
         padding-bottom: 70px;
     }
 }
