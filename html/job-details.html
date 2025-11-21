@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="/css/job-details.css" rel="stylesheet">
+      <link href="/css/ads.css" rel="stylesheet">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
         crossorigin="anonymous"></script>
@@ -77,211 +78,6 @@
 
             100% {
                 transform: rotate(360deg);
-            }
-        }
-
-        /* Ads Popup Styles - IMPROVED */
-        .ads-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .ads-popup.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .ads-popup-content {
-            background: #ffffff;
-            border-radius: 12px;
-            width: 95%;
-            max-width: 720px;
-            min-height: 250px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-        }
-
-        .ads-popup.active .ads-popup-content {
-            transform: translateY(0);
-        }
-
-        .ads-popup-header {
-            background: #0d6efd;
-            color: #fff;
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .ads-popup-header h5 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .ads-popup-body {
-            padding: 1.5rem;
-            min-height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .ads-popup-body ins.adsbygoogle {
-            display: block !important;
-            min-height: 250px;
-            min-width: 300px;
-            width: 100% !important;
-        }
-
-        .ad-blocker-fallback {
-            display: none;
-            text-align: center;
-            padding: 1.5rem;
-            color: #666;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin-top: 1rem;
-            width: 100%;
-            border: 1px dashed #dee2e6;
-        }
-
-        .ad-blocker-fallback p {
-            margin: 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .ad-blocker-fallback i {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            display: block;
-            color: #ffc107;
-        }
-
-        .ads-popup-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            line-height: 1;
-            cursor: pointer;
-            padding: 0;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .ads-popup-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-
-        .ads-popup-footer {
-            padding: 1rem 1.5rem;
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-
-        .ads-popup-footer .countdown {
-            font-weight: 600;
-            color: #0d6efd;
-        }
-
-        body.ads-popup-active {
-            overflow: hidden;
-        }
-
-        .ad-status-message {
-            text-align: center;
-            padding: 1rem;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .ad-loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            color: #6c757d;
-        }
-
-        .ad-loading-spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0d6efd;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 576px) {
-            .ads-popup {
-                padding: 0.5rem;
-            }
-
-            .ads-popup-content {
-                width: 98%;
-                max-width: 100%;
-                min-height: 200px;
-            }
-
-            .ads-popup-header {
-                padding: 0.75rem 1rem;
-            }
-
-            .ads-popup-header h5 {
-                font-size: 1rem;
-            }
-
-            .ads-popup-body {
-                padding: 1rem;
-                min-height: 150px;
-            }
-
-            .ads-popup-body ins.adsbygoogle {
-                min-width: 250px;
-                min-height: 200px;
-            }
-
-            .ads-popup-footer {
-                padding: 0.75rem 1rem;
-                font-size: 0.8rem;
-            }
-
-            .ads-popup-close {
-                width: 32px;
-                height: 32px;
-                font-size: 1.3rem;
             }
         }
     </style>
@@ -726,47 +522,47 @@
             </script>
         </div>
     </div>
+    <div class="ad-popup" id="adPopup" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Advertisement">
+        <div class="ad-popup-card" role="document">
+            <button class="ad-popup-close" id="adPopupClose" aria-label="Close Advertisement">✕</button>
 
-    <!-- IMPROVED Ads Popup -->
-    <div class="ads-popup" id="adsPopup">
-        <div class="ads-popup-content">
-            <div class="ads-popup-header">
-                <h5>Advertisement</h5>
-                <button class="ads-popup-close" id="adsPopupClose">&times;</button>
+            <div class="ad-container" id="popupAdContainer">
+                <!-- Adsense ins (replace client + slot) -->
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="9525901183" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
+                <!-- Fallback placeholder shown only if the ins is blocked (JS will add/remove) -->
+                
             </div>
-            <div class="ads-popup-body">
-                <!-- Loading indicator -->
-                <div class="ad-loading" id="adLoading">
-                    <div class="ad-loading-spinner"></div>
-                    <p>Loading advertisement...</p>
+
+            <div style="font-size:12px;color:#666;text-align:center">Advertisement</div>
+        </div>
+    </div>
+
+    <div class="sticky-ad" id="stickyAd" aria-hidden="true">
+        <div class="sticky-inner" role="complementary" aria-label="Advertisement">
+            <!-- close btn -->
+            <button class="sticky-close" id="stickyClose" aria-label="Close sticky ad">✕</button>
+
+            <div style="width:100%;max-width:900px;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                    data-ad-slot="6672824367" data-ad-format="auto" data-full-width-responsive="true"></ins>
+
+                <div class="ad-fallback" id="stickyFallback" style="display:none;">
+                    <strong>Sticky Test Ad</strong>
+                    <div style="font-size:12px;margin-top:6px;">Placeholder visible when ad blocked.</div>
                 </div>
-
-                <!-- This is where the actual ad should display -->
-                <ins class="adsbygoogle" data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
-
-            </div>
-            <div class="ads-popup-footer">
-                <p>Advertisement supports our free service. This popup will close automatically in <span
-                        class="countdown" id="autoCloseCountdown">15</span> seconds.</p>
             </div>
         </div>
     </div>
 
-    <!-- Sticky Bottom Ad -->
-    <div class="sticky-ad-bottom">
-        <ins class="adsbygoogle"  data-ad-client="ca-pub-6284022198338659"
-            data-ad-slot="6672824367" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
     <div id="footer-container"></div>
 
     <!-- Essential Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="/js/job-details.js"></script>
     <script type="module" src="/js/job-stats.js"></script>
+    <script  src="/js/ads.js"></script>
 
     <script>
         // IMPROVED Ads Popup functionality
@@ -791,166 +587,6 @@
                         pageLoader.style.display = 'none';
                     }, 300);
                 }, 3000);
-            }
-
-            // Initialize ads popup
-            initializeAdsPopup();
-            initStickyAd();
-        });
-
-        function initializeAdsPopup() {
-            const adsPopup = document.getElementById('adsPopup');
-            const adsPopupClose = document.getElementById('adsPopupClose');
-            const adLoading = document.getElementById('adLoading');
-            const autoCloseCountdown = document.getElementById('autoCloseCountdown');
-
-            if (!adsPopup) {
-                console.error('Ads popup element not found!');
-                return;
-            }
-
-            let popupShown = false;
-            let countdownInterval;
-            const autoCloseTime = 15; // seconds
-
-            function showAdsPopup() {
-                if (popupShown) return;
-
-                console.log('Showing ads popup');
-                adsPopup.classList.add('active');
-                document.body.classList.add('ads-popup-active');
-                popupShown = true;
-
-                // Start countdown
-                let timeLeft = autoCloseTime;
-                updateCountdown(timeLeft);
-
-                countdownInterval = setInterval(() => {
-                    timeLeft--;
-                    updateCountdown(timeLeft);
-
-                    if (timeLeft <= 0) {
-                        closeAdsPopup();
-                    }
-                }, 1000);
-
-                // Load ad with better timing
-                setTimeout(loadAdInPopup, 500);
-            }
-
-            function updateCountdown(time) {
-                if (autoCloseCountdown) {
-                    autoCloseCountdown.textContent = time;
-                }
-            }
-            function loadAdInPopup() {
-                try {
-                    // Hide loading after a short delay
-                    setTimeout(() => {
-                        if (adLoading) {
-                            adLoading.style.display = 'none';
-                        }
-                    }, 1000);
-
-                    // Force ad refresh
-                    if (typeof adsbygoogle !== 'undefined') {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                        console.log('Ad loaded in popup');
-                    }
-                } catch (error) {
-                    console.error('Error loading ad:', error);
-                    if (adLoading) {
-                        adLoading.style.display = 'none';
-                    }
-                }
-            }
-
-            function closeAdsPopup() {
-                console.log('Closing ads popup');
-                adsPopup.classList.remove('active');
-                document.body.classList.remove('ads-popup-active');
-
-                if (countdownInterval) {
-                    clearInterval(countdownInterval);
-                }
-
-                // Reset loading for next time
-                if (adLoading) {
-                    adLoading.style.display = 'flex';
-                }
-
-                popupShown = false;
-            }
-
-            // Event listeners
-            if (adsPopupClose) {
-                adsPopupClose.addEventListener('click', closeAdsPopup);
-            }
-
-            // Close when clicking outside
-            adsPopup.addEventListener('click', function (e) {
-                if (e.target === adsPopup) {
-                    closeAdsPopup();
-                }
-            });
-
-            // Show popup after delay - DESKTOP FIX
-            setTimeout(() => {
-                // Check if desktop (width > 768px)
-                if (window.innerWidth > 768) {
-                    showAdsPopup();
-                }
-            }, 5000);
-
-            // Show popup on scroll for mobile
-            let scrollTriggered = false;
-            window.addEventListener('scroll', function () {
-                if (!scrollTriggered && window.scrollY > 500) {
-                    showAdsPopup();
-                    scrollTriggered = true;
-                }
-            });
-
-            // Periodic popup (every 2 minutes)
-            setInterval(() => {
-                if (!adsPopup.classList.contains('active')) {
-                    showAdsPopup();
-                }
-            }, 120000);
-        }
-        function initStickyAd() {
-            const stickyAd = document.querySelector('.sticky-ad-bottom');
-
-            if (!stickyAd) return;
-
-            // Different timing for mobile vs desktop
-            const isMobile = window.innerWidth <= 768;
-            const showDelay = isMobile ? 10000 : 15000; // 10s mobile, 15s desktop
-
-            // Show sticky ad after delay
-            setTimeout(() => {
-                stickyAd.classList.add('active');
-
-                // Auto-close after 30 seconds on mobile
-                if (isMobile) {
-                    setTimeout(() => {
-                        stickyAd.classList.remove('active');
-                    }, 30000);
-                }
-            }, showDelay);
-
-            // Close on tap for mobile
-            if (isMobile) {
-                stickyAd.addEventListener('click', function () {
-                    this.classList.remove('active');
-                });
-            }
-        }
-        // Re-initialize on resize (orientation change)
-        window.addEventListener('resize', function () {
-            const stickyAd = document.querySelector('.sticky-ad-bottom');
-            if (stickyAd && !stickyAd.classList.contains('active')) {
-                initStickyAd();
             }
         });
 
