@@ -60,10 +60,11 @@
     .ads-popup-content{background:#fff;border-radius:8px;max-width:420px;width:90%;overflow:hidden}
     .ad-video-placeholder{min-height:180px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:4px}
     .popup-ad-content{min-height:180px}
+    .ad-fallback { font-size: 14px; color: #555; }
 
     /* Optional focus outlines for accessibility */
     button:focus, a:focus { outline: 3px solid rgba(37,99,235,0.25); outline-offset: 2px; }
-    </style>
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -278,7 +279,7 @@
     </div>
   </footer>
 
-  <!-- Corrected JS (robust init) -->
+  <!-- Corrected JS (robust init + ensureAdOrFallback) -->
   <script>
   (function(){
     'use strict';
@@ -367,7 +368,7 @@
     const cardsContainer = document.querySelector('.download-cards');
     const pageSize = 10;
     let currentPage = 1;
-    const totalPages = Math.ceil(pdfFiles.length / pageSize);
+    const totalPages = Math.max(1, Math.ceil(pdfFiles.length / pageSize));
 
     // Modal & popup elements (queried before render)
     let downloadModal = document.getElementById('downloadModal');
@@ -409,7 +410,7 @@
 
     function buildPagination() {
       const pages = Array.from({length: totalPages},(_,i) => i+1).map(p => `<button class="page-link ${p===currentPage ? 'active' : ''}" data-page="${p}" ${p===currentPage ? 'disabled' : ''}>${p}</button>`).join('');
-      return `<div class="pagination-controls"><button class="page-prev" ${currentPage===1 ? 'disabled' : ''}>Prev</button>${pages}<button class="page-next" ${currentPage===totalPages ? 'disabled' : ''}>Next</button></div>`;
+      return `<div class="pagination-controls" style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><button class="page-prev" ${currentPage===1 ? 'disabled' : ''}>Prev</button>${pages}<button class="page-next" ${currentPage===totalPages ? 'disabled' : ''}>Next</button></div>`;
     }
 
     function renderPage(page) {
@@ -460,16 +461,14 @@
           downloadReady = document.getElementById('downloadReady');
           finalDownload = document.getElementById('finalDownload');
 
-          if (downloadModal) {
-            downloadModal.style.display = 'flex';
-            requestAnimationFrame(() => ensureAdOrFallback('.ad-video-placeholder', 4831035752));
-          }
+          if (downloadModal) downloadModal.style.display = 'flex';
+          ensureAdOrFallback('.ad-video-placeholder', 4831035752);
           if (progressBar) progressBar.style.width = '0%';
           if (progressText) progressText.textContent = '0%';
           if (downloadReady) downloadReady.style.display = 'none';
           if (finalDownload) finalDownload.removeAttribute('href');
 
-          // try to load ads
+          // try to load ads (safe)
           try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
 
           let progress = 0;
@@ -518,27 +517,47 @@
       try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
     }
 
+    // === NEW: ensureAdOrFallback ===
+    // Ensures that an ad or a non-blocking fallback is placed into the container.
     function ensureAdOrFallback(containerSelector, slotId) {
-      const container = document.querySelector(containerSelector);
-      if (!container) return;
-      function attempt(tries) {
-        const w = container.offsetWidth;
-        if (w && w > 0) {
-          renderAdIn(containerSelector, slotId);
-          setTimeout(() => {
-            const ins = container.querySelector('.adsbygoogle');
-            const filled = ins && ins.getAttribute('data-adsbygoogle-status');
-            if (!filled) {
-              container.innerHTML = '<div style="min-height:160px;display:flex;align-items:center;justify-content:center;background:#eee;border:1px dashed #ccc;border-radius:4px;color:#666">Advertisement</div>';
-            }
-          }, 1500);
-        } else if (tries > 0) {
-          setTimeout(() => attempt(tries - 1), 120);
-        } else {
-          container.innerHTML = '<div style="min-height:160px;display:flex;align-items:center;justify-content:center;background:#eee;border:1px dashed #ccc;border-radius:4px;color:#666">Advertisement</div>';
+      try {
+        const container = document.querySelector(containerSelector);
+        if (!container) return;
+
+        // clear any existing children
+        container.innerHTML = '';
+
+        // If AdSense is available, add a real ad element
+        if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
+          const ins = document.createElement('ins');
+          ins.className = 'adsbygoogle';
+          ins.style.display = 'block';
+          ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+          ins.setAttribute('data-ad-slot', String(slotId));
+          ins.setAttribute('data-ad-format', 'auto');
+          ins.setAttribute('data-full-width-responsive', 'true');
+          container.appendChild(ins);
+          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { /* ignore */ }
+          return;
         }
+
+        // Fallback placeholder (non-blocking UI when ads are blocked or not loaded)
+        const placeholder = document.createElement('div');
+        placeholder.className = 'ad-fallback';
+        placeholder.style.padding = '18px';
+        placeholder.style.border = '1px dashed #e0e0e0';
+        placeholder.style.borderRadius = '6px';
+        placeholder.style.background = '#fff';
+        placeholder.style.minHeight = '120px';
+        placeholder.style.display = 'flex';
+        placeholder.style.alignItems = 'center';
+        placeholder.style.justifyContent = 'center';
+        placeholder.innerHTML = '<div style="text-align:center;"><strong>Sponsored</strong><br/><small>Ad content is unavailable (adblocker or network). Continue to download.</small></div>';
+        container.appendChild(placeholder);
+      } catch (err) {
+        // don't break everything if something unexpected happens
+        console.warn('ensureAdOrFallback error', err);
       }
-      attempt(5);
     }
 
     // ---------- DOM ready init ----------
@@ -557,6 +576,7 @@
 
       if (closeModal) closeModal.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
       if (finalDownload) finalDownload.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
+
       window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) downloadModal.style.display = 'none'; });
 
       // Popup ad logic (defensive)
@@ -579,11 +599,14 @@
       }
 
       if (popupAd) {
+        // ORIGINAL: show after 30s. For testing, change 30000 -> 3000 (see comment).
+        // TESTING: setTimeout(..., 3000) to show faster while you debug
         setTimeout(() => {
           popupAd.style.display = 'flex';
           requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
           startPopupTimer();
         }, 30000);
+
         setInterval(() => {
           if (!popupAd.style.display || popupAd.style.display === 'none') {
             popupAd.style.display = 'flex';
@@ -591,6 +614,7 @@
             startPopupTimer();
           }
         }, 60000);
+
         if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.style.display = 'none'; });
       }
 
@@ -606,6 +630,7 @@
       function closeAdsPopup() { if (!adsPopup) return; adsPopup.style.display = 'none'; }
 
       if (adsPopupClose) adsPopupClose.addEventListener('click', closeAdsPopup);
+      // ORIGINAL: show after 15s. For testing, change 15000 -> 3000
       setTimeout(() => { if (adsPopup) showAdsPopup(); }, 15000);
       setInterval(() => { if (adsPopup && (!adsPopup.style.display || adsPopup.style.display === 'none')) showAdsPopup(); }, 120000);
       window.addEventListener('click', function (e) { if (adsPopup && e.target === adsPopup) closeAdsPopup(); });
@@ -614,9 +639,18 @@
       window.addEventListener('load', function () { setTimeout(loadAllAds, 1000); });
       window.addEventListener('resize', function () { setTimeout(loadAllAds, 500); });
 
+      // Close modals on Escape
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+          if (downloadModal) downloadModal.style.display = 'none';
+          if (popupAd) popupAd.style.display = 'none';
+          if (adsPopup) adsPopup.style.display = 'none';
+        }
+      });
+
       // expose debug helpers
       window.showAdsPopupNow = showAdsPopup;
-      window.showPopupAdNow = function(){ const p = document.getElementById('popupAd'); if (p) p.style.display='block'; };
+      window.showPopupAdNow = function(){ const p = document.getElementById('popupAd'); if (p) p.style.display='block'; requestAnimationFrame(()=> ensureAdOrFallback('.popup-ad-content',9525901183)); };
       window.testOpenDownloadModal = function(url){ const p = document.getElementById('downloadModal'); if (p) p.style.display='flex'; const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download',(url||'file').split('/').pop()); } };
 
       console.log('UI handlers attached. adsbygoogle defined:', !!window.adsbygoogle);
