@@ -5,38 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Java Resources for Freshers - Download Center</title>
 
-  <!-- Global CONFIG (must be before scripts that read CONFIG) -->
+  <!-- Global CONFIG -->
   <script>
     window.CONFIG = {
-      popupDelayMsDesktop: 4000,
-      popupDelayMsMobile: 6000,
-      popupAutoCloseSec: 15,
-      stickyShowDelayMsDesktop: 12000,
-      stickyShowDelayMsMobile: 8000,
-      stickyAutoCloseMsMobile: 30000,
-      scrollTriggerPx: 420,
-      minDesktopWidth: 769,
+      // used for simulated ad duration (seconds)
+      adWatchSeconds: 15,
       adsenseClientId: 'ca-pub-6284022198338659'
     };
   </script>
 
-  <!-- AdSense script -->
+  <!-- AdSense script (optional; may be blocked by adblockers) -->
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
     crossorigin="anonymous"></script>
 
-  <link href="/css/javaresource.css" rel="stylesheet">
-
   <style>
-    :root {
-      --primary: #e76f00;
-      --primary-dark: #b35900;
-      --secondary: #5382a1;
-      --light: #f8f9fa;
-      --dark: #343a40;
-      --success: #28a745;
-      --gray: #6c757d;
-      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    :root{
+      --primary:#e76f00;--secondary:#5382a1;--dark:#343a40;--success:#28a745;--gray:#6c757d;
     }
     html,body{margin:0;padding:0;font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:#f5f5f5;color:var(--dark)}
     .container{max-width:1200px;margin:0 auto;padding:0 15px}
@@ -48,36 +33,34 @@
     .main-content{display:grid;grid-template-columns:250px 1fr 250px;gap:16px;margin:24px 0}
     @media(max-width:1024px){.main-content{grid-template-columns:1fr}.ads-section{display:none!important}}
     .download-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-    .download-card{background:#fff;border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+    .download-card{background:#fff;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,.08);overflow:hidden}
     .card-header{background:var(--secondary);color:#fff;padding:12px}
     .card-body{padding:12px}
     .download-btn{background:var(--primary);color:#fff;padding:10px;border:none;width:100%;border-radius:6px;cursor:pointer}
     .ad-container{margin:0 0 8px 0}
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
-    .modal-content{background:#fff;border-radius:8px;max-width:520px;width:90%;overflow:hidden}
-    .popup-ad{display:none;position:fixed;z-index:3000;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:8px;padding:12px;max-width:480px;width:92%}
-    .ads-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:4000;align-items:center;justify-content:center}
-    .ads-popup-content{background:#fff;border-radius:8px;max-width:420px;width:90%;overflow:hidden}
-    .ad-video-placeholder{min-height:180px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:4px}
-    .popup-ad-content{min-height:180px}
-    .ad-fallback { font-size: 14px; color: #555; }
-
-    /* Optional focus outlines for accessibility */
-    button:focus, a:focus { outline: 3px solid rgba(37,99,235,0.25); outline-offset: 2px; }
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:2000;align-items:center;justify-content:center}
+    .modal-content{background:#fff;border-radius:8px;max-width:520px;width:92%;overflow:hidden}
+    .ad-video-placeholder{min-height:180px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:4px;padding:12px}
+    .progress-bar{background:#e9ecef;height:12px;border-radius:6px;overflow:hidden;margin-top:8px}
+    .progress{width:0%;height:100%;background:var(--success);transition:width .25s}
+    .btn { padding:8px 12px;border-radius:6px;border:none;cursor:pointer }
+    .btn-primary { background:var(--primary); color:#fff }
+    .btn-muted { background:#f0f0f0; color:#333 }
+    .btn-disabled { opacity:.5; cursor:not-allowed }
+    .ad-fallback { font-size: 14px; color: #555; text-align:center; }
+    button:focus, a:focus { outline: 3px solid rgba(37,99,235,0.18); outline-offset:2px }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <header>
     <div class="container">
       <div class="header-content">
-        <div class="logo" style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="1.8"/>
           </svg>
           <h1 style="font-size:1.1rem;margin:0">Java Fresher Resources</h1>
         </div>
-        <button class="mobile-menu-btn" aria-label="Open navigation">☰</button>
         <nav class="nav-links" id="main-nav">
           <a href="/index.html" style="color:white;text-decoration:none">Home</a>
           <a href="/html/javaresource.html" style="color:white;text-decoration:none">Resources</a>
@@ -88,198 +71,48 @@
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero" style="padding:40px 0;text-align:center;background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');color:#fff">
-    <div class="container">
-      <h2>Master Java with Our Complete Resource Pack</h2>
-      <p>Download comprehensive Java learning materials, code examples, and projects specifically designed for freshers.</p>
-    </div>
-  </section>
+  <main class="container">
+    <section style="margin:24px 0">
+      <h2 style="color:var(--primary);margin-bottom:8px">Available Resources</h2>
+      <p style="color:var(--gray);margin-top:0">Click Download to watch a short ad and get the resource.</p>
 
-  <div class="container">
-    <div class="main-content">
-      <!-- Left ads -->
-      <aside class="ads-section">
-        <div class="ad-container">
-          <div class="ad-label">Advertisement</div>
-          <div class="ad-content responsive-ad">
-            <ins class="adsbygoogle" 
-                 style="display:block"
-                 data-ad-client="ca-pub-6284022198338659"
-                 data-ad-slot="7091309532"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-          </div>
-        </div>
-        <div class="ad-container">
-          <div class="ad-label">Sponsored</div>
-          <div class="ad-content tall-ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-6284022198338659"
-                 data-ad-slot="4465146196"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-          </div>
-        </div>
-      </aside>
+      <div class="download-cards"></div>
+    </section>
+  </main>
 
-      <!-- Download cards area -->
-      <section class="download-section">
-        <h2 style="color:var(--primary);border-bottom:2px solid var(--primary);padding-bottom:6px">Available Resources</h2>
-
-        <div class="section-ad" style="margin:18px 0">
-          <div class="ad-container">
-            <div class="ad-label">Advertisement</div>
-            <div class="ad-content horizontal-ad">
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-6284022198338659"
-                   data-ad-slot="8659542079"
-                   data-ad-format="auto"
-                   data-full-width-responsive="true"></ins>
-            </div>
-          </div>
-        </div>
-
-        <div class="download-cards"></div>
-
-        <div class="section-ad" style="margin:18px 0">
-          <div class="ad-container">
-            <div class="ad-label">Advertisement</div>
-            <div class="ad-content horizontal-ad">
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-6284022198338659"
-                   data-ad-slot="2303400170"
-                   data-ad-format="auto"
-                   data-full-width-responsive="true"></ins>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Right ads -->
-      <aside class="ads-section">
-        <div class="ad-container">
-          <div class="ad-label">Advertisement</div>
-          <div class="ad-content responsive-ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-6284022198338659"
-                 data-ad-slot="3421040729"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-          </div>
-        </div>
-        <div class="ad-container">
-          <div class="ad-label">Sponsored</div>
-          <div class="ad-content tall-ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-6284022198338659"
-                 data-ad-slot="6983498326"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- Download Modal -->
+  <!-- Download Modal (ad must be watched to enable download) -->
   <div class="modal" id="downloadModal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
-        <h3 style="margin:0">Complete Ad to Download</h3>
+    <div class="modal-content" role="document">
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
+        <h3 style="margin:0;font-size:1rem">Watch Ad to Enable Download</h3>
         <button class="close-modal" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" aria-label="Close">&times;</button>
       </div>
-      <div class="modal-body" style="padding:12px">
-        <div class="ad-video-container">
-          <div class="ad-video-placeholder"></div>
-          <p>Please view the advertisement to enable download.</p>
+
+      <div style="padding:14px">
+        <div class="ad-video-placeholder" id="adPlaceholder">
+          <!-- Ad (or fallback) will be injected here -->
+          <div class="ad-fallback">Ad area — will load if available</div>
         </div>
 
-        <div class="download-progress" style="margin:12px 0">
-          <p>Ad Progress: <span id="progressText">0%</span></p>
-          <div class="progress-bar" style="background:#e9ecef;height:10px;border-radius:6px;overflow:hidden">
-            <div class="progress" id="adProgress" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
-          </div>
+        <p style="margin:10px 0 4px 0;color:var(--gray)">Ad progress: <span id="progressText">0%</span></p>
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress" id="adProgress" style="width:0%"></div>
         </div>
 
-        <div class="download-ready" id="downloadReady" style="display:none;text-align:center;padding:12px">
-          <h4 style="color:var(--success)">Ad Completed! Your download is ready.</h4>
-          <a href="#" class="download-btn" id="finalDownload">Download File</a>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="startAdBtn" class="btn btn-primary">Start Ad</button>
+          <a id="finalDownload" class="btn btn-primary btn-disabled" href="#" download target="_blank" aria-disabled="true" style="text-decoration:none;display:inline-block">Download</a>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Popup Ad -->
-  <div class="popup-ad" id="popupAd" role="dialog" aria-modal="true">
-    <div class="popup-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:10px">
-      <h3 style="margin:0">Special Offer</h3>
-      <button class="popup-close" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" aria-label="Close">&times;</button>
-    </div>
-    <div class="popup-body" style="padding:12px;text-align:center">
-      <div class="popup-ad-content"></div>
-      <p>Check out this exclusive offer for Java developers!</p>
-      <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">10</span> seconds</div>
-    </div>
-  </div>
-
-  <!-- Ads Popup (center modal) -->
-  <div class="ads-popup" id="adsPopup" role="dialog" aria-modal="true">
-    <div class="ads-popup-content">
-      <div class="ads-popup-header" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px">
-        <span>Advertisement</span>
-        <button class="ads-popup-close" id="adsPopupClose" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" aria-label="Close">&times;</button>
-      </div>
-      <div class="ads-popup-body" style="padding:18px;text-align:center">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-            data-ad-slot="4089957271" data-ad-format="auto" data-full-width-responsive="true"></ins>
       </div>
     </div>
   </div>
 
   <footer style="background:#343a40;color:#fff;padding:24px 0;margin-top:24px">
-    <div class="container">
-      <div class="footer-content" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px">
-        <div class="footer-section">
-          <h3 style="color:var(--primary)">Java Resources</h3>
-          <ul style="list-style:none;padding-left:0">
-            <li><a href="/html/javaresource.html" style="color:#ddd">Core Java</a></li>
-            <li><a href="/html/javaresource.html" style="color:#ddd">Advanced Java</a></li>
-            <li><a href="/html/javaresource.html" style="color:#ddd">Java Frameworks</a></li>
-            <li><a href="/html/javaresource.html" style="color:#ddd">Java Projects</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3 style="color:var(--primary)">Quick Links</h3>
-          <ul style="list-style:none;padding-left:0">
-            <li><a href="/index.html" style="color:#ddd">Home</a></li>
-            <li><a href="/html/about.html" style="color:#ddd">About Us</a></li>
-            <li><a href="/html/contact.html" style="color:#ddd">Contact</a></li>
-            <li><a href="/html/privacy.html" style="color:#ddd">Privacy Policy</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3 style="color:var(--primary)">Support</h3>
-          <ul style="list-style:none;padding-left:0">
-            <li><a href="/html/contact.html" style="color:#ddd">FAQ</a></li>
-            <li><a href="/html/contact.html" style="color:#ddd">Help Center</a></li>
-            <li><a href="/html/sitemap.html" style="color:#ddd">Community</a></li>
-            <li><a href="/html/contact.html#feedback" style="color:#ddd">Feedback</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="copyright" style="text-align:center;margin-top:18px;color:#aaa">
-        <p>&copy; 2025 Java Fresher Resources. All rights reserved.</p>
-      </div>
+    <div class="container" style="text-align:center;color:#aaa">
+      <p>&copy; 2025 Java Fresher Resources. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Corrected JS (robust init + ensureAdOrFallback) -->
   <script>
   (function(){
     'use strict';
@@ -288,384 +121,214 @@
     const basePath = '/assets/javapdf/';
     const pdfFiles = [
       'Spring.pdf',
-      'Step-26-Non-Techincal-Lead-level-Questions.pdf',
       'Step-25-Junit-and-Mockito.pdf',
       'Step-23-Maven-and-Git-Level-I.pdf',
-      'Step-22-Microservices-Design-Patterns.pdf',
-      'Step-21-Microservices-Level-II.pdf',
-      'Step-20-Microservices-Level-I.pdf',
-      'Step-19-Kafka-Optional.pdf',
-      'Step-18-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
-      'Step-17-SQL.pdf',
-      'Step-16-Spring-MVC-Level-I-Optional.pdf',
-      'Step-15-Spring-Security-Level-II.pdf',
-      'Step-14-Spring-Security-Level-I.pdf',
-      'Step-13-Spring-Boot-Level-V-Expert.pdf',
-      'Step-12-Spring-Boot-level-IV-Advance.pdf',
-      'Step-11-Spring-Boot-Level-III-Scenario-Based.pdf',
-      'Step-10-Spring-Boot-Level-II.pdf',
-      'Step-9-Spring-Boot-Level-I.pdf',
-      'Step-8-Spring-framework-Level-II.pdf',
-      'Step-4-Core-Java-Level-IV-Advance-Level.pdf',
-      'Common-Step-Stream-API-Coding-Level-I-2.pdf',
-      'Common-Step-Java-Coding-2.pdf',
-      'Step-23-Junit-and-Mockito.pdf',
-      'Step-22-Maven-and-Git-Gradle-and-Deployments-Level-II.pdf',
-      'Step-21-Maven-and-Git-Level-I.pdf',
       'Step-20-Microservices-Design-Patterns.pdf',
-      'Step-19-Microservices-Level-II.pdf',
-      'Step-18-Microservices-Level-I.pdf',
-      'Step-17-Kafka-Optional.pdf',
-      'Step-16-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
-      'Step-15-SQL.pdf',
-      'Step-14-Spring-MVC-Level-I-Optional.pdf',
-      'Step-13-Spring-Security-Level-II.pdf',
-      'Step-12-Spring-Security-Level-I.pdf',
-      'Step-11-Spring-Boot-level-IV-Advance.pdf',
-      'Step-10-Spring-Boot-Level-III-Scenario-Based.pdf',
-      'Step-9-Spring-Security-Level-II.pdf',
-      'Step-6-Spring-Framework-Level-I.pdf',
-      'Common-Step-Java-Coding-1.pdf',
-      'Step-17-Junit-and-Mockito.pdf',
-      'Step-16-Maven-and-Git-Gradle-and-Deployments-Level-II.pdf',
-      'Step-15-Maven-and-Git-Level-I.pdf',
-      'Step-14-Microservices-Level-I.pdf',
-      'Step-13-Kafka-Optional.pdf',
-      'Step-12-Spring-Data-JPA-and-Other-DB-Level-I.pdf',
-      'Step-11-SQL.pdf',
-      'Step-10-Spring-MVC-Level-I-Optional.pdf',
-      'Step-9-Spring-Security-Level-I.pdf',
-      'Step-8-Spring-Boot-Level-III-Scenario-Based.pdf',
-      'Step-7-Spring-Boot-Level-II.pdf',
-      'Step-5-Spring-framework-Level-II.pdf',
-      'Step-3-Core-Java-Level-III.pdf',
-      'Common-Step-Stream-API-Coding-Level-II.pdf',
-      'Common-Step-Stream-API-Coding-Level-I.pdf',
-      'Common-Step-Java-Coding.pdf',
-      'Step-9-Maven-and-Git-Level-I.pdf',
-      'Step-8-Microservices-Level-I.pdf',
-      'Step-7-SQL.pdf',
-      'Step-4-Spring-Boot-Level-I.pdf',
-      'Step-2-Core-Java-Level-II.pdf',
-      'Step-1-Core-Java-Level-I.pdf',
-      'Common-Step-Stream-API-Coding-Questions-Level-I.pdf',
-      'Java-PDF-Notes.pdf',
-      'Spring-Framework-Notes.pdf',
-      'SQL-Hand-written-notes.pdf',
-      'SQL-PDF-Notes.pdf'
+      'Step-17-SQL.pdf',
+      'Java-PDF-Notes.pdf'
     ];
 
-    function toTitle(name) {
-      return name
-        .replace(/\.pdf$/i, '')
-        .replace(/[-_]+/g, ' ')
-        .replace(/(^|\s)step\s*\d+(\s|$)/gi, ' ')
-        .replace(/\s{2,}/g, ' ')
-        .trim();
-    }
-
-    // ---------- Query key nodes EARLY ----------
     const cardsContainer = document.querySelector('.download-cards');
-    const pageSize = 10;
-    let currentPage = 1;
-    const totalPages = Math.max(1, Math.ceil(pdfFiles.length / pageSize));
 
-    // Modal & popup elements (queried before render)
-    let downloadModal = document.getElementById('downloadModal');
-    let closeModal = document.querySelector('.close-modal');
-    let progressBar = document.getElementById('adProgress');
-    let progressText = document.getElementById('progressText');
-    let downloadReady = document.getElementById('downloadReady');
-    let finalDownload = document.getElementById('finalDownload');
+    // Modal elements
+    const downloadModal = document.getElementById('downloadModal');
+    const closeModalBtn = downloadModal ? downloadModal.querySelector('.close-modal') : null;
+    const adPlaceholder = document.getElementById('adPlaceholder');
+    const startAdBtn = document.getElementById('startAdBtn');
+    const progressBar = document.getElementById('adProgress');
+    const progressText = document.getElementById('progressText');
+    const finalDownload = document.getElementById('finalDownload');
+
     let currentFile = '';
+    let adInterval = null;
+    let adProgressValue = 0;
+    const adWatchSeconds = (window.CONFIG && window.CONFIG.adWatchSeconds) ? Number(window.CONFIG.adWatchSeconds) : 15;
+    const adTickMs = 100; // progress tick every 100ms
+    const ticksNeeded = Math.ceil((adWatchSeconds * 1000) / adTickMs);
 
+    // Defensive helpers
     function safeQuery(selector, ctx=document){ try { return ctx.querySelector(selector); } catch(e) { return null; } }
+    function toTitle(name){
+      return String(name).replace(/\.pdf$/i,'').replace(/[-_]+/g,' ').replace(/\s{2,}/g,' ').trim();
+    }
 
-    function buildCard(file) {
+    // Render file cards
+    function buildCard(file){
       const title = toTitle(file);
-      return `
-        <div class="download-card">
-          <div class="card-header"><h3 style="margin:0">${title}</h3></div>
-          <div class="card-body">
-            <p style="color:var(--gray);margin-bottom:8px">${title} reference PDF</p>
-            <div class="file-info" style="margin-bottom:8px"><span>PDF</span></div>
-            <button class="download-btn" data-file="${file}">Download Now</button>
-          </div>
+      const el = document.createElement('div');
+      el.className = 'download-card';
+      el.innerHTML = `
+        <div class="card-header"><h3 style="margin:0">${title}</h3></div>
+        <div class="card-body">
+          <p style="color:var(--gray);margin-bottom:8px">${title} reference PDF</p>
+          <div style="margin-bottom:8px"><small>PDF • ${(Math.floor(Math.random()*10)+1)} MB</small></div>
+          <button class="download-btn" data-file="${file}">Download Now</button>
         </div>
       `;
+      return el;
     }
 
-    function buildInlineAd(index) {
-      const adSlots = ['7551857423','2303400170','8659542079','9603305692'];
-      const adSlot = adSlots[index % adSlots.length];
-      return `
-        <div class="ad-container">
-          <div class="ad-label">Advertisement</div>
-          <div class="ad-content horizontal-ad">
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659" data-ad-slot="${adSlot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
-          </div>
-        </div>
-      `;
-    }
-
-    function buildPagination() {
-      const pages = Array.from({length: totalPages},(_,i) => i+1).map(p => `<button class="page-link ${p===currentPage ? 'active' : ''}" data-page="${p}" ${p===currentPage ? 'disabled' : ''}>${p}</button>`).join('');
-      return `<div class="pagination-controls" style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><button class="page-prev" ${currentPage===1 ? 'disabled' : ''}>Prev</button>${pages}<button class="page-next" ${currentPage===totalPages ? 'disabled' : ''}>Next</button></div>`;
-    }
-
-    function renderPage(page) {
-      currentPage = Math.max(1, Math.min(page, totalPages));
-      const start = (currentPage - 1) * pageSize;
-      const end = start + pageSize;
-      const items = pdfFiles.slice(start, end);
-
-      let html = '';
-      items.forEach((file, idx) => {
-        html += buildCard(file);
-        if ((idx + 1) % 2 === 0) {
-          html += buildInlineAd(start + idx + 1);
-        }
+    function renderList(){
+      if (!cardsContainer) return;
+      cardsContainer.innerHTML = '';
+      pdfFiles.forEach(f => {
+        const card = buildCard(f);
+        cardsContainer.appendChild(card);
       });
-      html += buildPagination();
-      if (cardsContainer) cardsContainer.innerHTML = html;
-
-      setTimeout(() => loadAllAds(), 150);
-      attachPaginationHandlers();
       attachDownloadHandlers();
     }
 
-    function attachPaginationHandlers() {
-      if (!cardsContainer) return;
-      const prev = cardsContainer.querySelector('.page-prev');
-      const next = cardsContainer.querySelector('.page-next');
-      const links = cardsContainer.querySelectorAll('.page-link');
-      if (prev) prev.addEventListener('click', () => renderPage(currentPage - 1));
-      if (next) next.addEventListener('click', () => renderPage(currentPage + 1));
-      links.forEach(l => l.addEventListener('click', () => renderPage(parseInt(l.getAttribute('data-page'), 10))));
-    }
-
-    function attachDownloadHandlers() {
+    // Attach handlers to download buttons
+    function attachDownloadHandlers(){
       if (!cardsContainer) return;
       const buttons = cardsContainer.querySelectorAll('.download-btn');
-      buttons.forEach(button => {
-        const newBtn = button.cloneNode(true);
-        button.parentNode.replaceChild(newBtn, button);
-        newBtn.addEventListener('click', function () {
-          const file = this.getAttribute('data-file');
-          currentFile = file;
-          // re-query fresh nodes
-          downloadModal = document.getElementById('downloadModal');
-          closeModal = document.querySelector('.close-modal');
-          progressBar = document.getElementById('adProgress');
-          progressText = document.getElementById('progressText');
-          downloadReady = document.getElementById('downloadReady');
-          finalDownload = document.getElementById('finalDownload');
-
-          if (downloadModal) downloadModal.style.display = 'flex';
-          ensureAdOrFallback('.ad-video-placeholder', 4831035752);
-          if (progressBar) progressBar.style.width = '0%';
-          if (progressText) progressText.textContent = '0%';
-          if (downloadReady) downloadReady.style.display = 'none';
-          if (finalDownload) finalDownload.removeAttribute('href');
-
-          // try to load ads (safe)
-          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
-
-          let progress = 0;
-          const interval = setInterval(() => {
-            progress += 1;
-            if (progressBar) progressBar.style.width = progress + '%';
-            if (progressText) progressText.textContent = progress + '%';
-            if (progress >= 100) {
-              clearInterval(interval);
-              setTimeout(() => {
-                if (downloadReady) downloadReady.style.display = 'block';
-                if (finalDownload) {
-                  finalDownload.href = basePath + currentFile;
-                  finalDownload.setAttribute('download', currentFile);
-                }
-              }, 300);
-            }
-          }, 40);
+      buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const file = e.currentTarget.getAttribute('data-file');
+          openDownloadModal(file);
         });
       });
     }
 
-    function loadAllAds() {
-      const adElements = document.querySelectorAll('.adsbygoogle[data-ad-client]:not([data-adsbygoogle-status])');
-      adElements.forEach(ad => {
-        try {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-          console.error('Ad loading error:', e);
-        }
-      });
-    }
-
-    function renderAdIn(containerSelector, slotId) {
-      const container = document.querySelector(containerSelector);
-      if (!container) return;
-      container.innerHTML = '';
-      const ins = document.createElement('ins');
-      ins.className = 'adsbygoogle';
-      ins.style.display = 'block';
-      ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
-      ins.setAttribute('data-ad-slot', String(slotId));
-      ins.setAttribute('data-ad-format', 'auto');
-      ins.setAttribute('data-full-width-responsive', 'true');
-      container.appendChild(ins);
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-    }
-
-    // === NEW: ensureAdOrFallback ===
-    // Ensures that an ad or a non-blocking fallback is placed into the container.
-    function ensureAdOrFallback(containerSelector, slotId) {
+    // --- Ad rendering / fallback ---
+    function renderAdIn(container, slotId) {
       try {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
-
-        // clear any existing children
-        container.innerHTML = '';
-
-        // If AdSense is available, add a real ad element
+        const node = (typeof container === 'string') ? document.querySelector(container) : container;
+        if (!node) return;
+        node.innerHTML = '';
+        // If AdSense available, inject ins element
         if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
           const ins = document.createElement('ins');
           ins.className = 'adsbygoogle';
           ins.style.display = 'block';
-          ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
-          ins.setAttribute('data-ad-slot', String(slotId));
-          ins.setAttribute('data-ad-format', 'auto');
-          ins.setAttribute('data-full-width-responsive', 'true');
-          container.appendChild(ins);
-          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { /* ignore */ }
+          ins.setAttribute('data-ad-client', (window.CONFIG && window.CONFIG.adsenseClientId) || 'ca-pub-6284022198338659');
+          ins.setAttribute('data-ad-slot', String(slotId || '0'));
+          ins.setAttribute('data-ad-format','auto');
+          ins.setAttribute('data-full-width-responsive','true');
+          node.appendChild(ins);
+          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
           return;
         }
-
-        // Fallback placeholder (non-blocking UI when ads are blocked or not loaded)
-        const placeholder = document.createElement('div');
-        placeholder.className = 'ad-fallback';
-        placeholder.style.padding = '18px';
-        placeholder.style.border = '1px dashed #e0e0e0';
-        placeholder.style.borderRadius = '6px';
-        placeholder.style.background = '#fff';
-        placeholder.style.minHeight = '120px';
-        placeholder.style.display = 'flex';
-        placeholder.style.alignItems = 'center';
-        placeholder.style.justifyContent = 'center';
-        placeholder.innerHTML = '<div style="text-align:center;"><strong>Sponsored</strong><br/><small>Ad content is unavailable (adblocker or network). Continue to download.</small></div>';
-        container.appendChild(placeholder);
+        // Fallback content when ads blocked
+        const fallback = document.createElement('div');
+        fallback.className = 'ad-fallback';
+        fallback.innerHTML = '<div><strong>Sponsored</strong><div style="margin-top:6px">Ad content is unavailable (adblocker or network). Click Start Ad to proceed.</div></div>';
+        node.appendChild(fallback);
       } catch (err) {
-        // don't break everything if something unexpected happens
-        console.warn('ensureAdOrFallback error', err);
+        node && (node.innerHTML = '<div class="ad-fallback">Ad area unavailable</div>');
+        console.warn('renderAdIn error', err);
       }
     }
 
-    // ---------- DOM ready init ----------
-    function initUIHandlers(){
-      if (cardsContainer) renderPage(1);
+    // Start simulated ad watching (progress) — disables re-start while running
+    function startAdWatch(){
+      if (adInterval) return; // already running
+      adProgressValue = 0;
+      updateProgressUI(0);
+      startAdBtn.classList.add('btn-disabled');
+      startAdBtn.setAttribute('disabled','true');
 
-      // mobile menu
-      const mobileBtn = document.querySelector('.mobile-menu-btn');
-      const navLinks = document.querySelector('.nav-links');
-      if (mobileBtn) mobileBtn.addEventListener('click', () => { if (navLinks) navLinks.classList.toggle('active'); });
+      // try loading a real ad into placeholder (slot id arbitrary)
+      renderAdIn(adPlaceholder, 9525901183);
 
-      // modal close handlers
-      closeModal = document.querySelector('.close-modal');
-      finalDownload = document.getElementById('finalDownload');
-      downloadModal = document.getElementById('downloadModal');
+      let ticks = 0;
+      adInterval = setInterval(() => {
+        ticks++;
+        const pct = Math.min(100, Math.round((ticks / ticksNeeded) * 100));
+        adProgressValue = pct;
+        updateProgressUI(pct);
+        if (pct >= 100) {
+          clearInterval(adInterval);
+          adInterval = null;
+          enableDownload();
+        }
+      }, adTickMs);
+    }
 
-      if (closeModal) closeModal.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
-      if (finalDownload) finalDownload.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
+    function updateProgressUI(pct){
+      if (progressBar) progressBar.style.width = pct + '%';
+      if (progressText) progressText.textContent = pct + '%';
+    }
 
-      window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) downloadModal.style.display = 'none'; });
+    function enableDownload(){
+      if (!finalDownload) return;
+      finalDownload.classList.remove('btn-disabled');
+      finalDownload.removeAttribute('aria-disabled');
+      finalDownload.removeAttribute('disabled');
+      finalDownload.setAttribute('href', basePath + currentFile);
+      finalDownload.setAttribute('download', currentFile);
+      // visually ensure it's enabled
+      finalDownload.style.pointerEvents = 'auto';
+    }
 
-      // Popup ad logic (defensive)
-      const popupAd = document.getElementById('popupAd');
-      const popupClose = document.querySelector('.popup-close');
-      const timerCount = document.getElementById('timerCount');
+    function resetModalState(){
+      // stop any running simulation and reset UI
+      if (adInterval) { clearInterval(adInterval); adInterval = null; }
+      adProgressValue = 0;
+      updateProgressUI(0);
+      if (startAdBtn) { startAdBtn.classList.remove('btn-disabled'); startAdBtn.removeAttribute('disabled'); }
+      if (finalDownload) { finalDownload.classList.add('btn-disabled'); finalDownload.removeAttribute('href'); finalDownload.setAttribute('aria-disabled','true'); finalDownload.style.pointerEvents='none'; }
+      // restore placeholder message
+      if (adPlaceholder) adPlaceholder.innerHTML = '<div class="ad-fallback">Ad area — will load if available</div>';
+    }
 
-      function startPopupTimer() {
-        if (!timerCount) return;
-        let count = 10;
-        timerCount.textContent = count;
-        const timer = setInterval(() => {
-          count--;
-          timerCount.textContent = count;
-          if (count <= 0) {
-            clearInterval(timer);
-            if (popupAd) popupAd.style.display = 'none';
-          }
-        }, 1000);
-      }
+    // Open modal for file
+    function openDownloadModal(file){
+      currentFile = file || '';
+      resetModalState();
+      if (downloadModal) downloadModal.style.display = 'flex';
+      // focus start button for accessibility
+      if (startAdBtn) startAdBtn.focus();
+    }
 
-      if (popupAd) {
-        // ORIGINAL: show after 30s. For testing, change 30000 -> 3000 (see comment).
-        // TESTING: setTimeout(..., 3000) to show faster while you debug
-        setTimeout(() => {
-          popupAd.style.display = 'flex';
-          requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
-          startPopupTimer();
-        }, 30000);
+    // Close modal
+    function closeModal(){
+      if (downloadModal) downloadModal.style.display = 'none';
+      // cleanup
+      resetModalState();
+    }
 
-        setInterval(() => {
-          if (!popupAd.style.display || popupAd.style.display === 'none') {
-            popupAd.style.display = 'flex';
-            requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
-            startPopupTimer();
-          }
-        }, 60000);
-
-        if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.style.display = 'none'; });
-      }
-
-      // Ads popup (center)
-      const adsPopup = document.getElementById('adsPopup');
-      const adsPopupClose = document.getElementById('adsPopupClose');
-
-      function showAdsPopup() {
-        if (!adsPopup) return;
-        adsPopup.style.display = 'flex';
-        renderAdIn('.ads-popup-body', 4089957271);
-      }
-      function closeAdsPopup() { if (!adsPopup) return; adsPopup.style.display = 'none'; }
-
-      if (adsPopupClose) adsPopupClose.addEventListener('click', closeAdsPopup);
-      // ORIGINAL: show after 15s. For testing, change 15000 -> 3000
-      setTimeout(() => { if (adsPopup) showAdsPopup(); }, 15000);
-      setInterval(() => { if (adsPopup && (!adsPopup.style.display || adsPopup.style.display === 'none')) showAdsPopup(); }, 120000);
-      window.addEventListener('click', function (e) { if (adsPopup && e.target === adsPopup) closeAdsPopup(); });
-
-      // initial ad load + responsive reload
-      window.addEventListener('load', function () { setTimeout(loadAllAds, 1000); });
-      window.addEventListener('resize', function () { setTimeout(loadAllAds, 500); });
-
-      // Close modals on Escape
-      window.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' || e.key === 'Esc') {
-          if (downloadModal) downloadModal.style.display = 'none';
-          if (popupAd) popupAd.style.display = 'none';
-          if (adsPopup) adsPopup.style.display = 'none';
+    // Setup modal controls
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (startAdBtn) startAdBtn.addEventListener('click', startAdWatch);
+    if (finalDownload) {
+      // prevent download click until enabled by enableDownload()
+      finalDownload.addEventListener('click', function(e){
+        if (finalDownload.classList.contains('btn-disabled')) {
+          e.preventDefault();
+          return false;
+        } else {
+          // close modal when starting download
+          setTimeout(closeModal, 250);
         }
       });
-
-      // expose debug helpers
-      window.showAdsPopupNow = showAdsPopup;
-      window.showPopupAdNow = function(){ const p = document.getElementById('popupAd'); if (p) p.style.display='block'; requestAnimationFrame(()=> ensureAdOrFallback('.popup-ad-content',9525901183)); };
-      window.testOpenDownloadModal = function(url){ const p = document.getElementById('downloadModal'); if (p) p.style.display='flex'; const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download',(url||'file').split('/').pop()); } };
-
-      console.log('UI handlers attached. adsbygoogle defined:', !!window.adsbygoogle);
+      // initially disabled visually
+      finalDownload.classList.add('btn-disabled');
+      finalDownload.style.pointerEvents = 'none';
+      finalDownload.setAttribute('aria-disabled','true');
     }
 
-    function init(){
-      // call handler attach and initial render
-      initUIHandlers();
-    }
+    // Close modal when clicking outside content
+    window.addEventListener('click', function(ev){
+      if (!downloadModal) return;
+      if (ev.target === downloadModal) closeModal();
+    });
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
+    // Close on Esc
+    window.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        closeModal();
+      }
+    });
+
+    // Initial render
+    renderList();
+
+    // Provide a safe test helper from console if needed
+    window.testOpenDownloadModal = function(file){ openDownloadModal(file || pdfFiles[0]); };
+
+    // Load page ads within card areas (non-blocking)
+    window.addEventListener('load', function(){ /* optional: load small ads in page areas if desired */ });
 
   })();
   </script>
