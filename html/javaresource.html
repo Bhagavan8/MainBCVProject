@@ -58,6 +58,8 @@
     .popup-ad{display:none;position:fixed;z-index:3000;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border-radius:8px;padding:12px;max-width:480px;width:92%}
     .ads-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:4000;align-items:center;justify-content:center}
     .ads-popup-content{background:#fff;border-radius:8px;max-width:420px;width:90%;overflow:hidden}
+    .ad-video-placeholder{min-height:180px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:4px}
+    .popup-ad-content{min-height:180px}
 
     /* Optional focus outlines for accessibility */
     button:focus, a:focus { outline: 3px solid rgba(37,99,235,0.25); outline-offset: 2px; }
@@ -194,7 +196,7 @@
       <div class="modal-body" style="padding:12px">
         <div class="ad-video-container">
           <div class="ad-video-placeholder"></div>
-          <p>Please watch the ad completely to enable download.</p>
+          <p>Please view the advertisement to enable download.</p>
         </div>
 
         <div class="download-progress" style="margin:12px 0">
@@ -459,7 +461,7 @@
           finalDownload = document.getElementById('finalDownload');
 
           if (downloadModal) downloadModal.style.display = 'flex';
-          renderAdIn('.ad-video-placeholder', 4831035752);
+          ensureAdOrFallback('.ad-video-placeholder', 4831035752);
           if (progressBar) progressBar.style.width = '0%';
           if (progressText) progressText.textContent = '0%';
           if (downloadReady) downloadReady.style.display = 'none';
@@ -554,29 +556,13 @@
       if (popupAd) {
         setTimeout(() => {
           popupAd.style.display = 'flex';
-          requestAnimationFrame(() => {
-            renderAdIn('.popup-ad-content', 9525901183);
-            setTimeout(() => {
-              const ins = document.querySelector('.popup-ad-content .adsbygoogle');
-              if (ins && !ins.getAttribute('data-adsbygoogle-status')) {
-                renderAdIn('.popup-ad-content', 9525901183);
-              }
-            }, 1200);
-          });
+          requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
           startPopupTimer();
         }, 30000);
         setInterval(() => {
           if (!popupAd.style.display || popupAd.style.display === 'none') {
             popupAd.style.display = 'flex';
-            requestAnimationFrame(() => {
-              renderAdIn('.popup-ad-content', 9525901183);
-              setTimeout(() => {
-                const ins = document.querySelector('.popup-ad-content .adsbygoogle');
-                if (ins && !ins.getAttribute('data-adsbygoogle-status')) {
-                  renderAdIn('.popup-ad-content', 9525901183);
-                }
-              }, 1200);
-            });
+            requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
             startPopupTimer();
           }
         }, 60000);
