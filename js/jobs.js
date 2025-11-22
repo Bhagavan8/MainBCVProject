@@ -1260,51 +1260,34 @@ window.clearFilters = async () => {
 
 async function getJobsByDate(selectedDate) {
     try {
-        // 1. Create ISO date strings for the full day (UTC)
-        const startStr = `${selectedDate}T00:00:00.000Z`;
-        const endStr = `${selectedDate}T23:59:59.999Z`;
-
-
-        // 2. Create queries with string comparison
         const [privateSnapshot, govSnapshot, bankSnapshot] = await Promise.all([
-            getDocs(query(
-                collection(db, 'jobs'),
-                where('isActive', '==', true),
-                where('createdAt', '>=', startStr),
-                where('createdAt', '<=', endStr),
-                orderBy('createdAt', 'desc')
-            )),
-            getDocs(query(
-                collection(db, 'governmentJobs'),
-                where('isActive', '==', true),
-                where('createdAt', '>=', startStr),
-                where('createdAt', '<=', endStr),
-                orderBy('createdAt', 'desc')
-            )),
-            getDocs(query(
-                collection(db, 'bankJobs'),
-                where('isActive', '==', true),
-                where('createdAt', '>=', startStr),
-                where('createdAt', '<=', endStr),
-                orderBy('createdAt', 'desc')
-            ))
+            getDocs(query(collection(db, 'jobs'), where('isActive', '==', true))),
+            getDocs(query(collection(db, 'governmentJobs'), where('isActive', '==', true))),
+            getDocs(query(collection(db, 'bankJobs'), where('isActive', '==', true)))
         ]);
 
-        // 3. Process results
-        const processJobsWithCompany = async (docs, type) => {
-            return await Promise.all(docs.map(async (docItem) => {
-                const jobData = {
-                    id: docItem.id,
-                    type: type,
-                    ...docItem.data()
-                };
+        const dayStr = selectedDate;
 
-                // If job has companyId, fetch company details
+        const inSelectedIndianDay = (data) => {
+            const raw = data.createdAt || data.postedAt;
+            let d = null;
+            if (raw && raw.seconds) { d = new Date(raw.seconds * 1000); }
+            else if (typeof raw === 'string') { d = new Date(raw); }
+            else if (raw instanceof Date) { d = raw; }
+            if (!d) return false;
+            const indian = new Date(d.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+            const s = formatDateForInput(indian);
+            return s === dayStr;
+        };
+
+        const processJobsWithCompany = async (docs, type) => {
+            const filtered = docs.filter(docItem => inSelectedIndianDay(docItem.data()));
+            return await Promise.all(filtered.map(async (docItem) => {
+                const jobData = { id: docItem.id, type, ...docItem.data() };
                 if (jobData.companyId) {
                     try {
                         const companyRef = doc(db, 'companies', jobData.companyId);
                         const companyDoc = await getDoc(companyRef);
-                        
                         if (companyDoc.exists()) {
                             const companyData = companyDoc.data();
                             return {
@@ -1329,8 +1312,6 @@ async function getJobsByDate(selectedDate) {
             government: await processJobsWithCompany(govSnapshot.docs, 'government'),
             bank: await processJobsWithCompany(bankSnapshot.docs, 'bank')
         };
-        
-
     } catch (error) {
         console.error('Error getting jobs by date:', error);
         return { private: [], government: [], bank: [] };
@@ -1489,32 +1470,24 @@ function showToast(message, isSuccess = true) {
 async function getJobsByRange(startStr, endStr) {
     try {
         const [privateSnapshot, govSnapshot, bankSnapshot] = await Promise.all([
-            getDocs(query(
-                collection(db, 'jobs'),
-                where('isActive', '==', true),
-                where('createdAt', '>=', startStr),
-                where('createdAt', '<=', endStr),
-                orderBy('createdAt', 'desc')
-            )),
-            getDocs(query(
-                collection(db, 'governmentJobs'),
-                where('isActive', '==', true),
-                where('createdAt', '>=', startStr),
-                where('createdAt', '<=', endStr),
-                orderBy('createdAt', 'desc')
-            )),
-            getDocs(query(
-                collection(db, 'bankJobs'),
-                where('isActive', '==', true),
-                where('createdAt', '>=', startStr),
-                where('createdAt', '<=', endStr),
-                orderBy('createdAt', 'desc')
-            ))
+            getDocs(query(collection(db, 'jobs'), where('isActive', '==', true))),
+            getDocs(query(collection(db, 'governmentJobs'), where('isActive', '==', true))),
+            getDocs(query(collection(db, 'bankJobs'), where('isActive', '==', true)))
         ]);
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
 
         const processJobsWithCompany = async (docs, type) => {
             return await Promise.all(docs.map(async (docItem) => {
-                const jobData = { id: docItem.id, type, ...docItem.data() };
+                const data = docItem.data();
+                const jobData = { id: docItem.id, type, ...data };
+                const rawDate = data.createdAt || data.postedAt;
+                const dt = parseJobDate(rawDate);
+                if (!dt) return null;
+                // Compare in Indian timezone by converting to millis range
+                const dtIndian = new Date(dt.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+                if (dtIndian < start || dtIndian > end) return null;
                 if (jobData.companyId) {
                     try {
                         const companyRef = doc(db, 'companies', jobData.companyId);
@@ -1538,14 +1511,35 @@ async function getJobsByRange(startStr, endStr) {
             }));
         };
 
-        return {
-            private: await processJobsWithCompany(privateSnapshot.docs, 'private'),
-            government: await processJobsWithCompany(govSnapshot.docs, 'government'),
-            bank: await processJobsWithCompany(bankSnapshot.docs, 'bank')
-        };
+        const priv = (await processJobsWithCompany(privateSnapshot.docs, 'private')).filter(Boolean);
+        const gov = (await processJobsWithCompany(govSnapshot.docs, 'government')).filter(Boolean);
+        const bank = (await processJobsWithCompany(bankSnapshot.docs, 'bank')).filter(Boolean);
+        return { private: priv, government: gov, bank: bank };
     } catch (error) {
         console.error('Error getting jobs by range:', error);
         return { private: [], government: [], bank: [] };
     }
+}
+
+function parseJobDate(raw) {
+    try {
+        if (!raw) return null;
+        if (raw.seconds) return new Date(raw.seconds * 1000);
+        if (typeof raw === 'string') {
+            const isoDateOnly = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD
+            const dmyDateOnly = /^\d{2}-\d{2}-\d{4}$/; // DD-MM-YYYY
+            if (isoDateOnly.test(raw)) {
+                const [y, m, d] = raw.split('-').map(Number);
+                return new Date(y, m - 1, d);
+            }
+            if (dmyDateOnly.test(raw)) {
+                const [d, m, y] = raw.split('-').map(Number);
+                return new Date(y, m - 1, d);
+            }
+            return new Date(raw);
+        }
+        if (raw instanceof Date) return raw;
+        return null;
+    } catch (e) { return null; }
 }
 

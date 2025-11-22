@@ -592,6 +592,14 @@
             return d;
         }
 
+        function formatDateForInput(date){
+            const indianDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+            const y = indianDate.getFullYear();
+            const m = String(indianDate.getMonth()+1).padStart(2,'0');
+            const d = String(indianDate.getDate()).padStart(2,'0');
+            return `${y}-${m}-${d}`;
+        }
+
         async function getActiveDocs(coll){
             try {
                 const snap = await getDocs(query(collection(db, coll), where('isActive','==', true)));
@@ -602,11 +610,20 @@
             }
         }
 
-        function getCreatedAt(item){
-            const ts = item.createdAt || item.postedAt;
-            if (!ts) return null;
-            if (ts && ts.seconds) return new Date(ts.seconds * 1000);
-            try { return new Date(ts); } catch(e){ return null; }
+        function parseJobDate(raw){
+            try {
+                if (!raw) return null;
+                if (raw.seconds) return new Date(raw.seconds*1000);
+                if (typeof raw === 'string'){
+                    const isoDateOnly = /^\d{4}-\d{2}-\d{2}$/;
+                    const dmyDateOnly = /^\d{2}-\d{2}-\d{4}$/;
+                    if (isoDateOnly.test(raw)) { const [y,m,d] = raw.split('-').map(Number); return new Date(y, m-1, d); }
+                    if (dmyDateOnly.test(raw)) { const [d,m,y] = raw.split('-').map(Number); return new Date(y, m-1, d); }
+                    return new Date(raw);
+                }
+                if (raw instanceof Date) return raw;
+                return null;
+            } catch(e){ return null; }
         }
 
         async function updateSnapshot(){
@@ -616,7 +633,7 @@
             const elMonth = document.getElementById('countMonth');
             try {
                 const now = toIndianNow();
-                const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const todayStr = formatDateForInput(now);
                 const startWeek = daysAgoDate(7);
                 const startMonth = daysAgoDate(30);
 
@@ -625,14 +642,32 @@
                     ...await getActiveDocs('governmentJobs'),
                     ...await getActiveDocs('bankJobs')
                 ];
-                const inRange = (start) => all.filter(j => {
-                    const dt = getCreatedAt(j);
-                    return dt && dt >= start && dt <= now;
+
+                const toIndian = (dt) => new Date(dt.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+
+                const todayCount = all.filter(j => {
+                    const dt = parseJobDate(j.createdAt || j.postedAt);
+                    if (!dt) return false;
+                    return formatDateForInput(toIndian(dt)) === todayStr;
                 }).length;
 
-                elToday.textContent = String(inRange(startToday));
-                elWeek.textContent = String(inRange(startWeek));
-                elMonth.textContent = String(inRange(startMonth));
+                const weekCount = all.filter(j => {
+                    const dt = parseJobDate(j.createdAt || j.postedAt);
+                    if (!dt) return false;
+                    const di = toIndian(dt);
+                    return di >= startWeek && di <= now;
+                }).length;
+
+                const monthCount = all.filter(j => {
+                    const dt = parseJobDate(j.createdAt || j.postedAt);
+                    if (!dt) return false;
+                    const di = toIndian(dt);
+                    return di >= startMonth && di <= now;
+                }).length;
+
+                elToday.textContent = String(todayCount);
+                elWeek.textContent = String(weekCount);
+                elMonth.textContent = String(monthCount);
                 if (elUpdated) elUpdated.textContent = 'Updated';
             } catch (err) {
                 elToday && (elToday.textContent = '0');
