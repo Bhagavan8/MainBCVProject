@@ -24,15 +24,32 @@ async function initializePage() {
         const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
         const todayDate = new Date(todayIST);
         const dateStr = formatDateForInput(todayDate);
-        
+
         const datePicker = document.getElementById('dateFilter');
         if (datePicker) {
             datePicker.value = dateStr;
         }
 
-        // Load today's jobs by default
-        const jobs = await getJobsByDate(dateStr);
-        displayJobs(jobs, 'date', dateStr);
+        // Range override via URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const range = urlParams.get('range');
+        if (range === 'today') {
+            const jobs = await getJobsByDate(dateStr);
+            displayJobs(jobs, 'date', dateStr);
+        } else if (range === 'week' || range === 'month') {
+            const now = new Date();
+            const start = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+            if (range === 'week') start.setDate(start.getDate() - 7);
+            else start.setDate(start.getDate() - 30);
+            const startStr = start.toISOString();
+            const endStr = now.toISOString();
+            const jobs = await getJobsByRange(startStr, endStr);
+            displayJobs(jobs, 'range', range);
+        } else {
+            // Load today's jobs by default
+            const jobs = await getJobsByDate(dateStr);
+            displayJobs(jobs, 'date', dateStr);
+        }
         
         // Setup other components
         populateLocationFilter();
@@ -1467,5 +1484,68 @@ function showToast(message, isSuccess = true) {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
+}
+
+async function getJobsByRange(startStr, endStr) {
+    try {
+        const [privateSnapshot, govSnapshot, bankSnapshot] = await Promise.all([
+            getDocs(query(
+                collection(db, 'jobs'),
+                where('isActive', '==', true),
+                where('createdAt', '>=', startStr),
+                where('createdAt', '<=', endStr),
+                orderBy('createdAt', 'desc')
+            )),
+            getDocs(query(
+                collection(db, 'governmentJobs'),
+                where('isActive', '==', true),
+                where('createdAt', '>=', startStr),
+                where('createdAt', '<=', endStr),
+                orderBy('createdAt', 'desc')
+            )),
+            getDocs(query(
+                collection(db, 'bankJobs'),
+                where('isActive', '==', true),
+                where('createdAt', '>=', startStr),
+                where('createdAt', '<=', endStr),
+                orderBy('createdAt', 'desc')
+            ))
+        ]);
+
+        const processJobsWithCompany = async (docs, type) => {
+            return await Promise.all(docs.map(async (docItem) => {
+                const jobData = { id: docItem.id, type, ...docItem.data() };
+                if (jobData.companyId) {
+                    try {
+                        const companyRef = doc(db, 'companies', jobData.companyId);
+                        const companyDoc = await getDoc(companyRef);
+                        if (companyDoc.exists()) {
+                            const companyData = companyDoc.data();
+                            return {
+                                ...jobData,
+                                companyName: companyData.name || jobData.companyName || '',
+                                companyLogo: companyData.logoURL || jobData.companyLogo || '',
+                                companyWebsite: companyData.website || jobData.companyWebsite || '',
+                                companyAbout: companyData.about || jobData.companyAbout || ''
+                            };
+                        }
+                    } catch (error) {
+                        console.error('Error fetching company details:', error);
+                        return jobData;
+                    }
+                }
+                return jobData;
+            }));
+        };
+
+        return {
+            private: await processJobsWithCompany(privateSnapshot.docs, 'private'),
+            government: await processJobsWithCompany(govSnapshot.docs, 'government'),
+            bank: await processJobsWithCompany(bankSnapshot.docs, 'bank')
+        };
+    } catch (error) {
+        console.error('Error getting jobs by range:', error);
+        return { private: [], government: [], bank: [] };
+    }
 }
 
