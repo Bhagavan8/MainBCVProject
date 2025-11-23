@@ -72,12 +72,7 @@ function setupShareButtons(newsData) {
     }
 }
 
-// AD helpers usage: use window.adsHelper.* (provided by adsissue.js)
-function ensureAdsHelperAvailable() {
-    if (!window.adsHelper) {
-        console.warn('adsHelper not available yet; make sure js/adsissue.js is loaded before this file.');
-    }
-}
+
 
 // Initialize ads for existing slots (safe)
 function initPageAds() {
@@ -93,40 +88,6 @@ function initPageAds() {
     }
 }
 
-// Fix containers basic adjustments
-function fixAdContainers() {
-    const adSpaces = document.querySelectorAll('.ad-space, .ad-banner-horizontal, .ad-section-responsive');
-    adSpaces.forEach((space) => {
-        try {
-            space.style.display = 'block';
-            space.style.overflow = 'visible';
-            space.style.contain = 'none';
-            space.style.position = 'relative';
-            space.style.visibility = 'visible';
-            space.style.opacity = '1';
-            if (space.classList.contains('vertical-ad')) {
-                space.style.minHeight = '400px';
-            } else if (space.classList.contains('sidebar-ad')) {
-                space.style.minHeight = '250px';
-            } else {
-                space.style.minHeight = '120px';
-            }
-            const ad = space.querySelector('ins.adsbygoogle');
-            if (ad) {
-                ad.style.display = 'block';
-                ad.style.width = '100%';
-                ad.style.minHeight = space.classList.contains('vertical-ad') ? '400px' : '120px';
-                ad.style.height = 'auto';
-                ad.style.overflow = 'visible';
-                ad.style.contain = 'none';
-                ad.style.visibility = 'visible';
-                ad.style.opacity = '1';
-            }
-        } catch (e) {
-            console.warn('fixAdContainers error', e);
-        }
-    });
-}
 
 async function incrementViewCount(newsId) {
     try {
@@ -160,6 +121,18 @@ async function incrementViewCount(newsId) {
     } catch (error) {
         console.error('Error updating view count:', error);
     }
+}
+
+function resolveImagePath(p){
+    if(!p) return '/assets/images/logo.png';
+    const s = String(p).trim();
+    if (/^https?:\/\//i.test(s)) {
+        if (location.protocol === 'https:' && s.startsWith('http://')) return s.replace(/^http:\/\//i, 'https://');
+        return s;
+    }
+    if (s.startsWith('/')) return s;
+    if (s.startsWith('assets/') || s.startsWith('assets\\') || s.startsWith('assets/images/') || s.startsWith('images/')) return '/' + s.replace(/^\.\/+/, '');
+    return '/assets/images/news/' + s;
 }
 
 function displayNewsDetail(newsData) {
@@ -236,7 +209,7 @@ function displayNewsDetail(newsData) {
         const imageContainer = document.querySelector('.featured-image-container');
         if (imageContainer && newsData.imagePath) {
             imageContainer.innerHTML = `
-                <img src="${newsData.imagePath}" 
+                <img src="${resolveImagePath(newsData.imagePath)}" 
                      alt="${newsData.title || ''}"
                      class="img-fluid rounded shadow-sm">
                 <figcaption class="text-muted mt-2 text-center">
@@ -268,7 +241,7 @@ async function loadRelatedNews(category) {
                     <div class="related-news-item mb-3">
                         <a href="news-detail.html?id=${d.id}" class="text-decoration-none">
                             <div class="d-flex align-items-center">
-                                <img src="${news.imagePath || ''}" alt="${news.title}" 
+                                <img src="${resolveImagePath(news.imagePath || '')}" alt="${news.title}" 
                                      class="related-thumb me-3" 
                                      style="width: 100px; height: 60px; object-fit: cover;">
                                 <h6 class="mb-0 text-dark">${news.title}</h6>

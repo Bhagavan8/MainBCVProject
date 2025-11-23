@@ -2,6 +2,18 @@ import { db } from './firebase-config.js';
 import { collection, query, where, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Global function to initialize ads (call this after loading content)
+function resolveImagePath(p){
+    if(!p) return '/assets/images/logo.png';
+    const s = String(p).trim();
+    if (/^https?:\/\//i.test(s)) {
+        if (location.protocol === 'https:' && s.startsWith('http://')) return s.replace(/^http:\/\//i, 'https://');
+        return s;
+    }
+    if (s.startsWith('/')) return s;
+    if (s.startsWith('assets/') || s.startsWith('assets\\') || s.startsWith('assets/images/') || s.startsWith('images/')) return '/' + s.replace(/^\.\/+/, '');
+    return '/assets/images/news/' + s;
+}
+
 window.initializeAds = function() {
     console.log('Initializing ads after content load...');
     if (window.adsbygoogle) {
@@ -14,27 +26,7 @@ window.initializeAds = function() {
     }
 };
 
-// Enhanced ad monitoring and fallback system
-window.monitorAndHandleAds = function() {
-    setTimeout(() => {
-        const ads = document.querySelectorAll('ins.adsbygoogle');
-        console.log(`🔄 Monitoring ${ads.length} ad units for status...`);
-        
-        ads.forEach((ad) => {
-            const status = ad.getAttribute('data-ad-status');
-            const container = ad.closest('.ad-container, .ad-banner-horizontal');
-            const backupContent = container ? container.querySelector('.ad-backup-content') : null;
-            
-            if (status === 'unfilled' && backupContent) {
-                console.log(`❌ Ad unfilled, showing backup content for slot: ${ad.getAttribute('data-ad-slot')}`);
-                ad.style.display = 'none';
-                backupContent.style.display = 'block';
-            } else if (status === 'filled' && backupContent) {
-                backupContent.style.display = 'none';
-            }
-        });
-    }, 5000); // Check after 5 seconds
-};
+
 
 async function loadBreakingNews() {
     try {
@@ -93,7 +85,7 @@ function createMainNewsHTML(news) {
                 </a>
             </div>
             <div class="image-wrapper">
-                <img src="${news.imagePath}" alt="${news.title}">
+                <img src="${resolveImagePath(news.imagePath)}" alt="${news.title}">
             </div>
             <div class="news-overlay">
                 <span class="news-category">${news.category}</span>
@@ -128,7 +120,7 @@ function createSecondaryNewsHTML(news) {
                     <i class="bi bi-whatsapp"></i>
                 </a>
             </div>
-            <img src="${news.imagePath}" alt="${news.title}">
+            <img src="${resolveImagePath(news.imagePath)}" alt="${news.title}">
             <div class="news-overlay">
                 <span class="news-category badge bg-primary mb-2">${news.category}</span>
                 <h5 class="mb-2">${news.title}</h5>
@@ -172,7 +164,7 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
                 return `
                     <article class="news-article" data-aos="fade-up" data-aos-delay="${index * 100}">
                         <div class="article-image">
-                            <img src="${news.imagePath}" alt="${news.title}" loading="lazy">
+                            <img src="${resolveImagePath(news.imagePath)}" alt="${news.title}" loading="lazy">
                             <span class="category-tag">${news.category.charAt(0).toUpperCase() + news.category.slice(1)}</span>
                         </div>
                         <div class="article-content">
