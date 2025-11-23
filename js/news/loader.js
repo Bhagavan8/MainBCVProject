@@ -10,7 +10,7 @@ class PageLoader {
     }
 
     init() {
-        fetch('./components/loader.html')
+        fetch('/components/loader.html')
             .then(response => response.text())
             .then(html => {
                 document.body.insertAdjacentHTML('afterbegin', html);

@@ -22,9 +22,8 @@ $(document).ready(function () {
 async function loadComponents() {
     try {
         const containers = {
-            'header-container': 'components/header.html',
-            'navigation-container': 'components/navigation.html',
-            'top-bar-container': 'components/top-bar.html'
+            'header-container': '/components/header.html',
+            'footer-container': '/components/footer.html'
         };
 
         for (const [containerId, componentPath] of Object.entries(containers)) {

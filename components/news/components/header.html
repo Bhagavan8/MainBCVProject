@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCVWorld</title>
+    <style>
+        /* Base styles and variables */
+        :root {
+            --primary-color: #0066cc;
+            --text-dark: #000000;
+            --header-height: 80px;
+            --transition-speed: 0.3s;
+        }
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+        }
+
+        /* Header container styles */
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        /* Header content with cross-browser flexbox */
+        .header-content {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            padding: 0.5rem 0;
+            min-height: var(--header-height);
+            gap: 1rem;
+            position: relative;
+        }
+
+        /* Logo and text effects */
+        .text-3d {
+            color: var(--primary-color);
+            text-shadow: 
+                1px 1px 1px rgba(0, 102, 204, 0.2),
+                2px 2px 2px rgba(0, 102, 204, 0.15),
+                3px 3px 3px rgba(0, 102, 204, 0.1);
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .text-dark-3d {
+            color: var(--text-dark);
+            text-shadow: 
+                1px 1px 1px rgba(0, 0, 0, 0.2),
+                2px 2px 2px rgba(0, 0, 0, 0.15),
+                3px 3px 3px rgba(0, 0, 0, 0.1);
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logo-link:hover .text-3d,
+        .logo-link:hover .text-dark-3d {
+            transform: scale(1.05);
+        }
+
+        .logo-container-header {
+            flex: 1;
+            min-width: 0; /* Prevent flex item from growing beyond container */
+        }
+
+        .site-title {
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+
+        .site-tagline {
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        /* Ad space styles */
+        .ad-space-nav {
+            width: clamp(160px, 20vw, 200px);
+            height: clamp(50px, 8vh, 60px);
+            flex-shrink: 0;
+        }
+
+        .ad-placeholder-nav {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border: 1px dashed #dee2e6;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            border-radius: 4px;
+        }
+
+        /* Responsive breakpoints */
+        /* Large desktops (1200px and up) */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+        }
+
+        /* Medium devices (tablets, 768px to 1199px) */
+        @media (max-width: 1199px) {
+            .ad-space-nav {
+                width: 160px;
+            }
+        }
+
+        /* Small devices (landscape phones, 576px to 767px) */
+        @media (max-width: 767px) {
+            .header-content {
+                justify-content: center;
+                padding: 0.5rem;
+            }
+            
+            .ad-space-nav {
+                display: none;
+            }
+            
+            .logo-container-header {
+                flex: 0 1 auto;
+                padding: 0 10px;
+            }
+        }
+
+        /* Extra small devices (portrait phones, less than 576px) */
+        @media (max-width: 575px) {
+            :root {
+                --header-height: 60px;
+            }
+            
+            .text-3d, .text-dark-3d {
+                font-size: 1.4rem;
+            }
+            
+            .site-tagline {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .text-3d, .text-dark-3d {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+        }
+
+        /* High contrast mode */
+        @media (forced-colors: active) {
+            .text-3d, .text-dark-3d {
+                forced-color-adjust: none;
+            }
+            
+            .ad-placeholder-nav {
+                border: 2px solid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="py-2 border-bottom">
+        <div class="container">
+            <div class="header-content">
+                <!-- Left Ad Space - Hidden on mobile -->
+                <div class="ad-space-nav d-none d-md-block">
+                    <div class="ad-placeholder-nav">Ad Space</div>
+                </div>
+
+                <!-- Logo Section -->
+                <div class="logo-container-header text-center">
+                    <h1 class="site-title mb-0">
+                        <a href="/" class="logo-link">
+                            <span class="text-3d">BCV</span><span class="text-dark-3d">World</span>
+                        </a>
+                    </h1>
+                    <p class="site-tagline mb-0">The Future Starts Here</p>
+                </div>
+
+                <!-- Right Ad Space - Hidden on mobile -->
+                <div class="ad-space-nav d-none d-md-block">
+                    <div class="ad-placeholder-nav">Ad Space</div>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+</html>

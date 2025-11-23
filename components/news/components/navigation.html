@@ -1,0 +1,331 @@
+<nav class="main-nav" aria-label="Main navigation">
+    <div class="container">
+        <button class="mobile-menu-toggle d-lg-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-navigation">
+            <span class="hamburger"></span>
+        </button>
+        <ul class="nav-items" id="primary-navigation">
+            <li class="nav-item">
+                <a href="/index.html" class="nav-link" data-section="all">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://bcvworld.com/html/jobs.html" class="nav-link" data-section="jobs">Jobs</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://bcvworld.com/html/about.html" class="nav-link" data-section="about">About</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://bcvworld.com/html/contact.html" class="nav-link" data-section="contact">Contact</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<style>
+/* Base Styles */
+:root {
+    --nav-bg: #fff;
+    --nav-text: #333;
+    --nav-hover: #0d6efd;
+    --nav-border: #eee;
+    --transition-speed: 0.3s;
+}
+
+.main-nav {
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--nav-border);
+    position: relative;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+}
+
+/* Desktop Navigation */
+.nav-items {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 0;
+}
+
+.nav-link {
+    color: var(--nav-text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color var(--transition-speed) ease;
+    display: block;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link.active {
+    color: var(--nav-hover);
+    outline: none;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: var(--nav-hover);
+    transition: width var(--transition-speed) ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Mobile Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+}
+
+.hamburger {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--nav-text);
+    position: relative;
+    transition: all var(--transition-speed) ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: var(--nav-text);
+    left: 0;
+    transition: all var(--transition-speed) ease;
+}
+
+.hamburger::before {
+    top: -6px;
+}
+
+.hamburger::after {
+    bottom: -6px;
+}
+
+/* Mobile Menu Styles */
+@media (max-width: 991px) {
+    .container {
+        justify-content: flex-start;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .nav-items {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--nav-bg);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+        pointer-events: none;
+        overflow-y: auto;
+    }
+
+    .nav-items.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .nav-item {
+        width: 100%;
+        text-align: center;
+        padding: 0;
+    }
+
+    .nav-link {
+        display: block;
+        padding: 1rem;
+        font-size: 1.2rem;
+        width: 100%;
+    }
+
+    .nav-link::after {
+        display: none;
+    }
+
+    /* Transform hamburger to X */
+    .mobile-menu-toggle.active .hamburger {
+        background: transparent;
+    }
+
+    .mobile-menu-toggle.active .hamburger::before {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-menu-toggle.active .hamburger::after {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    /* Prevent body scroll when menu is open */
+    body.menu-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+    .nav-link {
+        border-bottom: 2px solid transparent;
+    }
+    
+    .nav-link:hover,
+    .nav-link:focus,
+    .nav-link.active {
+        border-bottom-color: LinkText;
+    }
+    
+    .hamburger,
+    .hamburger::before,
+    .hamburger::after {
+        forced-color-adjust: none;
+        background: ButtonText;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    const nav = document.querySelector('.nav-items');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Toggle mobile menu
+    if (toggle && nav) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isOpen = !this.classList.contains('active');
+            
+            // Toggle classes
+            this.classList.toggle('active', isOpen);
+            nav.classList.toggle('active', isOpen);
+            document.body.classList.toggle('menu-open', isOpen);
+            this.setAttribute('aria-expanded', isOpen);
+            
+            // Trap focus when menu is open
+            if (isOpen) {
+                trapFocus(nav);
+            }
+        });
+    }
+
+    // Close menu when clicking on a link
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 991) {
+                closeMobileMenu();
+            }
+        });
+    });
+
+    // Close menu when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && nav.classList.contains('active')) {
+            closeMobileMenu();
+            toggle.focus();
+        }
+    });
+
+    // Handle window resize
+    function handleResize() {
+        if (window.innerWidth > 991) {
+            closeMobileMenu();
+        }
+    }
+    
+    // Debounce resize events
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(handleResize, 100);
+    });
+
+    // Set active link based on current page
+    function setActiveLink() {
+        const currentPath = window.location.pathname;
+        navLinks.forEach(link => {
+            const linkPath = new URL(link.href).pathname;
+            link.classList.toggle('active', currentPath === linkPath);
+        });
+    }
+    setActiveLink();
+
+    // Helper function to close mobile menu
+    function closeMobileMenu() {
+        if (toggle && nav) {
+            toggle.classList.remove('active');
+            nav.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    // Helper function to trap focus in mobile menu
+    function trapFocus(element) {
+        const focusableEls = element.querySelectorAll('a[href], button:not([disabled])');
+        const firstFocusableEl = focusableEls[0];
+        const lastFocusableEl = focusableEls[focusableEls.length - 1];
+        
+        firstFocusableEl.focus();
+        
+        element.addEventListener('keydown', function(e) {
+            const isTabPressed = (e.key === 'Tab' || e.keyCode === 9);
+            
+            if (!isTabPressed) return;
+            
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableEl) {
+                    lastFocusableEl.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastFocusableEl) {
+                    firstFocusableEl.focus();
+                    e.preventDefault();
+                }
+            }
+        });
+    }
+});
+</script>
