@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>News Detail - News Portal</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/css/social-share.css" />
+  <link href="css/news-detail.css" rel="stylesheet" />
+  <link href="css/article-navigation.css" rel="stylesheet" />
+  <link href="css/sidebar.css" rel="stylesheet" />
+  <link href="css/related-articles.css" rel="stylesheet" />
+
+  <!-- Google Analytics (optional) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEJYBRRRL7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YEJYBRRRL7');
+  </script>
+
+  <!-- Load AdSense library once -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="loader-container">
+    <div class="loader"></div>
+  </div>
+
+  <div id="header-container"></div>
+  <div id="navigation-container"></div>
+
+  <main class="container-fluid py-4 main-content">
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-lg-2">
+        <div class="sticky-sidebar">
+          <div class="ad-space vertical-ad mb-4" id="left-sidebar-ad">
+            <div class="ad-container">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-6284022198338659"
+                   data-ad-slot="9038226694"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-7">
+        <article id="newsDetail" class="news-article">
+          <div class="breadcrumb-wrapper">
+            <div class="container p-0">
+              <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                <ol class="breadcrumb align-items-center">
+                  <li class="breadcrumb-item">
+                    <a href="index.html" class="home-link">
+                      <i class="bi bi-house-door-fill"></i>
+                      <span>Home</span>
+                    </a>
+                  </li>
+                  <li class="breadcrumb-separator">
+                    <i class="bi bi-chevron-right"></i>
+                  </li>
+                  <li class="breadcrumb-item active news-title text-truncate">
+                    <span class="truncate-text"></span>
+                    <span class="ellipsis">...</span>
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+
+          <!-- Top Ad -->
+          <div class="ad-section-responsive mb-4">
+            <div class="ad-banner-horizontal" id="top-banner-ad">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-6284022198338659"
+                   data-ad-slot="3330604448"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+
+          <div class="article-header mb-4">
+            <div class="category-badge"></div>
+            <h1 class="article-title"></h1>
+            <div class="article-meta">
+              <span class="author"></span>
+              <span class="date"></span>
+              <span class="reading-time"></span>
+            </div>
+          </div>
+
+          <div class="featured-image-container mb-4"></div>
+
+          <div class="social-share mb-4">
+            <button class="share-btn facebook" aria-label="Share to Facebook"><i class="bi bi-facebook"></i></button>
+            <button class="share-btn twitter" aria-label="Share to Twitter"><i class="bi bi-twitter"></i></button>
+            <button class="share-btn whatsapp" aria-label="Share to WhatsApp"><i class="bi bi-whatsapp"></i></button>
+          </div>
+
+          <div class="article-content"><!-- injected by news-detail.js --></div>
+
+          <!-- Mid-Article Ad -->
+          <div class="ad-section-responsive my-4">
+            <div class="ad-banner-horizontal" id="mid-article-ad">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-6284022198338659"
+                   data-ad-slot="6412063350"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+
+          <div class="author-bio mt-4">
+            <div class="author-image"></div>
+            <div class="author-info">
+              <h4 class="author-name"></h4>
+              <p class="author-description"></p>
+            </div>
+          </div>
+
+          <div class="article-tags mt-4"></div>
+
+          <div class="comments-section mt-4">
+            <h3>Comments (<span id="commentCount">0</span>)</h3>
+            <div id="commentsContainer" class="comments-list mb-4"></div>
+            <div class="comment-form mt-4">
+              <div id="loginPrompt" class="alert alert-info d-none">
+                Please <a href="/pages/login.html" id="loginLink">login</a> to post a comment.
+              </div>
+              <div id="commentFormContent">
+                <textarea id="commentText" class="form-control" placeholder="Write your comment..." rows="3"></textarea>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <small class="text-muted">Maximum 500 characters</small>
+                  <button id="postComment" class="btn btn-primary">Post Comment</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Article navigation (previous / next) -->
+        <nav class="article-navigation" aria-label="Article navigation">
+          <div class="nav-links d-flex justify-content-between">
+            <a id="prevArticle" class="nav-item prev text-decoration-none" href="#" tabindex="0" aria-label="Previous article">
+              <div class="nav-content">
+                <span class="nav-label">Previous Article</span>
+                <h4 class="nav-title">Loading...</h4>
+                <span class="nav-meta"><i class="bi bi-arrow-left"></i> <span class="nav-category"></span></span>
+              </div>
+            </a>
+
+            <a id="nextArticle" class="nav-item next text-decoration-none" href="#" tabindex="0" aria-label="Next article">
+              <div class="nav-content text-end">
+                <span class="nav-label">Next Article</span>
+                <h4 class="nav-title">Loading...</h4>
+                <span class="nav-meta"><span class="nav-category"></span> <i class="bi bi-arrow-right"></i></span>
+              </div>
+            </a>
+          </div>
+        </nav>
+
+        <!-- Bottom ad -->
+        <div class="ad-section-responsive mb-4">
+          <div class="ad-banner-horizontal" id="bottom-banner-ad">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="8172701732"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+
+        <!-- Related articles -->
+        <section class="read-more-section">
+          <div class="container p-0">
+            <h3 class="section-title">Related Articles</h3>
+            <div class="related-articles" id="relatedArticlesContainer">
+              <!-- populated by related-articles.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Related articles ad -->
+        <div class="ad-section-responsive mt-4">
+          <div class="ad-banner-horizontal" id="related-articles-ad">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="1606582944"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="col-lg-3">
+        <div class="sticky-sidebar">
+          <div class="sidebar-section mb-4">
+            <h4>Latest News</h4>
+            <div id="latestNewsContainer" class="text-truncate-container"></div>
+          </div>
+
+          <div class="sidebar-section mb-4">
+            <h4>Category News</h4>
+            <div id="categoryNewsContainer" class="text-truncate-container"></div>
+          </div>
+
+          <div class="sidebar-section mb-4">
+            <h4>Most Read</h4>
+            <div id="popularNewsContainer" class="text-truncate-container"></div>
+          </div>
+
+          <div class="ad-space sidebar-ad mb-4" id="right-sidebar-ad">
+            <div class="ad-container">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-6284022198338659"
+                   data-ad-slot="4287736546"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="reading-progress"></div>
+  <div id="footer-container"></div>
+
+  <!-- Scripts (order: libs, helpers, page modules) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <!-- Your component loader and firebase config (modules) -->
+  <script type="module" src="/js/components/component-loader.js"></script>
+  <script type="module" src="/js/components/auth.js"></script>
+  <script type="module" src="/js/news/firebase-config.js"></script>
+
+  <!-- Ads helper (plain script) must load BEFORE news-detail module -->
+  <script src="/js/news/adsissue.js"></script>
+
+  <!-- Page modules (type=module) -->
+  <script type="module" src="/js/news/news-detail.js"></script>
+  <script type="module" src="/js/news/sidebar-content.js"></script>
+  <script type="module" src="/js/news/article-navigation.js"></script>
+  <script type="module" src="/js/news/related-articles.js"></script>
+</body>
+</html>

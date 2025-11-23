@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover the latest news, trending stories, and in-depth coverage across various categories at BCVWorld. Stay informed with our comprehensive news coverage.">
+    <meta name="keywords" content="news, latest news, trending news, BCVWorld news, current events, breaking news">
+    <meta name="author" content="BCVWorld">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Category News - BCVWorld News Portal">
+    <meta property="og:description" content="Discover the latest news and trending stories across various categories at BCVWorld.">
+    <meta property="og:image" content="/assets/images/og-image.jpg">
+    <meta property="og:url" content="https://bcvworld.com/category.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#ffffff">
+    
+    <title>Category News - BCVWorld News Portal</title>
+    <link rel="canonical" href="https://bcvworld.com/category.html">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" as="style">
+    
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Third-party CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/css/category.css" rel="stylesheet">
+    <link href="/css/social-share.css" rel="stylesheet">
+    
+    <!-- In the head section -->
+    <link rel="stylesheet" type="text/css" href="css/tags-cloud.css">
+    <link rel="stylesheet" href="/css/loader.css">
+    
+    <!-- Add these in the head section, after jQuery but before your custom scripts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEJYBRRRL7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-YEJYBRRRL7');
+    </script>
+       <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PJ53H9H5');</script>
+  
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJ53H9H5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- Header & Navigation (reused from main page) -->
+    <div id="header-container"></div>
+    <div id="navigation-container"></div>
+
+    <main class="container-fluid py-4">
+        <div class="row">
+            <!-- Left Sidebar - Ads -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="sticky-sidebar">
+                    <div class="ad-space mb-4">
+                        <div class="ad-placeholder">Advertisement</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-7 col-md-8">
+                <div class="category-header">
+                    <div class="header-content">
+                        <h1 class="category-title" id="categoryTitle">Loading...</h1>
+                        <p class="category-description">Discover the latest updates and trending stories</p>
+                    </div>
+                    <div class="category-meta">
+                        <div class="meta-stats">
+                            <span id="totalArticles" class="articles-count">
+                                <i class="bi bi-newspaper"></i> 0 Articles
+                            </span>
+                            <span class="separator">•</span>
+                            <span class="category-date">Updated Today</span>
+                        </div>
+                        <div class="view-options">
+                            <button class="btn-view active" data-view="grid" title="Grid View">
+                                <i class="bi bi-grid"></i>
+                            </button>
+                            <button class="btn-view" data-view="list" title="List View">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Options -->
+                <div class="filters-bar">
+                    <div class="filters-wrapper">
+                        <div class="filter-group">
+                            <label><i class="bi bi-sort-down"></i> Sort By:</label>
+                            <select id="sortOptions" class="form-select">
+                                <option value="latest">Latest First</option>
+                                <option value="popular">Most Popular</option>
+                                <option value="trending">Trending</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label><i class="bi bi-calendar3"></i> Time Range:</label>
+                            <select id="timeRange" class="form-select">
+                                <option value="all">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- News Grid -->
+                <div id="newsContainer" class="news-grid">
+                    <!-- News items will be populated by JavaScript -->
+                </div>
+                <template id="adTemplate">
+                    <div class="ad-card">
+                        <div class="ad-placeholder">
+                            <span>Advertisement</span>
+                        </div>
+                    </div>
+                </template>
+                <!-- Replace load more with pagination -->
+                <div class="pagination-container text-center mt-4">
+                    <nav aria-label="News pagination">
+                        <ul class="pagination justify-content-center" id="newsPagination">
+                            <!-- Pagination will be populated here -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-3 col-md-4">
+                <div class="sticky-sidebar">
+                    <!-- Most Read Section -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Most Read</h3>
+                        <div id="mostReadNews" class="trending-list">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Latest News Section -->
+                    <div class="sidebar-section latest-news-section">
+                        <div class="section-header">
+                            <h3 class="sidebar-title">Latest Updates</h3>
+                            <div class="section-actions">
+                                <button class="btn-refresh" title="Refresh">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="latestNews" class="latest-list">
+                            <!-- Dynamic content will be inserted here by JavaScript -->
+                        </div>
+                        <div class="section-footer">
+                            <a href="#" class="btn-view-all">View All Updates <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Tags Cloud -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Popular Tags</h3>
+                        <div id="tagsCloud" class="tags-cloud">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="reading-progress"></div>
+  
+
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script type="module" src="/js/news/firebase-config.js"></script>
+    <script type="module" src="/js/components/component-loader.js"></script>
+    <script type="module" src="/js/components/auth.js"></script>
+    <script type="module" src="/js/news/common.js"></script>
+    <script type="module" src="/js/news/category.js"></script>
+    <script type="module" src="/js/news/tags-cloud.js"></script>
+    <script src="/js/news/loader.js"></script>
+    <script src="/js/news/social-share.js" defer></script>
+</body>
+</html>
