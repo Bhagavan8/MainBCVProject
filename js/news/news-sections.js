@@ -164,7 +164,17 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
                 query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
                 query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
                 query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', section), limit(itemLimit)),
-                query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', cap), limit(itemLimit))
+                query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', cap), limit(itemLimit)),
+                // Accept 'Approved' capitalization
+                query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', section), limit(itemLimit)),
+                query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', cap), limit(itemLimit)),
+                // As a final fallback, ignore approvalStatus
+                query(baseCollection, where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('category', '==', section), limit(itemLimit)),
+                query(baseCollection, where('category', '==', cap), limit(itemLimit))
             ];
             for (const q of catQueries) {
                 try {
@@ -243,12 +253,26 @@ function formatNumber(num) {
 
 function formatDate(timestamp) {
     if (!timestamp) return '';
-    const date = timestamp.toDate();
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    let date;
+    try {
+        if (timestamp && typeof timestamp.toDate === 'function') {
+            date = timestamp.toDate();
+        } else if (timestamp instanceof Date) {
+            date = timestamp;
+        } else if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+            date = new Date(timestamp);
+        } else {
+            return '';
+        }
+        if (isNaN(date.getTime())) return '';
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (_) {
+        return '';
+    }
 }
 
 // Add auto-refresh interval (10 minutes in milliseconds)
