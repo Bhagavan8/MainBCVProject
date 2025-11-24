@@ -5,12 +5,7 @@
     top: 20px;
 }
 
-.news-article {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+
 
 .article-header {
     border-bottom: 1px solid #eee;
