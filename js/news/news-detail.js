@@ -445,10 +445,10 @@ async function loadCategoryNews(category) {
                         <div class="category-news-item mb-3">
                             <a href="news-detail.html?id=${d.id}" class="text-decoration-none">
                                 <div class="d-flex align-items-center">
-                                    <img src="${news.imagePath || '/assets/images/placeholder.jpg'}" 
+                                    <img id="category-img-${d.id}" src="/assets/images/logo.png" 
                                          alt="${news.title}" 
                                          class="category-thumb me-3" 
-                                         style="width: 80px; height: 50px; object-fit: cover;">
+                                         style="width: 80px; height: 50px; object-fit: cover; border-radius:4px;">
                                     <div>
                                         <h6 class="mb-1 text-dark">${news.title}</h6>
                                         <small class="text-muted">${formatDate(news.createdAt)}</small>
@@ -457,6 +457,34 @@ async function loadCategoryNews(category) {
                             </a>
                         </div>`;
                 }).join('')}`;
+
+            for (const d of snapshot.docs) {
+                const news = d.data();
+                const imgEl = document.getElementById(`category-img-${d.id}`);
+                if (!imgEl) continue;
+                const candidates = [
+                    news.imageUrl,
+                    news.imageURL,
+                    news.featuredImageUrl,
+                    news.featuredImage,
+                    news.image,
+                    news.imagePath
+                ].filter(Boolean);
+                let src = '';
+                for (const cand of candidates) {
+                    const s = String(cand).trim();
+                    if (/^https?:\/\//i.test(s) || s.startsWith('/')) { src = resolveImagePath(s); break; }
+                    if (s.startsWith('assets/') || s.startsWith('images/')) { src = resolveImagePath(s); break; }
+                }
+                if (!src) {
+                    const storagePath = news.imageStoragePath || news.storagePath || '';
+                    if (storagePath) {
+                        try { src = await getDownloadURL(ref(storage, storagePath)); } catch(_) {}
+                    }
+                }
+                if (!src) src = '/assets/images/logo.png';
+                imgEl.src = src;
+            }
         }
     } catch (error) {
         console.error('Error loading category news:', error);
