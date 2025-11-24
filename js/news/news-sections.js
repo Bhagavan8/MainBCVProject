@@ -85,7 +85,7 @@ function createMainNewsHTML(news) {
                 </a>
             </div>
             <div class="image-wrapper">
-                <img src="${resolveImagePath(news.imagePath)}" alt="${news.title}">
+                <img src="${resolveImagePath(news.imageUrl || news.imagePath)}" alt="${news.title}">
             </div>
             <div class="news-overlay">
                 <span class="news-category">${news.category}</span>
@@ -97,7 +97,7 @@ function createMainNewsHTML(news) {
                         <span class="ms-3"><i class="bi bi-eye me-1"></i>${news.views}</span>
                         <span class="ms-3"><i class="bi bi-heart me-1"></i>${news.likes}</span>
                     </div>
-                    <a href="news-detail.html?id=${news.id}" class="btn-read-more">
+                    <a href="${news.url || ('news-detail.html?id=' + news.id)}" class="btn-read-more" ${news.url ? 'target="_blank" rel="noopener"' : ''}>
                         Read More <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -120,14 +120,14 @@ function createSecondaryNewsHTML(news) {
                     <i class="bi bi-whatsapp"></i>
                 </a>
             </div>
-            <img src="${resolveImagePath(news.imagePath)}" alt="${news.title}">
+            <img src="${resolveImagePath(news.imageUrl || news.imagePath)}" alt="${news.title}">
             <div class="news-overlay">
                 <span class="news-category badge bg-primary mb-2">${news.category}</span>
                 <h5 class="mb-2">${news.title}</h5>
                 <p class="content-preview small mb-2">${news.content.substring(0, 100)}...</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <span class="small">${formatDate(news.createdAt)}</span>
-                    <a href="news-detail.html?id=${news.id}" class="btn btn-light btn-sm">Read More</a>
+                    <a href="${news.url || ('news-detail.html?id=' + news.id)}" class="btn btn-light btn-sm" ${news.url ? 'target="_blank" rel="noopener"' : ''}>Read More</a>
                 </div>
             </div>
         </div>
@@ -148,23 +148,41 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
             conditions.push(where('createdAt', '>=', last24Hours));
         }
 
-        const newsQuery = query(
-            collection(db, 'news'),
-            ...conditions,
-            orderBy('createdAt', 'desc'),
-            limit(itemLimit)
-        );
+        const baseCollection = collection(db, 'news');
+        let snapshot;
+        try {
+            const newsQuery = query(baseCollection, ...conditions, orderBy('createdAt', 'desc'), limit(itemLimit));
+            snapshot = await getDocs(newsQuery);
+        } catch (e) {
+            const newsQueryNoOrder = query(baseCollection, ...conditions, limit(itemLimit));
+            snapshot = await getDocs(newsQueryNoOrder);
+        }
 
-        const snapshot = await getDocs(newsQuery);
+        if (snapshot.empty) {
+            const cap = section.charAt(0).toUpperCase() + section.slice(1);
+            const catQueries = [
+                query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', section), limit(itemLimit)),
+                query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', cap), limit(itemLimit))
+            ];
+            for (const q of catQueries) {
+                try {
+                    const s = await getDocs(q);
+                    if (!s.empty) { snapshot = s; break; }
+                } catch (_) { continue; }
+            }
+        }
         const container = document.getElementById(containerId);
 
         if (container && !snapshot.empty) {
             container.innerHTML = snapshot.docs.map((doc, index) => {
                 const news = doc.data();
+                const link = news.url || `news-detail.html?id=${doc.id}`;
                 return `
                     <article class="news-article" data-aos="fade-up" data-aos-delay="${index * 100}">
                         <div class="article-image">
-                            <img src="${resolveImagePath(news.imagePath)}" alt="${news.title}" loading="lazy">
+                            <img src="${resolveImagePath(news.imageUrl || news.imagePath)}" alt="${news.title}" loading="lazy">
                             <span class="category-tag">${news.category.charAt(0).toUpperCase() + news.category.slice(1)}</span>
                         </div>
                         <div class="article-content">
@@ -193,7 +211,7 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
                                         <i class="bi bi-whatsapp"></i>
                                     </a>
                                 </div>
-                                <a href="news-detail.html?id=${doc.id}" class="read-more-btn">
+                                ${news.url ? `<a href="${link}" class="read-more-btn" target="_blank" rel="noopener">` : `<a href="${link}" class="read-more-btn">`}
                                     Read More <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
@@ -253,6 +271,7 @@ function loadAllSections() {
     loadSectionNews('entertainment', 'entertainmentGrid');
     loadSectionNews('tips', 'tipsGrid');
     loadSectionNews('stories', 'storiesGrid');
+    loadSectionNews('technology', 'technologyGrid');
     loadBreakingNews();
 }
 

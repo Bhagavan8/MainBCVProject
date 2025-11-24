@@ -1,7 +1,4 @@
-// news-detail.js (full updated)
-// Assumes adsissue.js is loaded (adsHelper global available)
-
-import { auth, db } from './firebase-config.js';
+import { auth, db, storage, ref, getDownloadURL } from './firebase-config.js';
 import {
     doc,
     getDoc,
@@ -135,7 +132,7 @@ function resolveImagePath(p){
     return '/assets/images/news/' + s;
 }
 
-function displayNewsDetail(newsData) {
+async function displayNewsDetail(newsData) {
     try {
         const categoryLink = document.querySelector('.category-link');
         const newsTitle = document.querySelector('.news-title');
@@ -158,6 +155,16 @@ function displayNewsDetail(newsData) {
 
         const articleTitleEl = document.querySelector('.article-title');
         if (articleTitleEl) articleTitleEl.textContent = newsData.title || '';
+        const articleMetaEl = document.querySelector('.article-meta');
+        if (articleMetaEl && newsData.url) {
+            const sourceLink = document.createElement('a');
+            sourceLink.href = newsData.url;
+            sourceLink.textContent = 'Source';
+            sourceLink.target = '_blank';
+            sourceLink.rel = 'noopener';
+            sourceLink.className = 'ms-3';
+            articleMetaEl.appendChild(sourceLink);
+        }
 
         const authorEl = document.querySelector('.author');
         if (authorEl) authorEl.textContent = `By ${newsData.authorName || 'Anonymous'}`;
@@ -259,9 +266,30 @@ function displayNewsDetail(newsData) {
         }
 
         const imageContainer = document.querySelector('.featured-image-container');
-        if (imageContainer && newsData.imagePath) {
+        if (imageContainer) {
+            const imgCandidates = [
+                newsData.imageUrl,
+                newsData.imageURL,
+                newsData.featuredImageUrl,
+                newsData.featuredImage,
+                newsData.image,
+                newsData.imagePath
+            ].filter(Boolean);
+            let src = '';
+            for (const cand of imgCandidates) {
+                const s = String(cand).trim();
+                if (/^https?:\/\//i.test(s) || s.startsWith('/')) { src = resolveImagePath(s); break; }
+            }
+            if (!src) {
+                const storagePath = newsData.imageStoragePath || newsData.storagePath || '';
+                if (storagePath) {
+                    try { src = await getDownloadURL(ref(storage, storagePath)); } catch(e) {}
+                }
+            }
+            if (!src) { src = '/assets/images/logo.png'; }
+
             imageContainer.innerHTML = `
-                <img src="${resolveImagePath(newsData.imagePath)}" 
+                <img src="${src}" 
                      alt="${newsData.title || ''}"
                      class="img-fluid rounded shadow-sm">
                 <figcaption class="text-muted mt-2 text-center">
@@ -293,9 +321,9 @@ async function loadRelatedNews(category) {
                     <div class="related-news-item mb-3">
                         <a href="news-detail.html?id=${d.id}" class="text-decoration-none">
                             <div class="d-flex align-items-center">
-                                <img src="${resolveImagePath(news.imagePath || '')}" alt="${news.title}" 
-                                     class="related-thumb me-3" 
-                                     style="width: 100px; height: 60px; object-fit: cover;">
+                                <img src="${resolveImagePath(news.imageUrl || news.imagePath || '')}" alt="${news.title}" 
+                                      class="related-thumb me-3" 
+                                      style="width: 100px; height: 60px; object-fit: cover;">
                                 <h6 class="mb-0 text-dark">${news.title}</h6>
                             </div>
                         </a>
@@ -324,7 +352,7 @@ async function loadLatestNews() {
                         <a href="news-detail.html?id=${d.id}" class="text-decoration-none">
                             <div class="d-flex align-items-start">
                                 <div class="latest-thumb me-3 position-relative">
-                                    <img src="${news.imagePath || '/assets/images/placeholder.jpg'}" 
+                                    <img src="${resolveImagePath(news.imageUrl || news.imagePath || '/assets/images/logo.png')}" 
                                          alt="${news.title}"
                                          style="width: 100px; height: 60px; object-fit: cover; border-radius: 4px;">
                                     <span class="badge bg-primary position-absolute" 

@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 // Encrypted configuration (properly encoded)
@@ -22,15 +23,15 @@ const decryptConfig = (encrypted) => {
     }
 };
 
-let db, auth;
+let db, auth, storage;
 try {
     const firebaseConfig = decryptConfig(encryptedConfig);
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     auth = getAuth(app);
+    storage = getStorage(app);
 } catch (error) {
     console.error('Initialization error:', error);
 }
 
-export { db, auth };
-
+export { db, auth, storage, ref, getDownloadURL };
