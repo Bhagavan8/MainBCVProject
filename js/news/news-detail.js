@@ -171,53 +171,92 @@ function displayNewsDetail(newsData) {
         const contentContainer = document.querySelector('.article-content');
         if (!contentContainer) return;
 
-        contentContainer.innerHTML = '';
-
         const adSlotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
-        const adSlots = adSlotsAttr
-            .split(',')
-            .map(s => s.trim())
-            .filter(Boolean);
+        const adSlots = adSlotsAttr.split(',').map(s => s.trim()).filter(Boolean);
         const fallbackSlots = ['3297555670','3963785998','7711459312','2542893115'];
         const slots = adSlots.length ? adSlots : fallbackSlots;
 
-        paragraphs.forEach((paragraph, index) => {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            contentContainer.appendChild(p);
-
-            if ((index + 1) % 3 === 0 && index < paragraphs.length - 1) {
-                const adSection = document.createElement('div');
-                adSection.className = 'ad-section-responsive my-4';
-
-                const adBanner = document.createElement('div');
-                adBanner.className = 'ad-banner-horizontal';
-                adBanner.id = `in-content-ad-${index}`;
-
-                const ins = document.createElement('ins');
-                ins.className = 'adsbygoogle';
-                ins.style.display = 'block';
-                ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
-                const slot = slots[Math.floor(index/3) % slots.length];
-                ins.setAttribute('data-ad-slot', String(slot));
-                ins.setAttribute('data-ad-format', 'auto');
-                ins.setAttribute('data-full-width-responsive', 'true');
-
-                adBanner.appendChild(ins);
-                adSection.appendChild(adBanner);
-                contentContainer.appendChild(adSection);
-
-                if (window.adsbygoogle) {
-                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        const manualNodes = contentContainer.querySelectorAll('[data-paragraph]');
+        if (manualNodes.length) {
+            const used = new Set();
+            manualNodes.forEach(node => {
+                const idx = Number(node.getAttribute('data-paragraph')) || 0;
+                used.add(idx);
+                node.textContent = paragraphs[idx] || '';
+            });
+            contentContainer.querySelectorAll('ins.adsbygoogle').forEach(ins => {
+                try { queueAdPush(ins); } catch(e) { try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_){} }
+            });
+            let appended = 0;
+            for (let i = 0; i < paragraphs.length; i++) {
+                if (!used.has(i)) {
+                    const p = document.createElement('p');
+                    p.textContent = paragraphs[i];
+                    contentContainer.appendChild(p);
+                    appended++;
+                    if (appended % 3 === 0 && i < paragraphs.length - 1) {
+                        const adSection = document.createElement('div');
+                        adSection.className = 'ad-section-responsive my-4';
+                        const adBanner = document.createElement('div');
+                        adBanner.className = 'ad-banner-horizontal';
+                        adBanner.id = `in-content-ad-${Date.now()}-${i}`;
+                        const ins = document.createElement('ins');
+                        ins.className = 'adsbygoogle';
+                        ins.style.display = 'block';
+                        ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                        const slot = slots[Math.floor(appended/3) % slots.length];
+                        ins.setAttribute('data-ad-slot', String(slot));
+                        ins.setAttribute('data-ad-format', 'auto');
+                        ins.setAttribute('data-full-width-responsive', 'true');
+                        adBanner.appendChild(ins);
+                        adSection.appendChild(adBanner);
+                        contentContainer.appendChild(adSection);
+                        try { queueAdPush(ins); } catch(e) { try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_){} }
+                    }
                 }
             }
-        });
+            setTimeout(() => {
+                try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
+                initPageAds();
+            }, 800);
+        } else {
+            contentContainer.innerHTML = '';
 
-        // After dynamic insertion, run our ad helper to initialize lazily and monitor
-        setTimeout(() => {
-            try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
-            initPageAds(); // triggers adsHelper.safeInitAndMonitor() when available
-        }, 800);
+            paragraphs.forEach((paragraph, index) => {
+                const p = document.createElement('p');
+                p.textContent = paragraph;
+                contentContainer.appendChild(p);
+
+                if ((index + 1) % 3 === 0 && index < paragraphs.length - 1) {
+                    const adSection = document.createElement('div');
+                    adSection.className = 'ad-section-responsive my-4';
+
+                    const adBanner = document.createElement('div');
+                    adBanner.className = 'ad-banner-horizontal';
+                    adBanner.id = `in-content-ad-${index}`;
+
+                    const ins = document.createElement('ins');
+                    ins.className = 'adsbygoogle';
+                    ins.style.display = 'block';
+                    ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                    const slot = slots[Math.floor(index/3) % slots.length];
+                    ins.setAttribute('data-ad-slot', String(slot));
+                    ins.setAttribute('data-ad-format', 'auto');
+                    ins.setAttribute('data-full-width-responsive', 'true');
+
+                    adBanner.appendChild(ins);
+                    adSection.appendChild(adBanner);
+                    contentContainer.appendChild(adSection);
+
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+                }
+            });
+
+            setTimeout(() => {
+                try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
+                initPageAds();
+            }, 800);
+        }
 
         const imageContainer = document.querySelector('.featured-image-container');
         if (imageContainer && newsData.imagePath) {
