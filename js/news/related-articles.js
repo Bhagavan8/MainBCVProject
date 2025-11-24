@@ -1,4 +1,4 @@
-import { db } from './firebase-config.js';
+import { db, storage, ref, getDownloadURL } from './firebase-config.js';
 import { 
     collection, query, where, orderBy, 
     limit, getDocs, doc, getDoc 
@@ -45,15 +45,15 @@ export class RelatedArticles {
             
             if (container && !snapshot.empty) {
                 container.innerHTML = snapshot.docs
-                    .filter(doc => doc.id !== newsData.id)
-                    .map(doc => {
-                        const news = doc.data();
+                    .filter(d => d.id !== newsData.id)
+                    .map(d => {
+                        const news = d.data();
                         return `
                             <div class="col-md-6 col-lg-3 mb-4">
-                                <a href="news-detail.html?id=${doc.id}" class="text-decoration-none article-link">
+                                <a href="news-detail.html?id=${d.id}" class="text-decoration-none article-link">
                                     <div class="d-flex flex-column">
                                         <div class="image-wrapper position-relative mb-3">
-                                            <img src="${news.imagePath || ''}" 
+                                            <img id="related-img-${d.id}" src="" 
                                                  alt="${news.title}" 
                                                  class="img-fluid w-100"
                                                  style="height: 200px; object-fit: cover;">
@@ -77,6 +77,37 @@ export class RelatedArticles {
                                 </a>
                             </div>`;
                     }).join('');
+
+                const docs = snapshot.docs.filter(d => d.id !== newsData.id);
+                for (const d of docs) {
+                    const news = d.data();
+                    const img = document.getElementById(`related-img-${d.id}`);
+                    if (!img) continue;
+
+                    const candidates = [
+                        news.imageUrl,
+                        news.imageURL,
+                        news.featuredImageUrl,
+                        news.featuredImage,
+                        news.image,
+                        news.imagePath
+                    ].filter(Boolean);
+
+                    let src = '';
+                    for (const cand of candidates) {
+                        const s = String(cand).trim();
+                        if (/^https?:\/\//i.test(s) || s.startsWith('/')) { src = resolveImagePath(s); break; }
+                        if (s.startsWith('assets/') || s.startsWith('images/')) { src = resolveImagePath(s); break; }
+                    }
+                    if (!src) {
+                        const storagePath = news.imageStoragePath || news.storagePath || '';
+                        if (storagePath) {
+                            try { src = await getDownloadURL(ref(storage, storagePath)); } catch(e) {}
+                        }
+                    }
+                    if (!src) src = '/assets/images/logo.png';
+                    img.src = src;
+                }
             } else {
                 console.log('No related articles found or container missing'); // Debug log
             }
@@ -88,3 +119,15 @@ export class RelatedArticles {
 
 // Create and export a single instance
 export const relatedArticles = new RelatedArticles();
+
+function resolveImagePath(p){
+    if(!p) return '/assets/images/logo.png';
+    const s = String(p).trim();
+    if (/^https?:\/\//i.test(s)) {
+        if (location.protocol === 'https:' && s.startsWith('http://')) return s.replace(/^http:\/\//i, 'https://');
+        return s;
+    }
+    if (s.startsWith('/')) return s;
+    if (s.startsWith('assets/') || s.startsWith('assets\\') || s.startsWith('assets/images/') || s.startsWith('images/')) return '/' + s.replace(/^\.\/+/, '');
+    return '/assets/images/news/' + s;
+}
