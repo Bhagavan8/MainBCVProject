@@ -160,13 +160,17 @@ async function displayNewsDetail(newsData) {
             if (newsData.url) {
                 let hostname = '';
                 try { hostname = new URL(newsData.url).hostname.replace(/^www\./,''); } catch(_) {}
-                const sourceLink = document.createElement('a');
-                sourceLink.href = newsData.url;
-                sourceLink.target = '_blank';
-                sourceLink.rel = 'noopener';
-                sourceLink.className = 'source-link';
-                sourceLink.innerHTML = `<i class="bi bi-link-45deg me-1"></i>Source${hostname ? ': ' + hostname : ''}`;
-                articleMetaEl.appendChild(sourceLink);
+                const srcContainer = document.getElementById('articleSourceContainer');
+                if (srcContainer) {
+                    const a = document.createElement('a');
+                    a.href = newsData.url;
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                    a.className = 'source-link';
+                    a.innerHTML = `<i class="bi bi-link-45deg me-1"></i>Source ${hostname || ''}`.trim();
+                    srcContainer.innerHTML = '';
+                    srcContainer.appendChild(a);
+                }
             }
         }
 
@@ -178,12 +182,20 @@ async function displayNewsDetail(newsData) {
             dateElement.textContent = formatDate(newsData.createdAt);
         }
 
-        const rawContent = String(newsData.content || '');
-        const lines = rawContent.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-        const paragraphs = [];
-        for (let i = 0; i < lines.length; i += 3) {
-            paragraphs.push(lines.slice(i, i + 3).join(' '));
+        function getParagraphs(data){
+            const p = data.paragraphs;
+            if (Array.isArray(p)) {
+                return p.map(s => String(s).trim()).filter(Boolean);
+            }
+            const raw = String(p || data.content || '').trim();
+            if (!raw) return [];
+            let parts = raw.split(/\r?\n\r?\n/).map(s => s.trim()).filter(Boolean);
+            if (parts.length < 2) {
+                parts = raw.split(/\.\s+/).map(s => s.trim()).filter(Boolean);
+            }
+            return parts;
         }
+        const paragraphs = getParagraphs(newsData);
         const contentContainer = document.querySelector('.article-content');
         if (!contentContainer) return;
 
@@ -195,67 +207,36 @@ async function displayNewsDetail(newsData) {
                 const idx = Number(node.getAttribute('data-paragraph')) || 0;
                 node.textContent = paragraphs[idx] || '';
             });
-            let existingIns = contentContainer.querySelectorAll('ins.adsbygoogle').length;
-            const requiredAds = Math.floor(paragraphs.length / 3);
-            const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
-            const slotsFromAttr = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
-            const fallbackSlots = ['3297555670','3963785998','7711459312','2542893115','9887848907','1054551626'];
-            const slots = (slotsFromAttr.length ? slotsFromAttr : fallbackSlots);
-            while (existingIns < requiredAds) {
-                const groupIndex = existingIns + 1;
-                const paraIndex = groupIndex * 3 - 1;
-                const anchor = contentContainer.querySelector(`p[data-paragraph="${paraIndex}"]`);
-                if (!anchor) break;
-                const adSection = document.createElement('div');
-                adSection.className = 'ad-section-responsive my-4';
-                const adBanner = document.createElement('div');
-                adBanner.className = 'ad-banner-horizontal';
-                adBanner.id = `in-content-ad-${Date.now()}-${paraIndex}`;
-                const ins = document.createElement('ins');
-                ins.className = 'adsbygoogle';
-                ins.style.display = 'block';
-                ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
-                const slot = slots[(groupIndex - 1) % slots.length];
-                ins.setAttribute('data-ad-slot', String(slot));
-                ins.setAttribute('data-ad-format', 'auto');
-                ins.setAttribute('data-full-width-responsive', 'true');
-                adBanner.appendChild(ins);
-                adSection.appendChild(adBanner);
-                anchor.parentNode.insertBefore(adSection, anchor.nextSibling);
-                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
-                existingIns++;
+            for (let i = manualNodes.length; i < paragraphs.length; i++) {
+                const p = document.createElement('p');
+                p.textContent = paragraphs[i];
+                contentContainer.appendChild(p);
             }
-            setTimeout(() => {
-                try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
-                initPageAds();
-            }, 800);
         } else {
             contentContainer.innerHTML = '';
-
             paragraphs.forEach((paragraph) => {
                 const p = document.createElement('p');
                 p.textContent = paragraph;
                 contentContainer.appendChild(p);
             });
-            const requiredAds = Math.floor(paragraphs.length / 3);
-            const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
-            const slotsFromAttr = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
-            const fallbackSlots = ['3297555670','3963785998','7711459312','2542893115','9887848907','1054551626'];
-            const slots = (slotsFromAttr.length ? slotsFromAttr : fallbackSlots);
-            for (let g = 1; g <= requiredAds; g++) {
-                const paraIndex = g * 3 - 1;
-                const anchor = contentContainer.querySelectorAll('p')[paraIndex];
-                if (!anchor) break;
+        }
+
+        const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
+        const slots = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
+        if (slots.length) {
+            const pNodes = contentContainer.querySelectorAll('p');
+            for (let i = 0; i < pNodes.length; i++) {
+                const anchor = pNodes[i];
                 const adSection = document.createElement('div');
                 adSection.className = 'ad-section-responsive my-4';
                 const adBanner = document.createElement('div');
                 adBanner.className = 'ad-banner-horizontal';
-                adBanner.id = `in-content-ad-${Date.now()}-${paraIndex}`;
+                adBanner.id = `in-content-ad-${Date.now()}-${i}`;
                 const ins = document.createElement('ins');
                 ins.className = 'adsbygoogle';
                 ins.style.display = 'block';
                 ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
-                const slot = slots[(g - 1) % slots.length];
+                const slot = slots[i % slots.length];
                 ins.setAttribute('data-ad-slot', String(slot));
                 ins.setAttribute('data-ad-format', 'auto');
                 ins.setAttribute('data-full-width-responsive', 'true');
@@ -264,12 +245,16 @@ async function displayNewsDetail(newsData) {
                 anchor.parentNode.insertBefore(adSection, anchor.nextSibling);
                 try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
             }
-
-            setTimeout(() => {
-                try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
-                initPageAds();
-            }, 800);
+        } else {
+            contentContainer.querySelectorAll('ins.adsbygoogle').forEach(ins => {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+            });
         }
+
+        setTimeout(() => {
+            try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
+            initPageAds();
+        }, 800);
 
         const imageContainer = document.querySelector('.featured-image-container');
         if (imageContainer) {

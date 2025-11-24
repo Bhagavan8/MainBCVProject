@@ -97,7 +97,7 @@ function createMainNewsHTML(news) {
                         <span class="ms-3"><i class="bi bi-eye me-1"></i>${news.views}</span>
                         <span class="ms-3"><i class="bi bi-heart me-1"></i>${news.likes}</span>
                     </div>
-                    <a href="${news.url || ('news-detail.html?id=' + news.id)}" class="btn-read-more" ${news.url ? 'target="_blank" rel="noopener"' : ''}>
+                    <a href="news-detail.html?id=${news.id}" class="btn-read-more">
                         Read More <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -127,7 +127,7 @@ function createSecondaryNewsHTML(news) {
                 <p class="content-preview small mb-2">${news.content.substring(0, 100)}...</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <span class="small">${formatDate(news.createdAt)}</span>
-                    <a href="${news.url || ('news-detail.html?id=' + news.id)}" class="btn btn-light btn-sm" ${news.url ? 'target="_blank" rel="noopener"' : ''}>Read More</a>
+                    <a href="news-detail.html?id=${news.id}" class="btn btn-light btn-sm">Read More</a>
                 </div>
             </div>
         </div>
@@ -159,6 +159,24 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
         }
 
         if (snapshot.empty) {
+            // Retry using 'status' field instead of 'approvalStatus'
+            const statusVariants = ['approved','Approved'];
+            for (const sv of statusVariants) {
+                try {
+                    const q1 = query(baseCollection, where('status','==',sv), where('section','==',section), orderBy('createdAt','desc'), limit(itemLimit));
+                    const s1 = await getDocs(q1);
+                    if (!s1.empty) { snapshot = s1; break; }
+                } catch (_) {
+                    try {
+                        const q2 = query(baseCollection, where('status','==',sv), where('section','==',section), limit(itemLimit));
+                        const s2 = await getDocs(q2);
+                        if (!s2.empty) { snapshot = s2; break; }
+                    } catch (_) {}
+                }
+            }
+        }
+
+        if (snapshot.empty) {
             const cap = section.charAt(0).toUpperCase() + section.slice(1);
             const catQueries = [
                 query(baseCollection, where('approvalStatus', '==', 'approved'), where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
@@ -170,6 +188,15 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
                 query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
                 query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', section), limit(itemLimit)),
                 query(baseCollection, where('approvalStatus', '==', 'Approved'), where('category', '==', cap), limit(itemLimit)),
+                // Status field variants
+                query(baseCollection, where('status', '==', 'approved'), where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'approved'), where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'approved'), where('category', '==', section), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'approved'), where('category', '==', cap), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'Approved'), where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'Approved'), where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'Approved'), where('category', '==', section), limit(itemLimit)),
+                query(baseCollection, where('status', '==', 'Approved'), where('category', '==', cap), limit(itemLimit)),
                 // As a final fallback, ignore approvalStatus
                 query(baseCollection, where('category', '==', section), orderBy('createdAt','desc'), limit(itemLimit)),
                 query(baseCollection, where('category', '==', cap), orderBy('createdAt','desc'), limit(itemLimit)),
@@ -188,7 +215,7 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
         if (container && !snapshot.empty) {
             container.innerHTML = snapshot.docs.map((doc, index) => {
                 const news = doc.data();
-                const link = news.url || `news-detail.html?id=${doc.id}`;
+                const link = `news-detail.html?id=${doc.id}`;
                 return `
                     <article class="news-article" data-aos="fade-up" data-aos-delay="${index * 100}">
                         <div class="article-image">
@@ -221,9 +248,7 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
                                         <i class="bi bi-whatsapp"></i>
                                     </a>
                                 </div>
-                                ${news.url ? `<a href="${link}" class="read-more-btn" target="_blank" rel="noopener">` : `<a href="${link}" class="read-more-btn">`}
-                                    Read More <i class="bi bi-arrow-right"></i>
-                                </a>
+                                <a href="${link}" class="read-more-btn">Read More <i class="bi bi-arrow-right"></i></a>
                             </div>
                         </div>
                     </article>`;
