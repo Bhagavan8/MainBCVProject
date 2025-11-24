@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, query, where, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { collection, query, where, orderBy, limit, getDocs, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 class NotificationManager {
     constructor() {
@@ -65,13 +65,24 @@ class NotificationManager {
             if (!querySnapshot.empty) {
                 const jobData = querySnapshot.docs[0].data();
                 const jobId = querySnapshot.docs[0].id;
-                
+                let companyName = jobData.companyName || jobData.bankName || 'Top Company';
+                try {
+                    if (jobData.companyId) {
+                        const companyRef = doc(db, 'companies', jobData.companyId);
+                        const companyDoc = await getDoc(companyRef);
+                        if (companyDoc.exists()) {
+                            const c = companyDoc.data();
+                            if (c && c.name) companyName = c.name;
+                        }
+                    }
+                } catch (_) {}
+
                 this.createNotification({
                     icon: '💼',
                     title: 'New Job Opening',
-                    message: `${jobData.jobTitle} at ${jobData.companyName}`,
+                    message: `${jobData.jobTitle} at ${companyName}`,
                     actionText: 'View Job',
-                    actionUrl: `job-details.html?id=${jobId}&type=private`,
+                    actionUrl: `/html/job-details.html?id=${jobId}&type=private`,
                     theme: 'job',
                     createdAt: this.formatDate(jobData.createdAt)
                 });

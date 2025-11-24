@@ -69,7 +69,16 @@ export class RelatedArticles {
                                             <div class="meta-info d-flex align-items-center">
                                                 <span class="text-muted small">
                                                     <i class="bi bi-calendar-event me-1"></i>
-                                                    ${new Date(news.createdAt?.toDate()).toLocaleDateString()}
+                                                    ${(() => { 
+                                                        const ts = news.createdAt; 
+                                                        let d = null; 
+                                                        try { 
+                                                            if (ts && typeof ts.toDate === 'function') d = ts.toDate(); 
+                                                            else if (ts instanceof Date) d = ts; 
+                                                            else if (typeof ts === 'number' || typeof ts === 'string') d = new Date(ts); 
+                                                        } catch(_) {}
+                                                        return d ? d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '';
+                                                    })()}
                                                 </span>
                                             </div>
                                         </div>

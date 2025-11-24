@@ -13,41 +13,76 @@ export class ArticleNavigation {
             const currentArticleRef = doc(db, 'news', currentId);
             const currentArticleSnap = await getDoc(currentArticleRef);
             const currentArticle = currentArticleSnap.data();
-            const currentTimestamp = currentArticle.createdAt;
+            let currentTimestamp = currentArticle?.createdAt || null;
+            try {
+                if (currentTimestamp && typeof currentTimestamp.toDate === 'function') {
+                    currentTimestamp = currentTimestamp;
+                } else if (currentTimestamp) {
+                    currentTimestamp = new Date(currentTimestamp);
+                }
+            } catch (_) {
+                currentTimestamp = null;
+            }
 
-            // Query for previous article
-            const prevQuery = query(
-                collection(db, 'news'),
-                where('approvalStatus', '==', 'approved'),
-                where('createdAt', '<', currentTimestamp),
-                orderBy('createdAt', 'desc'),
-                limit(1)
-            );
+            async function tryQueries(qs){
+                for (const q of qs) {
+                    try {
+                        const s = await getDocs(q);
+                        if (!s.empty) return s;
+                    } catch(_) { continue; }
+                }
+                return { empty: true, docs: [] };
+            }
 
-            // Query for next article
-            const nextQuery = query(
-                collection(db, 'news'),
-                where('approvalStatus', '==', 'approved'),
-                where('createdAt', '>', currentTimestamp),
-                orderBy('createdAt', 'asc'),
-                limit(1)
-            );
+            const base = collection(db, 'news');
+            const prevQueries = [];
+            const nextQueries = [];
 
-            const [prevSnapshot, nextSnapshot] = await Promise.all([
-                getDocs(prevQuery),
-                getDocs(nextQuery)
-            ]);
+            if (currentTimestamp) {
+                prevQueries.push(
+                    query(base, where('approvalStatus','==','approved'), where('createdAt','<', currentTimestamp), orderBy('createdAt','desc'), limit(1))
+                );
+                nextQueries.push(
+                    query(base, where('approvalStatus','==','approved'), where('createdAt','>', currentTimestamp), orderBy('createdAt','asc'), limit(1))
+                );
+            }
+            // Fallback: status field
+            if (currentTimestamp) {
+                prevQueries.push(
+                    query(base, where('status','==','approved'), where('createdAt','<', currentTimestamp), orderBy('createdAt','desc'), limit(1))
+                );
+                prevQueries.push(
+                    query(base, where('status','==','Approved'), where('createdAt','<', currentTimestamp), orderBy('createdAt','desc'), limit(1))
+                );
+                nextQueries.push(
+                    query(base, where('status','==','approved'), where('createdAt','>', currentTimestamp), orderBy('createdAt','asc'), limit(1))
+                );
+                nextQueries.push(
+                    query(base, where('status','==','Approved'), where('createdAt','>', currentTimestamp), orderBy('createdAt','asc'), limit(1))
+                );
+            }
+            // Fallback: ignore inequalities, pick adjacent by order and skip current
+            prevQueries.push(query(base, where('approvalStatus','==','approved'), orderBy('createdAt','desc'), limit(2)));
+            prevQueries.push(query(base, where('status','==','approved'), orderBy('createdAt','desc'), limit(2)));
+            nextQueries.push(query(base, where('approvalStatus','==','approved'), orderBy('createdAt','asc'), limit(2)));
+            nextQueries.push(query(base, where('status','==','approved'), orderBy('createdAt','asc'), limit(2)));
+            // Final fallback: no approval filter
+            prevQueries.push(query(base, orderBy('createdAt','desc'), limit(2)));
+            nextQueries.push(query(base, orderBy('createdAt','asc'), limit(2)));
 
-            this.updateNavigationUI(prevSnapshot, nextSnapshot);
+            let prevSnapshot = await tryQueries(prevQueries);
+            let nextSnapshot = await tryQueries(nextQueries);
+
+            this.updateNavigationUI(prevSnapshot, nextSnapshot, currentId);
         } catch (error) {
             console.error('Error loading adjacent articles:', error);
         }
     }
 
-    static updateNavigationUI(prevSnapshot, nextSnapshot) {
+    static updateNavigationUI(prevSnapshot, nextSnapshot, currentId) {
         // Update Previous Article
         if (!prevSnapshot.empty) {
-            const prevArticle = prevSnapshot.docs[0];
+            const prevArticle = prevSnapshot.docs.find(d => d.id !== currentId) || prevSnapshot.docs[0];
             const prevData = prevArticle.data();
             const prevElement = document.getElementById('prevArticle');
             
@@ -59,7 +94,7 @@ export class ArticleNavigation {
 
         // Update Next Article
         if (!nextSnapshot.empty) {
-            const nextArticle = nextSnapshot.docs[0];
+            const nextArticle = nextSnapshot.docs.find(d => d.id !== currentId) || nextSnapshot.docs[0];
             const nextData = nextArticle.data();
             const nextElement = document.getElementById('nextArticle');
             

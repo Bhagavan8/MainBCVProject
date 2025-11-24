@@ -422,18 +422,23 @@ async function loadLatestNews() {
 
 async function loadPopularNews() {
     try {
-        const popularQuery = query(collection(db, 'news'), limit(10));
+        const popularQuery = query(collection(db, 'news'), limit(50));
         const snapshot = await getDocs(popularQuery);
         const container = document.getElementById('popularNewsContainer');
 
         if (container && !snapshot.empty) {
-            const sortedDocs = snapshot.docs
-                .filter(d => {
-                    const data = d.data();
-                    return data.views && data.approvalStatus === 'approved';
-                })
-                .sort((a, b) => (b.data().views || 0) - (a.data().views || 0))
-                .slice(0, 5);
+            function isApproved(data){
+                const s = String(data.approvalStatus || data.status || '').toLowerCase();
+                return s === 'approved';
+            }
+            let sortedDocs = snapshot.docs
+                .filter(d => isApproved(d.data()))
+                .sort((a, b) => (b.data().views || 0) - (a.data().views || 0));
+            if (sortedDocs.length === 0) {
+                sortedDocs = snapshot.docs
+                    .sort((a, b) => (b.data().views || 0) - (a.data().views || 0));
+            }
+            sortedDocs = sortedDocs.slice(0,5);
 
             container.innerHTML = sortedDocs.map((d, index) => {
                 const news = d.data();

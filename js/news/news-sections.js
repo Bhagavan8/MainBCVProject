@@ -159,6 +159,20 @@ async function loadSectionNews(section, containerId, itemLimit = 4) {
         }
 
         if (snapshot.empty) {
+            if (section === 'recent') {
+                try {
+                    const qA = query(baseCollection, where('approvalStatus','==','approved'), where('section','==',section), limit(itemLimit));
+                    const sA = await getDocs(qA);
+                    if (!sA.empty) { snapshot = sA; }
+                } catch (_) {}
+                if (!snapshot || snapshot.empty) {
+                    try {
+                        const qB = query(baseCollection, where('approvalStatus','==','Approved'), where('section','==',section), limit(itemLimit));
+                        const sB = await getDocs(qB);
+                        if (!sB.empty) { snapshot = sB; }
+                    } catch (_) {}
+                }
+            }
             // Retry using 'status' field instead of 'approvalStatus'
             const statusVariants = ['approved','Approved'];
             for (const sv of statusVariants) {
