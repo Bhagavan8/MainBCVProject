@@ -859,5 +859,91 @@
         grid-template-columns: 1fr;
     }
 }
+/* ---------- AD-SLOT RESPONSIVE FIXES (paste at end of file) ---------- */
+
+/* Make ad wrappers fully fluid and avoid any fixed width from parent */
+.ad-section-responsive,
+.ad-banner-horizontal,
+.ad-banner-horizontal > ins.adsbygoogle,
+.ad-section-responsive > .ad-banner-horizontal {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Ensure ins.adsbygoogle itself allows the iframe to scale */
+ins.adsbygoogle {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Make any injected iframe responsive */
+.ad-section-responsive iframe,
+.ad-banner-horizontal iframe,
+ins.adsbygoogle > iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border: 0 !important;
+}
+
+/* Avoid flex centering from parent causing a single-line height - let ad determine height */
+.ad-banner-horizontal,
+.ad-section-responsive {
+    display: block !important;
+}
+
+/* Hide AdSense 'related content' and topic widgets that replace ads (you can change to block if you want to show them) */
+.ad-section-responsive .goog-rtopics,
+.ad-section-responsive .google-anno-sc,
+.ad-section-responsive .google-annotated-item,
+.ad-section-responsive .google-ads-related,
+.ad-section-responsive [id^="google_osd_static_frame"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* If you prefer fallback area rather than hide, use this rule to show a neutral fallback box */
+/* .ad-section-responsive .ad-fallback { display:block; padding:16px; text-align:center; background:#fafafa; border-radius:8px; } */
+
+/* Prevent small min-heights that make an ad slot appear 'stuck' */
+.ad-section-responsive .adsbygoogle[style*="min-height"],
+.ad-section-responsive iframe[style*="min-height"] {
+    min-height: 0 !important;
+}
+
+/* mobile specific adjustments */
+@media (max-width: 768px) {
+    .ad-section-responsive, .ad-banner-horizontal {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    /* give ads a bit more vertical room on small screens */
+    .ad-section-responsive ins.adsbygoogle,
+    .ad-section-responsive iframe {
+        min-height: 120px !important;
+    }
+}
+
+/* safety: don't let any parent force overflow hidden that clips ad */
+.ad-section-responsive, .ad-banner-horizontal {
+    overflow: visible !important;
+}
+
+/* improve accessibility: if you hide the related-content placeholders above,
+   make sure assistive tech doesn't see them as visible content */
+.ad-section-responsive .goog-rtopics,
+.ad-section-responsive .google-anno-sc {
+    aria-hidden: true;
+}
 
 

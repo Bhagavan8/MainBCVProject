@@ -1,4 +1,4 @@
-// news-detail.js (full updated)
+// news-detail.js (patched & improved)
 // Assumes adsissue.js is loaded (adsHelper global available)
 
 import { auth, db } from './firebase-config.js';
@@ -21,7 +21,7 @@ import { ArticleNavigation } from './article-navigation.js';
 import { relatedArticles } from './related-articles.js';
 import { CommentsManager } from './comments.js';
 
-// Utility functions
+// ---------------------- Utility functions ----------------------
 function showLoader() {
     const loader = document.querySelector('.loader-container');
     if (loader) loader.classList.remove('loader-hidden');
@@ -35,9 +35,7 @@ function hideLoader() {
 function formatDate(timestamp) {
     if (!timestamp) return '';
 
-    // Handle Firestore Timestamp
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-
     return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -72,55 +70,182 @@ function setupShareButtons(newsData) {
     }
 }
 
+// ---------------------- Ads helpers ----------------------
 
+// Ensure the AdSense script is loaded (only inject once). Returns Promise that resolves when window.adsbygoogle exists.
+let _adsScriptPromise = null;
+function ensureAdsScript() {
+    if (window.adsbygoogle) return Promise.resolve();
+    if (_adsScriptPromise) return _adsScriptPromise;
 
-// Initialize ads for existing slots (safe)
+    _adsScriptPromise = new Promise((resolve, reject) => {
+        // If script already on DOM, still wait a short time for it to initialize
+        const existing = document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]');
+        if (existing) {
+            // wait until window.adsbygoogle appears
+            const start = Date.now();
+            const wait = setInterval(() => {
+                if (window.adsbygoogle) {
+                    clearInterval(wait);
+                    resolve();
+                } else if (Date.now() - start > 5000) {
+                    clearInterval(wait);
+                    // still resolve so site doesn't hang; pushes will be guarded
+                    resolve();
+                }
+            }, 150);
+            return;
+        }
+
+        const s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+        s.onerror = () => {
+            // don't block; resolve so fallback behavior can run
+            resolve();
+        };
+        s.onload = () => {
+            // small delay for initialization
+            setTimeout(() => resolve(), 100);
+        };
+        document.head.appendChild(s);
+    });
+
+    return _adsScriptPromise;
+}
+
+// Queue pushes so we don't call push before script is ready
+const adPushQueue = [];
+let adQueueRunning = false;
+function queueAdPush(insElement) {
+    adPushQueue.push(insElement);
+    runAdQueue();
+}
+async function runAdQueue() {
+    if (adQueueRunning) return;
+    adQueueRunning = true;
+    try {
+        await ensureAdsScript();
+        while (adPushQueue.length) {
+            const el = adPushQueue.shift();
+            try {
+                // guard push in try/catch because AdSense will throw if called incorrectly
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (err) {
+                // ignore and continue; maybe the ins wasn't ready
+                console.warn('adsbygoogle.push() failed for an ins element', err);
+            }
+            // small delay between pushes to avoid rate issues
+            await new Promise(r => setTimeout(r, 150));
+        }
+    } finally {
+        adQueueRunning = false;
+    }
+}
+
+// Fix ad containers: remove fixed inline widths on generated iframes and hide "unfill-optimized" placeholders.
+function fixAdContainers() {
+    try {
+        // Remove any inline width that forces the iframe to a fixed width (makes responsive behavior broken)
+        document.querySelectorAll('.ad-section-responsive, .ad-banner-horizontal').forEach(wrapper => {
+            wrapper.style.maxWidth = '100%';
+            wrapper.style.width = '100%';
+            wrapper.style.display = 'block';
+        });
+
+        // For any injected iframes with inline style attributes, normalize them
+        document.querySelectorAll('iframe').forEach(iframe => {
+            try {
+                // Some iframes are cross-origin and style overrides may not apply to inner doc,
+                // but we can adjust the iframe element's attributes to be responsive
+                iframe.style.maxWidth = '100%';
+                iframe.style.width = '100%';
+                iframe.style.height = 'auto';
+            } catch (e) {
+                // ignore cross-origin issues
+            }
+        });
+
+        // Hide ad containers that are explicitly marked as unfilled by AdSense
+        document.querySelectorAll('ins.adsbygoogle').forEach(ins => {
+            const adStatus = ins.getAttribute('data-ad-status') || ins.dataset.adStatus;
+            // sometimes data-ad-status may be set on parent container or replaced after ad call; search parent
+            const parent = ins.closest('.ad-section-responsive') || ins.parentElement;
+            if (adStatus && adStatus.toLowerCase().includes('unfill')) {
+                // hide or replace with fallback - here we hide to avoid the fixed-looking placeholder
+                if (parent) parent.style.display = 'none';
+            }
+        });
+
+        // Additionally detect some common "related content" placeholders inserted by AdSense
+        document.querySelectorAll('.goog-rtopics, .google-anno-sc, .google-annotated-item').forEach(el => {
+            // If these appear in your ad slot and you prefer hiding them, hide the wrapper
+            const adWrapper = el.closest('.ad-section-responsive') || el.closest('.ad-banner-horizontal');
+            if (adWrapper) adWrapper.style.display = 'none';
+        });
+    } catch (e) {
+        console.warn('fixAdContainers error:', e);
+    }
+}
+
+// Call adsHelper if exists (your existing helper)
 function initPageAds() {
     if (window.adsHelper && typeof window.adsHelper.safeInitAndMonitor === 'function') {
-        window.adsHelper.safeInitAndMonitor();
+        try {
+            window.adsHelper.safeInitAndMonitor();
+        } catch (e) {
+            console.warn('adsHelper.safeInitAndMonitor error', e);
+        }
     } else {
-        // fallback: attempt to initialize after a short delay
+        // fallback: attempt after short delay
         setTimeout(() => {
             if (window.adsHelper && typeof window.adsHelper.safeInitAndMonitor === 'function') {
-                window.adsHelper.safeInitAndMonitor();
+                try {
+                    window.adsHelper.safeInitAndMonitor();
+                } catch (e) {
+                    console.warn('adsHelper.safeInitAndMonitor error', e);
+                }
             }
         }, 1000);
     }
 }
 
+// ---------------------- Content display & dynamic ad insertion ----------------------
 
-async function incrementViewCount(newsId) {
-    try {
-        const isLoggedIn = auth.currentUser !== null;
+function incrementViewCount(newsId) {
+    return (async () => {
+        try {
+            const isLoggedIn = auth.currentUser !== null;
 
-        if (!isLoggedIn) {
-            const viewedNews = sessionStorage.getItem('viewedNews') || '';
-            const viewedNewsArray = viewedNews ? viewedNews.split(',') : [];
+            if (!isLoggedIn) {
+                const viewedNews = sessionStorage.getItem('viewedNews') || '';
+                const viewedNewsArray = viewedNews ? viewedNews.split(',') : [];
 
-            if (viewedNewsArray.includes(newsId)) {
-                return;
-            }
+                if (viewedNewsArray.includes(newsId)) {
+                    return;
+                }
 
-            viewedNewsArray.push(newsId);
-            sessionStorage.setItem('viewedNews', viewedNewsArray.join(','));
-        } else {
-            const userViewsRef = doc(db, 'userViews', auth.currentUser.uid);
-            const userViewsDoc = await getDoc(userViewsRef);
-
-            if (!userViewsDoc.exists()) {
-                await setDoc(userViewsRef, { viewedNews: [newsId] });
-            } else if (!userViewsDoc.data().viewedNews?.includes(newsId)) {
-                await updateDoc(userViewsRef, { viewedNews: arrayUnion(newsId) });
+                viewedNewsArray.push(newsId);
+                sessionStorage.setItem('viewedNews', viewedNewsArray.join(','));
             } else {
-                return;
-            }
-        }
+                const userViewsRef = doc(db, 'userViews', auth.currentUser.uid);
+                const userViewsDoc = await getDoc(userViewsRef);
 
-        const newsRef = doc(db, 'news', newsId);
-        await updateDoc(newsRef, { views: increment(1) });
-    } catch (error) {
-        console.error('Error updating view count:', error);
-    }
+                if (!userViewsDoc.exists()) {
+                    await setDoc(userViewsRef, { viewedNews: [newsId] });
+                } else if (!userViewsDoc.data().viewedNews?.includes(newsId)) {
+                    await updateDoc(userViewsRef, { viewedNews: arrayUnion(newsId) });
+                } else {
+                    return;
+                }
+            }
+
+            const newsRef = doc(db, 'news', newsId);
+            await updateDoc(newsRef, { views: increment(1) });
+        } catch (error) {
+            console.error('Error updating view count:', error);
+        }
+    })();
 }
 
 function resolveImagePath(p){
@@ -173,7 +298,7 @@ function displayNewsDetail(newsData) {
 
         contentContainer.innerHTML = '';
 
-        const adSlotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
+        const adSlotsAttr = (contentContainer.getAttribute('data-ad-slots') || '').trim();
         const adSlots = adSlotsAttr
             .split(',')
             .map(s => s.trim())
@@ -186,13 +311,15 @@ function displayNewsDetail(newsData) {
             p.textContent = paragraph;
             contentContainer.appendChild(p);
 
+            // insert ad every 3 paragraphs (you had this logic) - safe insertion
             if ((index + 1) % 3 === 0 && index < paragraphs.length - 1) {
                 const adSection = document.createElement('div');
                 adSection.className = 'ad-section-responsive my-4';
 
                 const adBanner = document.createElement('div');
                 adBanner.className = 'ad-banner-horizontal';
-                adBanner.id = `in-content-ad-${index}`;
+                // unique id to prevent duplication confusion
+                adBanner.id = `in-content-ad-${Date.now()}-${index}`;
 
                 const ins = document.createElement('ins');
                 ins.className = 'adsbygoogle';
@@ -207,13 +334,12 @@ function displayNewsDetail(newsData) {
                 adSection.appendChild(adBanner);
                 contentContainer.appendChild(adSection);
 
-                if (window.adsbygoogle) {
-                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-                }
+                // queue the ad push once ads script is available
+                queueAdPush(ins);
             }
         });
 
-        // After dynamic insertion, run our ad helper to initialize lazily and monitor
+        // After dynamic insertion, run our ad helper and fix containers
         setTimeout(() => {
             fixAdContainers();
             initPageAds(); // triggers adsHelper.safeInitAndMonitor() when available
@@ -236,6 +362,7 @@ function displayNewsDetail(newsData) {
     }
 }
 
+// ---------------------- related / latest / popular / category loaders ----------------------
 async function loadRelatedNews(category) {
     try {
         if (!category) {
@@ -390,6 +517,8 @@ async function loadCategoryNews(category) {
     }
 }
 
+// ---------------------- main loader ----------------------
+
 async function loadNewsDetail() {
     try {
         showLoader();
@@ -461,10 +590,17 @@ window.addEventListener('resize', () => {
 // init page ad call (best-effort; adsissue auto-runs too)
 setTimeout(() => {
     initPageAds();
+    // ensure we attempt to load the ads script early (non-blocking)
+    ensureAdsScript().then(() => {
+        // run a quick fix pass after script is ready
+        setTimeout(() => fixAdContainers(), 500);
+    });
 }, 1200);
 
 // export for debug
 window.newsDetailHelpers = {
     initPageAds,
-    fixAdContainers
+    fixAdContainers,
+    ensureAdsScript,
+    queueAdPush
 };
