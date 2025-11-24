@@ -178,7 +178,12 @@ async function displayNewsDetail(newsData) {
             dateElement.textContent = formatDate(newsData.createdAt);
         }
 
-        const paragraphs = (newsData.content || '').split('\n\n');
+        const rawContent = String(newsData.content || '');
+        const lines = rawContent.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+        const paragraphs = [];
+        for (let i = 0; i < lines.length; i += 3) {
+            paragraphs.push(lines.slice(i, i + 3).join(' '));
+        }
         const contentContainer = document.querySelector('.article-content');
         if (!contentContainer) return;
 
@@ -186,21 +191,39 @@ async function displayNewsDetail(newsData) {
 
         const manualNodes = contentContainer.querySelectorAll('[data-paragraph]');
         if (manualNodes.length) {
-            const used = new Set();
             manualNodes.forEach(node => {
                 const idx = Number(node.getAttribute('data-paragraph')) || 0;
-                used.add(idx);
                 node.textContent = paragraphs[idx] || '';
             });
-            contentContainer.querySelectorAll('ins.adsbygoogle').forEach(ins => {
-                try { queueAdPush(ins); } catch(e) { try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_){} }
-            });
-            for (let i = 0; i < paragraphs.length; i++) {
-                if (!used.has(i)) {
-                    const p = document.createElement('p');
-                    p.textContent = paragraphs[i];
-                    contentContainer.appendChild(p);
-                }
+            let existingIns = contentContainer.querySelectorAll('ins.adsbygoogle').length;
+            const requiredAds = Math.floor(paragraphs.length / 3);
+            const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
+            const slotsFromAttr = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
+            const fallbackSlots = ['3297555670','3963785998','7711459312','2542893115','9887848907','1054551626'];
+            const slots = (slotsFromAttr.length ? slotsFromAttr : fallbackSlots);
+            while (existingIns < requiredAds) {
+                const groupIndex = existingIns + 1;
+                const paraIndex = groupIndex * 3 - 1;
+                const anchor = contentContainer.querySelector(`p[data-paragraph="${paraIndex}"]`);
+                if (!anchor) break;
+                const adSection = document.createElement('div');
+                adSection.className = 'ad-section-responsive my-4';
+                const adBanner = document.createElement('div');
+                adBanner.className = 'ad-banner-horizontal';
+                adBanner.id = `in-content-ad-${Date.now()}-${paraIndex}`;
+                const ins = document.createElement('ins');
+                ins.className = 'adsbygoogle';
+                ins.style.display = 'block';
+                ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                const slot = slots[(groupIndex - 1) % slots.length];
+                ins.setAttribute('data-ad-slot', String(slot));
+                ins.setAttribute('data-ad-format', 'auto');
+                ins.setAttribute('data-full-width-responsive', 'true');
+                adBanner.appendChild(ins);
+                adSection.appendChild(adBanner);
+                anchor.parentNode.insertBefore(adSection, anchor.nextSibling);
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+                existingIns++;
             }
             setTimeout(() => {
                 try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
@@ -214,6 +237,33 @@ async function displayNewsDetail(newsData) {
                 p.textContent = paragraph;
                 contentContainer.appendChild(p);
             });
+            const requiredAds = Math.floor(paragraphs.length / 3);
+            const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
+            const slotsFromAttr = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
+            const fallbackSlots = ['3297555670','3963785998','7711459312','2542893115','9887848907','1054551626'];
+            const slots = (slotsFromAttr.length ? slotsFromAttr : fallbackSlots);
+            for (let g = 1; g <= requiredAds; g++) {
+                const paraIndex = g * 3 - 1;
+                const anchor = contentContainer.querySelectorAll('p')[paraIndex];
+                if (!anchor) break;
+                const adSection = document.createElement('div');
+                adSection.className = 'ad-section-responsive my-4';
+                const adBanner = document.createElement('div');
+                adBanner.className = 'ad-banner-horizontal';
+                adBanner.id = `in-content-ad-${Date.now()}-${paraIndex}`;
+                const ins = document.createElement('ins');
+                ins.className = 'adsbygoogle';
+                ins.style.display = 'block';
+                ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                const slot = slots[(g - 1) % slots.length];
+                ins.setAttribute('data-ad-slot', String(slot));
+                ins.setAttribute('data-ad-format', 'auto');
+                ins.setAttribute('data-full-width-responsive', 'true');
+                adBanner.appendChild(ins);
+                adSection.appendChild(adBanner);
+                anchor.parentNode.insertBefore(adSection, anchor.nextSibling);
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+            }
 
             setTimeout(() => {
                 try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
