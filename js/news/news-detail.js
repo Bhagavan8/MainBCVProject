@@ -1,5 +1,5 @@
-// news-detail.js (full)
-// Replace your current file with this. Assumes adsissue.js is loaded (adsHelper global available)
+// news-detail.js (full updated)
+// Assumes adsissue.js is loaded (adsHelper global available)
 
 import { auth, db } from './firebase-config.js';
 import {
@@ -21,7 +21,7 @@ import { ArticleNavigation } from './article-navigation.js';
 import { relatedArticles } from './related-articles.js';
 import { CommentsManager } from './comments.js';
 
-// ---------------------- Utility functions ----------------------
+// Utility functions
 function showLoader() {
     const loader = document.querySelector('.loader-container');
     if (loader) loader.classList.remove('loader-hidden');
@@ -35,7 +35,9 @@ function hideLoader() {
 function formatDate(timestamp) {
     if (!timestamp) return '';
 
+    // Handle Firestore Timestamp
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+
     return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -70,152 +72,22 @@ function setupShareButtons(newsData) {
     }
 }
 
-// ---------------------- fixAdContainers utility (drop-in) ----------------------
-/**
- * Normalizes ad slot containers so AdSense injected iframes don't get fixed widths
- * and hides non-ad "related content" placeholders.
- * This must be available before any calls to fixAdContainers()
- */
-function fixAdContainers() {
-    try {
-        // Ensure wrappers are fluid
-        document.querySelectorAll('.ad-section-responsive, .ad-banner-horizontal').forEach(wrapper => {
-            wrapper.style.width = '100%';
-            wrapper.style.maxWidth = '100%';
-            wrapper.style.display = 'block';
-            wrapper.style.boxSizing = 'border-box';
-            wrapper.style.overflow = 'visible';
-        });
 
-        // Normalize ins.adsbygoogle
-        document.querySelectorAll('ins.adsbygoogle').forEach(ins => {
-            ins.style.display = 'block';
-            ins.style.width = '100%';
-            ins.style.maxWidth = '100%';
-            ins.style.height = 'auto';
-            ins.style.minHeight = '0';
-            ins.style.boxSizing = 'border-box';
-        });
 
-        // Normalize any injected iframes (AdSense may inject iframes with inline width)
-        document.querySelectorAll('.ad-section-responsive iframe, .ad-banner-horizontal iframe, ins.adsbygoogle > iframe').forEach(iframe => {
-            try {
-                iframe.style.width = '100%';
-                iframe.style.maxWidth = '100%';
-                iframe.style.height = 'auto';
-                iframe.style.minHeight = '0';
-                iframe.style.border = '0';
-            } catch (e) {
-                // ignore cross-origin access issues
-            }
-        });
-
-        // Hide common AdSense "related content" widgets that replace ads when unfilled
-        document.querySelectorAll('.ad-section-responsive .goog-rtopics, .ad-section-responsive .google-anno-sc, .ad-section-responsive .google-annotated-item, .ad-section-responsive [id^="google_osd_static_frame"]').forEach(el => {
-            const wrapper = el.closest('.ad-section-responsive') || el.parentElement;
-            if (wrapper) wrapper.style.display = 'none';
-            el.style.display = 'none';
-            el.style.visibility = 'hidden';
-            el.setAttribute('aria-hidden', 'true');
-        });
-
-        // If ins tags get data-ad-status set to "unfill-optimized", hide their wrappers
-        document.querySelectorAll('ins.adsbygoogle').forEach(ins => {
-            const adStatus = ins.getAttribute('data-ad-status') || ins.dataset.adStatus;
-            if (adStatus && String(adStatus).toLowerCase().includes('unfill')) {
-                const wrapper = ins.closest('.ad-section-responsive') || ins.parentElement;
-                if (wrapper) wrapper.style.display = 'none';
-            }
-        });
-    } catch (err) {
-        console.warn('fixAdContainers error:', err);
-    }
-}
-window.fixAdContainers = fixAdContainers;
-
-// ---------------------- Ads helpers ----------------------
-
-// Ensure the AdSense script is loaded (only inject once). Returns Promise that resolves when window.adsbygoogle exists.
-let _adsScriptPromise = null;
-function ensureAdsScript() {
-    if (window.adsbygoogle) return Promise.resolve();
-    if (_adsScriptPromise) return _adsScriptPromise;
-
-    _adsScriptPromise = new Promise((resolve, reject) => {
-        const existing = document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]');
-        if (existing) {
-            const start = Date.now();
-            const wait = setInterval(() => {
-                if (window.adsbygoogle) {
-                    clearInterval(wait);
-                    resolve();
-                } else if (Date.now() - start > 5000) {
-                    clearInterval(wait);
-                    resolve();
-                }
-            }, 150);
-            return;
-        }
-
-        const s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-        s.onerror = () => resolve(); // don't block site if script fails
-        s.onload = () => setTimeout(() => resolve(), 120);
-        document.head.appendChild(s);
-    });
-
-    return _adsScriptPromise;
-}
-
-// Queue pushes so we don't call push before script is ready
-const adPushQueue = [];
-let adQueueRunning = false;
-function queueAdPush(insElement) {
-    adPushQueue.push(insElement);
-    runAdQueue();
-}
-async function runAdQueue() {
-    if (adQueueRunning) return;
-    adQueueRunning = true;
-    try {
-        await ensureAdsScript();
-        while (adPushQueue.length) {
-            const el = adPushQueue.shift();
-            try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (err) {
-                console.warn('adsbygoogle.push() failed for an ins element', err);
-            }
-            await new Promise(r => setTimeout(r, 150));
-        }
-    } finally {
-        adQueueRunning = false;
-    }
-}
-
-// Call adsHelper if exists (your existing helper)
+// Initialize ads for existing slots (safe)
 function initPageAds() {
     if (window.adsHelper && typeof window.adsHelper.safeInitAndMonitor === 'function') {
-        try {
-            window.adsHelper.safeInitAndMonitor();
-        } catch (e) {
-            console.warn('adsHelper.safeInitAndMonitor error', e);
-        }
+        window.adsHelper.safeInitAndMonitor();
     } else {
+        // fallback: attempt to initialize after a short delay
         setTimeout(() => {
             if (window.adsHelper && typeof window.adsHelper.safeInitAndMonitor === 'function') {
-                try {
-                    window.adsHelper.safeInitAndMonitor();
-                } catch (e) {
-                    console.warn('adsHelper.safeInitAndMonitor error', e);
-                }
+                window.adsHelper.safeInitAndMonitor();
             }
         }, 1000);
     }
 }
 
-// ---------------------- Content display & dynamic ad insertion ----------------------
 
 async function incrementViewCount(newsId) {
     try {
@@ -301,7 +173,7 @@ function displayNewsDetail(newsData) {
 
         contentContainer.innerHTML = '';
 
-        const adSlotsAttr = (contentContainer.getAttribute('data-ad-slots') || '').trim();
+        const adSlotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
         const adSlots = adSlotsAttr
             .split(',')
             .map(s => s.trim())
@@ -314,14 +186,13 @@ function displayNewsDetail(newsData) {
             p.textContent = paragraph;
             contentContainer.appendChild(p);
 
-            // insert ad every 3 paragraphs (preserve existing logic)
             if ((index + 1) % 3 === 0 && index < paragraphs.length - 1) {
                 const adSection = document.createElement('div');
                 adSection.className = 'ad-section-responsive my-4';
 
                 const adBanner = document.createElement('div');
                 adBanner.className = 'ad-banner-horizontal';
-                adBanner.id = `in-content-ad-${Date.now()}-${index}`;
+                adBanner.id = `in-content-ad-${index}`;
 
                 const ins = document.createElement('ins');
                 ins.className = 'adsbygoogle';
@@ -336,15 +207,16 @@ function displayNewsDetail(newsData) {
                 adSection.appendChild(adBanner);
                 contentContainer.appendChild(adSection);
 
-                // queue the ad push once ads script is available
-                queueAdPush(ins);
+                if (window.adsbygoogle) {
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+                }
             }
         });
 
-        // After dynamic insertion, run our ad helper and fix containers
+        // After dynamic insertion, run our ad helper to initialize lazily and monitor
         setTimeout(() => {
             fixAdContainers();
-            initPageAds();
+            initPageAds(); // triggers adsHelper.safeInitAndMonitor() when available
         }, 800);
 
         const imageContainer = document.querySelector('.featured-image-container');
@@ -364,7 +236,6 @@ function displayNewsDetail(newsData) {
     }
 }
 
-// ---------------------- related / latest / popular / category loaders ----------------------
 async function loadRelatedNews(category) {
     try {
         if (!category) {
@@ -519,8 +390,6 @@ async function loadCategoryNews(category) {
     }
 }
 
-// ---------------------- main loader ----------------------
-
 async function loadNewsDetail() {
     try {
         showLoader();
@@ -592,15 +461,10 @@ window.addEventListener('resize', () => {
 // init page ad call (best-effort; adsissue auto-runs too)
 setTimeout(() => {
     initPageAds();
-    ensureAdsScript().then(() => {
-        setTimeout(() => fixAdContainers(), 500);
-    });
 }, 1200);
 
 // export for debug
 window.newsDetailHelpers = {
     initPageAds,
-    fixAdContainers,
-    ensureAdsScript,
-    queueAdPush
+    fixAdContainers
 };

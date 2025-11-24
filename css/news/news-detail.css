@@ -520,8 +520,8 @@
     border-top: 1px solid #eee;
 }
 
-.container-fluid py-4 main-content{
-    margin-top:30px;
+.container-fluid.py-4.main-content{
+    margin-top: 30px;
 }
 
 /* Ensure proper spacing with navbar */
