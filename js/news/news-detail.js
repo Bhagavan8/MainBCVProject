@@ -215,7 +215,7 @@ function displayNewsDetail(newsData) {
 
         // After dynamic insertion, run our ad helper to initialize lazily and monitor
         setTimeout(() => {
-            fixAdContainers();
+            try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
             initPageAds(); // triggers adsHelper.safeInitAndMonitor() when available
         }, 800);
 
@@ -455,7 +455,7 @@ window.addEventListener('scroll', () => {
 
 // on resize ensure ad containers are fixed
 window.addEventListener('resize', () => {
-    setTimeout(fixAdContainers, 500);
+    setTimeout(() => { if (window.fixAdContainers) window.fixAdContainers(); }, 500);
 });
 
 // init page ad call (best-effort; adsissue auto-runs too)
@@ -466,5 +466,5 @@ setTimeout(() => {
 // export for debug
 window.newsDetailHelpers = {
     initPageAds,
-    fixAdContainers
+    fixAdContainers: window.fixAdContainers || function(){}
 };
