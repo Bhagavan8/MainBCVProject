@@ -144,6 +144,22 @@
     border-radius: 50%;
 }
 
+.article-content strong {
+    font-weight: 700;
+    color: #212529;
+}
+
+.paragraph-subpoints {
+    margin: 0.25rem 0 1.5rem 1.5rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+}
+
+.paragraph-subpoints li {
+    margin: 0.25rem 0;
+    line-height: 1.7;
+}
+
 /* Navigation between articles */
 .article-navigation {
     display: flex;
@@ -320,6 +336,10 @@
 @media (max-width: 576px) {
     .featured-image-container img {
         max-height: 220px;
+    }
+    .paragraph-subpoints {
+        margin-left: 1rem;
+        padding-left: 1rem;
     }
 }
 

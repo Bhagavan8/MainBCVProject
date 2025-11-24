@@ -201,32 +201,83 @@ async function displayNewsDetail(newsData) {
 
         
 
+        function splitIntoSentences(t){
+            return String(t).split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(Boolean);
+        }
+        function appendStructuredParagraph(container, para){
+            const sentences = splitIntoSentences(para);
+            if (!sentences.length) return;
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = sentences[0];
+            p.appendChild(strong);
+            if (sentences[1]) p.appendChild(document.createTextNode(' ' + sentences[1]));
+            container.appendChild(p);
+            if (sentences.length > 2) {
+                const ul = document.createElement('ul');
+                ul.className = 'paragraph-subpoints';
+                const limit = Math.min(3, sentences.length - 2);
+                for (let i = 0; i < limit; i++) {
+                    const li = document.createElement('li');
+                    li.textContent = sentences[2 + i];
+                    ul.appendChild(li);
+                }
+                container.appendChild(ul);
+                if (sentences.length > 2 + limit) {
+                    const rest = sentences.slice(2 + limit).join(' ');
+                    const p2 = document.createElement('p');
+                    p2.textContent = rest;
+                    container.appendChild(p2);
+                }
+            }
+        }
         const manualNodes = contentContainer.querySelectorAll('[data-paragraph]');
         if (manualNodes.length) {
             manualNodes.forEach(node => {
                 const idx = Number(node.getAttribute('data-paragraph')) || 0;
-                node.textContent = paragraphs[idx] || '';
+                const para = paragraphs[idx] || '';
+                const sentences = splitIntoSentences(para);
+                node.innerHTML = '';
+                if (sentences.length) {
+                    const strong = document.createElement('strong');
+                    strong.textContent = sentences[0];
+                    node.appendChild(strong);
+                    if (sentences[1]) node.appendChild(document.createTextNode(' ' + sentences[1]));
+                }
+                if (sentences.length > 2) {
+                    const ul = document.createElement('ul');
+                    ul.className = 'paragraph-subpoints';
+                    const limit = Math.min(3, sentences.length - 2);
+                    for (let i = 0; i < limit; i++) {
+                        const li = document.createElement('li');
+                        li.textContent = sentences[2 + i];
+                        ul.appendChild(li);
+                    }
+                    node.parentNode.insertBefore(ul, node.nextSibling);
+                    if (sentences.length > 2 + limit) {
+                        const rest = sentences.slice(2 + limit).join(' ');
+                        const p2 = document.createElement('p');
+                        p2.textContent = rest;
+                        node.parentNode.insertBefore(p2, ul.nextSibling);
+                    }
+                }
             });
             for (let i = manualNodes.length; i < paragraphs.length; i++) {
-                const p = document.createElement('p');
-                p.textContent = paragraphs[i];
-                contentContainer.appendChild(p);
+                appendStructuredParagraph(contentContainer, paragraphs[i]);
             }
         } else {
             contentContainer.innerHTML = '';
             paragraphs.forEach((paragraph) => {
-                const p = document.createElement('p');
-                p.textContent = paragraph;
-                contentContainer.appendChild(p);
+                appendStructuredParagraph(contentContainer, paragraph);
             });
         }
 
         const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
         const slots = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
         if (slots.length) {
-            const pNodes = contentContainer.querySelectorAll('p');
-            for (let i = 0; i < pNodes.length; i++) {
-                const anchor = pNodes[i];
+            const anchors = contentContainer.querySelectorAll('p, ul.paragraph-subpoints');
+            for (let i = 0; i < anchors.length; i++) {
+                const anchor = anchors[i];
                 const adSection = document.createElement('div');
                 adSection.className = 'ad-section-responsive my-4';
                 const adBanner = document.createElement('div');
