@@ -479,6 +479,22 @@ body {
     margin-bottom: 0.5rem;
 }
 
+/* Referral code tooltip */
+.ref-code { position: relative; cursor: help; }
+.ref-code::after {
+    content: attr(data-full);
+    position: absolute;
+    left: 0; bottom: 100%; transform: translateY(-6px);
+    background: rgba(17,24,39,0.95); color: #fff;
+    padding: 4px 8px; border-radius: 4px; font-size: 12px;
+    white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0; pointer-events: none; transition: opacity .15s ease; z-index: 10;
+}
+.ref-code:hover::after, .ref-code:focus::after { opacity: 1; }
+@media (max-width: 576px) {
+    .ref-code::after { left: 50%; transform: translate(-50%, -6px); max-width: 80vw; white-space: normal; word-break: break-all; }
+}
+
 .category-count {
     height: 20px;
     min-width: 24px;

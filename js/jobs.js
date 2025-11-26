@@ -317,7 +317,11 @@ function createJobCard(job, type) {
                     <div class="referral-code d-inline-flex" style="margin-right: 125px; min-width: fit-content;">
                         <span class="badge bg-info d-inline-flex align-items-center">
                             <i class="bi bi-ticket-perforated me-1" aria-hidden="true"></i>
-                            <span>Ref: ${job.referralCode}</span>
+                            ${(() => {
+                                const full = String(job.referralCode);
+                                const short = full.length > 5 ? (full.slice(0,5) + '...') : full;
+                                return `<span class=\"ref-code\" tabindex=\"0\" title=\"${full}\" data-full=\"${full}\">Ref: ${short}</span>`;
+                            })()}
                         </span>
                     </div>
                 ` : ''}
