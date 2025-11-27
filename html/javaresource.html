@@ -303,8 +303,25 @@
     let downloadReady = document.getElementById('downloadReady');
     let finalDownload = document.getElementById('finalDownload');
     let currentFile = '';
+    let adInterval = null;
+    let adProgressValue = 0;
+
+    function stopAdProgress(){ if (adInterval) { clearInterval(adInterval); adInterval = null; } }
+    function resetDownloadState(){
+      adProgressValue = 0;
+      if (progressBar) progressBar.style.width = '0%';
+      if (progressText) progressText.textContent = '0%';
+      if (downloadReady) downloadReady.style.display = 'none';
+      if (finalDownload) finalDownload.removeAttribute('href');
+    }
 
     function safeQuery(selector, ctx=document){ try { return ctx.querySelector(selector); } catch(e) { return null; } }
+
+    function isVisible(el){
+      try {
+        return !!(el && (el.classList && el.classList.contains('show') || (el.style && el.style.display && el.style.display !== 'none')));
+      } catch(e) { return false; }
+    }
 
     function getCategory(file){
       const f = file.toLowerCase();
@@ -419,23 +436,20 @@
           downloadReady = document.getElementById('downloadReady');
           finalDownload = document.getElementById('finalDownload');
 
-          if (downloadModal) downloadModal.style.display = 'flex';
+          if (downloadModal) downloadModal.classList.add('show');
           ensureAdOrFallback('.ad-video-placeholder', 4831035752);
-          if (progressBar) progressBar.style.width = '0%';
-          if (progressText) progressText.textContent = '0%';
-          if (downloadReady) downloadReady.style.display = 'none';
-          if (finalDownload) finalDownload.removeAttribute('href');
+          stopAdProgress();
+          resetDownloadState();
 
           // try to load ads (safe)
           try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
 
-          let progress = 0;
-          const interval = setInterval(() => {
-            progress += 1;
-            if (progressBar) progressBar.style.width = progress + '%';
-            if (progressText) progressText.textContent = progress + '%';
-            if (progress >= 100) {
-              clearInterval(interval);
+          adInterval = setInterval(() => {
+            adProgressValue += 1;
+            if (progressBar) progressBar.style.width = adProgressValue + '%';
+            if (progressText) progressText.textContent = adProgressValue + '%';
+            if (adProgressValue >= 100) {
+              stopAdProgress();
               setTimeout(() => {
                 if (downloadReady) downloadReady.style.display = 'block';
                 if (finalDownload) {
@@ -529,10 +543,10 @@
       finalDownload = document.getElementById('finalDownload');
       downloadModal = document.getElementById('downloadModal');
 
-      if (closeModal) closeModal.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
-      if (finalDownload) finalDownload.addEventListener('click', () => { if (downloadModal) downloadModal.style.display = 'none'; });
+      if (closeModal) closeModal.addEventListener('click', () => { stopAdProgress(); resetDownloadState(); if (downloadModal) downloadModal.classList.remove('show'); });
+      if (finalDownload) finalDownload.addEventListener('click', () => { stopAdProgress(); resetDownloadState(); if (downloadModal) downloadModal.classList.remove('show'); });
 
-      window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) downloadModal.style.display = 'none'; });
+      window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) { stopAdProgress(); resetDownloadState(); downloadModal.classList.remove('show'); } });
 
       // Popup ad logic (defensive) + exclusivity with special ads
       const popupAd = document.getElementById('popupAd');
@@ -554,11 +568,10 @@
       }
 
       if (popupAd) {
-        function isVisible(el){ return el && el.style.display && el.style.display !== 'none'; }
         function anyAdPopupOpen(){ const ap = document.getElementById('adsPopup'); return isVisible(popupAd) || (ap && isVisible(ap)); }
         function showPopupAd(){
           if (anyAdPopupOpen()) return;
-          popupAd.style.display = 'flex';
+          popupAd.classList.add('show');
           requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
           startPopupTimer();
         }
@@ -567,7 +580,7 @@
         setTimeout(showPopupAd, 30000);
         setInterval(() => { if (!isVisible(popupAd)) showPopupAd(); }, 60000);
 
-        if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.style.display = 'none'; });
+        if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.classList.remove('show'); });
       }
 
       // Ads popup (center)
@@ -577,11 +590,11 @@
       function showAdsPopup() {
         if (!adsPopup) return;
         // Do not show if popupAd is visible
-        if (popupAd && popupAd.style.display && popupAd.style.display !== 'none') return;
-        adsPopup.style.display = 'flex';
+        if (popupAd && isVisible(popupAd)) return;
+        adsPopup.classList.add('show');
         renderAdIn('.ads-popup-body', 4089957271);
       }
-      function closeAdsPopup() { if (!adsPopup) return; adsPopup.style.display = 'none'; }
+      function closeAdsPopup() { if (!adsPopup) return; adsPopup.classList.remove('show'); }
 
       if (adsPopupClose) adsPopupClose.addEventListener('click', closeAdsPopup);
       // ORIGINAL: show after 15s. For testing, change 15000 -> 3000
@@ -596,16 +609,16 @@
       // Close modals on Escape
       window.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' || e.key === 'Esc') {
-          if (downloadModal) downloadModal.style.display = 'none';
-          if (popupAd) popupAd.style.display = 'none';
-          if (adsPopup) adsPopup.style.display = 'none';
+          if (downloadModal) downloadModal.classList.remove('show');
+          if (popupAd) popupAd.classList.remove('show');
+          if (adsPopup) adsPopup.classList.remove('show');
         }
       });
 
       // expose debug helpers
       window.showAdsPopupNow = showAdsPopup;
-      window.showPopupAdNow = function(){ const p = document.getElementById('popupAd'); if (p) p.style.display='block'; requestAnimationFrame(()=> ensureAdOrFallback('.popup-ad-content',9525901183)); };
-      window.testOpenDownloadModal = function(url){ const p = document.getElementById('downloadModal'); if (p) p.style.display='flex'; const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download',(url||'file').split('/').pop()); } };
+      window.showPopupAdNow = function(){ const p = document.getElementById('popupAd'); if (p) p.classList.add('show'); requestAnimationFrame(()=> ensureAdOrFallback('.popup-ad-content',9525901183)); };
+      window.testOpenDownloadModal = function(url){ const p = document.getElementById('downloadModal'); if (p) p.classList.add('show'); const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download',(url||'file').split('/').pop()); } };
 
       console.log('UI handlers attached. adsbygoogle defined:', !!window.adsbygoogle);
     }
