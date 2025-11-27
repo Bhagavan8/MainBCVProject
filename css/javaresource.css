@@ -519,6 +519,24 @@
             margin-bottom: 1rem;
         }
 
+        /* Inline mobile download message inside modal */
+        .download-inline-msg {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 12px;
+            background: #16a34a;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+        @media (max-width: 767px) {
+            .download-inline-msg { bottom: 8px; font-size: 0.85rem; }
+        }
+
         /* Popup Ad */
         .popup-ad {
             display: none;

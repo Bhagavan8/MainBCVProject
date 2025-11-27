@@ -26,6 +26,7 @@
     crossorigin="anonymous"></script>
 
   <link href="/css/javaresource.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
   <div id="header-container"></div>
@@ -316,6 +317,7 @@
     }
 
     function safeQuery(selector, ctx=document){ try { return ctx.querySelector(selector); } catch(e) { return null; } }
+    function isMobile(){ return (window.innerWidth || document.documentElement.clientWidth) < 768; }
 
     function isVisible(el){
       try {
@@ -544,7 +546,34 @@
       downloadModal = document.getElementById('downloadModal');
 
       if (closeModal) closeModal.addEventListener('click', () => { stopAdProgress(); resetDownloadState(); if (downloadModal) downloadModal.classList.remove('show'); });
-      if (finalDownload) finalDownload.addEventListener('click', () => { stopAdProgress(); resetDownloadState(); if (downloadModal) downloadModal.classList.remove('show'); });
+      if (finalDownload) finalDownload.addEventListener('click', (e) => {
+        try {
+          if (!finalDownload.getAttribute('href')) {
+            Toastify({ text: 'Preparing download...', duration: 2000, gravity: 'top', position: 'center' }).showToast();
+            return;
+          }
+          if (window.trackDownloadOnce && currentFile) window.trackDownloadOnce(currentFile);
+          if (progressBar) progressBar.style.width = '100%';
+          if (progressText) progressText.textContent = '100%';
+
+          const body = document.querySelector('#downloadModal .modal-body');
+          if (body) {
+            let msg = body.querySelector('.download-inline-msg');
+            if (!msg) {
+              msg = document.createElement('div');
+              msg.className = 'download-inline-msg';
+              msg.textContent = 'Downloaded';
+              body.appendChild(msg);
+            } else {
+              msg.textContent = 'Downloaded';
+              msg.style.display = 'block';
+            }
+            setTimeout(() => { if (msg) msg.style.display = 'none'; if (downloadModal) downloadModal.classList.remove('show'); stopAdProgress(); resetDownloadState(); }, 3500);
+          }
+        } catch (err) { console.warn('download click handler', err); }
+        // Do not prevent default; allow the browser to start download
+        setTimeout(() => { /* keep state until close */ }, 0);
+      });
 
       window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) { stopAdProgress(); resetDownloadState(); downloadModal.classList.remove('show'); } });
 
@@ -636,6 +665,8 @@
 
   })();
   </script>
+  <script type="module" src="/js/download-tracker.js"></script>
   <script type="module" src="/js/components/component-loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 </html>
