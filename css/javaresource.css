@@ -480,6 +480,15 @@
             position: relative;
         }
 
+        /* Ensure AdSense units render visibly inside modal/popup containers */
+        .ad-video-placeholder .adsbygoogle,
+        .popup-ad-content .adsbygoogle {
+            display: block !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 200px !important;
+        }
+
         .download-progress {
             margin: 1rem 0;
         }
