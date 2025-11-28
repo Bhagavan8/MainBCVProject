@@ -10,6 +10,8 @@
   padding: 16px
 }
 
+.openings-popup.active { display: flex; }
+
 .openings-card {
   background: #fff;
   border-radius: 16px;
@@ -130,18 +132,25 @@
 }
 
 @media(max-width:576px) {
-  .openings-grid {
-    grid-template-columns: 1fr
-  }
+  .openings-grid { grid-template-columns: 1fr }
 
   .item-count {
     font-size: 24px
   }
 
+  .openings-popup { align-items: flex-end; }
   .openings-card {
-    border-radius: 14px;
-    padding: 16px
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
+    max-width: none;
+    width: 100%;
+    animation: openings-slide-up .25s ease;
   }
+}
+
+@keyframes openings-slide-up {
+  from { transform: translateY(24px); opacity: .0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @media(min-width:576px) and (max-width:991.98px) {

@@ -1365,11 +1365,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        function isMobile() {
+            return window.matchMedia('(max-width: 767px)').matches;
+        }
+
         function updateRestoreVisibility() {
-            const leftFlag = localStorage.getItem(LEFT_KEY) === '1';
-            const rightFlag = localStorage.getItem(RIGHT_KEY) === '1';
             const restore = document.querySelector('.ad-restore');
-            if (leftFlag || rightFlag) {
+            if (isMobile()) {
+                if (restore) restore.remove();
+                return;
+            }
+            const anyHidden = (leftAd && leftAd.style.display === 'none') || (rightAd && rightAd.style.display === 'none');
+            if (anyHidden) {
                 ensureRestoreButton();
             } else if (restore) {
                 restore.remove();
@@ -1437,6 +1444,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if (!leftHiddenFlag && leftAd) leftAd.style.display = '';
                     if (!rightHiddenFlag && rightAd) rightAd.style.display = '';
+                    updateRestoreVisibility();
                 }
             }, { rootMargin: '0px', threshold: 0.01 });
             obs.observe(footer);
@@ -1469,6 +1477,73 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } catch (e) {
         console.warn('Progress/scroll-top setup error', e);
+    }
+
+    // Openings popup
+    try {
+        const fab = document.getElementById('openingsFab');
+        const popup = document.getElementById('openingsPopup');
+        const closeBtn = document.getElementById('openingsClose');
+        const updatedEl = document.getElementById('snapshotUpdated');
+        const cToday = document.getElementById('countToday');
+        const cWeek = document.getElementById('countWeek');
+        const cMonth = document.getElementById('countMonth');
+
+        function openPopup() {
+            if (!popup) return;
+            popup.classList.add('active');
+            if (updatedEl) updatedEl.textContent = 'Updating…';
+            // Perceived performance: show placeholders immediately
+            if (cToday) cToday.textContent = '—';
+            if (cWeek) cWeek.textContent = '—';
+            if (cMonth) cMonth.textContent = '—';
+            updateOpeningsCounts();
+        }
+
+        function closePopup() { if (popup) popup.classList.remove('active'); }
+
+        if (fab) fab.addEventListener('click', openPopup);
+        if (closeBtn) closeBtn.addEventListener('click', closePopup);
+
+        async function updateOpeningsCounts() {
+            try {
+                // If Firestore is available, attempt simple counts; otherwise, skip
+                if (typeof window.db === 'undefined') {
+                    if (updatedEl) updatedEl.textContent = 'Updated just now';
+                    return;
+                }
+                const { collection, query, where, getDocs, Timestamp } = window.firebase || {};
+                const db = window.db;
+                const now = new Date();
+                const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                const monthStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                const ts = (d) => Timestamp ? Timestamp.fromDate(d) : d;
+
+                async function countSince(start) {
+                    try {
+                        const q = query(collection(db, 'jobs'), where('createdAt', '>=', ts(start)), where('isActive', '==', true));
+                        const snap = await getDocs(q);
+                        return snap.size || 0;
+                    } catch (e) { return 0; }
+                }
+
+                const [t, w, m] = await Promise.all([
+                    countSince(todayStart),
+                    countSince(weekStart),
+                    countSince(monthStart)
+                ]);
+
+                if (cToday) cToday.textContent = String(t);
+                if (cWeek) cWeek.textContent = String(w);
+                if (cMonth) cMonth.textContent = String(m);
+                if (updatedEl) updatedEl.textContent = 'Updated just now';
+            } catch (e) {
+                if (updatedEl) updatedEl.textContent = 'Could not load stats';
+            }
+        }
+    } catch (e) {
+        console.warn('Openings popup setup error', e);
     }
 });
 

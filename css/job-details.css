@@ -753,7 +753,9 @@ body {
         box-shadow: none;
         background: transparent;
     }
-    .ad-close { top: 6px; right: 6px; width: 28px; height: 28px; line-height: 26px; z-index: 3; }
+    .ad-right { display: none !important; }
+    .ad-left { display: block; }
+    .ad-close { top: 6px; right: 6px; width: 28px; height: 28px; line-height: 26px; z-index: 100003; }
 }
 
 .ad-column {
@@ -1191,9 +1193,9 @@ body {
     /* Show sidebar ads on mobile but make them horizontal */
     .ad-left,
     .ad-right {
-        display: block !important;
+        display: block;
         width: 100%;
-        position: static;
+        position: relative;
         top: auto;
         min-width: auto;
         z-index: auto;
@@ -1391,7 +1393,7 @@ body {
     /* Show sidebar ads on mobile but make them horizontal */
     .ad-left,
     .ad-right {
-        display: block !important;
+        display: block;
         width: 100%;
         position: relative;
         top: auto;
@@ -1591,11 +1593,11 @@ body {
     /* Show sidebar ads on mobile but make them horizontal */
     .ad-left,
     .ad-right {
-        display: block !important;
+        display: block;
         width: 100%;
-        position: sticky;
-        top: 20px;
-        z-index: 2;
+        position: relative;
+        top: auto;
+        z-index: auto;
         min-width: auto;
     }
 
@@ -1909,7 +1911,7 @@ a {
 .scroll-top.show { opacity: 1; pointer-events: auto; }
 
 @media (max-width: 767px) {
-    .scroll-top { bottom: calc(12px + env(safe-area-inset-bottom)); right: calc(96px + env(safe-area-inset-right)); width: 36px; height: 36px; }
+    .scroll-top { bottom: calc(12px + env(safe-area-inset-bottom)); left: calc(12px + env(safe-area-inset-left)); right: auto; width: 36px; height: 36px; }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
