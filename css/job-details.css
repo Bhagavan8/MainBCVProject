@@ -1145,7 +1145,209 @@ body {
     .ad-right {
         display: block !important;
         width: 100%;
-        position: static;
+        position: sticky;
+        top: 20px;
+        min-width: auto;
+        z-index: 2;
+    }
+
+    .page-wrapper {
+        flex-direction: column;
+    }
+
+    .ad-column {
+        flex-direction: row;
+        gap: 16px;
+        overflow-x: auto;
+    }
+
+    .ad-left .ad-column,
+    .ad-right .ad-column {
+        flex-direction: column;
+    }
+}
+
+/* Small Mobile Devices (320px - 575px) */
+@media (max-width: 575px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 12px;
+    }
+
+    .main-container {
+        padding: 12px 0;
+    }
+
+    .job-title-section h1 {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .company-name-style {
+        font-size: 16px;
+    }
+
+    .meta-item {
+        font-size: 13px;
+    }
+
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .description-content,
+    .qualifications-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .skill-tag {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .community-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 150px;
+        padding: 16px;
+    }
+}
+
+/* Extra Small Mobile Devices (under 360px) */
+@media (max-width: 359px) {
+    .page-wrapper {
+        padding: 0 10px;
+    }
+
+    .job-title-section h1 {
+        font-size: 18px;
+    }
+
+    .company-name-style {
+        font-size: 15px;
+    }
+
+    .company-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .action-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+}
+
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 16px;
+    }
+
+    .company-logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .job-title-section h1 {
+        font-size: 24px;
+    }
+
+    .job-meta {
+        gap: 16px;
+    }
+
+    .ad-left,
+    .ad-right {
+        width: 140px;
+        min-width: 140px;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 200px;
+    }
+}
+
+/* Mobile Devices (576px - 767px) */
+@media (max-width: 767px) {
+    .main-container {
+        padding: 16px 0;
+    }
+
+    .job-header {
+        padding: 20px 0;
+    }
+
+    .company-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .job-title-section h1 {
+        font-size: 22px;
+    }
+
+    .company-name-style {
+        font-size: 18px;
+    }
+
+    .job-meta {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .stats-row {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .overview-section {
+        padding: 20px 0;
+    }
+
+    .quick-actions {
+        padding: 16px 0;
+    }
+
+    .community-links {
+        flex-direction: column;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    /* Show sidebar ads on mobile but make them horizontal */
+    .ad-left,
+    .ad-right {
+        display: block !important;
+        width: 100%;
+        position: sticky;
+        top: 20px;
+        z-index: 2;
         min-width: auto;
     }
 
@@ -1343,205 +1545,9 @@ body {
     .ad-right {
         display: block !important;
         width: 100%;
-        position: static;
-        min-width: auto;
-    }
-
-    .page-wrapper {
-        flex-direction: column;
-    }
-
-    .ad-column {
-        flex-direction: row;
-        gap: 16px;
-        overflow-x: auto;
-    }
-
-    .ad-left .ad-column,
-    .ad-right .ad-column {
-        flex-direction: column;
-    }
-}
-
-/* Small Mobile Devices (320px - 575px) */
-@media (max-width: 575px) {
-    .page-wrapper {
-        padding: 0 12px;
-        gap: 12px;
-    }
-
-    .main-container {
-        padding: 12px 0;
-    }
-
-    .job-title-section h1 {
-        font-size: 20px;
-        line-height: 1.3;
-    }
-
-    .company-name-style {
-        font-size: 16px;
-    }
-
-    .meta-item {
-        font-size: 13px;
-    }
-
-    .action-btn {
-        width: 100%;
-        max-width: 300px;
-        padding: 16px 20px;
-        font-size: 16px;
-    }
-
-    .job-details-container {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .description-content,
-    .qualifications-content {
-        font-size: 14px;
-        line-height: 1.6;
-    }
-
-    .skill-tag {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
-
-    .community-btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .ad-container,
-    .ad-box-job {
-        min-height: 150px;
-        padding: 16px;
-    }
-}
-
-/* Extra Small Mobile Devices (under 360px) */
-@media (max-width: 359px) {
-    .page-wrapper {
-        padding: 0 10px;
-    }
-
-    .job-title-section h1 {
-        font-size: 18px;
-    }
-
-    .company-name-style {
-        font-size: 15px;
-    }
-
-    .company-logo {
-        width: 70px;
-        height: 70px;
-    }
-
-    .action-btn {
-        padding: 14px 16px;
-        font-size: 15px;
-    }
-
-    .section-title {
-        font-size: 18px;
-    }
-}
-
-/* Tablets (768px - 1023px) */
-@media (max-width: 1023px) {
-    .page-wrapper {
-        padding: 0 12px;
-        gap: 16px;
-    }
-
-    .company-logo {
-        width: 90px;
-        height: 90px;
-    }
-
-    .job-title-section h1 {
-        font-size: 24px;
-    }
-
-    .job-meta {
-        gap: 16px;
-    }
-
-    .ad-left,
-    .ad-right {
-        width: 140px;
-        min-width: 140px;
-    }
-
-    .ad-container,
-    .ad-box-job {
-        min-height: 200px;
-    }
-}
-
-/* Mobile Devices (576px - 767px) */
-@media (max-width: 767px) {
-    .main-container {
-        padding: 16px 0;
-    }
-
-    .job-header {
-        padding: 20px 0;
-    }
-
-    .company-logo {
-        width: 80px;
-        height: 80px;
-    }
-
-    .job-title-section h1 {
-        font-size: 22px;
-    }
-
-    .company-name-style {
-        font-size: 18px;
-    }
-
-    .job-meta {
-        gap: 12px;
-        flex-direction: column;
-    }
-
-    .stats-row {
-        gap: 12px;
-        flex-direction: column;
-    }
-
-    .overview-section {
-        padding: 20px 0;
-    }
-
-    .quick-actions {
-        padding: 16px 0;
-    }
-
-    .community-links {
-        flex-direction: column;
-    }
-
-    .job-details-container {
-        grid-template-columns: 1fr;
-    }
-
-    .section-title {
-        font-size: 20px;
-    }
-
-    /* Show sidebar ads on mobile but make them horizontal */
-    .ad-left,
-    .ad-right {
-        display: block !important;
-        width: 100%;
-        position: static;
+        position: sticky;
+        top: 20px;
+        z-index: 2;
         min-width: auto;
     }
 
