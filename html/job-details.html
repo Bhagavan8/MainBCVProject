@@ -43,9 +43,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link href="/css/job-details.css" rel="stylesheet">
-    <link href="/css/jobpopup.css" rel="stylesheet">
+    <link href="/css/jobpopup.css?v=1" rel="stylesheet">
     <link rel="stylesheet" href="/css/ads.css">
-    <link rel="stylesheet" href="/css/jobpopup.css">
+    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
         crossorigin="anonymous"></script>
 
@@ -406,70 +406,7 @@
                                             (adsbygoogle = window.adsbygoogle || []).push({});
                                         </script>
                                     </div>
-                                    <div class="indmoney-banner">
-                                        <div class="banner-container">
-                                            <!-- Left Content -->
-                                            <div class="banner-content">
-                                                <img src="/assets/images/ads/indMoney.png" alt="IND Money"
-                                                    class="banner-logo">
-
-                                                <h2 class="banner-headline">
-                                                    🚀 Start <span style="color: #00C9A7">Secure</span> Investing
-                                                </h2>
-
-                                                <p class="banner-subheadline">
-                                                    ✅ SEBI Registered • 🛡️ Bank-Level Security • 📊 Expert Portfolio
-                                                    Tracking
-                                                </p>
-
-                                                <!-- Trust Badges -->
-                                                <div class="trust-badges">
-                                                    <div class="badge-item">🔒 Secure & Encrypted</div>
-                                                    <div class="badge-item">✅ SEBI Registered</div>
-                                                    <div class="badge-item">📱 10M+ Users Trust</div>
-                                                </div>
-
-                                                <!-- Features -->
-                                                <div class="features-horizontal">
-                                                    <div class="feature-item">📊 Track Stocks & MF</div>
-                                                    <div class="feature-item">🛡️ Secure Investments</div>
-                                                    <div class="feature-item">💰 Zero Commission</div>
-                                                </div>
-
-                                                <!-- Referral Code -->
-                                                <div class="referral-horizontal">
-                                                    <span class="referral-title">Use Referral Code:</span>
-                                                    <span class="referral-code">BHAC2STIIND</span>
-                                                    <button class="copy-button">Copy Code</button>
-                                                </div>
-
-                                                <div class="rating-strip">
-                                                    <span class="rating-badge">★ ★ ★ ★ ★</span>
-                                                    <span class="rating-text">4.8/5 app rating</span>
-                                                </div>
-
-                                                <div class="benefits-grid">
-                                                    <div class="benefit-item">📈 Real-time portfolio tracking</div>
-                                                    <div class="benefit-item">📊 Multi-asset dashboards</div>
-                                                    <div class="benefit-item">☁️ Secure cloud sync</div>
-                                                    <div class="benefit-item">🔔 Smart alerts</div>
-                                                </div>
-
-                                                <div class="education-strip">
-                                                    <div class="education-item">💰 Save money for future — start
-                                                        investing securely</div>
-                                                    <div class="education-item">🎓 Learn before you invest — explore
-                                                        trusted resources</div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Right CTA -->
-                                            <div class="banner-cta">
-                                                <a href="https://indmoney.onelink.me/RmHC/bm7r9h7z" class="cta-button"
-                                                    target="_blank">Start Investing Now</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
 
 
                                 </div>
@@ -571,11 +508,12 @@
 
                     <div class="ad-section mt-5">
                         <div class="ad-box-job">
-                            <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
-                                data-ad-client="ca-pub-6284022198338659" data-ad-slot="5327372547"></ins>
+                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+                                data-ad-slot="6895542413" data-ad-format="auto" data-full-width-responsive="true"></ins>
                             <script>
                                 (adsbygoogle = window.adsbygoogle || []).push({});
                             </script>
+
                         </div>
                     </div>
                 </div>
@@ -594,31 +532,34 @@
         </div>
     </div>
     <div class="openings-popup" id="openingsPopup" aria-hidden="true" role="dialog" aria-modal="true"
-        aria-label="Openings Snapshot">
+        style="display:none" aria-label="Openings Snapshot">
         <div class="openings-card" role="document">
             <button class="openings-close" id="openingsClose" aria-label="Close">✕</button>
-            <div class="openings-header d-flex justify-content-between align-items-center mb-2">
-                <h2 class="h6 mb-0">Openings</h2>
+            <div class="openings-header">
+                <div class="title">Openings Snapshot</div>
+                <div class="subtitle">Latest counts and trend</div>
+                <div class="openings-meta"><span id="latestPosted">—</span> • <span id="lastRefreshed">—</span></div>
             </div>
-            <div class="openings-grid">
-                <a class="openings-item" href="/html/jobs.html?range=today">
-                    <div class="item-title">Today</div>
-                    <div class="item-count" id="countToday">—</div>
-                    <div class="item-actions"><span class="btn-link">View jobs</span></div>
-                </a>
-                <a class="openings-item" href="/html/jobs.html?range=week">
-                    <div class="item-title">Last 7 Days</div>
-                    <div class="item-count" id="countWeek">—</div>
-                    <div class="item-actions"><span class="btn-link">View jobs</span></div>
-                </a>
-                <a class="openings-item" href="/html/jobs.html?range=month">
-                    <div class="item-title">Last 30 Days</div>
-                    <div class="item-count" id="countMonth">—</div>
-                    <div class="item-actions"><span class="btn-link">View jobs</span></div>
-                </a>
+            <div class="openings-chart" aria-hidden="false">
+                <svg viewBox="0 0 240 240" width="220" height="180" role="img" aria-label="Openings distribution">
+                    <g transform="translate(120,120)">
+                        <circle class="pie-bg" cx="0" cy="0" r="50" fill="none" stroke="#eef2f7" stroke-width="14"></circle>
+                        <circle id="pieToday" cx="0" cy="0" r="50" fill="none" stroke="#3b82f6" stroke-width="14" transform="rotate(-90)" stroke-linecap="round"></circle>
+                        <circle id="pieWeek" cx="0" cy="0" r="50" fill="none" stroke="#10b981" stroke-width="14" transform="rotate(-90)" stroke-linecap="round"></circle>
+                        <circle id="pieMonth" cx="0" cy="0" r="50" fill="none" stroke="#f59e0b" stroke-width="14" transform="rotate(-90)" stroke-linecap="round"></circle>
+                        <text id="pieTotal" x="0" y="0" text-anchor="middle" dominant-baseline="middle" font-size="18" fill="#0f172a">—</text>
+                        <text x="0" y="26" text-anchor="middle" font-size="12" fill="#64748b">Total</text>
+                    </g>
+                </svg>
+                <div class="pie-legend">
+                    <a class="legend-item" href="/html/jobs.html?range=today"><span class="dot" style="background:#3b82f6"></span><span>Today</span><strong id="legendToday">—</strong></a>
+                    <a class="legend-item" href="/html/jobs.html?range=week"><span class="dot" style="background:#10b981"></span><span>7 Days</span><strong id="legendWeek">—</strong></a>
+                    <a class="legend-item" href="/html/jobs.html?range=month"><span class="dot" style="background:#f59e0b"></span><span>30 Days</span><strong id="legendMonth">—</strong></a>
+                </div>
             </div>
-            <div class="openings-updated text-end text-muted small" id="snapshotUpdated">Updating…</div>
-            <div class="text-center mt-3">
+            <!-- Removed card counts for cleaner UI; legend links below the pie provide navigation -->
+            <div class="openings-footer">
+                <div class="openings-updated" id="snapshotUpdated">Updating…</div>
                 <a class="btn btn-success" href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o"
                     target="_blank" rel="noopener">Join our WhatsApp channel</a>
             </div>
@@ -701,9 +642,9 @@
 
         async function updateSnapshot() {
             const elUpdated = document.getElementById('snapshotUpdated');
-            const elToday = document.getElementById('countToday');
-            const elWeek = document.getElementById('countWeek');
-            const elMonth = document.getElementById('countMonth');
+            const elToday = document.getElementById('legendToday');
+            const elWeek = document.getElementById('legendWeek');
+            const elMonth = document.getElementById('legendMonth');
             try {
                 const now = toIndianNow();
                 const todayStr = formatDateForInput(now);
@@ -737,10 +678,13 @@
                     const di = toIndian(dt);
                     return di >= startMonth && di <= now;
                 }).length;
+                const weekUnique = Math.max(0, weekCount - todayCount);
+                const monthUnique = Math.max(0, monthCount - weekCount);
 
                 elToday.textContent = String(todayCount);
-                elWeek.textContent = String(weekCount);
-                elMonth.textContent = String(monthCount);
+                elWeek.textContent = String(weekUnique);
+                elMonth.textContent = String(monthUnique);
+                updateDonutFromLegend();
                 if (elUpdated) elUpdated.textContent = 'Updated';
             } catch (err) {
                 elToday && (elToday.textContent = '0');
@@ -751,11 +695,42 @@
             }
         }
 
+        function updateDonutFromLegend() {
+            const toNum = (el) => {
+                if (!el) return 0;
+                const s = (el.textContent || '').replace(/[^0-9]/g, '');
+                return s ? parseInt(s, 10) : 0;
+            };
+            const t = toNum(document.getElementById('legendToday'));
+            const w = toNum(document.getElementById('legendWeek'));
+            const m = toNum(document.getElementById('legendMonth'));
+            const total = t + w + m;
+            const pieTotal = document.getElementById('pieTotal');
+            if (pieTotal) pieTotal.textContent = String(total);
+            const r = 50;
+            const c = 2 * Math.PI * r;
+            const segs = [t, w, m].map(v => ((v / (total || 1)) * c));
+            let offset = 0;
+            const apply = (id, len) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.setAttribute('stroke-dasharray', `${len} ${c - len}`);
+                el.setAttribute('stroke-dashoffset', String(offset));
+                offset -= len;
+            };
+            apply('pieToday', segs[0]);
+            apply('pieWeek', segs[1]);
+            apply('pieMonth', segs[2]);
+        }
+
         function openOpenings() {
             const popup = document.getElementById('openingsPopup');
             if (!popup) return;
             popup.style.display = 'flex';
+            const elUpdated = document.getElementById('snapshotUpdated');
+            if (elUpdated) elUpdated.textContent = 'Updating…';
             updateSnapshot();
+            updateDonutFromLegend();
             const closeBtn = document.getElementById('openingsClose');
             if (closeBtn) closeBtn.focus();
         }
@@ -764,6 +739,9 @@
             if (!popup) return;
             popup.style.display = 'none';
         }
+
+        // Expose handlers globally to avoid duplicate bindings from other scripts
+        try { window.openOpenings = openOpenings; window.closeOpenings = closeOpenings; } catch (_) {}
 
         document.addEventListener('DOMContentLoaded', () => {
             const fab = document.getElementById('openingsFab');
@@ -777,11 +755,7 @@
             window.addEventListener('click', (e) => { if (e.target === popup) closeOpenings(); });
             window.addEventListener('keydown', (e) => { if (e.key === 'Escape' || e.key === 'Esc') closeOpenings(); });
 
-            try {
-                if (!sessionStorage.getItem('openingsPopupOnce')) {
-                    setTimeout(() => { openOpenings(); sessionStorage.setItem('openingsPopupOnce', '1'); }, 5000);
-                }
-            } catch (e) { /* ignore */ }
+            // No auto-open; open only when user clicks the FAB
         });
     </script>
     <style>
@@ -814,28 +788,9 @@
             }
             // no interactive save button in banner
         });
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyButtons = document.querySelectorAll('.copy-button');
-            copyButtons.forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigator.clipboard.writeText('BHAC2STIIND').then(() => {
-                        const originalText = this.textContent;
-                        this.textContent = 'Copied!';
-                        this.style.background = '#00C9A7';
-                        this.style.color = '#0A1128';
-
-                        setTimeout(() => {
-                            this.textContent = originalText;
-                            this.style.background = '';
-                            this.style.color = '';
-                        }, 2000);
-                    });
-                });
-            });
-        });
+        
 
     </script>
 </body>
+
 </html>

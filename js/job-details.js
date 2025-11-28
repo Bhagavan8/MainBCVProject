@@ -1488,36 +1488,93 @@ document.addEventListener('DOMContentLoaded', () => {
         const cToday = document.getElementById('countToday');
         const cWeek = document.getElementById('countWeek');
         const cMonth = document.getElementById('countMonth');
+        const ptToday = document.getElementById('ptToday');
+        const ptWeek = document.getElementById('ptWeek');
+        const ptMonth = document.getElementById('ptMonth');
+        const areaPath = document.getElementById('areaPath');
+        const linePath = document.getElementById('linePath');
+        const pieToday = document.getElementById('pieToday');
+        const pieWeek = document.getElementById('pieWeek');
+        const pieMonth = document.getElementById('pieMonth');
+        const pieTotal = document.getElementById('pieTotal');
+        const legendToday = document.getElementById('legendToday');
+        const legendWeek = document.getElementById('legendWeek');
+        const legendMonth = document.getElementById('legendMonth');
+
+        const ChartState = { today: null, week: null, month: null };
+        let countsObserver = null;
 
         function openPopup() {
             if (!popup) return;
             popup.classList.add('active');
+            popup.style.display = 'flex';
+            popup.setAttribute('aria-hidden', 'false');
             if (updatedEl) updatedEl.textContent = 'Updating…';
-            // Perceived performance: show placeholders immediately
-            if (cToday) cToday.textContent = '—';
-            if (cWeek) cWeek.textContent = '—';
-            if (cMonth) cMonth.textContent = '—';
-            updateOpeningsCounts();
+            if (ChartState.today != null) {
+                // Use prefetched values
+                if (cToday) cToday.textContent = String(ChartState.today);
+                if (cWeek) cWeek.textContent = String(ChartState.week);
+                if (cMonth) cMonth.textContent = String(ChartState.month);
+                updateChart(ChartState.today, ChartState.week, ChartState.month);
+                updatePie(ChartState.today, ChartState.week, ChartState.month);
+                if (updatedEl) updatedEl.textContent = 'Updated';
+            } else {
+                // Show placeholders immediately
+                if (cToday) cToday.textContent = '—';
+                if (cWeek) cWeek.textContent = '—';
+                if (cMonth) cMonth.textContent = '—';
+                updateOpeningsCounts();
+                // Ensure some chart is visible even before counts arrive
+                updateChartFallback();
+                // Fallback: if counts already exist in DOM from another source, paint chart
+                setTimeout(() => {
+                    updateChartFromCounts();
+                }, 200);
+            }
+            startCountsObserver();
         }
 
-        function closePopup() { if (popup) popup.classList.remove('active'); }
+        function closePopup() {
+            if (!popup) return;
+            popup.classList.remove('active');
+            popup.style.display = 'none';
+            popup.setAttribute('aria-hidden', 'true');
+            stopCountsObserver();
+        }
 
-        if (fab) fab.addEventListener('click', openPopup);
-        if (closeBtn) closeBtn.addEventListener('click', closePopup);
+        // Close when clicking outside the card
+        if (popup) {
+            popup.addEventListener('click', (e) => {
+                const card = e.target.closest('.openings-card');
+                if (!card) closePopup();
+            });
+        }
+
+        if (fab && !window.openOpenings) fab.addEventListener('click', openPopup);
+        if (closeBtn && !window.closeOpenings) closeBtn.addEventListener('click', closePopup);
 
         async function updateOpeningsCounts() {
             try {
                 // If Firestore is available, attempt simple counts; otherwise, skip
                 if (typeof window.db === 'undefined') {
-                    if (updatedEl) updatedEl.textContent = 'Updated just now';
+                    if (updatedEl) updatedEl.textContent = 'Offline';
+                    const now = new Date();
+                    setMeta(undefined, now);
                     return;
                 }
-                const { collection, query, where, getDocs, Timestamp } = window.firebase || {};
+                const { collection, query, where, getDocs, orderBy, limit, Timestamp } = window.firebase || {};
                 const db = window.db;
-                const now = new Date();
-                const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                const monthStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                const nowUtc = new Date();
+                const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+                const toISTLocal = (d) => new Date(d.getTime() + IST_OFFSET_MS);
+                const toUTCfromIST = (d) => new Date(d.getTime() - IST_OFFSET_MS);
+                const istNow = toISTLocal(nowUtc);
+                const istStartToday = new Date(istNow.getFullYear(), istNow.getMonth(), istNow.getDate());
+                const istStart7 = new Date(istStartToday.getTime() - 7 * 24 * 60 * 60 * 1000);
+                const istStart30 = new Date(istStartToday.getTime() - 30 * 24 * 60 * 60 * 1000);
+                const todayStart = toUTCfromIST(istStartToday);
+                const weekStart = toUTCfromIST(istStart7);
+                const monthStart = toUTCfromIST(istStart30);
                 const ts = (d) => Timestamp ? Timestamp.fromDate(d) : d;
 
                 async function countSince(start) {
@@ -1528,23 +1585,157 @@ document.addEventListener('DOMContentLoaded', () => {
                     } catch (e) { return 0; }
                 }
 
-                const [t, w, m] = await Promise.all([
+                const [t, wTotal, mTotal] = await Promise.all([
                     countSince(todayStart),
                     countSince(weekStart),
                     countSince(monthStart)
                 ]);
+                const w = Math.max(0, wTotal - t);
+                const m = Math.max(0, mTotal - wTotal);
 
-                if (cToday) cToday.textContent = String(t);
-                if (cWeek) cWeek.textContent = String(w);
-                if (cMonth) cMonth.textContent = String(m);
-                if (updatedEl) updatedEl.textContent = 'Updated just now';
+                if (legendToday) legendToday.textContent = String(t);
+                if (legendWeek) legendWeek.textContent = String(w);
+                if (legendMonth) legendMonth.textContent = String(m);
+                ChartState.today = t; ChartState.week = w; ChartState.month = m;
+                updateChart(t, w, m);
+                updatePie(t, w, m);
+                if (updatedEl) updatedEl.textContent = 'Updated';
+                await updateLatestPosted(db, { collection, query, orderBy, limit, getDocs });
+                const latestDate = getLatestPostedTime();
+                setMeta(latestDate, nowUtc);
             } catch (e) {
                 if (updatedEl) updatedEl.textContent = 'Could not load stats';
+                // Fallback to DOM counts if available
+                updateChartFromCounts();
+                const now = new Date();
+                setMeta(undefined, now);
             }
         }
+
+        function updateChart(t, w, m) {
+            const max = Math.max(1, t, w, m);
+            const baseY = 110; // baseline
+            const maxH = 90;   // max height
+            const scale = maxH / max;
+            const yt = baseY - Math.round(t * scale);
+            const yw = baseY - Math.round(w * scale);
+            const ym = baseY - Math.round(m * scale);
+            const x1 = 40, x2 = 160, x3 = 280;
+
+            if (ptToday) { ptToday.setAttribute('cy', String(yt)); }
+            if (ptWeek) { ptWeek.setAttribute('cy', String(yw)); }
+            if (ptMonth) { ptMonth.setAttribute('cy', String(ym)); }
+
+            const dLine = `M${x1} ${yt} L${x2} ${yw} L${x3} ${ym}`;
+            const dArea = `M${x1} ${baseY} L${x1} ${yt} L${x2} ${yw} L${x3} ${ym} L${x3} ${baseY} Z`;
+            if (linePath) { linePath.setAttribute('d', dLine); }
+            if (areaPath) { areaPath.setAttribute('d', dArea); }
+        }
+
+        function updateChartFromCounts() {
+            const toNum = (el) => {
+                if (!el) return null;
+                const s = (el.textContent || '').replace(/[^0-9]/g, '');
+                return s ? parseInt(s, 10) : null;
+            };
+            const t = toNum(legendToday);
+            const w = toNum(legendWeek);
+            const m = toNum(legendMonth);
+            if (t != null && w != null && m != null) {
+                updateChart(t, w, m);
+                updatePie(t, w, m);
+                if (updatedEl) updatedEl.textContent = 'Updated';
+                const now = new Date();
+                setMeta(undefined, now);
+            }
+        }
+
+        function updateChartFallback() {
+            // Friendly placeholder trend so chart isn't empty
+            const t = 8, w = 24, m = 56;
+            updateChart(t, w, m);
+            updatePie(t, w, m);
+        }
+
+        function updatePie(t, w, m) {
+            const r = 50;
+            const c = 2 * Math.PI * r;
+            const values = [Math.max(0, t), Math.max(0, w), Math.max(0, m)];
+            const sum = values.reduce((a, b) => a + b, 0) || 1; // avoid zero sum
+            const segs = values.map(v => (v / sum) * c);
+            let offset = 0;
+            const apply = (el, len) => {
+                if (!el) return;
+                el.setAttribute('stroke-dasharray', `${len} ${c - len}`);
+                el.setAttribute('stroke-dashoffset', String(offset));
+                offset -= len; // accumulate backwards due to rotate(-90)
+            };
+            apply(pieToday, segs[0]);
+            apply(pieWeek, segs[1]);
+            apply(pieMonth, segs[2]);
+            if (pieTotal) pieTotal.textContent = String(values[0] + values[1] + values[2]);
+            if (legendToday) legendToday.textContent = String(values[0]);
+            if (legendWeek) legendWeek.textContent = String(values[1]);
+            if (legendMonth) legendMonth.textContent = String(values[2]);
+        }
+
+        let latestPostedCache = null;
+        async function updateLatestPosted(db, api) {
+            try {
+                const { collection, query, orderBy, limit, getDocs } = api;
+                const q = query(collection(db, 'jobs'), orderBy('createdAt', 'desc'), limit(1));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    const doc = snap.docs[0].data();
+                    latestPostedCache = doc.createdAt;
+                }
+            } catch (_) {}
+        }
+
+        function getLatestPostedTime() {
+            const ts = latestPostedCache;
+            if (!ts) return undefined;
+            if (ts && typeof ts.toDate === 'function') return ts.toDate();
+            return ts;
+        }
+
+        function setMeta(latestDate, refreshedDate) {
+            try {
+                const latestEl = document.getElementById('latestPosted');
+                const refEl = document.getElementById('lastRefreshed');
+                const fmt = (d) => new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }).format(d);
+                if (latestEl) latestEl.textContent = latestDate ? `Latest: ${fmt(latestDate)}` : 'Offline';
+                if (refEl) refEl.textContent = refreshedDate ? `Refreshed: ${fmt(refreshedDate)}` : '';
+            } catch (_) {}
+        }
+
+        // Prefetch counts shortly after page becomes idle
+        try {
+            const prefetch = () => updateOpeningsCounts();
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(prefetch, { timeout: 1500 });
+            } else {
+                setTimeout(prefetch, 1200);
+            }
+        } catch (_) {}
     } catch (e) {
         console.warn('Openings popup setup error', e);
     }
 });
 
 export { JobDetailsManager };
+        function startCountsObserver() {
+            try {
+                if (countsObserver) return;
+                const els = [cToday, cWeek, cMonth].filter(Boolean);
+                if (els.length === 0) return;
+                countsObserver = new MutationObserver(() => {
+                    updateChartFromCounts();
+                });
+                els.forEach(el => countsObserver.observe(el, { childList: true, characterData: true, subtree: true }));
+            } catch (_) {}
+        }
+
+        function stopCountsObserver() {
+            try { if (countsObserver) { countsObserver.disconnect(); countsObserver = null; } } catch(_) {}
+        }
