@@ -1329,6 +1329,81 @@ class JobDetailsManager {
 
 document.addEventListener('DOMContentLoaded', () => {
     new JobDetailsManager();
+
+    // Side ads close buttons (persist via localStorage)
+    try {
+        const leftAd = document.querySelector('.ad-left');
+        const rightAd = document.querySelector('.ad-right');
+        const leftClose = leftAd ? leftAd.querySelector('.ad-close') : null;
+        const rightClose = rightAd ? rightAd.querySelector('.ad-close') : null;
+
+        const LEFT_KEY = 'jd_hide_left_ad';
+        const RIGHT_KEY = 'jd_hide_right_ad';
+
+        if (localStorage.getItem(LEFT_KEY) === '1' && leftAd) leftAd.style.display = 'none';
+        if (localStorage.getItem(RIGHT_KEY) === '1' && rightAd) rightAd.style.display = 'none';
+
+        function ensureRestoreButton() {
+            let restore = document.querySelector('.ad-restore');
+            if (!restore) {
+                restore = document.createElement('button');
+                restore.className = 'ad-restore';
+                restore.type = 'button';
+                restore.setAttribute('aria-label', 'Show ads');
+                restore.textContent = 'Show Ads';
+                document.body.appendChild(restore);
+                restore.addEventListener('click', () => {
+                    try {
+                        localStorage.removeItem(LEFT_KEY);
+                        localStorage.removeItem(RIGHT_KEY);
+                    } catch(e) {}
+                    if (leftAd) leftAd.style.display = '';
+                    if (rightAd) rightAd.style.display = '';
+                    restore.remove();
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+                });
+            }
+        }
+
+        function updateRestoreVisibility() {
+            const hiddenLeft = leftAd && leftAd.style.display === 'none';
+            const hiddenRight = rightAd && rightAd.style.display === 'none';
+            const restore = document.querySelector('.ad-restore');
+            if (hiddenLeft || hiddenRight) {
+                ensureRestoreButton();
+            } else if (restore) {
+                restore.remove();
+            }
+        }
+
+        function hideAd(container, key) {
+            if (!container) return;
+            container.style.display = 'none';
+            try { localStorage.setItem(key, '1'); } catch (e) {}
+            updateRestoreVisibility();
+        }
+
+        if (leftClose && leftAd) {
+            leftClose.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                hideAd(leftAd, LEFT_KEY);
+            });
+        }
+
+        if (rightClose && rightAd) {
+            rightClose.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                hideAd(rightAd, RIGHT_KEY);
+            });
+        }
+
+        // At load, show restore button if ads are hidden
+        updateRestoreVisibility();
+    } catch (e) {
+        console.warn('Side ad close setup error', e);
+    }
 });
 
 export { JobDetailsManager };

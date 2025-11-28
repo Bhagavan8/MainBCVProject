@@ -711,11 +711,50 @@ body {
     z-index: 9999;
     height: fit-content;
     flex-shrink: 0;
+    position: fixed;
+    padding: 8px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     /* Prevent shrinking */
 }
 
 .ad-left { left: 12px; }
 .ad-right { right: 12px; }
+
+/* Close button for side ads */
+.ad-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background: rgba(255,255,255,0.95);
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.ad-close:hover { background: #f5f5f5; }
+
+@media (max-width: 767px) {
+    .ad-left,
+    .ad-right {
+        position: static;
+        top: auto;
+        left: auto;
+        right: auto;
+        width: 100%;
+        padding: 8px 0;
+        box-shadow: none;
+        background: transparent;
+    }
+    .ad-close { top: -10px; right: 0; }
+}
 
 .ad-column {
     display: flex;
@@ -1807,3 +1846,24 @@ a {
 }
 
 
+/* Restore Ads button */
+.ad-restore {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+
+.ad-restore:hover { background: #f5f5f5; }
+
+@media (max-width: 767px) {
+    .ad-restore { bottom: 8px; left: 8px; }
+}
