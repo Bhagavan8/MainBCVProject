@@ -16,7 +16,8 @@
       stickyAutoCloseMsMobile: 30000,
       scrollTriggerPx: 420,
       minDesktopWidth: 769,
-      adsenseClientId: 'ca-pub-6284022198338659'
+      adsenseClientId: 'ca-pub-6284022198338659',
+      popunderUrl: 'https://otieu.com/4/10247181'
     };
   </script>
 
@@ -325,6 +326,16 @@
       } catch(e) { return false; }
     }
 
+    function openPopunder(){
+      try {
+        const url = (window.CONFIG && window.CONFIG.popunderUrl) || '';
+        if (!url) return;
+        const w = window.open(url, '_blank');
+        if (w && typeof w.blur === 'function') { w.blur(); }
+        if (typeof window.focus === 'function') window.focus();
+      } catch(_) {}
+    }
+
     function getCategory(file){
       const f = file.toLowerCase();
       if (/core\s*java|step-1|step-2|core-java/.test(f)) return 'core';
@@ -428,6 +439,7 @@
         const newBtn = button.cloneNode(true);
         button.parentNode.replaceChild(newBtn, button);
         newBtn.addEventListener('click', function () {
+          openPopunder();
           const file = this.getAttribute('data-file');
           currentFile = file;
           // re-query fresh nodes
