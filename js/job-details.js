@@ -1401,8 +1401,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // At load, show restore button if ads are hidden
         updateRestoreVisibility();
+
+        const progressEl = document.getElementById('readingProgress');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        function updateProgress() {
+            const doc = document.documentElement;
+            const scrolled = doc.scrollTop || document.body.scrollTop;
+            const height = doc.scrollHeight - doc.clientHeight;
+            const pct = height > 0 ? (scrolled / height) * 100 : 0;
+            if (progressEl) progressEl.style.width = pct + '%';
+            if (scrollTopBtn) scrollTopBtn.classList.toggle('show', scrolled > 300);
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        updateProgress();
+
+        if (scrollTopBtn) {
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        const footer = document.getElementById('footer-container');
+        if (footer) {
+            const obs = new IntersectionObserver((entries) => {
+                const entry = entries[0];
+                const isAtFooter = entry && entry.isIntersecting;
+                const leftHiddenFlag = localStorage.getItem(LEFT_KEY) === '1';
+                const rightHiddenFlag = localStorage.getItem(RIGHT_KEY) === '1';
+                if (isAtFooter) {
+                    if (leftAd) leftAd.style.display = 'none';
+                    if (rightAd) rightAd.style.display = 'none';
+                    if (scrollTopBtn) scrollTopBtn.classList.add('show');
+                } else {
+                    if (!leftHiddenFlag && leftAd) leftAd.style.display = '';
+                    if (!rightHiddenFlag && rightAd) rightAd.style.display = '';
+                }
+            }, { rootMargin: '0px', threshold: 0.01 });
+            obs.observe(footer);
+        }
     } catch (e) {
         console.warn('Side ad close setup error', e);
+    }
+
+    // Reading progress and scroll-top should work regardless of ad setup
+    try {
+        const progressEl = document.getElementById('readingProgress');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        function updateProgress() {
+            const doc = document.documentElement;
+            const scrolled = doc.scrollTop || document.body.scrollTop;
+            const height = doc.scrollHeight - doc.clientHeight;
+            const pct = height > 0 ? (scrolled / height) * 100 : 0;
+            if (progressEl) progressEl.style.width = pct + '%';
+            if (scrollTopBtn) scrollTopBtn.classList.toggle('show', scrolled > 150);
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        updateProgress();
+
+        if (scrollTopBtn) {
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    } catch (e) {
+        console.warn('Progress/scroll-top setup error', e);
     }
 });
 

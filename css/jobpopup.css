@@ -106,7 +106,7 @@
 
 .openings-fab {
   position: fixed;
-  right: 16px;
+  right: 32px;
   bottom: 16px;
   background: #198754;
   color: #fff;
@@ -167,7 +167,7 @@
 @supports (padding: env(safe-area-inset-bottom)) {
   .openings-fab {
     bottom: calc(16px + env(safe-area-inset-bottom));
-    right: calc(16px + env(safe-area-inset-right))
+    right: calc(32px + env(safe-area-inset-right))
   }
 
   .openings-popup {

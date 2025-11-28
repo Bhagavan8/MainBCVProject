@@ -744,7 +744,7 @@ body {
 @media (max-width: 767px) {
     .ad-left,
     .ad-right {
-        position: static;
+        position: relative;
         top: auto;
         left: auto;
         right: auto;
@@ -753,7 +753,7 @@ body {
         box-shadow: none;
         background: transparent;
     }
-    .ad-close { top: -10px; right: 0; }
+    .ad-close { top: 6px; right: 6px; width: 28px; height: 28px; line-height: 26px; z-index: 3; }
 }
 
 .ad-column {
@@ -1096,6 +1096,11 @@ body {
         width: 200px;
         min-width: 200px;
     }
+
+    .main-container {
+        margin-left: 220px;
+        margin-right: 220px;
+    }
 }
 
 /* Tablets (768px - 1023px) */
@@ -1388,7 +1393,7 @@ body {
     .ad-right {
         display: block !important;
         width: 100%;
-        position: static;
+        position: relative;
         top: auto;
         z-index: auto;
         min-width: auto;
@@ -1866,4 +1871,51 @@ a {
 
 @media (max-width: 767px) {
     .ad-restore { bottom: 8px; left: 8px; }
+}
+/* Desktops (992px - 1199px): add margins so fixed ads don't overlay content */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .main-container {
+        margin-left: 180px;
+        margin-right: 180px;
+    }
+}
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    z-index: 9998;
+}
+
+.scroll-top {
+    position: fixed;
+    bottom: 16px;
+    right: 128px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10000;
+}
+
+.scroll-top.show { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 767px) {
+    .scroll-top { bottom: 12px; right: 96px; width: 36px; height: 36px; }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .scroll-top { right: 160px; }
+}
+
+@media (min-width: 1200px) {
+    .scroll-top { right: 180px; }
 }
