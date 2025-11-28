@@ -117,7 +117,7 @@
   align-items: center;
   gap: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
-  z-index: 3500;
+  z-index: 100002;
   cursor: pointer
 }
 

@@ -1366,10 +1366,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function updateRestoreVisibility() {
-            const hiddenLeft = leftAd && leftAd.style.display === 'none';
-            const hiddenRight = rightAd && rightAd.style.display === 'none';
+            const leftFlag = localStorage.getItem(LEFT_KEY) === '1';
+            const rightFlag = localStorage.getItem(RIGHT_KEY) === '1';
             const restore = document.querySelector('.ad-restore');
-            if (hiddenLeft || hiddenRight) {
+            if (leftFlag || rightFlag) {
                 ensureRestoreButton();
             } else if (restore) {
                 restore.remove();

@@ -1903,13 +1903,13 @@ a {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
-    z-index: 10000;
+    z-index: 100001;
 }
 
 .scroll-top.show { opacity: 1; pointer-events: auto; }
 
 @media (max-width: 767px) {
-    .scroll-top { bottom: 12px; right: 96px; width: 36px; height: 36px; }
+    .scroll-top { bottom: calc(12px + env(safe-area-inset-bottom)); right: calc(96px + env(safe-area-inset-right)); width: 36px; height: 36px; }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
