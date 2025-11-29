@@ -1,5 +1,5 @@
 import { auth, db } from '../firebase-config.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -144,6 +144,62 @@ document.addEventListener('DOMContentLoaded', () => {
                     position: "right",
                     style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
                 }).showToast();
+            }
+        });
+    }
+    const googleBtn = document.getElementById('googleSignInBtn');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', async () => {
+            try {
+                googleBtn.disabled = true;
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const userRef = doc(db, 'users', user.uid);
+                const existing = await getDoc(userRef);
+                const name = (user.displayName || '').trim();
+                const [firstName = '', lastName = ''] = name.split(' ');
+                if (!existing.exists()) {
+                    await setDoc(userRef, {
+                        firstName,
+                        lastName,
+                        email: user.email || '',
+                        phone: user.phoneNumber || '',
+                        photoURL: user.photoURL || '',
+                        createdAt: new Date(),
+                        lastLogin: new Date()
+                    });
+                } else {
+                    const data = existing.data();
+                    await setDoc(userRef, { ...data, lastLogin: new Date() }, { merge: true });
+                }
+                const sessionData = {
+                    uid: user.uid,
+                    email: user.email || '',
+                    firstName: firstName,
+                    displayName: name || firstName,
+                    photoURL: user.photoURL || ''
+                };
+                sessionStorage.setItem('userData', JSON.stringify(sessionData));
+                Toastify({
+                    text: "Login successful! Redirecting...",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+                }).showToast();
+                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
+            } catch (error) {
+                console.error('Google sign-in error:', error);
+                Toastify({
+                    text: error.message || 'Google sign-in failed',
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+                }).showToast();
+            } finally {
+                googleBtn.disabled = false;
             }
         });
     }
