@@ -155,6 +155,18 @@ async function displayNewsDetail(newsData) {
 
         const articleTitleEl = document.querySelector('.article-title');
         if (articleTitleEl) articleTitleEl.textContent = newsData.title || '';
+        const breadcrumbTitleEl = document.querySelector('.breadcrumb .truncate-text');
+        const breadcrumbEllipsisEl = document.querySelector('.breadcrumb .ellipsis');
+        function truncateTitle(t, max){
+            const s = String(t || '').trim();
+            if (s.length > max) return s.slice(0, max) + '...';
+            return s;
+        }
+        if (breadcrumbTitleEl) breadcrumbTitleEl.textContent = truncateTitle(newsData.title, 40);
+        if (breadcrumbEllipsisEl) breadcrumbEllipsisEl.style.display = 'none';
+        if (newsData.title) {
+            try { document.title = `${newsData.title} - News Portal`; } catch(_) {}
+        }
         const articleMetaEl = document.querySelector('.article-meta');
         if (articleMetaEl) {
             if (newsData.url) {
@@ -180,6 +192,23 @@ async function displayNewsDetail(newsData) {
         const dateElement = document.querySelector('.date');
         if (dateElement && newsData.createdAt) {
             dateElement.textContent = formatDate(newsData.createdAt);
+        }
+
+        const readingTimeEl = document.querySelector('.reading-time');
+        if (readingTimeEl) {
+            let start = Date.now();
+            function fmt(ms){
+                const totalSec = Math.floor(ms / 1000);
+                const m = Math.floor(totalSec / 60);
+                const s = totalSec % 60;
+                return `${m}m ${String(s).padStart(2,'0')}s`;
+            }
+            readingTimeEl.textContent = fmt(0);
+            if (window.__readingTimer) clearInterval(window.__readingTimer);
+            window.__readingTimer = setInterval(() => {
+                const elapsed = Date.now() - start;
+                readingTimeEl.textContent = fmt(elapsed);
+            }, 1000);
         }
 
         function toPlainText(val){
@@ -560,7 +589,7 @@ async function loadLatestNews() {
                     const img = resolveImagePath(news.imageUrl || news.imagePath || '/assets/images/logo.png');
                     return `
                         <a href="news-detail.html?id=${d.id}" class="d-flex align-items-center text-decoration-none mb-2">
-                            <img src="${img}" alt="${news.title}" style="width:48px;height:32px;object-fit:cover;border-radius:4px" class="me-2" />
+                            <img src="${img}" alt="${news.title}" class="latest-thumb-img me-2" />
                             <div class="flex-grow-1">
                                 <div class="text-dark" style="font-size:0.9rem;line-height:1.2">${news.title}</div>
                                 <small class="text-muted"><i class="bi bi-clock"></i> ${formatDate(news.createdAt)}</small>
