@@ -744,6 +744,33 @@ async function loadNewsDetail() {
 
 document.addEventListener('DOMContentLoaded', loadNewsDetail);
 
+function setupStickySidebarAdsHide(){
+    const ads = Array.from(document.querySelectorAll('.sticky-sidebar-ad'));
+    const footer = document.getElementById('footer-container');
+    if (!ads.length || !footer) return;
+    const hideAll = () => ads.forEach(el => { el.style.display = 'none'; });
+    try {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    hideAll();
+                    io.disconnect();
+                }
+            });
+        }, { root: null, threshold: 0 });
+        io.observe(footer);
+    } catch (_) {
+        const onScroll = () => {
+            const r = footer.getBoundingClientRect();
+            if (r.top <= window.innerHeight) {
+                hideAll();
+                window.removeEventListener('scroll', onScroll, { passive: true });
+            }
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+    }
+}
+
 // reading progress
 window.addEventListener('scroll', () => {
     const docElement = document.documentElement;
@@ -759,6 +786,7 @@ window.addEventListener('resize', () => {
 // init page ad call (best-effort; adsissue auto-runs too)
 setTimeout(() => {
     initPageAds();
+    setupStickySidebarAdsHide();
 }, 1200);
 
 // export for debug
