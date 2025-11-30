@@ -748,7 +748,8 @@ function setupStickySidebarAdsHide(){
     const ads = Array.from(document.querySelectorAll('.sticky-sidebar-ad'));
     const footer = document.getElementById('footer-container');
     if (!ads.length || !footer) return;
-    const hideAll = () => ads.forEach(el => { el.style.display = 'none'; });
+    let hidden = false;
+    const hideAll = () => { if (hidden) return; ads.forEach(el => { el.style.display = 'none'; }); hidden = true; };
     try {
         const io = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
@@ -762,7 +763,9 @@ function setupStickySidebarAdsHide(){
     } catch (_) {
         const onScroll = () => {
             const r = footer.getBoundingClientRect();
-            if (r.top <= window.innerHeight) {
+            const doc = document.documentElement;
+            const nearBottom = (doc.scrollHeight - doc.clientHeight - doc.scrollTop) <= 4;
+            if (r.top <= window.innerHeight || nearBottom) {
                 hideAll();
                 window.removeEventListener('scroll', onScroll, { passive: true });
             }
