@@ -52,19 +52,32 @@ function setupShareButtons(newsData) {
     const tw = document.querySelector('.share-btn.twitter');
     const wa = document.querySelector('.share-btn.whatsapp');
 
+    const tryNativeShare = () => {
+        if (navigator.share) {
+            navigator.share({ title: shareTitle, url: shareUrl }).catch(() => {});
+            return true;
+        }
+        return false;
+    };
     if (fb) {
         fb.onclick = () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+            if (!tryNativeShare()) {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+            }
         };
     }
     if (tw) {
         tw.onclick = () => {
-            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`, '_blank');
+            if (!tryNativeShare()) {
+                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`, '_blank');
+            }
         };
     }
     if (wa) {
         wa.onclick = () => {
-            window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`, '_blank');
+            if (!tryNativeShare()) {
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`, '_blank');
+            }
         };
     }
 }
@@ -541,13 +554,14 @@ async function displayNewsDetail(newsData) {
             }
             const desc = (newsData.excerpt || newsData.description || (paragraphs[0] && paragraphs[0].intro) || '').toString().slice(0, 160);
             const url = window.location.href;
+            const absImg = (src && !/^https?:\/\//.test(src)) ? (new URL(src, location.origin)).href : src;
             setMeta('meta[property="og:title"]','property', newsData.title || 'News Detail');
             setMeta('meta[property="og:description"]','property', desc || 'Read the latest story on BCVWorld.');
-            setMeta('meta[property="og:image"]','property', src);
+            setMeta('meta[property="og:image"]','property', absImg);
             setMeta('meta[property="og:url"]','property', url);
             setMeta('meta[name="twitter:title"]','name', newsData.title || 'News Detail');
             setMeta('meta[name="twitter:description"]','name', desc || 'Read the latest story on BCVWorld.');
-            setMeta('meta[name="twitter:image"]','name', src);
+            setMeta('meta[name="twitter:image"]','name', absImg);
         }
 
         setupShareButtons(newsData);
