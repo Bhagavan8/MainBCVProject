@@ -78,6 +78,18 @@ RewriteRule ^(.*)$ https://bcvworld.com/$1 [L,R=301]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Route social bots to share preview for dynamic OG tags
+RewriteCond %{QUERY_STRING} (^|&)id=([A-Za-z0-9_\-]+) [NC]
+RewriteCond %{REQUEST_URI} ^/html/news/news-detail\.html$ [NC]
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Twitterbot|Slackbot|WhatsApp|TelegramBot|Discordbot|LinkedInBot) [NC]
+RewriteRule ^.*$ /html/news/share.php?id=%2 [L]
+
+# Optional: force preview via share=1
+RewriteCond %{QUERY_STRING} (^|&)id=([A-Za-z0-9_\-]+) [NC]
+RewriteCond %{QUERY_STRING} (^|&)share=1 [NC]
+RewriteCond %{REQUEST_URI} ^/html/news/news-detail\.html$ [NC]
+RewriteRule ^.*$ /html/news/share.php?id=%2 [L]
+
 # Add MIME Types for downloads
 AddType application/pdf .pdf
 AddType application/zip .zip

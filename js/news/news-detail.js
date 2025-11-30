@@ -527,6 +527,27 @@ async function displayNewsDetail(newsData) {
                 <figcaption class="text-muted mt-2 text-center">
                     ${newsData.imageCaption || ''}
                 </figcaption>`;
+
+            // Set social meta tags (best-effort; some platforms ignore dynamic changes)
+            function setMeta(selector, attr, value){
+                let el = document.querySelector(selector);
+                if (!el) {
+                    el = document.createElement('meta');
+                    if (attr === 'property') el.setAttribute('property', selector.replace('meta[property="','').replace('"]',''));
+                    if (attr === 'name') el.setAttribute('name', selector.replace('meta[name="','').replace('"]',''));
+                    document.head.appendChild(el);
+                }
+                el.setAttribute('content', value);
+            }
+            const desc = (newsData.excerpt || newsData.description || (paragraphs[0] && paragraphs[0].intro) || '').toString().slice(0, 160);
+            const url = window.location.href;
+            setMeta('meta[property="og:title"]','property', newsData.title || 'News Detail');
+            setMeta('meta[property="og:description"]','property', desc || 'Read the latest story on BCVWorld.');
+            setMeta('meta[property="og:image"]','property', src);
+            setMeta('meta[property="og:url"]','property', url);
+            setMeta('meta[name="twitter:title"]','name', newsData.title || 'News Detail');
+            setMeta('meta[name="twitter:description"]','name', desc || 'Read the latest story on BCVWorld.');
+            setMeta('meta[name="twitter:image"]','name', src);
         }
 
         setupShareButtons(newsData);
