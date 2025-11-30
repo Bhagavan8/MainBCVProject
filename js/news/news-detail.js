@@ -182,125 +182,286 @@ async function displayNewsDetail(newsData) {
             dateElement.textContent = formatDate(newsData.createdAt);
         }
 
-        function getParagraphs(data){
+        function toPlainText(val){
+            if (!val) return '';
+            if (typeof val === 'string') return val.trim();
+            if (typeof val === 'number' || typeof val === 'boolean') return String(val).trim();
+            if (typeof val === 'object') {
+                const t = val.text || val.title || val.heading || val.description || val.content || val.value;
+                if (typeof t === 'string') return t.trim();
+                if (Array.isArray(val)) return val.map(toPlainText).join(' ').trim();
+            }
+            return '';
+        }
+        function normalizeParagraphs(data){
             const p = data.paragraphs;
             if (Array.isArray(p)) {
-                return p.map(s => String(s).trim()).filter(Boolean);
+                if (p.length && typeof p[0] === 'object' && p[0] !== null) {
+                    return p.map(item => {
+                        const introCandidates = [item.title, item.heading, item.text, item.intro, item.description];
+                        let intro = introCandidates.map(toPlainText).find(s => s);
+                        let bullets = Array.isArray(item.points) ? item.points
+                            .map(pt => {
+                                if (typeof pt === 'string') return pt.trim();
+                                const t = toPlainText(pt);
+                                return (pt && typeof pt === 'object' && pt.bold) ? { text: t, bold: true } : t;
+                            })
+                            .filter(b => (typeof b === 'string' ? b : (b && b.text)))
+                            : [];
+                        function pointText(pt){
+                            if (typeof pt === 'string') return pt.trim();
+                            return toPlainText(pt);
+                        }
+                        if (!intro && bullets.length) {
+                            intro = pointText(bullets[0]);
+                            bullets = bullets.slice(1);
+                        }
+                        const tail = toPlainText(item.description);
+                        return { intro: toPlainText(intro), bullets, tail, bold: !!item.bold };
+                    }).filter(x => x.intro || (x.bullets && x.bullets.length) || x.tail);
+                } else {
+                    return p.map(s => ({ intro: String(s).trim(), bullets: [], tail: '', bold: false })).filter(x => x.intro);
+                }
             }
-            const raw = String(p || data.content || '').trim();
+            const raw = String(data.content || '').trim();
             if (!raw) return [];
-            let parts = raw.split(/\r?\n\r?\n/).map(s => s.trim()).filter(Boolean);
-            if (parts.length < 2) {
-                parts = raw.split(/\.\s+/).map(s => s.trim()).filter(Boolean);
-            }
-            return parts;
+            const parts = raw.split(/\r?\n\r?\n/).map(s => s.trim()).filter(Boolean);
+            return parts.map(s => ({ intro: s, bullets: [], tail: '', bold: false }));
         }
-        const paragraphs = getParagraphs(newsData);
+        const paragraphs = normalizeParagraphs(newsData);
         const contentContainer = document.querySelector('.article-content');
         if (!contentContainer) return;
 
         
 
-        function splitIntoSentences(t){
-            return String(t).split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(Boolean);
+        function sanitizeForDisplay(input){
+            let s = String(input || '');
+            s = s.replace(/\(\/[^)]*\)/g, '');
+            s = s.replace(/\(\s*\/\s*\)/g, '');
+            s = s.replace(/\(\s*\)/g, '');
+            s = s.replace(/\/\)/g, '');
+            s = s.replace(/\s{2,}/g, ' ').trim();
+            return s;
         }
-        function appendStructuredParagraph(container, para){
-            const sentences = splitIntoSentences(para);
-            if (!sentences.length) return;
-            const p = document.createElement('p');
-            const strong = document.createElement('strong');
-            strong.textContent = sentences[0];
-            p.appendChild(strong);
-            if (sentences[1]) p.appendChild(document.createTextNode(' ' + sentences[1]));
-            container.appendChild(p);
-            if (sentences.length > 2) {
+        function buildEmphasisNodes(text) {
+            const s = sanitizeForDisplay(String(text || '').trim());
+            const frag = document.createDocumentFragment();
+            if (!s) return frag;
+            function emphasizeSegment(seg){
+                const f = document.createDocumentFragment();
+                const md = /\*\*(.+?)\*\*/g;
+                let last = 0, m, used = false;
+                while ((m = md.exec(seg)) !== null) {
+                    const pre = seg.slice(last, m.index);
+                    if (pre) f.appendChild(document.createTextNode(pre));
+                    const st = document.createElement('strong');
+                    st.textContent = m[1];
+                    f.appendChild(st);
+                    last = md.lastIndex;
+                    used = true;
+                }
+                if (last < seg.length) f.appendChild(document.createTextNode(seg.slice(last)));
+                if (used) return f;
+                const colonIdx = seg.indexOf(':');
+                if (colonIdx > 0) {
+                    const prefix = seg.slice(0, colonIdx).trim();
+                    const rest = seg.slice(colonIdx + 1).trim();
+                    if (prefix.length >= 2 && prefix.length <= 60) {
+                        const st = document.createElement('strong');
+                        st.textContent = prefix;
+                        f.appendChild(st);
+                        if (rest) f.appendChild(document.createTextNode(': ' + rest));
+                        return f;
+                    }
+                }
+                const dashIdx = seg.indexOf(' - ');
+                const emIdx = dashIdx >= 0 ? dashIdx : (seg.indexOf('—') >= 0 ? seg.indexOf('—') : seg.indexOf('–'));
+                if (emIdx > 0) {
+                    const sepLen = (dashIdx >= 0) ? 3 : 1;
+                    const prefix = seg.slice(0, emIdx).trim();
+                    const rest = seg.slice(emIdx + sepLen).trim();
+                    if (prefix.length >= 2 && prefix.length <= 60) {
+                        const st = document.createElement('strong');
+                        st.textContent = prefix;
+                        f.appendChild(st);
+                        if (rest) f.appendChild(document.createTextNode((dashIdx >= 0 ? ' - ' : ' ') + rest));
+                        return f;
+                    }
+                }
+                f.appendChild(document.createTextNode(seg));
+                return f;
+            }
+            const urlRe = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+            let last = 0, m;
+            while ((m = urlRe.exec(s)) !== null) {
+                const pre = s.slice(last, m.index);
+                if (pre) frag.appendChild(emphasizeSegment(pre));
+                const url = m[0];
+                const a = document.createElement('a');
+                a.href = url.startsWith('http') ? url : ('https://' + url);
+                a.target = '_blank';
+                a.rel = 'noopener nofollow';
+                a.textContent = url;
+                a.classList.add('text-primary');
+                frag.appendChild(a);
+                last = urlRe.lastIndex;
+            }
+            if (last < s.length) frag.appendChild(emphasizeSegment(s.slice(last)));
+            return frag;
+        }
+        function appendStructuredParagraph(container, paraObj){
+            const { intro, bullets, tail, bold } = paraObj;
+            if (intro) {
+                const p = document.createElement('p');
+                if (bold) {
+                    const st = document.createElement('strong');
+                    st.appendChild(buildEmphasisNodes(intro));
+                    p.appendChild(st);
+                } else {
+                    p.appendChild(buildEmphasisNodes(intro));
+                }
+                container.appendChild(p);
+            }
+            if (Array.isArray(bullets) && bullets.length) {
                 const ul = document.createElement('ul');
                 ul.className = 'paragraph-subpoints';
-                const limit = Math.min(3, sentences.length - 2);
-                for (let i = 0; i < limit; i++) {
+                bullets.forEach(txt => {
                     const li = document.createElement('li');
-                    li.textContent = sentences[2 + i];
+                    const t = typeof txt === 'string' ? txt : (txt && (txt.text || ''));
+                    const isBold = typeof txt === 'object' && !!txt.bold;
+                    if (isBold) {
+                        const st = document.createElement('strong');
+                        st.appendChild(buildEmphasisNodes(t));
+                        li.appendChild(st);
+                    } else {
+                        li.appendChild(buildEmphasisNodes(t));
+                    }
                     ul.appendChild(li);
-                }
+                });
                 container.appendChild(ul);
-                if (sentences.length > 2 + limit) {
-                    const rest = sentences.slice(2 + limit).join(' ');
-                    const p2 = document.createElement('p');
-                    p2.textContent = rest;
-                    container.appendChild(p2);
-                }
+            }
+            if (tail) {
+                const p2 = document.createElement('p');
+                p2.appendChild(buildEmphasisNodes(tail));
+                container.appendChild(p2);
             }
         }
         const manualNodes = contentContainer.querySelectorAll('[data-paragraph]');
         if (manualNodes.length) {
+            const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
+            const slots = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
+            let slotIdx = 0;
             manualNodes.forEach(node => {
                 const idx = Number(node.getAttribute('data-paragraph')) || 0;
-                const para = paragraphs[idx] || '';
-                const sentences = splitIntoSentences(para);
+                const paraObj = paragraphs[idx] || { intro: '', bullets: [], tail: '' };
                 node.innerHTML = '';
-                if (sentences.length) {
-                    const strong = document.createElement('strong');
-                    strong.textContent = sentences[0];
-                    node.appendChild(strong);
-                    if (sentences[1]) node.appendChild(document.createTextNode(' ' + sentences[1]));
+                if (paraObj.intro) {
+                    node.appendChild(buildEmphasisNodes(paraObj.intro));
                 }
-                if (sentences.length > 2) {
+                if (Array.isArray(paraObj.bullets) && paraObj.bullets.length) {
                     const ul = document.createElement('ul');
                     ul.className = 'paragraph-subpoints';
-                    const limit = Math.min(3, sentences.length - 2);
-                    for (let i = 0; i < limit; i++) {
+                    paraObj.bullets.forEach(pt => {
                         const li = document.createElement('li');
-                        li.textContent = sentences[2 + i];
+                        const t = typeof pt === 'string' ? pt : (pt && (pt.text || ''));
+                        const isBold = typeof pt === 'object' && !!pt.bold;
+                        if (isBold) {
+                            const st = document.createElement('strong');
+                            st.appendChild(buildEmphasisNodes(t));
+                            li.appendChild(st);
+                        } else {
+                            li.appendChild(buildEmphasisNodes(t));
+                        }
                         ul.appendChild(li);
-                    }
+                    });
                     node.parentNode.insertBefore(ul, node.nextSibling);
-                    if (sentences.length > 2 + limit) {
-                        const rest = sentences.slice(2 + limit).join(' ');
-                        const p2 = document.createElement('p');
-                        p2.textContent = rest;
-                        node.parentNode.insertBefore(p2, ul.nextSibling);
+                }
+                if (paraObj.tail) {
+                    const p2 = document.createElement('p');
+                    p2.appendChild(buildEmphasisNodes(paraObj.tail));
+                    node.parentNode.insertBefore(p2, node.nextSibling);
+                }
+                if (slots.length) {
+                    let anchor = node.nextSibling;
+                    if (paraObj.tail && anchor && anchor.nextSibling) anchor = anchor.nextSibling; // p2 is after ul
+                    const adSection = document.createElement('div');
+                    adSection.className = 'ad-section-responsive my-4';
+                    const adBanner = document.createElement('div');
+                    adBanner.className = 'ad-banner-horizontal';
+                    const ins = document.createElement('ins');
+                    ins.className = 'adsbygoogle';
+                    ins.style.display = 'block';
+                    ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                    const slot = slots[slotIdx % slots.length];
+                    slotIdx++;
+                    ins.setAttribute('data-ad-slot', String(slot));
+                    ins.setAttribute('data-ad-format', 'auto');
+                    ins.setAttribute('data-full-width-responsive', 'true');
+                    adBanner.appendChild(ins);
+                    adSection.appendChild(adBanner);
+                    if (anchor) {
+                        anchor.parentNode.insertBefore(adSection, anchor.nextSibling);
+                    } else {
+                        node.parentNode.appendChild(adSection);
                     }
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
                 }
             });
             for (let i = manualNodes.length; i < paragraphs.length; i++) {
-                appendStructuredParagraph(contentContainer, paragraphs[i]);
+                const block = document.createElement('div');
+                appendStructuredParagraph(block, paragraphs[i]);
+                contentContainer.appendChild(block);
+                const slotsAttr2 = contentContainer.getAttribute('data-ad-slots') || '';
+                const slots2 = slotsAttr2.split(',').map(s => s.trim()).filter(Boolean);
+                if (slots2.length) {
+                    const adSection = document.createElement('div');
+                    adSection.className = 'ad-section-responsive my-4';
+                    const adBanner = document.createElement('div');
+                    adBanner.className = 'ad-banner-horizontal';
+                    const ins = document.createElement('ins');
+                    ins.className = 'adsbygoogle';
+                    ins.style.display = 'block';
+                    ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                    const slot = slots2[(slotIdx++) % slots2.length];
+                    ins.setAttribute('data-ad-slot', String(slot));
+                    ins.setAttribute('data-ad-format', 'auto');
+                    ins.setAttribute('data-full-width-responsive', 'true');
+                    adBanner.appendChild(ins);
+                    adSection.appendChild(adBanner);
+                    contentContainer.appendChild(adSection);
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+                }
             }
         } else {
             contentContainer.innerHTML = '';
-            paragraphs.forEach((paragraph) => {
-                appendStructuredParagraph(contentContainer, paragraph);
+            const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
+            const slots = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
+            let slotIdx = 0;
+            paragraphs.forEach((paraObj) => {
+                const block = document.createElement('div');
+                appendStructuredParagraph(block, paraObj);
+                contentContainer.appendChild(block);
+                if (slots.length) {
+                    const adSection = document.createElement('div');
+                    adSection.className = 'ad-section-responsive my-4';
+                    const adBanner = document.createElement('div');
+                    adBanner.className = 'ad-banner-horizontal';
+                    const ins = document.createElement('ins');
+                    ins.className = 'adsbygoogle';
+                    ins.style.display = 'block';
+                    ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
+                    const slot = slots[(slotIdx++) % slots.length];
+                    ins.setAttribute('data-ad-slot', String(slot));
+                    ins.setAttribute('data-ad-format', 'auto');
+                    ins.setAttribute('data-full-width-responsive', 'true');
+                    adBanner.appendChild(ins);
+                    adSection.appendChild(adBanner);
+                    contentContainer.appendChild(adSection);
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+                }
             });
         }
-
-        const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
-        const slots = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
-        if (slots.length) {
-            const anchors = contentContainer.querySelectorAll('p, ul.paragraph-subpoints');
-            for (let i = 0; i < anchors.length; i++) {
-                const anchor = anchors[i];
-                const adSection = document.createElement('div');
-                adSection.className = 'ad-section-responsive my-4';
-                const adBanner = document.createElement('div');
-                adBanner.className = 'ad-banner-horizontal';
-                adBanner.id = `in-content-ad-${Date.now()}-${i}`;
-                const ins = document.createElement('ins');
-                ins.className = 'adsbygoogle';
-                ins.style.display = 'block';
-                ins.setAttribute('data-ad-client', 'ca-pub-6284022198338659');
-                const slot = slots[i % slots.length];
-                ins.setAttribute('data-ad-slot', String(slot));
-                ins.setAttribute('data-ad-format', 'auto');
-                ins.setAttribute('data-full-width-responsive', 'true');
-                adBanner.appendChild(ins);
-                adSection.appendChild(adBanner);
-                anchor.parentNode.insertBefore(adSection, anchor.nextSibling);
-                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
-            }
-        } else {
-            contentContainer.querySelectorAll('ins.adsbygoogle').forEach(ins => {
-                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
-            });
-        }
+        
 
         setTimeout(() => {
             try { if (window.fixAdContainers) window.fixAdContainers(); } catch(e) {}
@@ -382,38 +543,35 @@ async function loadLatestNews() {
         const last24Hours = new Date();
         last24Hours.setHours(last24Hours.getHours() - 24);
 
-        const latestQuery = query(collection(db, 'news'), where('createdAt', '>=', last24Hours), orderBy('createdAt', 'desc'), limit(5));
+        const latestQuery = query(
+            collection(db, 'news'),
+            where('createdAt', '>=', last24Hours),
+            orderBy('createdAt', 'desc'),
+            limit(2)
+        );
         const snapshot = await getDocs(latestQuery);
-        const container = document.getElementById('latestNewsContainer');
+        const modalBody = document.getElementById('latestNewsModalBody');
+        const badge = document.getElementById('latestNewsBadge');
 
-        if (container && !snapshot.empty) {
-            container.innerHTML = snapshot.docs.map(d => {
-                const news = d.data();
-                return `
-                    <div class="latest-news-item mb-3 p-2 border-bottom">
-                        <a href="news-detail.html?id=${d.id}" class="text-decoration-none">
-                            <div class="d-flex align-items-start">
-                                <div class="latest-thumb me-3 position-relative">
-                                    <img src="${resolveImagePath(news.imageUrl || news.imagePath || '/assets/images/logo.png')}" 
-                                         alt="${news.title}"
-                                         style="width: 100px; height: 60px; object-fit: cover; border-radius: 4px;">
-                                    <span class="badge bg-primary position-absolute" 
-                                          style="font-size: 0.65rem; padding: 0.2rem 0.4rem; bottom: 4px; left: 4px;">
-                                      ${news.category ? (news.category.charAt(0).toUpperCase() + news.category.slice(1)) : ''}
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 text-dark">${news.title.length > 30 ? news.title.substring(0, 30) + '...' : news.title}</h6>
-                                    <small class="text-muted d-inline-block" style="font-size: 0.7rem; white-space: nowrap;">
-                                        <i class="bi bi-clock"></i> ${formatDate(news.createdAt)}
-                                    </small>
-                                </div>
+        if (modalBody) {
+            if (!snapshot.empty) {
+                modalBody.innerHTML = snapshot.docs.map(d => {
+                    const news = d.data();
+                    const img = resolveImagePath(news.imageUrl || news.imagePath || '/assets/images/logo.png');
+                    return `
+                        <a href="news-detail.html?id=${d.id}" class="d-flex align-items-center text-decoration-none mb-2">
+                            <img src="${img}" alt="${news.title}" style="width:48px;height:32px;object-fit:cover;border-radius:4px" class="me-2" />
+                            <div class="flex-grow-1">
+                                <div class="text-dark" style="font-size:0.9rem;line-height:1.2">${news.title}</div>
+                                <small class="text-muted"><i class="bi bi-clock"></i> ${formatDate(news.createdAt)}</small>
                             </div>
-                        </a>
-                    </div>`;
-            }).join('');
-        } else if (container) {
-            container.innerHTML = `<p class="text-muted">No recent news available</p>`;
+                        </a>`;
+                }).join('');
+                if (badge) badge.classList.remove('d-none');
+            } else {
+                modalBody.innerHTML = `<p class="text-muted mb-0">No recent news available</p>`;
+                if (badge) badge.classList.add('d-none');
+            }
         }
     } catch (error) {
         console.error('Error loading latest news:', error);
@@ -465,72 +623,7 @@ async function loadPopularNews() {
     }
 }
 
-async function loadCategoryNews(category) {
-    try {
-        console.log('Category received:', category);
-        if (!category) {
-            console.warn('Category is undefined, skipping category news load');
-            return;
-        }
-
-        const categoryQuery = query(collection(db, 'news'), where('category', '==', category), limit(5));
-        const snapshot = await getDocs(categoryQuery);
-        const container = document.getElementById('categoryNewsContainer');
-
-        if (container && !snapshot.empty) {
-            container.innerHTML = `
-                <h5 class="mb-3">More from ${category.charAt(0).toUpperCase() + category.slice(1)}</h5>
-                ${snapshot.docs.map(d => {
-                    const news = d.data();
-                    return `
-                        <div class="category-news-item mb-3">
-                            <a href="news-detail.html?id=${d.id}" class="text-decoration-none">
-                                <div class="d-flex align-items-center">
-                                    <img id="category-img-${d.id}" src="/assets/images/logo.png" 
-                                         alt="${news.title}" 
-                                         class="category-thumb me-3" 
-                                         style="width: 80px; height: 50px; object-fit: cover; border-radius:4px;">
-                                    <div>
-                                        <h6 class="mb-1 text-dark">${news.title}</h6>
-                                        <small class="text-muted">${formatDate(news.createdAt)}</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>`;
-                }).join('')}`;
-
-            for (const d of snapshot.docs) {
-                const news = d.data();
-                const imgEl = document.getElementById(`category-img-${d.id}`);
-                if (!imgEl) continue;
-                const candidates = [
-                    news.imageUrl,
-                    news.imageURL,
-                    news.featuredImageUrl,
-                    news.featuredImage,
-                    news.image,
-                    news.imagePath
-                ].filter(Boolean);
-                let src = '';
-                for (const cand of candidates) {
-                    const s = String(cand).trim();
-                    if (/^https?:\/\//i.test(s) || s.startsWith('/')) { src = resolveImagePath(s); break; }
-                    if (s.startsWith('assets/') || s.startsWith('images/')) { src = resolveImagePath(s); break; }
-                }
-                if (!src) {
-                    const storagePath = news.imageStoragePath || news.storagePath || '';
-                    if (storagePath) {
-                        try { src = await getDownloadURL(ref(storage, storagePath)); } catch(_) {}
-                    }
-                }
-                if (!src) src = '/assets/images/logo.png';
-                imgEl.src = src;
-            }
-        }
-    } catch (error) {
-        console.error('Error loading category news:', error);
-    }
-}
+// Category news removed
 
 async function loadNewsDetail() {
     try {
@@ -568,7 +661,6 @@ async function loadNewsDetail() {
         if (newsData.category) {
             await Promise.all([
                 loadRelatedNews(newsData.category),
-                loadCategoryNews(newsData.category),
                 loadLatestNews(),
                 loadPopularNews(),
                 incrementViewCount(newsId)
