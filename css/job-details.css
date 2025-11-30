@@ -1921,3 +1921,5 @@ a {
 @media (min-width: 1200px) {
     .scroll-top { right: 180px; }
 }
+ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:250px; }
+ins.adsbygoogle.ad-sidebar { min-height:250px !important; }

@@ -654,7 +654,7 @@ class JobDetailsManager {
             }
 
             adContainers.forEach((container, index) => {
-                const containerId = container.id || `ad-${index}`;
+                const containerId = container.id || `ad-${container.getAttribute('data-ad-slot') || index}`;
                 
                 if (this.adContainersInitialized.has(containerId)) {
                     console.log(`Ad container ${containerId} already initialized, skipping`);
