@@ -1051,3 +1051,21 @@ ins.adsbygoogle {
 }
 
 
+.scroll-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1030;
+}
+.scroll-btn i { font-size: 1.25rem; }
+.scroll-btn.show { display: inline-flex; }
+@media (hover:hover){
+    .scroll-btn:hover { background: #6610f2; }
+}

@@ -743,35 +743,54 @@ async function loadNewsDetail() {
 }
 
 document.addEventListener('DOMContentLoaded', loadNewsDetail);
+document.addEventListener('DOMContentLoaded', () => { setTimeout(setupStickySidebarAdsHide, 0); });
+window.addEventListener('load', setupStickySidebarAdsHide);
 
 function setupStickySidebarAdsHide(){
     const ads = Array.from(document.querySelectorAll('.sticky-sidebar-ad'));
     const footer = document.getElementById('footer-container');
     if (!ads.length || !footer) return;
-    let hidden = false;
-    const hideAll = () => { if (hidden) return; ads.forEach(el => { el.style.display = 'none'; }); hidden = true; };
+    const hideAll = () => { ads.forEach(el => { el.style.display = 'none'; }); };
+    const showAll = () => { ads.forEach(el => { el.style.display = ''; }); };
     try {
         const io = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     hideAll();
-                    io.disconnect();
+                } else {
+                    showAll();
                 }
             });
-        }, { root: null, threshold: 0 });
+        }, { root: null, threshold: 0, rootMargin: '0px 0px -1px 0px' });
         io.observe(footer);
     } catch (_) {
         const onScroll = () => {
             const r = footer.getBoundingClientRect();
             const doc = document.documentElement;
             const nearBottom = (doc.scrollHeight - doc.clientHeight - doc.scrollTop) <= 4;
-            if (r.top <= window.innerHeight || nearBottom) {
-                hideAll();
-                window.removeEventListener('scroll', onScroll, { passive: true });
-            }
+            if (r.top <= window.innerHeight || nearBottom) hideAll(); else showAll();
         };
         window.addEventListener('scroll', onScroll, { passive: true });
     }
+}
+
+function setupScrollButtons(){
+    const btnTop = document.getElementById('scrollTopBtn');
+    const btnBottom = document.getElementById('scrollBottomBtn');
+    if (!btnTop || !btnBottom) return;
+    const update = () => {
+        const doc = document.documentElement;
+        const scrolled = doc.scrollTop;
+        const nearTop = scrolled < 40;
+        const nearBottom = (doc.scrollHeight - doc.clientHeight - scrolled) <= 40;
+        btnTop.classList.toggle('show', !nearTop);
+        btnBottom.classList.toggle('show', !nearBottom);
+    };
+    btnTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    btnBottom.addEventListener('click', () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' }); });
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    setTimeout(update, 0);
 }
 
 // reading progress
@@ -790,6 +809,7 @@ window.addEventListener('resize', () => {
 setTimeout(() => {
     initPageAds();
     setupStickySidebarAdsHide();
+    setupScrollButtons();
 }, 1200);
 
 // export for debug
