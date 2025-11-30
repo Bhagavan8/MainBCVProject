@@ -703,8 +703,8 @@ body {
 /* Sidebar Ads - FIXED */
 .ad-left,
 .ad-right {
-    width: 280px;
-    min-width: 280px;
+    width: 160px;
+    min-width: 160px;
     /* Ensure minimum width */
     position: fixed;
     top: 100px;
@@ -770,7 +770,7 @@ body {
     display: block !important;
     width: 100% !important;
     height: auto !important;
-    min-height: 250px !important;
+    min-height: 200px !important;
 }
 
 /* Fallback for ad blocks */
@@ -1095,8 +1095,8 @@ body {
 
     .ad-left,
     .ad-right {
-        width: 280px;
-        min-width: 280px;
+        width: 200px;
+        min-width: 200px;
     }
 
     .main-container {
@@ -1127,13 +1127,13 @@ body {
 
     .ad-left,
     .ad-right {
-        width: 250px;
-        min-width: 250px;
+        width: 140px;
+        min-width: 140px;
     }
 
     .ad-container,
     .ad-box-job {
-        min-height: 250px;
+        min-height: 200px;
     }
 }
 
@@ -1921,5 +1921,3 @@ a {
 @media (min-width: 1200px) {
     .scroll-top { right: 180px; }
 }
-ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:250px; }
-ins.adsbygoogle.ad-sidebar { min-height:250px !important; }

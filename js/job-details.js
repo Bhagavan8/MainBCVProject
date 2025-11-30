@@ -30,16 +30,11 @@ class JobDetailsManager {
         this.cache = new Map();
         this.adsInitialized = false;
         this.adContainersInitialized = new Set();
-        this._adResizeTimer = null;
-        this._adRetryScheduled = false;
-        this.viewStart = Date.now();
-        this.durationCaptured = false;
 
         this.loadCommonComponents();
         this.init();
         this.initializeCopyLink();
-        this.setupDurationTracking();
-        
+
         return this;
     }
 
@@ -107,51 +102,6 @@ class JobDetailsManager {
             this.initializeAds();
             this.setupNavigationScroll();
         }
-    }
-
-    ensureAnonId() {
-        try {
-            const key = 'bcvworld_anon_id';
-            let id = localStorage.getItem(key);
-            if (!id) {
-                id = Math.random().toString(36).slice(2) + Date.now().toString(36);
-                localStorage.setItem(key, id);
-            }
-            return id;
-        } catch (_) { return 'anon'; }
-    }
-
-    setupDurationTracking() {
-        const finish = async () => {
-            if (this.durationCaptured || !this.jobId) return;
-            const elapsed = Date.now() - this.viewStart;
-            if (elapsed < 1000) return;
-            const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
-            const uniqId = uid || this.ensureAnonId();
-            const localKey = `jobDuration_${this.jobId}_${uniqId}`;
-            try { if (localStorage.getItem(localKey) === '1') { this.durationCaptured = true; return; } } catch(_) {}
-            try {
-                const docId = `${this.jobId}_${uid ? uid : 'anon_' + uniqId}`;
-                const refDoc = doc(db, 'jobDurations', docId);
-                const existing = await getDoc(refDoc);
-                if (existing && existing.exists()) { try { localStorage.setItem(localKey, '1'); } catch(_) {}; this.durationCaptured = true; return; }
-                await setDoc(refDoc, {
-                    jobId: this.jobId,
-                    type: this.jobType || '',
-                    userId: uid ? uid : ('anon_' + uniqId),
-                    durationMs: elapsed,
-                    startedAt: serverTimestamp(),
-                    page: 'job-details'
-                });
-                try { localStorage.setItem(localKey, '1'); } catch(_) {}
-                this.durationCaptured = true;
-            } catch (e) {}
-        };
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') finish();
-        });
-        window.addEventListener('pagehide', finish);
-        window.addEventListener('beforeunload', finish);
     }
 
     async loadJobDetails() {
@@ -634,18 +584,13 @@ class JobDetailsManager {
                 this.initializeAdsOnce();
             }, 1000);
         }
-
-        window.addEventListener('resize', () => {
-            if (this._adResizeTimer) clearTimeout(this._adResizeTimer);
-            this._adResizeTimer = setTimeout(() => this.initializeAdsOnce(), 500);
-        }, { passive: true });
     }
 
     initializeAdsOnce() {
         console.log('Starting ad initialization...');
         
         try {
-            const adContainers = document.querySelectorAll('.adsbygoogle');
+            const adContainers = document.querySelectorAll('.adsbygoogle:not([data-initialized])');
             console.log(`Found ${adContainers.length} ad containers to initialize`);
 
             if (adContainers.length === 0) {
@@ -654,18 +599,10 @@ class JobDetailsManager {
             }
 
             adContainers.forEach((container, index) => {
-                const containerId = container.id || `ad-${container.getAttribute('data-ad-slot') || index}`;
+                const containerId = container.id || `ad-${index}`;
                 
                 if (this.adContainersInitialized.has(containerId)) {
                     console.log(`Ad container ${containerId} already initialized, skipping`);
-                    return;
-                }
-
-                const status = container.getAttribute('data-adsbygoogle-status');
-                if (status && status !== '') {
-                    // Already served by inline push or previous call
-                    this.adContainersInitialized.add(containerId);
-                    container.setAttribute('data-initialized', 'true');
                     return;
                 }
 
@@ -677,23 +614,9 @@ class JobDetailsManager {
                     return;
                 }
 
-                const minWidth = 250;
-                if (rect.width < minWidth) {
-                    console.warn(`Ad container ${containerId} too narrow (${rect.width}px < ${minWidth}px), deferring init`);
-                    if (!this._adRetryScheduled) {
-                        this._adRetryScheduled = true;
-                        setTimeout(() => { this._adRetryScheduled = false; this.initializeAdsOnce(); }, 1200);
-                    }
-                    return;
-                }
-
                 console.log(`Initializing ad container ${containerId} with width: ${rect.width}px`);
 
                 try {
-                    if (!(window.adsbygoogle && typeof window.adsbygoogle.push === 'function')) {
-                        console.warn('adsbygoogle not ready, skipping push for', containerId);
-                        return;
-                    }
                     container.setAttribute('data-initialized', 'true');
                     this.adContainersInitialized.add(containerId);
                     
@@ -1437,7 +1360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (leftAd) leftAd.style.display = '';
                     if (rightAd) rightAd.style.display = '';
                     restore.remove();
-                    try { window.requestAnimationFrame(() => this.initializeAdsOnce()); } catch(_) {}
+                    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
                 });
             }
         }
