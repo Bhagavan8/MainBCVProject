@@ -31,6 +31,11 @@ class JobDetailsManager {
         this.adsInitialized = false;
         this.adContainersInitialized = new Set();
 
+        this.viewStart = Date.now();
+        this.durationCaptured = false;
+
+        this.setupDurationTracking();
+
         this.loadCommonComponents();
         this.init();
         this.initializeCopyLink();
@@ -102,6 +107,53 @@ class JobDetailsManager {
             this.initializeAds();
             this.setupNavigationScroll();
         }
+    }
+
+    ensureAnonId() {
+        try {
+            const key = 'bcvworld_anon_id';
+            let id = localStorage.getItem(key);
+            if (!id) {
+                id = Math.random().toString(36).slice(2) + Date.now().toString(36);
+                localStorage.setItem(key, id);
+            }
+            return id;
+        } catch (_) { return 'anon'; }
+    }
+
+    setupDurationTracking() {
+        const finish = async () => {
+            if (this.durationCaptured || !this.jobId) return;
+            const elapsed = Date.now() - this.viewStart;
+            if (elapsed < 1000) return;
+            const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+            const userKey = uid ? uid : ('anon_' + this.ensureAnonId());
+            const localKey = `jobDuration_${this.jobId}_${userKey}`;
+            try { if (localStorage.getItem(localKey) === '1') { this.durationCaptured = true; return; } } catch(_) {}
+            try {
+                const docId = `${this.jobId}_${userKey}`;
+                const refDoc = doc(db, 'jobDurations', docId);
+                const existing = await getDoc(refDoc);
+                if (existing && existing.exists()) { try { localStorage.setItem(localKey, '1'); } catch(_) {}; this.durationCaptured = true; return; }
+                await setDoc(refDoc, {
+                    jobId: this.jobId,
+                    type: this.jobType || '',
+                    userId: userKey,
+                    durationMs: elapsed,
+                    startedAtMs: this.viewStart,
+                    endedAtMs: Date.now(),
+                    recordedAt: serverTimestamp(),
+                    page: 'job-details'
+                });
+                try { localStorage.setItem(localKey, '1'); } catch(_) {}
+                this.durationCaptured = true;
+            } catch (e) {}
+        };
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') finish();
+        }, { passive: true });
+        window.addEventListener('pagehide', finish, { passive: true });
+        window.addEventListener('beforeunload', finish);
     }
 
     async loadJobDetails() {
