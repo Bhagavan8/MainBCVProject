@@ -1069,3 +1069,22 @@ ins.adsbygoogle {
 @media (hover:hover){
     .scroll-btn:hover { background: #6610f2; }
 }
+
+.floating-bell {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 16px rgba(13,110,253,.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1040;
+}
+.floating-bell i { font-size: 1.3rem; }
+@media (hover:hover){ .floating-bell:hover { background: #6610f2; } }
+
+/* Avoid overlap between scroll buttons and bell */
+.badge-visible .scroll-btn { right: 4.5rem; }

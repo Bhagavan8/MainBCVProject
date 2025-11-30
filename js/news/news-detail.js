@@ -611,7 +611,7 @@ async function loadLatestNews() {
             collection(db, 'news'),
             where('createdAt', '>=', last24Hours),
             orderBy('createdAt', 'desc'),
-            limit(2)
+            limit(3)
         );
         const snapshot = await getDocs(latestQuery);
         const modalBody = document.getElementById('latestNewsModalBody');
@@ -631,14 +631,39 @@ async function loadLatestNews() {
                             </div>
                         </a>`;
                 }).join('');
-                if (badge) badge.classList.remove('d-none');
+                if (badge) { badge.dataset.latestCount = String(snapshot.size || 0); }
             } else {
                 modalBody.innerHTML = `<p class="text-muted mb-0">No recent news available</p>`;
-                if (badge) badge.classList.add('d-none');
+                if (badge) { badge.dataset.latestCount = '0'; }
             }
+            if (badge) setupFooterBadgeToggle();
         }
     } catch (error) {
         console.error('Error loading latest news:', error);
+    }
+}
+
+function setupFooterBadgeToggle(){
+    const badge = document.getElementById('latestNewsBadge');
+    const footer = document.getElementById('footer-container');
+    if (!badge || !footer) return;
+    const hasLatest = Number(badge.dataset.latestCount || '0') > 0;
+    const show = () => { if (hasLatest) { badge.classList.remove('d-none'); document.body.classList.add('badge-visible'); } };
+    const hide = () => { badge.classList.add('d-none'); document.body.classList.remove('badge-visible'); };
+    try {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) show(); else hide();
+            });
+        }, { root: null, threshold: 0, rootMargin: '0px 0px -1px 0px' });
+        io.observe(footer);
+    } catch (_) {
+        const onScroll = () => {
+            const r = footer.getBoundingClientRect();
+            if (r.top <= window.innerHeight) show(); else hide();
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
     }
 }
 
