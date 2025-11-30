@@ -135,5 +135,6 @@
       .ad-popup-card { max-width: 320px; }
     }
 
-    /* ensure ins.adsbygoogle takes space when present */
-    ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:50px; }
+    /* ensure ins.adsbygoogle takes sufficient space */
+    ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:250px; }
+    .ad-sidebar.ins.adsbygoogle { min-height:250px !important; }
