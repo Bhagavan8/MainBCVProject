@@ -155,11 +155,19 @@ body {
 }
 
 .company-name-style {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--primary-color);
     margin: 0 0 20px 0;
     word-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+    .company-name-style { font-size: 28px; }
+}
+
+@media (min-width: 1200px) {
+    .company-name-style { font-size: 32px; }
 }
 
 .job-meta {
@@ -177,6 +185,32 @@ body {
     color: var(--text-secondary);
     font-size: 14px;
     flex-shrink: 0;
+}
+
+.job-meta .meta-item {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f5f7fa;
+}
+
+#locationWrapper { background: #e8f2ff; color: #0b74de; }
+#locationWrapper i { color: #0b74de; }
+
+#experienceWrapper { background: #fff2e5; color: #d46a00; }
+#experienceWrapper i { color: #d46a00; }
+
+#viewTimerWrapper { background: #e8f9ee; color: #238c4b; }
+#viewTimerWrapper i { color: #238c4b; }
+
+#salaryWrapper { background: #f2e8ff; color: #6a3bd1; }
+#salaryWrapper i { color: #6a3bd1; }
+
+.meta-item i { font-size: 16px; }
+
+@media (max-width: 576px) {
+    .job-meta { gap: 12px; }
+    .meta-item { font-size: 13px; }
+    .meta-item i { font-size: 14px; }
 }
 
 /* ===== JOB STATS - FIXED ===== */
@@ -205,18 +239,21 @@ body {
 }
 
 .job-code-referal {
-    background: var(--bg-gray);
+    background: #e8f2ff;
+    color: #0b74de;
     padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid #eee;
+    border-radius: 999px;
+    border: 1px solid #dbe9ff;
     display: flex !important;
     align-items: center;
     gap: 6px;
 }
 
 .job-code-referal i {
-    color: var(--primary-color);
+    color: #0b74de;
 }
+
+.job-code-referal #jobCode { font-weight: 600; color: inherit; }
 
 .views,
 .likes {
@@ -1921,3 +1958,7 @@ a {
 @media (min-width: 1200px) {
     .scroll-top { right: 180px; }
 }
+#commentList { display: flex; flex-direction: column; gap: 6px; }
+#commentList .list-group-item { padding: 6px 10px; border-radius: 6px; }
+#commentList .comment-text { max-height: 1.2cm; overflow: hidden; word-break: break-word; white-space: pre-wrap; font-size: 13px; line-height: 1.35; }
+#commentPager .pagination { margin: 0; }

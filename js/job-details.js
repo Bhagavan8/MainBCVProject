@@ -10,7 +10,11 @@ import {
     where,
     orderBy,
     limit,
-    getDocs
+    getDocs,
+    increment,
+    onSnapshot,
+    arrayUnion,
+    arrayRemove
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 const auth = getAuth();
@@ -33,6 +37,10 @@ class JobDetailsManager {
 
         this.viewStart = Date.now();
         this.durationCaptured = false;
+
+        this._comments = [];
+        this._commentsPage = 1;
+        this._commentsPageSize = 5;
 
         this.setupDurationTracking();
 
@@ -103,9 +111,11 @@ class JobDetailsManager {
     async init() {
         await this.loadJobDetails();
         if (this.currentJob) {
+            await this.recordViewCounts();
             this.setupEventListeners();
             this.initializeAds();
             this.setupNavigationScroll();
+            this.initializeComments();
         }
     }
 
@@ -122,38 +132,30 @@ class JobDetailsManager {
     }
 
     setupDurationTracking() {
-        const finish = async () => {
-            if (this.durationCaptured || !this.jobId) return;
-            const elapsed = Date.now() - this.viewStart;
-            if (elapsed < 1000) return;
-            const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
-            const userKey = uid ? uid : ('anon_' + this.ensureAnonId());
-            const localKey = `jobDuration_${this.jobId}_${userKey}`;
-            try { if (localStorage.getItem(localKey) === '1') { this.durationCaptured = true; return; } } catch(_) {}
-            try {
-                const docId = `${this.jobId}_${userKey}`;
-                const refDoc = doc(db, 'jobDurations', docId);
-                const existing = await getDoc(refDoc);
-                if (existing && existing.exists()) { try { localStorage.setItem(localKey, '1'); } catch(_) {}; this.durationCaptured = true; return; }
-                await setDoc(refDoc, {
-                    jobId: this.jobId,
-                    type: this.jobType || '',
-                    userId: userKey,
-                    durationMs: elapsed,
-                    startedAtMs: this.viewStart,
-                    endedAtMs: Date.now(),
-                    recordedAt: serverTimestamp(),
-                    page: 'job-details'
-                });
-                try { localStorage.setItem(localKey, '1'); } catch(_) {}
-                this.durationCaptured = true;
-            } catch (e) {}
+        const el = document.getElementById('viewTimerValue');
+        if (!el) return;
+        this._pausedMs = 0;
+        this._pauseStart = null;
+        const update = () => {
+            const base = Date.now() - this.viewStart - (this._pausedMs || 0);
+            const s = Math.max(0, Math.floor(base / 1000));
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const sec = s % 60;
+            el.textContent = h > 0
+                ? `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+                : `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
         };
+        update();
+        this._timerHandle = setInterval(update, 1000);
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') finish();
+            if (document.visibilityState === 'hidden') {
+                this._pauseStart = Date.now();
+            } else if (this._pauseStart) {
+                this._pausedMs += Date.now() - this._pauseStart;
+                this._pauseStart = null;
+            }
         }, { passive: true });
-        window.addEventListener('pagehide', finish, { passive: true });
-        window.addEventListener('beforeunload', finish);
     }
 
     async loadJobDetails() {
@@ -208,6 +210,7 @@ class JobDetailsManager {
         }
         
         this.updateJobStats(this.currentJob);
+        this.listenToLikesRealtime();
         
         // UPDATE: Add meta tags update for social sharing
         this.updateMetaTagsForSharing(this.currentJob);
@@ -219,6 +222,37 @@ class JobDetailsManager {
         this.setupEventListeners();
         
         console.log('UI updated successfully');
+    }
+
+    listenToLikesRealtime() {
+        try {
+            if (!this.jobId) return;
+            const jobRef = doc(db, this.getCollectionName(), this.jobId);
+            let lastLikes = this.currentJob?.likes || 0;
+            let isFirst = true;
+            if (this._likesUnsub) { this._likesUnsub(); this._likesUnsub = null; }
+            this._likesUnsub = onSnapshot(jobRef, (snap) => {
+                if (!snap.exists()) return;
+                const data = snap.data();
+                const likes = data.likes || 0;
+                const el = document.getElementById('likeCount');
+                if (el) el.textContent = likes;
+                const likedByMeRecently = this._suppressLikeToastTs && (Date.now() - this._suppressLikeToastTs < 2000);
+                const userId = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+                const lastLikerId = data.lastLikerId || null;
+                const lastLikedAt = data.lastLikedAt?.toDate ? data.lastLikedAt.toDate() : null;
+                const recentMs = lastLikedAt ? (Date.now() - lastLikedAt.getTime()) : Infinity;
+                if (isFirst) {
+                    if (recentMs < 5000 && lastLikerId && lastLikerId !== userId) {
+                        this.showToast('Someone liked this job', 'success');
+                    }
+                    isFirst = false;
+                } else if (likes > lastLikes && !likedByMeRecently && lastLikerId !== userId) {
+                    this.showToast('Someone liked this job', 'success');
+                }
+                lastLikes = likes;
+            });
+        } catch (_) {}
     }
 
     // NEW METHOD: Update meta tags for social sharing
@@ -519,6 +553,178 @@ class JobDetailsManager {
         });
     }
 
+    initializeComments() {
+        const section = document.getElementById('commentsSection');
+        if (!section) return;
+        const form = document.getElementById('commentForm');
+        const input = document.getElementById('commentInput');
+        const submit = document.getElementById('commentSubmit');
+        const loggedOut = document.getElementById('commentLoggedOut');
+        const loginBtn = document.getElementById('loginRedirectBtn');
+        const list = document.getElementById('commentList');
+
+        this.loadComments();
+
+        if (loginBtn) {
+            const returnUrl = window.location.href;
+            loginBtn.href = `/pages/login.html?redirect=${encodeURIComponent(returnUrl)}`;
+            loginBtn.addEventListener('click', () => {
+                try { localStorage.setItem('post_login_redirect', returnUrl); } catch (_) {}
+            });
+        }
+
+        const user = (auth && auth.currentUser) ? auth.currentUser : null;
+        if (!user) {
+            if (form) form.classList.add('d-none');
+            if (loggedOut) loggedOut.style.display = 'block';
+            return;
+        }
+
+        if (loggedOut) loggedOut.style.display = 'none';
+        if (form) form.classList.remove('d-none');
+
+        if (form && submit && input) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = (input.value || '').trim();
+                if (!text) {
+                    this.showToast && this.showToast('Please enter a comment', 'error');
+                    return;
+                }
+                try {
+                    submit.disabled = true;
+                    const docId = `${this.jobId}_${user.uid}_${Date.now()}`;
+                    await setDoc(doc(db, 'jobComments', docId), {
+                        jobId: this.jobId,
+                        type: this.jobType || '',
+                        userId: user.uid,
+                        displayName: (user.displayName || (user.email ? user.email.split('@')[0] : '') || 'Anonymous'),
+                        photoURL: user.photoURL || '',
+                        email: user.email || '',
+                        comment: text,
+                        createdAt: serverTimestamp(),
+                        page: 'job-details'
+                    });
+                    input.value = '';
+                    this.showToast && this.showToast('Comment posted', 'success');
+                    this.appendComment({ comment: text, userId: user.uid, displayName: (user.displayName || (user.email ? user.email.split('@')[0] : '') || 'You'), createdAt: new Date() });
+                } catch (err) {
+                    this.showToast && this.showToast('Failed to post comment', 'error');
+                } finally {
+                    submit.disabled = false;
+                }
+            });
+        }
+    }
+
+    async loadComments() {
+        try {
+            const list = document.getElementById('commentList');
+            if (!list) return;
+            const q = query(
+                collection(db, 'jobComments'),
+                where('jobId', '==', this.jobId)
+            );
+            const snap = await getDocs(q);
+            const items = snap.docs.map(d => d.data());
+            items.sort((a, b) => {
+                const ta = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0;
+                const tb = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0;
+                return tb - ta;
+            });
+            this._comments = items;
+            this._commentsPage = 1;
+            this.renderCommentsPage();
+            this.renderCommentsPager();
+        } catch (_) {}
+    }
+
+    appendComment(item) {
+        this._comments = [{...item}, ...this._comments];
+        this._commentsPage = 1;
+        this.renderCommentsPage();
+        this.renderCommentsPager();
+    }
+
+    renderCommentsPage() {
+        const list = document.getElementById('commentList');
+        if (!list) return;
+        const start = (this._commentsPage - 1) * this._commentsPageSize;
+        const pageItems = this._comments.slice(start, start + this._commentsPageSize);
+        list.innerHTML = '';
+        pageItems.forEach(item => {
+            const when = this.formatTime(item.createdAt);
+            const name = this.escapeHtml(item.displayName || (item.email ? String(item.email).split('@')[0] : '') || 'Anonymous');
+            const rawText = String(item.comment || '');
+            const truncated = rawText.length > 100 ? rawText.slice(0, 100) + '…' : rawText;
+            const safeText = this.escapeHtml(truncated);
+            const el = document.createElement('div');
+            el.className = 'list-group-item';
+            el.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="me-3 comment-text">${safeText}</div>
+                    <div class="text-end" style="min-width:90px;">
+                        <div class="fw-semibold" style="font-size:12px;">${name}</div>
+                        <small class="text-muted">${when}</small>
+                    </div>
+                </div>
+            `;
+            list.appendChild(el);
+        });
+    }
+
+    renderCommentsPager() {
+        const pager = document.getElementById('commentPager');
+        if (!pager) return;
+        const total = this._comments.length;
+        const pages = Math.max(1, Math.ceil(total / this._commentsPageSize));
+        if (pages <= 1) { pager.innerHTML = ''; return; }
+        let html = '<ul class="pagination pagination-sm">';
+        const prevDisabled = this._commentsPage === 1 ? ' disabled' : '';
+        const nextDisabled = this._commentsPage === pages ? ' disabled' : '';
+        html += `<li class="page-item${prevDisabled}"><a class="page-link" href="#" data-page="prev" aria-label="Previous">«</a></li>`;
+        for (let p = 1; p <= pages; p++) {
+            const active = p === this._commentsPage ? ' active' : '';
+            html += `<li class="page-item${active}"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
+        }
+        html += `<li class="page-item${nextDisabled}"><a class="page-link" href="#" data-page="next" aria-label="Next">»</a></li>`;
+        html += '</ul>';
+        pager.innerHTML = html;
+        pager.querySelectorAll('.page-link').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const val = a.getAttribute('data-page');
+                if (val === 'prev' && this._commentsPage > 1) { this._commentsPage--; }
+                else if (val === 'next' && this._commentsPage < pages) { this._commentsPage++; }
+                else {
+                    const num = parseInt(val, 10);
+                    if (!isNaN(num)) this._commentsPage = num;
+                }
+                this.renderCommentsPage();
+                this.renderCommentsPager();
+            });
+        });
+    }
+
+    formatTime(ts) {
+        try {
+            if (!ts) return 'now';
+            if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
+            if (typeof ts === 'number') return new Date(ts).toLocaleString();
+            if (ts instanceof Date) return ts.toLocaleString();
+            return 'now';
+        } catch (_) { return 'now'; }
+    }
+
+    escapeHtml(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     handleSocialShare(platform) {
         console.log(`Starting share process for: ${platform}`);
         
@@ -757,11 +963,11 @@ class JobDetailsManager {
 
     setupLikeButton(likeButton, job) {
         const jobId = this.jobId;
-        const likeKey = `job_like_${jobId}`;
-        const hasLiked = localStorage.getItem(likeKey);
+        const userId = (auth && auth.currentUser) ? auth.currentUser.uid : null;
         const currentLikes = job.likes || 0;
-        
-        if (hasLiked) {
+        const likedBy = Array.isArray(job.likedBy) ? job.likedBy : [];
+
+        if (userId && likedBy.includes(userId)) {
             likeButton.classList.add('liked');
             likeButton.innerHTML = '<i class="bi bi-heart-fill"></i> <span id="likeCount">' + currentLikes + '</span>';
         } else {
@@ -774,37 +980,39 @@ class JobDetailsManager {
             e.stopPropagation();
             
             try {
-                const hasLiked = localStorage.getItem(likeKey);
-                const currentLikes = job.likes || 0;
-                let newLikes;
-
-                if (hasLiked) {
-                    newLikes = Math.max(0, currentLikes - 1);
-                    localStorage.removeItem(likeKey);
-                    likeButton.classList.remove('liked');
-                    likeButton.innerHTML = '<i class="bi bi-heart"></i> <span id="likeCount">' + newLikes + '</span>';
-                } else {
-                    newLikes = currentLikes + 1;
-                    localStorage.setItem(likeKey, 'true');
-                    likeButton.classList.add('liked');
-                    likeButton.innerHTML = '<i class="bi bi-heart-fill"></i> <span id="likeCount">' + newLikes + '</span>';
+                if (!userId) {
+                    this.showToast('Please login to like this job', 'error');
+                    return;
                 }
-
+                this._suppressLikeToastTs = Date.now();
                 const jobRef = doc(db, this.getCollectionName(), jobId);
-                await updateDoc(jobRef, {
-                    likes: newLikes,
-                    lastLikedAt: serverTimestamp()
-                });
-
-                job.likes = newLikes;
-
-                const likeCountEl = document.getElementById('likeCount');
-                if (likeCountEl) {
-                    likeCountEl.textContent = newLikes;
+                const latestSnap = await getDoc(jobRef);
+                const latestData = latestSnap.exists() ? latestSnap.data() : {};
+                const latestLikedBy = Array.isArray(latestData.likedBy) ? latestData.likedBy : [];
+                const isLiked = latestLikedBy.includes(userId);
+                if (isLiked) {
+                    await updateDoc(jobRef, {
+                        likes: increment(-1),
+                        likedBy: arrayRemove(userId),
+                        lastLikedAt: serverTimestamp(),
+                        lastLikerId: userId
+                    });
+                    likeButton.classList.remove('liked');
+                    const nextLikes = Math.max(0, (latestData.likes || 1) - 1);
+                    likeButton.innerHTML = '<i class="bi bi-heart"></i> <span id="likeCount">' + nextLikes + '</span>';
+                    this.showToast('Like removed', 'success');
+                } else {
+                    await updateDoc(jobRef, {
+                        likes: increment(1),
+                        likedBy: arrayUnion(userId),
+                        lastLikedAt: serverTimestamp(),
+                        lastLikerId: userId
+                    });
+                    likeButton.classList.add('liked');
+                    const nextLikes = (latestData.likes || 0) + 1;
+                    likeButton.innerHTML = '<i class="bi bi-heart-fill"></i> <span id="likeCount">' + nextLikes + '</span>';
+                    this.showToast('Job liked!', 'success');
                 }
-
-                this.showToast(hasLiked ? 'Like removed' : 'Job liked!', 'success');
-
             } catch (error) {
                 console.error('Error updating likes:', error);
                 this.showToast('Failed to update likes', 'error');
@@ -919,6 +1127,23 @@ class JobDetailsManager {
                 this.viewsTracked = false;
             }
         }
+    }
+
+    async recordViewCounts() {
+        try {
+            if (!this.jobId) return;
+            const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+            const userKey = uid ? uid : ('anon_' + this.ensureAnonId());
+            const docRef = doc(db, 'jobViewCounts', this.jobId);
+            await setDoc(docRef, { totalViews: increment(1), updatedAt: serverTimestamp() }, { merge: true });
+            const localKey = `jobUnique_${this.jobId}_${userKey}`;
+            let isUnique = false;
+            try { isUnique = !localStorage.getItem(localKey); } catch (_) { isUnique = false; }
+            if (isUnique) {
+                await setDoc(docRef, { uniqueUsers: increment(1) }, { merge: true });
+                try { localStorage.setItem(localKey, '1'); } catch (_) {}
+            }
+        } catch (_) {}
     }
 
     capitalizeEducationFirstLetter(string) {
@@ -1776,18 +2001,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 export { JobDetailsManager };
-        function startCountsObserver() {
-            try {
-                if (countsObserver) return;
-                const els = [cToday, cWeek, cMonth].filter(Boolean);
-                if (els.length === 0) return;
-                countsObserver = new MutationObserver(() => {
-                    updateChartFromCounts();
-                });
-                els.forEach(el => countsObserver.observe(el, { childList: true, characterData: true, subtree: true }));
-            } catch (_) {}
-        }
-
-        function stopCountsObserver() {
-            try { if (countsObserver) { countsObserver.disconnect(); countsObserver = null; } } catch(_) {}
-        }

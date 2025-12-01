@@ -3,6 +3,18 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthP
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
+    const getPostLoginRedirect = () => {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('redirect');
+            const s = localStorage.getItem('post_login_redirect');
+            const r = q || s;
+            if (!r) return null;
+            const u = new URL(r, window.location.origin);
+            if (u.origin !== window.location.origin) return null;
+            return u.href;
+        } catch (_) { return null; }
+    };
     // Registration Form Handler
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -118,7 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Redirect to index page
                     setTimeout(() => {
-                        window.location.href = '/index.html';
+                        const target = getPostLoginRedirect() || '/index.html';
+                        try { localStorage.removeItem('post_login_redirect'); } catch (_) {}
+                        window.location.href = target;
                     }, 2000);
                 } else {
                     throw new Error('User data not found');
@@ -188,7 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     position: "right",
                     style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
                 }).showToast();
-                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
+                setTimeout(() => {
+                    const target = getPostLoginRedirect() || '/index.html';
+                    try { localStorage.removeItem('post_login_redirect'); } catch (_) {}
+                    window.location.href = target;
+                }, 2000);
             } catch (error) {
                 console.error('Google sign-in error:', error);
                 Toastify({
