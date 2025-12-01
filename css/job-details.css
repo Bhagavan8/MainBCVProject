@@ -8,6 +8,7 @@
     --bg-white: #ffffff;
     --bg-gray: #f8f8f8;
     --border-radius: 8px;
+    --danger-color: #dc3545;
 }
 
 * {
@@ -208,8 +209,8 @@ body {
 .meta-item i { font-size: 16px; }
 
 @media (max-width: 576px) {
-    .job-meta { gap: 12px; }
-    .meta-item { font-size: 13px; }
+    .job-meta { gap: 12px; text-align: center; justify-content: center; }
+    .meta-item { font-size: 13px; display: inline-flex; flex: 0 0 auto; width: auto; }
     .meta-item i { font-size: 14px; }
 }
 
@@ -253,7 +254,8 @@ body {
     color: #0b74de;
 }
 
-.job-code-referal #jobCode { font-weight: 600; color: inherit; }
+.job-code-referal span:first-of-type { color: #64748b; }
+.job-code-referal #jobCode { font-weight: 600; color: #0b74de; }
 
 .views,
 .likes {
@@ -264,7 +266,7 @@ body {
 
 .views i,
 .likes i {
-    color: var(--primary-color);
+    color: #dc3545;
 }
 
 .like-btn {
@@ -1043,6 +1045,25 @@ body {
     animation: spin 1s linear infinite;
     transform: translate(-50%, -50%);
 }
+
+.toast-notification {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: #ffffff;
+    color: #111827;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 100000;
+    border: 1px solid #e5e7eb;
+}
+
+.toast-notification.success { border-left: 4px solid #10b981; }
+.toast-notification.error { border-left: 4px solid #ef4444; }
+
+.toast-content { display: inline-flex; align-items: center; gap: 8px; }
+.toast-content i { color: inherit; }
 
 @keyframes spin {
     0% {
