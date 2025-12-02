@@ -214,6 +214,18 @@ body {
     .meta-item i { font-size: 14px; }
 }
 
+/* Ensure pills wrap to content at tablet widths too */
+@media (min-width: 577px) and (max-width: 767px) {
+    .job-meta { gap: 14px; justify-content: center; text-align: center; }
+    .job-meta .meta-item { display: inline-flex; flex: 0 0 auto; width: auto; max-width: max-content; }
+}
+
+/* Also keep compact wrapping up to 992px */
+@media (min-width: 768px) and (max-width: 991px) {
+    .job-meta { gap: 16px; justify-content: center; }
+    .job-meta .meta-item { display: inline-flex; flex: 0 0 auto; width: auto; max-width: max-content; }
+}
+
 /* ===== JOB STATS - FIXED ===== */
 .job-stats-container {
     border-top: 1px solid #eee;
