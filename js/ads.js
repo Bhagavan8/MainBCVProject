@@ -1,4 +1,9 @@
-
+/* ads.js — Robust Popup + Sticky ad handler
+   - safe if window.CONFIG missing
+   - reloads AdSense if missing
+   - shows fallback placeholders when ads blocked
+   - debug helpers: window.showAdPopupNow(), window.showStickyNow()
+*/
 'use strict';
 
 (function () {
@@ -227,23 +232,6 @@
 
       if (isMobile() && cfg.stickyAutoCloseMsMobile && cfg.stickyAutoCloseMsMobile > 0) {
         setTimeout(() => hideSticky(), delay + cfg.stickyAutoCloseMsMobile);
-      }
-
-      const footer = document.getElementById('footer-container');
-      if (footer) {
-        try {
-          const io = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) hideSticky();
-            });
-          }, { root: null, threshold: 0 });
-          io.observe(footer);
-        } catch (_) {
-          window.addEventListener('scroll', function () {
-            const r = footer.getBoundingClientRect();
-            if (r.top <= window.innerHeight) hideSticky();
-          }, { passive: true });
-        }
       }
     });
 

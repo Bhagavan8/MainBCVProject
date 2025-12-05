@@ -11,8 +11,7 @@ import {
     getDocs,
     addDoc,
     orderBy,
-    serverTimestamp,
-    onSnapshot
+    serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 class JobStatsManager {
@@ -32,7 +31,6 @@ class JobStatsManager {
         this.setupAuthStateListener();
         this.setupComments();
         await this.loadJobStats();
-        this.subscribeToJobStats();
         await this.trackPageView();
         this.setupLikeButton();
         await this.loadComments();
@@ -305,19 +303,6 @@ class JobStatsManager {
         }
     }
 
-    subscribeToJobStats() {
-        try {
-            const jobRef = doc(db, this.collectionName, this.jobId);
-            onSnapshot(jobRef, (snap) => {
-                if (!snap.exists()) return;
-                const data = snap.data();
-                this.updateStatsDisplay(data);
-            });
-        } catch (error) {
-            console.error('Error subscribing to job stats:', error);
-        }
-    }
-
     updateStatsDisplay(jobData) {
         // Update view count
         const viewCount = document.getElementById('viewCount');
@@ -403,21 +388,7 @@ class JobStatsManager {
 
     async handleLike() {
         if (!auth.currentUser) {
-            if (typeof Toastify !== 'undefined') {
-                Toastify({
-                    text: 'Please login to like this job',
-                    duration: 3000,
-                    gravity: 'top',
-                    position: 'right',
-                    style: { background: 'linear-gradient(to right, #ff5f6d, #ffc371)' }
-                }).showToast();
-            } else {
-                const toast = document.createElement('div');
-                toast.className = 'toast-notification error';
-                toast.innerHTML = `<div class="toast-content"><i class="bi bi-exclamation-circle-fill"></i><span>Please login to like this job</span></div>`;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 3000);
-            }
+            alert('Please login to like this job');
             return;
         }
 
@@ -447,17 +418,7 @@ class JobStatsManager {
             const newLikeCount = (jobData.likes || 0) + (isLiked ? -1 : 1);
             const likeCountElement = document.getElementById('likeCount');
             if (likeCountElement) likeCountElement.textContent = newLikeCount;
-            this.updateLikeButtonState(isLiked ? likedBy.filter(id => id !== userId) : [...likedBy, userId]);
-
-            if (typeof Toastify !== 'undefined') {
-                Toastify({
-                    text: isLiked ? 'Removed like' : 'Liked',
-                    duration: 2500,
-                    gravity: 'top',
-                    position: 'right',
-                    style: { background: isLiked ? 'linear-gradient(to right, #ff5f6d, #ffc371)' : 'linear-gradient(to right, #00b09b, #96c93d)' }
-                }).showToast();
-            }
+            this.updateLikeButtonState(isLiked ? [] : [userId]);
 
         } catch (error) {
             console.error('Error handling like:', error);

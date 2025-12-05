@@ -8,7 +8,6 @@
     --bg-white: #ffffff;
     --bg-gray: #f8f8f8;
     --border-radius: 8px;
-    --danger-color: #dc3545;
 }
 
 * {
@@ -23,8 +22,6 @@ body {
     color: var(--text-primary);
     background-color: var(--bg-white);
     font-size: 14px;
-    overflow-x: hidden;
-    width: 100%;
 }
 
 /* ===== LAYOUT & CONTAINERS ===== */
@@ -43,6 +40,7 @@ body {
     width: 100%;
     padding: 20px 0;
     min-width: 0;
+    /* Prevent flex item overflow */
 }
 
 .page-layout {
@@ -59,6 +57,7 @@ body {
     width: 100%;
 }
 
+/* Minimalist Back Button */
 .back-navigation-wrapper {
     padding: 0 15px 20px;
     margin-bottom: 20px;
@@ -93,10 +92,24 @@ body {
     transform: translateX(-2px);
 }
 
+/* Mobile responsive for minimalist version */
+@media (max-width: 575.98px) {
+    .back-navigation-wrapper {
+        padding: 0 10px 15px;
+    }
+
+    .back-btn-enhanced {
+        padding: 8px 12px;
+        min-height: 36px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 /* ===== JOB HEADER ===== */
 .job-header {
-    background: transparent;
-    padding: 24px 0;
+    background: var(--bg-white);
+    padding: 24px;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -126,13 +139,6 @@ body {
     padding: 8px;
 }
 
-.company-logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 8px;
-}
-
 .job-title-section {
     flex: 1;
     min-width: 0;
@@ -149,13 +155,12 @@ body {
 }
 
 .company-name-style {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0 0 20px 0;
     word-wrap: break-word;
 }
-.company-name-style a { color: var(--text-primary); }
 
 .job-meta {
     display: flex;
@@ -163,8 +168,6 @@ body {
     margin-bottom: 20px;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    text-align: center;
 }
 
 .meta-item {
@@ -176,27 +179,7 @@ body {
     flex-shrink: 0;
 }
 
-.job-meta .meta-item {
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: #f5f7fa;
-}
-
-#locationWrapper { background: #e8f2ff; color: #0b74de; }
-#locationWrapper i { color: #0b74de; }
-
-#experienceWrapper { background: #fff2e5; color: #d46a00; }
-#experienceWrapper i { color: #d46a00; }
-
-#viewTimerWrapper { background: #e8f9ee; color: #238c4b; }
-#viewTimerWrapper i { color: #238c4b; }
-
-#salaryWrapper { background: #f2e8ff; color: #6a3bd1; }
-#salaryWrapper i { color: #6a3bd1; }
-
-.meta-item i { font-size: 16px; }
-
-/* ===== JOB STATS ===== */
+/* ===== JOB STATS - FIXED ===== */
 .job-stats-container {
     border-top: 1px solid #eee;
     padding-top: 20px;
@@ -222,22 +205,18 @@ body {
 }
 
 .job-code-referal {
-    background: #e8f2ff;
-    color: #0b74de;
+    background: var(--bg-gray);
     padding: 8px 16px;
-    border-radius: 999px;
-    border: 1px solid #dbe9ff;
+    border-radius: 20px;
+    border: 1px solid #eee;
     display: flex !important;
     align-items: center;
     gap: 6px;
 }
 
 .job-code-referal i {
-    color: #0b74de;
+    color: var(--primary-color);
 }
-
-.job-code-referal span:first-of-type { color: #64748b; }
-.job-code-referal #jobCode { font-weight: 600; color: #0b74de; }
 
 .views,
 .likes {
@@ -248,7 +227,7 @@ body {
 
 .views i,
 .likes i {
-    color: #dc3545;
+    color: var(--primary-color);
 }
 
 .like-btn {
@@ -277,6 +256,7 @@ body {
     color: var(--danger-color);
 }
 
+/* Ensure all stat items are visible */
 #jobCodeWrapper,
 .stat-item.views,
 .stat-item.likes {
@@ -306,6 +286,7 @@ body {
     text-align: center;
 }
 
+/* Compact Quick Actions Button */
 .quick-actions {
     padding: 0 15px;
 }
@@ -320,6 +301,7 @@ body {
     color: white;
     border: none;
     border-radius: 25px;
+    /* More rounded for modern look */
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -339,10 +321,38 @@ body {
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
 }
 
+/* Mobile Responsive */
+@media (max-width: 575.98px) {
+    .action-btn {
+        padding: 6px 14px;
+        font-size: 12px;
+        min-height: 36px;
+        max-width: 100%;
+        width: 100%;
+        border-radius: 20px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .action-btn {
+        padding: 7px 15px;
+        font-size: 12.5px;
+        max-width: 220px;
+    }
+}
+
+@media (min-width: 768px) {
+    .action-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        max-width: 240px;
+    }
+}
+
 .overview-section {
     padding: 24px 0;
     width: 100%;
-    border-bottom: none;
+    border-bottom: 1px solid #eee;
     text-align: center;
 }
 
@@ -367,8 +377,6 @@ body {
     text-align: left;
     max-width: 800px;
     margin: 0 auto;
-    word-break: normal;
-    overflow-wrap: break-word;
 }
 
 .description-content p {
@@ -400,10 +408,10 @@ body {
 .detail-item {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 8px 0;
-    background: transparent;
-    border-radius: 0;
+    gap: 8px;
+    padding: 16px;
+    background: var(--bg-gray);
+    border-radius: var(--border-radius);
     word-wrap: break-word;
     text-align: center;
 }
@@ -426,7 +434,7 @@ body {
 .skills-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
@@ -434,20 +442,18 @@ body {
 }
 
 .skill-tag {
-    padding: 0;
-    background: transparent;
+    padding: 8px 16px;
+    background: var(--bg-gray);
     color: var(--text-secondary);
-    border-radius: 0;
+    border-radius: 20px;
     font-size: 14px;
     font-weight: 500;
     word-break: break-word;
-    margin: 4px 8px;
-    max-width: 100%;
 }
 
 .skill-tag:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
+    background: var(--primary-color);
+    color: white;
 }
 
 /* ===== QUALIFICATIONS ===== */
@@ -458,10 +464,6 @@ body {
     max-width: 800px;
     margin: 0 auto;
     text-align: left;
-    word-break: normal;
-    overflow-wrap: break-word;
-    word-spacing: normal;
-    letter-spacing: normal;
 }
 
 .qualifications-content ul {
@@ -476,12 +478,158 @@ body {
 
 /* ===== COMMUNITY SECTION ===== */
 .community-section {
-    background: transparent;
+    background: var(--bg-gray);
     border-radius: var(--border-radius);
     margin: 24px 0;
     width: 100%;
     padding: 24px;
     text-align: center;
+}
+
+/* Mobile responsive for job navigation */
+@media (max-width: 767px) {
+    .job-navigation-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .nav-job-card {
+        padding: 16px;
+    }
+
+    .nav-job-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .nav-company-logo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 12px;
+    }
+
+    .nav-job-title {
+        font-size: 16px;
+    }
+
+    .nav-company-name {
+        font-size: 14px;
+    }
+
+    .nav-education {
+        font-size: 12px;
+    }
+
+    .nav-view-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .job-navigation-section {
+        padding: 16px;
+        margin-top: 16px;
+    }
+
+    .job-navigation-section .section-title {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .nav-job-header {
+        margin-bottom: 12px;
+        font-size: 12px;
+    }
+
+    .nav-job-content {
+        margin-bottom: 12px;
+    }
+}
+
+/* Additional mobile styles for job navigation */
+@media (max-width: 767px) {
+    .nav-job-card {
+        padding: 14px !important;
+    }
+
+    .nav-job-content {
+        gap: 12px !important;
+    }
+
+    .nav-company-logo {
+        width: 45px !important;
+        height: 45px !important;
+    }
+
+    .nav-job-title {
+        font-size: 15px !important;
+        -webkit-line-clamp: 3;
+    }
+
+    .nav-company-name {
+        font-size: 13px !important;
+    }
+
+    .nav-education {
+        font-size: 12px !important;
+        padding: 3px 6px !important;
+    }
+
+    .nav-view-btn {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+    }
+
+    .job-navigation-section {
+        padding: 16px !important;
+        margin: 16px 0 !important;
+    }
+
+    .job-navigation-section .section-title {
+        font-size: 16px !important;
+        margin-bottom: 16px !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .job-navigation-grid {
+        gap: 12px !important;
+    }
+
+    .nav-job-card {
+        padding: 12px !important;
+    }
+
+    .nav-job-content {
+        gap: 10px !important;
+    }
+
+    .nav-company-logo {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .nav-job-title {
+        font-size: 14px !important;
+    }
+
+    .nav-company-name {
+        font-size: 12px !important;
+    }
+
+    .nav-education {
+        font-size: 11px !important;
+    }
+
+    .nav-view-btn {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+
+    .nav-job-header {
+        font-size: 12px !important;
+        margin-bottom: 10px !important;
+    }
 }
 
 .community-links {
@@ -521,7 +669,7 @@ body {
     background: #006699;
 }
 
-/* ===== ADS STYLES ===== */
+/* ===== ADS STYLES - FIXED ===== */
 .ad-section-responsive {
     margin: 24px 0;
     text-align: center;
@@ -535,6 +683,7 @@ body {
     padding: 20px;
     width: 100%;
     min-height: 250px;
+    /* Increased minimum height */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -551,11 +700,12 @@ body {
     text-align: center;
 }
 
-/* Sidebar Ads */
+/* Sidebar Ads - FIXED */
 .ad-left,
 .ad-right {
     width: 160px;
     min-width: 160px;
+    /* Ensure minimum width */
     position: fixed;
     top: 100px;
     z-index: 9999;
@@ -566,11 +716,13 @@ body {
     border-radius: 8px;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    /* Prevent shrinking */
 }
 
 .ad-left { left: 12px; }
 .ad-right { right: 12px; }
 
+/* Close button for side ads */
 .ad-close {
     position: absolute;
     top: 6px;
@@ -589,6 +741,23 @@ body {
 
 .ad-close:hover { background: #f5f5f5; }
 
+@media (max-width: 767px) {
+    .ad-left,
+    .ad-right {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        width: 100%;
+        padding: 8px 0;
+        box-shadow: none;
+        background: transparent;
+    }
+    .ad-right { display: none !important; }
+    .ad-left { display: block; }
+    .ad-close { top: 6px; right: 6px; width: 28px; height: 28px; line-height: 26px; z-index: 100003; }
+}
+
 .ad-column {
     display: flex;
     flex-direction: column;
@@ -596,6 +765,7 @@ body {
     width: 100%;
 }
 
+/* Ensure ads have proper dimensions */
 .adsbygoogle {
     display: block !important;
     width: 100% !important;
@@ -603,6 +773,7 @@ body {
     min-height: 200px !important;
 }
 
+/* Fallback for ad blocks */
 .ad-fallback {
     display: none;
     padding: 20px;
@@ -646,6 +817,7 @@ body {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -653,11 +825,11 @@ body {
 
 /* ===== JOB NAVIGATION STYLES ===== */
 .job-navigation-section {
-    background: transparent;
-    border-radius: 0;
-    padding: 24px 0;
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: 24px;
     margin-top: 20px;
-    border: none;
+    border: 1px solid #e5e7eb;
     animation: fadeInUp 0.6s ease-out;
 }
 
@@ -677,10 +849,10 @@ body {
 }
 
 .nav-job-card {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 16px 0;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -689,10 +861,19 @@ body {
 
 .nav-job-card:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
 }
 
-.nav-job-card.previous-job { background: transparent; }
-.nav-job-card.next-job { background: transparent; }
+.nav-job-card.previous-job {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-color: #0ea5e9;
+}
+
+.nav-job-card.next-job {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #22c55e;
+}
 
 .nav-job-header {
     font-size: 14px;
@@ -715,8 +896,8 @@ body {
     height: 60px;
     border-radius: 8px;
     object-fit: cover;
-    border: none;
-    background: transparent;
+    border: 1px solid #e2e8f0;
+    background: white;
     flex-shrink: 0;
 }
 
@@ -750,6 +931,8 @@ body {
 
 .nav-education {
     font-size: 13px;
+    color: #64748b;
+    background: #f1f5f9;
     padding: 4px 8px;
     border-radius: 4px;
     display: inline-block;
@@ -757,37 +940,38 @@ body {
 }
 
 .nav-view-btn {
-    background: transparent;
-    color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
     border: none;
-    padding: 0;
-    border-radius: 0;
+    padding: 10px 20px;
+    border-radius: 6px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: color 0.2s ease;
-    width: auto;
-    text-align: left;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
 .nav-view-btn:hover {
-    color: var(--primary-dark);
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
 .nav-job-card.previous-job .nav-view-btn {
-    color: #0ea5e9;
+    background: #0ea5e9;
 }
 
 .nav-job-card.previous-job .nav-view-btn:hover {
-    color: #0284c7;
+    background: #0284c7;
 }
 
 .nav-job-card.next-job .nav-view-btn {
-    color: #22c55e;
+    background: #22c55e;
 }
 
 .nav-job-card.next-job .nav-view-btn:hover {
-    color: #16a34a;
+    background: #16a34a;
 }
 
 @keyframes fadeInUp {
@@ -795,12 +979,14 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
+/* Loading state for navigation cards */
 .nav-job-card.loading {
     opacity: 0.6;
     pointer-events: none;
@@ -821,25 +1007,17 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.toast-notification {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    background: #ffffff;
-    color: #111827;
-    padding: 10px 14px;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    z-index: 100000;
-    border: 1px solid #e5e7eb;
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
 
-.toast-notification.success { border-left: 4px solid #10b981; }
-.toast-notification.error { border-left: 4px solid #ef4444; }
-
-.toast-content { display: inline-flex; align-items: center; gap: 8px; }
-.toast-content i { color: inherit; }
-
+/* Enhanced hover effects */
 .nav-job-card:hover .nav-job-title {
     color: var(--primary-color);
 }
@@ -848,6 +1026,7 @@ body {
     color: var(--text-dark);
 }
 
+/* Smooth transitions for all elements */
 .nav-job-title,
 .nav-company-name,
 .nav-education,
@@ -855,12 +1034,14 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Ensure proper spacing and alignment */
 .nav-job-details {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
+/* Better visual hierarchy */
 .nav-job-header {
     display: flex;
     align-items: center;
@@ -887,6 +1068,7 @@ body {
     display: none;
 }
 
+/* Empty state */
 .nav-job-card.empty {
     background: #f1f5f9;
     border-style: dashed;
@@ -903,7 +1085,632 @@ body {
     cursor: not-allowed;
 }
 
-/* Social Share Section */
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Large Desktops (1200px+) */
+@media (min-width: 1200px) {
+    .page-wrapper {
+        gap: 24px;
+    }
+
+    .ad-left,
+    .ad-right {
+        width: 200px;
+        min-width: 200px;
+    }
+
+    .main-container {
+        margin-left: 220px;
+        margin-right: 220px;
+    }
+}
+
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 16px;
+    }
+
+    .company-logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .job-title-section h1 {
+        font-size: 24px;
+    }
+
+    .job-meta {
+        gap: 16px;
+    }
+
+    .ad-left,
+    .ad-right {
+        width: 140px;
+        min-width: 140px;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 200px;
+    }
+}
+
+/* Mobile Devices (576px - 767px) */
+@media (max-width: 767px) {
+    .main-container {
+        padding: 16px 0;
+    }
+
+    .job-header {
+        padding: 20px 0;
+    }
+
+    .company-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .job-title-section h1 {
+        font-size: 22px;
+    }
+
+    .company-name-style {
+        font-size: 18px;
+    }
+
+    .job-meta {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .stats-row {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .overview-section {
+        padding: 20px 0;
+    }
+
+    .quick-actions {
+        padding: 16px 0;
+    }
+
+    .community-links {
+        flex-direction: column;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    /* Show sidebar ads on mobile but make them horizontal */
+    .ad-left,
+    .ad-right {
+        display: block;
+        width: 100%;
+        position: relative;
+        top: auto;
+        min-width: auto;
+        z-index: auto;
+    }
+
+    .page-wrapper {
+        flex-direction: column;
+    }
+
+    .ad-column {
+        flex-direction: row;
+        gap: 16px;
+        overflow-x: auto;
+    }
+
+    .ad-left .ad-column,
+    .ad-right .ad-column {
+        flex-direction: column;
+    }
+}
+
+/* Small Mobile Devices (320px - 575px) */
+@media (max-width: 575px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 12px;
+    }
+
+    .main-container {
+        padding: 12px 0;
+    }
+
+    .job-title-section h1 {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .company-name-style {
+        font-size: 16px;
+    }
+
+    .meta-item {
+        font-size: 13px;
+    }
+
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .description-content,
+    .qualifications-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .skill-tag {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .community-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 150px;
+        padding: 16px;
+    }
+}
+
+/* Extra Small Mobile Devices (under 360px) */
+@media (max-width: 359px) {
+    .page-wrapper {
+        padding: 0 10px;
+    }
+
+    .job-title-section h1 {
+        font-size: 18px;
+    }
+
+    .company-name-style {
+        font-size: 15px;
+    }
+
+    .company-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .action-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+}
+
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 16px;
+    }
+
+    .company-logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .job-title-section h1 {
+        font-size: 24px;
+    }
+
+    .job-meta {
+        gap: 16px;
+    }
+
+    .ad-left,
+    .ad-right {
+        width: 140px;
+        min-width: 140px;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 200px;
+    }
+}
+
+/* Mobile Devices (576px - 767px) */
+@media (max-width: 767px) {
+    .main-container {
+        padding: 16px 0;
+    }
+
+    .job-header {
+        padding: 20px 0;
+    }
+
+    .company-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .job-title-section h1 {
+        font-size: 22px;
+    }
+
+    .company-name-style {
+        font-size: 18px;
+    }
+
+    .job-meta {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .stats-row {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .overview-section {
+        padding: 20px 0;
+    }
+
+    .quick-actions {
+        padding: 16px 0;
+    }
+
+    .community-links {
+        flex-direction: column;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    /* Show sidebar ads on mobile but make them horizontal */
+    .ad-left,
+    .ad-right {
+        display: block;
+        width: 100%;
+        position: relative;
+        top: auto;
+        z-index: auto;
+        min-width: auto;
+    }
+
+    .page-wrapper {
+        flex-direction: column;
+    }
+
+    .ad-column {
+        flex-direction: row;
+        gap: 16px;
+        overflow-x: auto;
+    }
+
+    .ad-left .ad-column,
+    .ad-right .ad-column {
+        flex-direction: column;
+    }
+}
+
+/* Small Mobile Devices (320px - 575px) */
+@media (max-width: 575px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 12px;
+    }
+
+    .main-container {
+        padding: 12px 0;
+    }
+
+    .job-title-section h1 {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .company-name-style {
+        font-size: 16px;
+    }
+
+    .meta-item {
+        font-size: 13px;
+    }
+
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .description-content,
+    .qualifications-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .skill-tag {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .community-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 150px;
+        padding: 16px;
+    }
+}
+
+/* Extra Small Mobile Devices (under 360px) */
+@media (max-width: 359px) {
+    .page-wrapper {
+        padding: 0 10px;
+    }
+
+    .job-title-section h1 {
+        font-size: 18px;
+    }
+
+    .company-name-style {
+        font-size: 15px;
+    }
+
+    .company-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .action-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+}
+
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 16px;
+    }
+
+    .company-logo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .job-title-section h1 {
+        font-size: 24px;
+    }
+
+    .job-meta {
+        gap: 16px;
+    }
+
+    .ad-left,
+    .ad-right {
+        width: 140px;
+        min-width: 140px;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 200px;
+    }
+}
+
+/* Mobile Devices (576px - 767px) */
+@media (max-width: 767px) {
+    .main-container {
+        padding: 16px 0;
+    }
+
+    .job-header {
+        padding: 20px 0;
+    }
+
+    .company-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .job-title-section h1 {
+        font-size: 22px;
+    }
+
+    .company-name-style {
+        font-size: 18px;
+    }
+
+    .job-meta {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .stats-row {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .overview-section {
+        padding: 20px 0;
+    }
+
+    .quick-actions {
+        padding: 16px 0;
+    }
+
+    .community-links {
+        flex-direction: column;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    /* Show sidebar ads on mobile but make them horizontal */
+    .ad-left,
+    .ad-right {
+        display: block;
+        width: 100%;
+        position: relative;
+        top: auto;
+        z-index: auto;
+        min-width: auto;
+    }
+
+    .page-wrapper {
+        flex-direction: column;
+    }
+
+    .ad-column {
+        flex-direction: row;
+        gap: 16px;
+        overflow-x: auto;
+    }
+
+    .ad-left .ad-column,
+    .ad-right .ad-column {
+        flex-direction: column;
+    }
+}
+
+/* Small Mobile Devices (320px - 575px) */
+@media (max-width: 575px) {
+    .page-wrapper {
+        padding: 0 12px;
+        gap: 12px;
+    }
+
+    .main-container {
+        padding: 12px 0;
+    }
+
+    .job-title-section h1 {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .company-name-style {
+        font-size: 16px;
+    }
+
+    .meta-item {
+        font-size: 13px;
+    }
+
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .job-details-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .description-content,
+    .qualifications-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .skill-tag {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .community-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ad-container,
+    .ad-box-job {
+        min-height: 150px;
+        padding: 16px;
+    }
+}
+
+/* Extra Small Mobile Devices (under 360px) */
+@media (max-width: 359px) {
+    .page-wrapper {
+        padding: 0 10px;
+    }
+
+    .job-title-section h1 {
+        font-size: 18px;
+    }
+
+    .company-name-style {
+        font-size: 15px;
+    }
+
+    .company-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .action-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Social Share Section - Mobile Responsive */
 .social-share-section {
     border-left: 4px solid #007bff;
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
@@ -914,12 +1721,7 @@ body {
     border-radius: 12px;
 }
 
-.main-content .card {
-    border: none;
-    box-shadow: none;
-    background: transparent;
-}
-
+/* Desktop Buttons */
 .social-share-buttons {
     gap: 0.5rem;
 }
@@ -933,6 +1735,7 @@ body {
     font-weight: 500;
 }
 
+/* Mobile Buttons */
 .social-share-buttons-mobile .btn {
     border-radius: 12px;
     padding: 0.75rem 0.5rem;
@@ -955,6 +1758,7 @@ body {
     line-height: 1.2;
 }
 
+/* Hover Effects */
 .social-share-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -964,6 +1768,7 @@ body {
     transform: translateY(0);
 }
 
+/* Platform Specific Colors */
 .btn-success.social-share-btn {
     background: linear-gradient(135deg, #25D366, #128C7E);
     border-color: #128C7E;
@@ -994,13 +1799,50 @@ body {
     border-color: #0088cc;
 }
 
+/* Mobile Specific Adjustments */
+@media (max-width: 768px) {
+    .social-share-section {
+        margin-left: -15px;
+        margin-right: -15px;
+        border-left: none;
+        border-top: 4px solid #007bff;
+    }
+
+    .social-share-section .card {
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .social-share-buttons-mobile .col-4 {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .social-share-buttons-mobile .btn {
+        padding: 0.6rem 0.3rem;
+        min-height: 65px;
+    }
+
+    .social-share-buttons-mobile .bi {
+        font-size: 1.1rem;
+    }
+
+    .social-share-buttons-mobile small {
+        font-size: 0.65rem;
+    }
+}
+
+/* Animation for better UX */
 @keyframes pulse {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
+
     100% {
         transform: scale(1);
     }
@@ -1010,6 +1852,8 @@ body {
     animation: pulse 0.6s ease-in-out;
 }
 
+
+/* Restore Ads button */
 .ad-restore {
     position: fixed;
     bottom: 12px;
@@ -1027,6 +1871,16 @@ body {
 
 .ad-restore:hover { background: #f5f5f5; }
 
+@media (max-width: 767px) {
+    .ad-restore { bottom: 8px; left: 8px; }
+}
+/* Desktops (992px - 1199px): add margins so fixed ads don't overlay content */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .main-container {
+        margin-left: 180px;
+        margin-right: 180px;
+    }
+}
 .reading-progress {
     position: fixed;
     top: 0;
@@ -1051,913 +1905,19 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
-    z-index: 100010;
+    z-index: 100001;
 }
 
 .scroll-top.show { opacity: 1; pointer-events: auto; }
 
-.sticky-active .scroll-top { bottom: calc(16px + var(--sticky-height-desktop)); }
-
-#commentList { display: flex; flex-direction: column; gap: 6px; }
-#commentList .list-group-item { padding: 6px 10px; border-radius: 6px; }
-#commentList .comment-text { max-height: 1.2cm; overflow: hidden; word-break: break-word; white-space: pre-wrap; font-size: 13px; line-height: 1.35; }
-#commentPager .pagination { margin: 0; }
-
-.qualifications-list { list-style: none; padding: 0; margin: 0 auto; max-width: 800px; }
-.qualification-point { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
-.qualification-point i { margin-top: 2px; }
-.education-item .detail-value { font-weight: 700; }
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* ============================================ */
-/* =========== MOBILE RESPONSIVE FIXES ========= */
-/* ============================================ */
-
-/* Extra Small Mobile Devices (under 360px) */
-@media (max-width: 359px) {
-    .page-wrapper {
-        padding: 0 10px !important;
-        gap: 12px !important;
-        width: 100% !important;
-        margin: 0 !important;
-    }
-    
-    .main-container {
-        padding: 12px 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-    }
-    
-    .job-title-section h1 {
-        font-size: 18px !important;
-        line-height: 1.3 !important;
-        padding: 0 8px !important;
-    }
-    
-    .company-name-style {
-        font-size: 15px !important;
-        padding: 0 8px !important;
-    }
-    
-    .company-logo {
-        width: 70px !important;
-        height: 70px !important;
-    }
-    
-    .action-btn {
-        padding: 14px 16px !important;
-        font-size: 15px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .section-title {
-        font-size: 18px !important;
-        padding: 0 8px !important;
-    }
-    
-    .description-content,
-    .qualifications-content {
-        padding: 0 8px !important;
-        font-size: 14px !important;
-        line-height: 1.6 !important;
-    }
-}
-
-/* Small Mobile Devices (320px - 575px) */
-@media (max-width: 575px) {
-    body {
-        overflow-x: hidden !important;
-        width: 100% !important;
-    }
-    
-    .page-wrapper {
-        flex-direction: column !important;
-        padding: 0 12px !important;
-        gap: 12px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 auto !important;
-    }
-    
-    .main-container {
-        padding: 12px 0 !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .page-layout {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    .job-title-section h1 {
-        font-size: 20px !important;
-        line-height: 1.3 !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        padding: 0 10px !important;
-    }
-    
-    .company-name-style {
-        font-size: 16px !important;
-        padding: 0 10px !important;
-    }
-    
-    .meta-item {
-        font-size: 13px !important;
-        padding: 5px 10px !important;
-    }
-    
-    .action-btn {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 16px 20px !important;
-        font-size: 16px !important;
-        border-radius: 30px !important;
-    }
-    
-    .job-details-container {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-        padding: 0 10px !important;
-    }
-    
-    .description-content,
-    .qualifications-content {
-        font-size: 15px !important;
-        line-height: 1.6 !important;
-        padding: 0 10px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 auto !important;
-    }
-    
-    .skill-tag {
-        font-size: 13px !important;
-        padding: 6px 12px !important;
-        margin: 4px 6px !important;
-        word-break: break-word !important;
-        overflow-wrap: anywhere !important;
-        text-align: center !important;
-    }
-    
-    .community-btn {
-        width: 100% !important;
-        justify-content: center !important;
-        padding: 12px 16px !important;
-    }
-    
-    .ad-container,
-    .ad-box-job {
-        min-height: 150px !important;
-        padding: 16px !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-    }
-    
-    .ad-left,
-    .ad-right {
-        display: none !important;
-    }
-    
-    .scroll-top {
-        bottom: calc(12px + env(safe-area-inset-bottom)) !important;
-        left: calc(12px + env(safe-area-inset-left)) !important;
-        right: auto !important;
-        width: 36px !important;
-        height: 36px !important;
-    }
-    
-    .sticky-active .scroll-top {
-        bottom: calc(12px + var(--sticky-height-mobile)) !important;
-        left: calc(12px + env(safe-area-inset-left)) !important;
-        right: auto !important;
-    }
-    
-    /* Fix social share buttons */
-    .social-share-section {
-        margin-left: -12px !important;
-        margin-right: -12px !important;
-        border-left: none !important;
-        border-top: 4px solid #007bff !important;
-    }
-    
-    .social-share-section .card {
-        border-radius: 0 !important;
-        margin: 0 !important;
-    }
-    
-    .social-share-buttons-mobile .btn {
-        padding: 0.6rem 0.3rem !important;
-        min-height: 65px !important;
-    }
-    
-    .social-share-buttons-mobile .bi {
-        font-size: 1.1rem !important;
-    }
-    
-    .social-share-buttons-mobile small {
-        font-size: 0.65rem !important;
-    }
-}
-
-/* Mobile Devices (576px - 767px) */
 @media (max-width: 767px) {
-    body, .page-wrapper, .main-container {
-        overflow-x: hidden !important;
-        width: 100% !important;
-    }
-    
-    .main-container {
-        padding: 16px 0 !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .page-layout, .main-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding: 0 !important;
-    }
-    
-    .job-header {
-        padding: 20px 0 !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-    }
-    
-    .company-info {
-        width: 100% !important;
-        padding: 0 10px !important;
-    }
-    
-    .company-logo {
-        width: 80px !important;
-        height: 80px !important;
-    }
-    
-    .job-title-section h1 {
-        font-size: 22px !important;
-        line-height: 1.3 !important;
-        padding: 0 15px !important;
-    }
-    
-    .company-name-style {
-        font-size: 18px !important;
-        padding: 0 15px !important;
-    }
-    
-    .job-meta {
-        gap: 12px !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        padding: 0 10px !important;
-    }
-    
-    .stats-row {
-        gap: 12px !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        padding: 0 10px !important;
-    }
-    
-    .overview-section {
-        padding: 20px 0 !important;
-        width: 100% !important;
-        margin: 0 auto !important;
-    }
-    
-    .quick-actions {
-        padding: 16px 0 !important;
-        width: 100% !important;
-    }
-    
-    .community-links {
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
-        padding: 0 10px !important;
-    }
-    
-    .job-details-container {
-        grid-template-columns: 1fr !important;
-        gap: 15px !important;
-        padding: 0 15px !important;
-    }
-    
-    .section-title {
-        font-size: 20px !important;
-        padding: 0 15px !important;
-        text-align: center !important;
-    }
-    
-    /* Fix ad positioning on mobile */
-    .ad-left,
-    .ad-right {
-        display: block !important;
-        width: 100% !important;
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        min-width: auto !important;
-        z-index: auto !important;
-        margin: 16px auto !important;
-        box-shadow: none !important;
-        background: transparent !important;
-    }
-    
-    .ad-column {
-        flex-direction: row !important;
-        gap: 16px !important;
-        overflow-x: auto !important;
-        padding: 0 !important;
-    }
-    
-    .ad-left .ad-column,
-    .ad-right .ad-column {
-        flex-direction: column !important;
-    }
-    
-    /* Fix content sections */
-    .content-section, .job-navigation-section, .ad-section-responsive, .ad-container, .ad-box-job {
-        width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding: 0 !important;
-    }
-    
-    .description-content,
-    .qualifications-content {
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 15px !important;
-    }
-    
-    /* Fix job navigation */
-    .job-navigation-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-        padding: 0 15px !important;
-    }
-    
-    .nav-job-card {
-        padding: 16px !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-    }
-    
-    .nav-job-content {
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-        gap: 12px !important;
-    }
-    
-    .nav-company-logo {
-        width: 50px !important;
-        height: 50px !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .nav-job-title {
-        font-size: 16px !important;
-        text-align: center !important;
-        -webkit-line-clamp: 3 !important;
-    }
-    
-    .nav-company-name {
-        font-size: 14px !important;
-        text-align: center !important;
-    }
-    
-    .nav-education {
-        font-size: 12px !important;
-        padding: 3px 6px !important;
-        text-align: center !important;
-    }
-    
-    .nav-view-btn {
-        padding: 8px 16px !important;
-        font-size: 14px !important;
-        width: 100% !important;
-        text-align: center !important;
-        display: block !important;
-        margin: 12px auto 0 !important;
-    }
-    
-    .job-navigation-section {
-        padding: 16px !important;
-        margin: 16px 0 !important;
-    }
-    
-    .job-navigation-section .section-title {
-        font-size: 16px !important;
-        margin-bottom: 16px !important;
-    }
-    
-    .nav-job-header {
-        margin-bottom: 12px !important;
-        font-size: 12px !important;
-    }
-    
-    /* Fix skills container */
-    .skills-container {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
-        gap: 8px !important;
-        padding: 0 15px !important;
-        justify-items: center !important;
-    }
-    
-    .skill-tag {
-        display: block !important;
-        width: 100% !important;
-        text-align: center !important;
-        margin: 0 !important;
-    }
-    
-    /* Fix social share buttons */
-    .social-share-buttons {
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        width: 100% !important;
-    }
-    
-    .social-share-buttons .social-share-btn {
-        flex: 1 1 45% !important;
-        min-width: 140px !important;
-        margin-bottom: 8px !important;
-    }
-    
-    /* Fix comment section */
-    #commentLoggedOut .d-flex {
-        flex-direction: column !important;
-        gap: 8px !important;
-        align-items: flex-start !important;
-    }
-    
-    /* Ensure proper text alignment */
-    .overview-section {
-        text-align: left !important;
-    }
-    
-    .section-title {
-        text-align: center !important;
-    }
+    .scroll-top { bottom: calc(12px + env(safe-area-inset-bottom)); left: calc(12px + env(safe-area-inset-left)); right: auto; width: 36px; height: 36px; }
 }
 
-/* Tablets (768px - 1023px) */
-@media (max-width: 1023px) {
-    .page-wrapper {
-        padding: 0 12px !important;
-        gap: 16px !important;
-    }
-    
-    .company-logo {
-        width: 90px !important;
-        height: 90px !important;
-    }
-    
-    .job-title-section h1 {
-        font-size: 24px !important;
-    }
-    
-    .job-meta {
-        gap: 16px !important;
-    }
-    
-    .ad-left,
-    .ad-right {
-        width: 140px !important;
-        min-width: 140px !important;
-    }
-    
-    .ad-container,
-    .ad-box-job {
-        min-height: 200px !important;
-    }
-}
-
-/* Desktop adjustments for side margins with ads */
 @media (min-width: 992px) and (max-width: 1199px) {
-    .main-container {
-        margin-left: 180px !important;
-        margin-right: 180px !important;
-    }
-    
-    .scroll-top {
-        right: 160px !important;
-    }
+    .scroll-top { right: 160px; }
 }
 
-/* Large Desktops (1200px+) */
 @media (min-width: 1200px) {
-    .page-wrapper {
-        gap: 24px !important;
-    }
-    
-    .ad-left,
-    .ad-right {
-        width: 200px !important;
-        min-width: 200px !important;
-    }
-    
-    .main-container {
-        margin-left: 220px !important;
-        margin-right: 220px !important;
-    }
-    
-    .scroll-top {
-        right: 180px !important;
-    }
-}
-
-/* Additional mobile fixes for very small screens */
-@media (max-width: 320px) {
-    .job-title-section h1 {
-        font-size: 17px !important;
-    }
-    
-    .company-name-style {
-        font-size: 14px !important;
-    }
-    
-    .meta-item {
-        font-size: 12px !important;
-        padding: 4px 8px !important;
-    }
-    
-    .section-title {
-        font-size: 16px !important;
-    }
-    
-    .description-content,
-    .qualifications-content {
-        font-size: 13px !important;
-        line-height: 1.5 !important;
-    }
-    
-    .skill-tag {
-        font-size: 12px !important;
-        padding: 4px 8px !important;
-    }
-}
-
-/* Fix for iOS Safari viewport issues */
-@supports (-webkit-touch-callout: none) {
-    @media (max-width: 767px) {
-        .page-wrapper,
-        .main-container,
-        .page-layout {
-            height: -webkit-fill-available !important;
-        }
-    }
-}
-
-/* Ensure images are responsive */
-img {
-    max-width: 100% !important;
-    height: auto !important;
-}
-
-/* Improve text readability on mobile */
-@media (max-width: 767px) {
-    p, li, span, div {
-        -webkit-font-smoothing: antialiased !important;
-        -moz-osx-font-smoothing: grayscale !important;
-        text-rendering: optimizeLegibility !important;
-    }
-}
-
-/* Fix for sticky elements overlapping content */
-@media (max-width: 767px) {
-    .sticky-ad {
-        z-index: 100005 !important;
-    }
-    
-    .sticky-inner {
-        max-width: none !important;
-        width: 100% !important;
-        border-radius: 0 !important;
-    }
-    
-    .sticky-ad ins.adsbygoogle {
-        min-height: var(--sticky-height-desktop) !important;
-    }
-    
-    @media (max-width: 600px) {
-        .sticky-ad ins.adsbygoogle {
-            min-height: var(--sticky-height-mobile) !important;
-        }
-    }
-}
-
-/* Ensure proper spacing for all mobile breakpoints */
-@media (max-width: 767px) {
-    .content-block,
-    .job-description,
-    .job-overview-container {
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-    }
-    
-    .content-wrapper {
-        padding: 0 !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-    }
-    
-    /* Center align all content on mobile */
-    .job-title-section,
-    .company-info,
-    .job-meta,
-    .stats-row,
-    .skills-container,
-    .job-details-container {
-        text-align: center !important;
-        justify-content: center !important;
-    }
-}
-
-/* Fix for long words breaking layout */
-@media (max-width: 767px) {
-    .job-title-section h1,
-    .company-name-style,
-    .nav-job-title,
-    .nav-company-name,
-    .description-content p,
-    .qualifications-content li,
-    .skill-tag {
-        overflow-wrap: break-word !important;
-        word-wrap: break-word !important;
-        hyphens: auto !important;
-        word-break: break-word !important;
-    }
-}
-/* ===== STICKY AD FIXES ===== */
-.sticky-ad {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100% !important;
-    background: white;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100005 !important;
-    display: none; /* Hidden by default */
-    animation: slideUp 0.3s ease-out;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-}
-
-.sticky-ad.active {
-    display: block !important;
-}
-
-.sticky-inner {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 10px 0 !important;
-    background: white;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 0 !important;
-    border-top: 1px solid #e5e7eb;
-    position: relative;
-}
-
-.sticky-close {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: white;
-    border: 1px solid #e5e7eb;
-    color: #666;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100006;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.sticky-close:hover {
-    background: #f5f5f5;
-}
-
-/* Ensure ad container takes full width */
-.sticky-inner > div {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 15px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* Google Ads styling for full width */
-.sticky-ad ins.adsbygoogle {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    min-height: 90px !important; /* Standard ad height */
-    border: none !important;
-}
-
-.sticky-ad .ad-fallback {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 20px !important;
-    background: #f8f9fa;
-    text-align: center;
-    border: 2px dashed #dee2e6;
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-
-/* Responsive adjustments */
-@media (max-width: 767px) {
-    .sticky-ad {
-        z-index: 100007 !important;
-    }
-    
-    .sticky-inner {
-        padding: 8px 0 !important;
-    }
-    
-    .sticky-ad ins.adsbygoogle {
-        min-height: 100px !important;
-    }
-    
-    .sticky-close {
-        right: 10px;
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
-    }
-    
-    .sticky-inner > div {
-        padding: 0 10px !important;
-    }
-}
-
-/* For tablets and larger mobile */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .sticky-ad ins.adsbygoogle {
-        min-height: 90px !important;
-    }
-}
-
-/* For desktops and laptops */
-@media (min-width: 1024px) {
-    .sticky-ad ins.adsbygoogle {
-        min-height: 90px !important;
-        max-height: 120px !important;
-    }
-}
-
-/* Override any existing center-align styles */
-.sticky-ad * {
-    text-align: left !important;
-    justify-content: flex-start !important;
-}
-
-/* Remove any existing centering styles */
-.sticky-ad .text-center,
-.sticky-ad .d-flex.justify-content-center,
-.sticky-ad .mx-auto {
-    text-align: left !important;
-    justify-content: flex-start !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* Fix for any container limitations */
-@media (min-width: 1400px) {
-    .page-wrapper {
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-    
-    .sticky-ad {
-        left: 0;
-        right: 0;
-        width: 100vw !important;
-        margin-left: calc(-50vw + 50%) !important;
-    }
-}
-
-/* Ensure sticky ad appears above other content */
-.sticky-ad {
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-/* Fallback for ad blockers */
-.sticky-ad .ad-fallback {
-    display: none;
-}
-
-.sticky-ad ins.adsbygoogle[style*="display: none"],
-.sticky-ad ins.adsbygoogle[style*="display:none"] {
-    display: none !important;
-}
-
-.sticky-ad ins.adsbygoogle[style*="display: none"] + .ad-fallback,
-.sticky-ad ins.adsbygoogle[style*="display:none"] + .ad-fallback {
-    display: block !important;
-}
-
-/* JavaScript control class */
-.sticky-ad.hidden {
-    display: none !important;
-}
-
-/* Fix for the HTML structure in your code */
-/* You need to update your HTML for the sticky ad to use this structure:
-<div class="sticky-ad" id="stickyAd">
-    <div class="sticky-inner">
-        <button class="sticky-close" id="stickyClose" aria-label="Close sticky ad">✕</button>
-        <div>
-            <ins class="adsbygoogle" ...></ins>
-            <div class="ad-fallback" id="stickyFallback">...</div>
-        </div>
-    </div>
-</div>
-*/
-
-/* If you want to show the sticky ad automatically, add this JS:
-document.addEventListener('DOMContentLoaded', function() {
-    const stickyAd = document.getElementById('stickyAd');
-    if (stickyAd) {
-        setTimeout(() => {
-            stickyAd.classList.add('active');
-        }, 3000); // Show after 3 seconds
-    }
-    
-    const closeBtn = document.getElementById('stickyClose');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            stickyAd.classList.remove('active');
-        });
-    }
-});
-*/
-
-/* Additional fix for the current structure in your HTML */
-.sticky-ad {
-    display: none; /* Change from 'none' to 'block' when you want to show it */
-}
-
-/* To activate the sticky ad, you can either:
-   1. Change display: none to display: block in CSS
-   2. Add 'active' class via JavaScript
-   3. Remove aria-hidden="true" from HTML
-*/
-
-/* If you want it always visible, change this: */
-.sticky-ad[aria-hidden="false"] {
-    display: block !important;
-}
-
-/* Or simpler: just override the inline style */
-#stickyAd {
-    display: block !important;
-    width: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
-    max-width: 100% !important;
+    .scroll-top { right: 180px; }
 }
