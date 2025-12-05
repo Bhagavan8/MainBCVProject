@@ -1495,10 +1495,21 @@ class JobDetailsManager {
             return s;
         };
 
+        const shouldSkip = (text) => {
+            if (!text) return true;
+            const t = String(text).trim();
+            if (!t) return true;
+            const lower = t.toLowerCase();
+            if (lower === 'green tick icon') return true;
+            if (/^[-•]+$/.test(t)) return true;
+            return false;
+        };
+
         if (Array.isArray(qualifications)) {
+            const points = qualifications.filter(p => !shouldSkip(p));
             return `
                 <ul class="qualifications-list">
-                    ${qualifications.map(point => `
+                    ${points.map(point => `
                         <li class="qualification-point">
                             <i class="bi bi-check2-circle text-success"></i>
                             ${boldTechTerms(this.escapeHTML(point.trim()))}
@@ -1509,7 +1520,10 @@ class JobDetailsManager {
         }
 
         if (typeof qualifications === 'string') {
-            const points = qualifications.split('\n').filter(point => point.trim());
+            const points = qualifications
+                .split('\n')
+                .map(s => s.trim())
+                .filter(s => !shouldSkip(s));
             return `
                 <ul class="qualifications-list">
                     ${points.map(point => `

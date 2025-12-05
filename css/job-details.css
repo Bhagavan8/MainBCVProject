@@ -542,7 +542,6 @@ body {
 .qualifications-content li {
     margin-bottom: 10px;
     position: relative;
-    word-wrap: break-word;
 }
 
 /* ===== COMMUNITY SECTION ===== */
@@ -918,30 +917,31 @@ body {
 }
 
 .nav-job-card {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 16px 0;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    padding: 16px;
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
 .nav-job-card:hover {
     transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
-.nav-job-card.previous-job { background: transparent; }
-.nav-job-card.next-job { background: transparent; }
+.nav-job-card.previous-job { background: #f8fafc; }
+.nav-job-card.next-job { background: #f8fafc; }
 
 .nav-job-header {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--text-light);
+    color: #64748b;
     margin-bottom: 16px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 .nav-job-content {
@@ -967,7 +967,7 @@ body {
 }
 
 .nav-job-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-dark);
     margin-bottom: 6px;
@@ -979,9 +979,9 @@ body {
 }
 
 .nav-company-name {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 4px;
     font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -991,29 +991,12 @@ body {
 
 .nav-education {
     font-size: 13px;
-    padding: 4px 8px;
-    border-radius: 4px;
+    color: #64748b;
     display: inline-block;
     font-weight: 500;
 }
 
-.nav-view-btn {
-    background: transparent;
-    color: var(--primary-color);
-    border: none;
-    padding: 0;
-    border-radius: 0;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    width: auto;
-    text-align: left;
-}
-
-.nav-view-btn:hover {
-    color: var(--primary-dark);
-}
+.nav-view-btn { display: none; }
 
 .nav-job-card.previous-job .nav-view-btn {
     color: #0ea5e9;
@@ -1124,21 +1107,10 @@ body {
     gap: 8px;
 }
 
-.nav-job-header::before {
-    content: "";
-    width: 4px;
-    height: 16px;
-    background: var(--primary-color);
-    border-radius: 2px;
-}
+.nav-job-header::before { display: none; }
 
-.nav-job-card.previous-job .nav-job-header::before {
-    background: #0ea5e9;
-}
-
-.nav-job-card.next-job .nav-job-header::before {
-    background: #22c55e;
-}
+.nav-job-card.previous-job .nav-job-header { text-align: left; }
+.nav-job-card.next-job .nav-job-header { text-align: right; }
 
 .nav-job-card.hidden {
     display: none;
@@ -1363,10 +1335,10 @@ body {
 
 @media (max-width: 767px) {
     .job-navigation-grid { grid-template-columns: 1fr !important; }
-    .nav-job-content { flex-direction: column !important; align-items: center !important; text-align: center !important; }
+    .nav-job-content { flex-direction: column !important; align-items: flex-start !important; text-align: left !important; }
     .skills-container { display: grid; grid-template-columns: 1fr; gap: 6px; justify-items: center; }
     .skill-tag { display: block; width: 100%; }
-    .nav-view-btn { display: block; width: max-content; margin: 12px auto 0; text-align: center; }
+    .nav-view-btn { display: none; }
     .social-share-buttons { flex-wrap: wrap !important; justify-content: center !important; width: 100%; }
     .social-share-buttons .social-share-btn { flex: 1 1 45%; min-width: 140px; }
     body, .page-wrapper, .main-container { overflow-x: hidden; }
@@ -2055,6 +2027,8 @@ a {
 #commentPager .pagination { margin: 0; }
 /* Qualifications list minimal style */
 .qualifications-list { list-style: none; padding: 0; margin: 0 auto; max-width: 800px; }
-.qualification-point { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
+.qualification-point { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; word-break: normal; overflow-wrap: break-word; hyphens: none; text-align: left; }
 .qualification-point i { margin-top: 2px; }
 .education-item .detail-value { font-weight: 700; }
+.nav-job-card.previous-job .nav-education::before { content: "\2190  "; color: #94a3b8; }
+.nav-job-card.next-job .nav-education::after { content: "  \2192"; color: #94a3b8; }
