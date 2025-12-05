@@ -2036,6 +2036,17 @@ a {
     }
 }
 
+/* Mobile centering for all top-level sections */
+@media (max-width: 767px) {
+    .page-layout, .main-content { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .content-section, .job-navigation-section, .ad-section-responsive, .ad-container, .ad-box-job { width: 100%; margin-left: auto; margin-right: auto; }
+}
+
+@media (max-width: 575px) {
+    .page-layout, .main-content { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .content-section, .job-navigation-section, .ad-section-responsive, .ad-container, .ad-box-job { width: 100%; margin-left: auto; margin-right: auto; }
+}
+
 /* Sticky bottom ad overrides for job details */
 .sticky-ad { z-index: 100005 !important; }
 .sticky-inner { max-width: none !important; width: 100% !important; border-radius: 0 !important; }
