@@ -1764,7 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var autoHiddenByFooter = false;
         function showSticky(){ if (sticky){ sticky.classList.add('active'); sticky.setAttribute('aria-hidden','false'); document.body.classList.add('sticky-active'); } }
         function hideSticky(){ if (sticky){ sticky.classList.remove('active'); sticky.setAttribute('aria-hidden','true'); document.body.classList.remove('sticky-active'); } }
-        if (close) close.addEventListener('click', function(){ userDismissed = true; hideSticky(); });
+        if (close) close.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); userDismissed = true; hideSticky(); });
         if (ins) {
             try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
             catch (_) { if (fallback) fallback.style.display = 'block'; }
@@ -1784,6 +1784,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (height > 0 && scrolled >= height - 2) { autoHiddenByFooter = true; hideSticky(); }
             });
         }
+        // Additional guard: always hide when near bottom (mobile browsers sometimes skip IO callbacks)
+        window.addEventListener('scroll', function(){
+            var nearBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 4);
+            if (nearBottom) { autoHiddenByFooter = true; hideSticky(); }
+        }, { passive: true });
         var lastY = window.scrollY;
         window.addEventListener('scroll', function(){
             var y = window.scrollY;
