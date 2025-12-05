@@ -1233,10 +1233,7 @@ class JobDetailsManager {
             return `
                 <ul class="qualifications-list">
                     ${qualifications.map(point => `
-                        <li class="qualification-point">
-                            <i class="bi bi-check2-circle text-success"></i>
-                            ${boldTechTerms(point.trim())}
-                        </li>
+                        <li class="qualification-point">${boldTechTerms(point.trim())}</li>
                     `).join('')}
                 </ul>
             `;
@@ -1247,10 +1244,7 @@ class JobDetailsManager {
             return `
                 <ul class="qualifications-list">
                     ${points.map(point => `
-                        <li class="qualification-point">
-                            <i class="bi bi-check2-circle text-success"></i>
-                            ${boldTechTerms(point.trim())}
-                        </li>
+                        <li class="qualification-point">${boldTechTerms(point.trim())}</li>
                     `).join('')}
                 </ul>
             `;
