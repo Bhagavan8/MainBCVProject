@@ -1351,6 +1351,18 @@ body {
 /* Social share fixes */
 .page-wrapper, .main-container { }
 
+/* Final mobile centering overrides */
+@media (max-width: 767px) {
+    .page-layout, .main-content { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .content-section, .job-navigation-section { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .ad-column { overflow-x: hidden; }
+}
+
+@media (max-width: 575px) {
+    .page-layout, .main-content { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .content-section, .job-navigation-section { width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+}
+
 /* Extra Small Mobile Devices (under 360px) */
 @media (max-width: 359px) {
     .page-wrapper {
