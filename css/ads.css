@@ -96,7 +96,7 @@
 
     .sticky-inner {
       width: 100%;
-      max-width: 980px;
+      max-width: 100%;
       height: var(--sticky-height-desktop);
       background: #fff;
       border-radius: 8px 8px 0 0;

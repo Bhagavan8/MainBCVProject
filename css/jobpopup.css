@@ -196,9 +196,9 @@
 }
 
 .openings-fab {
-  position: fixed;
-  right: 32px;
-  bottom: 16px;
+    position: fixed;
+    right: 32px;
+    bottom: 16px;
   background: #198754;
   color: #fff;
   border: none;
@@ -348,4 +348,8 @@
       transition: none
     }
   }
+}
+
+@media(max-width:600px){
+  .openings-fab { bottom: calc(80px + env(safe-area-inset-bottom)); }
 }

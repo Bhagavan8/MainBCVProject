@@ -158,7 +158,7 @@ body {
 .company-name-style {
     font-size: 20px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--primary-color);
     margin: 0 0 20px 0;
     word-wrap: break-word;
 }
@@ -179,6 +179,12 @@ body {
     font-size: 14px;
     flex-shrink: 0;
 }
+
+/* Colored meta text (no background) */
+#locationWrapper { color: #2563eb; }
+#experienceWrapper { color: #7c3aed; }
+#salaryWrapper { color: #22c55e; }
+.meta-item i { color: inherit; }
 
 /* ===== JOB STATS - FIXED ===== */
 .job-stats-container {
@@ -414,7 +420,7 @@ body {
     flex-direction: column;
     gap: 8px;
     padding: 16px;
-    background: var(--bg-gray);
+    background: transparent;
     border-radius: var(--border-radius);
     word-wrap: break-word;
     text-align: center;
@@ -1171,8 +1177,7 @@ body {
 
     .company-name-style { text-align: center; margin-bottom: 12px; }
     .job-meta { flex-direction: row; justify-content: center; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
-    .meta-item { padding: 6px 12px; border-radius: 999px; background: var(--bg-gray); font-size: 13px; flex-shrink: 1; }
-    .meta-item i { color: var(--primary-color); }
+    .meta-item { padding: 6px 12px; border-radius: 999px; font-size: 13px; flex-shrink: 1; }
 
     .stats-row {
         gap: 12px;
@@ -1247,6 +1252,7 @@ body {
     }
 
     .meta-item { font-size: 12px; padding: 6px 10px; }
+}
 
     .action-btn {
         width: 100%;
@@ -1288,7 +1294,7 @@ body {
     .content-section img, .content-wrapper img, .content-block img, .company-logo img { max-width: 100%; height: auto; }
     .description-content table, .qualifications-content table { width: 100%; max-width: 100%; display: block; overflow-x: auto; }
     .description-content pre, .qualifications-content pre, .description-content code, .qualifications-content code { white-space: pre-wrap; word-break: break-word; }
-}
+
 
 /* Extra Small Mobile Devices (under 360px) */
 @media (max-width: 359px) {
@@ -1899,39 +1905,8 @@ a {
     position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
     height: 3px;
-    width: 0;
-    background: linear-gradient(90deg, #2563eb, #3b82f6);
-    z-index: 9998;
-}
-
-.scroll-top {
-    position: fixed;
-    bottom: 16px;
-    right: 128px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: #2563eb;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 100001;
-}
-
-.scroll-top.show { opacity: 1; pointer-events: auto; }
-
-@media (max-width: 767px) {
-    .scroll-top { bottom: calc(12px + env(safe-area-inset-bottom)); left: calc(12px + env(safe-area-inset-left)); right: auto; width: 36px; height: 36px; }
-}
-
-@media (min-width: 992px) and (max-width: 1199px) {
-    .scroll-top { right: 160px; }
-}
-
-@media (min-width: 1200px) {
-    .scroll-top { right: 180px; }
+    background: linear-gradient(90deg, #2563eb var(--scroll), transparent 0);
+    z-index: 100000;
 }

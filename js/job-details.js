@@ -1403,26 +1403,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // At load, show restore button if ads are hidden
         updateRestoreVisibility();
 
-        const progressEl = document.getElementById('readingProgress');
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        const progressEls = document.querySelectorAll('.reading-progress');
 
         function updateProgress() {
-            const doc = document.documentElement;
-            const scrolled = doc.scrollTop || document.body.scrollTop;
-            const height = doc.scrollHeight - doc.clientHeight;
+            const docEl = document.documentElement;
+            const body = document.body || document.documentElement;
+            const scrolled = window.pageYOffset || docEl.scrollTop || body.scrollTop || 0;
+            const scrollHeight = Math.max(docEl.scrollHeight, body.scrollHeight);
+            const clientHeight = docEl.clientHeight;
+            const height = scrollHeight - clientHeight;
             const pct = height > 0 ? (scrolled / height) * 100 : 0;
-            if (progressEl) progressEl.style.width = pct + '%';
-            if (scrollTopBtn) scrollTopBtn.classList.toggle('show', scrolled > 300);
+            try { document.documentElement.style.setProperty('--scroll', pct + '%'); } catch (_) {}
         }
 
-        window.addEventListener('scroll', updateProgress);
+        window.addEventListener('scroll', updateProgress, { passive: true });
         updateProgress();
 
-        if (scrollTopBtn) {
-            scrollTopBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
+        
 
         const footer = document.getElementById('footer-container');
         if (footer) {
@@ -1434,7 +1431,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isAtFooter) {
                     if (leftAd) leftAd.style.display = 'none';
                     if (rightAd) rightAd.style.display = 'none';
-                    if (scrollTopBtn) scrollTopBtn.classList.add('show');
                 } else {
                     if (!leftHiddenFlag && leftAd) leftAd.style.display = '';
                     if (!rightHiddenFlag && rightAd) rightAd.style.display = '';
@@ -1449,26 +1445,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Reading progress and scroll-top should work regardless of ad setup
     try {
-        const progressEl = document.getElementById('readingProgress');
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        const progressEls = document.querySelectorAll('.reading-progress');
 
         function updateProgress() {
-            const doc = document.documentElement;
-            const scrolled = doc.scrollTop || document.body.scrollTop;
-            const height = doc.scrollHeight - doc.clientHeight;
+            const docEl = document.documentElement;
+            const body = document.body || document.documentElement;
+            const scrolled = window.pageYOffset || docEl.scrollTop || body.scrollTop || 0;
+            const scrollHeight = Math.max(docEl.scrollHeight, body.scrollHeight);
+            const clientHeight = docEl.clientHeight;
+            const height = scrollHeight - clientHeight;
             const pct = height > 0 ? (scrolled / height) * 100 : 0;
-            if (progressEl) progressEl.style.width = pct + '%';
-            if (scrollTopBtn) scrollTopBtn.classList.toggle('show', scrolled > 150);
+            try { document.documentElement.style.setProperty('--scroll', pct + '%'); } catch (_) {}
         }
 
-        window.addEventListener('scroll', updateProgress);
+        window.addEventListener('scroll', updateProgress, { passive: true });
         updateProgress();
 
-        if (scrollTopBtn) {
-            scrollTopBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
+        
     } catch (e) {
         console.warn('Progress/scroll-top setup error', e);
     }
