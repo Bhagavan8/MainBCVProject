@@ -608,22 +608,23 @@
     <button class="openings-fab" id="openingsFab" aria-label="Openings Snapshot"><i class="bi bi-graph-up"></i><span
             class="fab-text">Openings</span></button>
 
-    <div class="sticky-ad" id="stickyAd" aria-hidden="true">
-        <div class="sticky-inner" role="complementary" aria-label="Advertisement">
-            <!-- close btn -->
-            <button class="sticky-close" id="stickyClose" aria-label="Close sticky ad">✕</button>
-
-            <div style="width:100%;max-width:900px;">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                    data-ad-slot="6672824367" data-ad-format="auto" data-full-width-responsive="true"></ins>
-
-                <div class="ad-fallback" id="stickyFallback" style="display:none;">
-                    <strong>Sticky Test Ad</strong>
-                    <div style="font-size:12px;margin-top:6px;">Placeholder visible when ad blocked.</div>
-                </div>
+    <!-- Replace your current sticky ad with this structure -->
+<div class="sticky-ad active" id="stickyAd" aria-hidden="false">
+    <div class="sticky-inner" role="complementary" aria-label="Advertisement">
+        <button class="sticky-close" id="stickyClose" aria-label="Close sticky ad">✕</button>
+        <div style="width:100%;">
+            <ins class="adsbygoogle" style="display:block" 
+                 data-ad-client="ca-pub-6284022198338659"
+                 data-ad-slot="6672824367" 
+                 data-ad-format="auto" 
+                 data-full-width-responsive="true"></ins>
+            <div class="ad-fallback" id="stickyFallback" style="display:none;">
+                <strong>Sticky Test Ad</strong>
+                <div style="font-size:12px;margin-top:6px;">Placeholder visible when ad blocked.</div>
             </div>
         </div>
     </div>
+</div>
 
     <button id="scrollTopBtn" class="scroll-top" aria-label="Scroll to top">↑</button>
     <div id="footer-container"></div>
