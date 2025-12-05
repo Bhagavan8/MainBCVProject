@@ -109,28 +109,25 @@
       box-sizing: border-box;
     }
 
-.sticky-close {
-    position: absolute;
-    right: 10px;
-    top: 8px;
-    background: rgba(0,0,0,0.06);
-    border: none;
-    padding: 6px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    z-index: 100001;
-    pointer-events: auto;
-}
+    .sticky-close {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      background: rgba(0,0,0,0.06);
+      border: none;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
     /* Mobile adjustments (small screens) */
-@media (max-width: 600px) {
-  .ad-popup-card { padding: 12px; max-width: 360px; }
-  :root { --sticky-height-desktop: var(--sticky-height-mobile); }
-  .ad-container { min-height: 50px; }
-  .ad-popup-card { gap: 8px; }
-  .sticky-close { right: 8px; top: 6px; padding: 8px 10px; font-size: 16px; }
-}
+    @media (max-width: 600px) {
+      .ad-popup-card { padding: 12px; max-width: 360px; }
+      :root { --sticky-height-desktop: var(--sticky-height-mobile); }
+      .ad-container { min-height: 50px; }
+      .ad-popup-card { gap: 8px; }
+    }
 
     /* Very small devices: make sticky smaller */
     @media (max-width: 380px) {

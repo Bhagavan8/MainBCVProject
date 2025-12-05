@@ -1495,21 +1495,10 @@ class JobDetailsManager {
             return s;
         };
 
-        const shouldSkip = (text) => {
-            if (!text) return true;
-            const t = String(text).trim();
-            if (!t) return true;
-            const lower = t.toLowerCase();
-            if (lower === 'green tick icon') return true;
-            if (/^[-•]+$/.test(t)) return true;
-            return false;
-        };
-
         if (Array.isArray(qualifications)) {
-            const points = qualifications.filter(p => !shouldSkip(p));
             return `
                 <ul class="qualifications-list">
-                    ${points.map(point => `
+                    ${qualifications.map(point => `
                         <li class="qualification-point">
                             <i class="bi bi-check2-circle text-success"></i>
                             ${boldTechTerms(this.escapeHTML(point.trim()))}
@@ -1520,10 +1509,7 @@ class JobDetailsManager {
         }
 
         if (typeof qualifications === 'string') {
-            const points = qualifications
-                .split('\n')
-                .map(s => s.trim())
-                .filter(s => !shouldSkip(s));
+            const points = qualifications.split('\n').filter(point => point.trim());
             return `
                 <ul class="qualifications-list">
                     ${points.map(point => `
@@ -1778,7 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var autoHiddenByFooter = false;
         function showSticky(){ if (sticky){ sticky.classList.add('active'); sticky.setAttribute('aria-hidden','false'); document.body.classList.add('sticky-active'); } }
         function hideSticky(){ if (sticky){ sticky.classList.remove('active'); sticky.setAttribute('aria-hidden','true'); document.body.classList.remove('sticky-active'); } }
-        if (close) close.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); userDismissed = true; hideSticky(); });
+        if (close) close.addEventListener('click', function(){ userDismissed = true; hideSticky(); });
         if (ins) {
             try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
             catch (_) { if (fallback) fallback.style.display = 'block'; }
@@ -1798,11 +1784,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (height > 0 && scrolled >= height - 2) { autoHiddenByFooter = true; hideSticky(); }
             });
         }
-        // Additional guard: always hide when near bottom (mobile browsers sometimes skip IO callbacks)
-        window.addEventListener('scroll', function(){
-            var nearBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 4);
-            if (nearBottom) { autoHiddenByFooter = true; hideSticky(); }
-        }, { passive: true });
         var lastY = window.scrollY;
         window.addEventListener('scroll', function(){
             var y = window.scrollY;
