@@ -1080,7 +1080,7 @@ class JobDetailsManager {
                 logoContainer.innerHTML = `
                     <img src="${company.logoURL}" 
                          alt="${company.name} Logo" 
-                         class="company-logo"
+                         class="company-logo-img"
                          onerror="this.src='/assets/images/companies/default-company.webp'">`;
             } else {
                 logoContainer.innerHTML = '<i class="bi bi-building fs-1 text-secondary"></i>';
@@ -1149,51 +1149,35 @@ class JobDetailsManager {
     capitalizeEducationFirstLetter(string) {
         if (!string) return '';
 
-        const combinedCases = {
-            'be/b.tech/any graduation/m.tech': 'B.E/B.Tech/Any Graduation/M.Tech',
-            'b.e, btech or similar': 'B.E, B.Tech or Similar',
-            'b.e/b.tech or similar': 'B.E/B.Tech or Similar',
-            'b.e, btech or similar': 'B.E, B.Tech or Similar'
-        };
-
-        const normalizedInput = string.toLowerCase().trim();
-
-        for (const [pattern, replacement] of Object.entries(combinedCases)) {
-            if (normalizedInput === pattern.toLowerCase()) {
-                return replacement;
-            }
-        }
-
-        const educationPatterns = {
+        let s = String(string).trim();
+        s = s.replace(/be/gi, 'B.E')
+             .replace(/\bb\.\s*e\b/gi, 'B.E')
+             .replace(/me/gi, 'M.E')
+             .replace(/\bm\.\s*e\b/gi, 'M.E')
+             .replace(/btech|b\.\s*tech/gi, 'B.TECH')
+             .replace(/mtech|m\.\s*tech/gi, 'M.TECH')
+             .replace(/bsc|b\.\s*sc/gi, 'B.SC')
+             .replace(/msc|m\.\s*sc/gi, 'M.SC')
+             .replace(/bcom|b\.\s*com/gi, 'B.COM')
+             .replace(/mcom|m\.\s*com/gi, 'M.COM')
+             .replace(/\bbca\b/gi, 'BCA')
+             .replace(/\bmca\b/gi, 'MCA')
+             .replace(/\bbba\b/gi, 'BBA')
+             .replace(/\bmba\b/gi, 'MBA');
+             
+        const patterns = {
             'master of engineering': 'Master of Engineering',
             'master of technology': 'Master of Technology',
             'bachelor of engineering': 'Bachelor of Engineering',
-            'bachelor of technology': 'Bachelor of Technology',
-            'b.tech': 'B.Tech',
-            'b.e': 'B.E',
-            'm.tech': 'M.Tech',
-            'm.e': 'M.E',
-            'btech': 'B.Tech',
-            'mtech': 'M.Tech',
-            'be': 'B.E',
-            'me': 'M.E'
+            'bachelor of technology': 'Bachelor of Technology'
         };
 
-        return string.split(/(\s+|\/|,)/).map(part => {
-            if (/^\s+$|\/|,/.test(part)) {
-                return part;
-            }
-
-            const lowerPart = part.toLowerCase();
-
-            if (educationPatterns.hasOwnProperty(lowerPart)) {
-                return educationPatterns[lowerPart];
-            }
-
-            if (lowerPart === 'or') {
-                return 'or';
-            }
-
+        return s.split(/(\s+|\/|,)/).map(part => {
+            if (/^\s+$|\/|,/.test(part)) return part;
+            const key = part.toLowerCase();
+            if (patterns[key]) return patterns[key];
+            if (part.includes('.')) return part.toUpperCase();
+            if (key.length === 2) return key.toUpperCase();
             return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
         }).join('');
     }
@@ -1329,7 +1313,7 @@ class JobDetailsManager {
             logoContainer.innerHTML = `
                 <img src="${logoUrl}" 
                      alt="${job.companyName} Logo" 
-                     class="company-logo"
+                     class="company-logo-img"
                      onerror="this.src='/assets/images/companies/default-company.webp'">`;
         }
     }
@@ -1394,7 +1378,7 @@ class JobDetailsManager {
         
         if (job.educationLevel) {
             html += `
-                <div class="detail-item">
+                <div class="detail-item education-item">
                     <span class="detail-label">Education:</span>
                     <span class="detail-value">${this.capitalizeEducationFirstLetter(job.educationLevel)}</span>
                 </div>`;
@@ -1439,9 +1423,7 @@ class JobDetailsManager {
         }
         
         skillsContainer.innerHTML = job.skills.map(skill => `
-            <span class="skill-tag">
-                ${this.capitalizeFirstLetter(skill)}
-            </span>
+            <span class="skill-tag">${this.capitalizeFirstLetter(skill)}</span>
         `).join('');
     }
 
@@ -1472,7 +1454,7 @@ class JobDetailsManager {
             <ul class="description-list">
                 ${points.map(point => `
                     <li class="description-point">
-                        ${point.trim()}
+                        ${this.escapeHTML(point.trim())}
                     </li>
                 `).join('')}
             </ul>
@@ -1498,12 +1480,19 @@ class JobDetailsManager {
         ];
 
         const boldTechTerms = (text) => {
-            let processedText = text;
-            techKeywords.forEach(keyword => {
-                const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
-                processedText = processedText.replace(regex, '<strong>$&</strong>');
+            let s = text;
+            const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            techKeywords.forEach((keyword) => {
+                const safe = escapeRegex(keyword);
+                const boundary = new RegExp(`(^|[^A-Za-z0-9])(${safe})(?=$|[^A-Za-z0-9])`, 'gi');
+                s = s.replace(boundary, (match, pre, word) => `${pre}<strong>${word}</strong>`);
+                if (keyword.includes("'")) {
+                    const escaped = safe.replace(/'/g, '&#39;');
+                    const boundaryEsc = new RegExp(`(^|[^A-Za-z0-9])(${escaped})(?=$|[^A-Za-z0-9])`, 'gi');
+                    s = s.replace(boundaryEsc, (match, pre, word) => `${pre}<strong>${word}</strong>`);
+                }
             });
-            return processedText;
+            return s;
         };
 
         if (Array.isArray(qualifications)) {
@@ -1512,7 +1501,7 @@ class JobDetailsManager {
                     ${qualifications.map(point => `
                         <li class="qualification-point">
                             <i class="bi bi-check2-circle text-success"></i>
-                            ${boldTechTerms(point.trim())}
+                            ${boldTechTerms(this.escapeHTML(point.trim()))}
                         </li>
                     `).join('')}
                 </ul>
@@ -1526,7 +1515,7 @@ class JobDetailsManager {
                     ${points.map(point => `
                         <li class="qualification-point">
                             <i class="bi bi-check2-circle text-success"></i>
-                            ${boldTechTerms(point.trim())}
+                            ${boldTechTerms(this.escapeHTML(point.trim()))}
                         </li>
                     `).join('')}
                 </ul>
@@ -1534,6 +1523,15 @@ class JobDetailsManager {
         }
 
         return 'Qualifications format not supported';
+    }
+
+    escapeHTML(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     async handleApplyClick(job) {
@@ -1605,7 +1603,8 @@ class JobDetailsManager {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new JobDetailsManager();
+    const mgr = new JobDetailsManager();
+    window.jobDetailsManager = mgr;
 
     // Side ads close buttons (persist via localStorage)
     try {
@@ -1755,6 +1754,44 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
         console.warn('Progress/scroll-top setup error', e);
     }
+
+    try {
+        const sticky = document.getElementById('stickyAd');
+        const close = document.getElementById('stickyClose');
+        const fallback = document.getElementById('stickyFallback');
+        const ins = sticky ? sticky.querySelector('ins.adsbygoogle') : null;
+        var userDismissed = false;
+        var autoHiddenByFooter = false;
+        function showSticky(){ if (sticky){ sticky.classList.add('active'); sticky.setAttribute('aria-hidden','false'); document.body.classList.add('sticky-active'); } }
+        function hideSticky(){ if (sticky){ sticky.classList.remove('active'); sticky.setAttribute('aria-hidden','true'); document.body.classList.remove('sticky-active'); } }
+        if (close) close.addEventListener('click', function(){ userDismissed = true; hideSticky(); });
+        if (ins) {
+            try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
+            catch (_) { if (fallback) fallback.style.display = 'block'; }
+        }
+        setTimeout(showSticky, 800);
+        const footer = document.getElementById('footer-container');
+        if (footer && 'IntersectionObserver' in window) {
+            const obs = new IntersectionObserver(function(entries){
+                for (var i=0;i<entries.length;i++){ if (entries[i].isIntersecting) { autoHiddenByFooter = true; hideSticky(); break; } }
+            }, { root: null, threshold: 0 });
+            obs.observe(footer);
+        } else {
+            window.addEventListener('scroll', function(){
+                var doc = document.documentElement;
+                var scrolled = doc.scrollTop || document.body.scrollTop;
+                var height = (doc.scrollHeight - doc.clientHeight);
+                if (height > 0 && scrolled >= height - 2) { autoHiddenByFooter = true; hideSticky(); }
+            });
+        }
+        var lastY = window.scrollY;
+        window.addEventListener('scroll', function(){
+            var y = window.scrollY;
+            var up = y < lastY - 2;
+            if (up && autoHiddenByFooter && !userDismissed && sticky && !sticky.classList.contains('active')) { showSticky(); autoHiddenByFooter = false; }
+            lastY = y;
+        });
+    } catch (_) {}
 
     // Openings popup
     try {
