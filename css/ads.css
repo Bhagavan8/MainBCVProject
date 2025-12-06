@@ -109,17 +109,20 @@
       box-sizing: border-box;
     }
 
-    .sticky-close {
-      position: absolute;
-      right: 10px;
-      top: 8px;
-      background: rgba(0,0,0,0.06);
-      border: none;
-      padding: 6px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
+.sticky-close {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: rgba(0,0,0,0.06);
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 3;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 
     /* Mobile adjustments (small screens) */
     @media (max-width: 600px) {

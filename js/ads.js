@@ -237,7 +237,10 @@
       }
     });
 
-    if (stickyClose) stickyClose.addEventListener('click', function(){ hideSticky(true); });
+    if (stickyClose) {
+      stickyClose.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); hideSticky(true); }, { passive: false });
+      stickyClose.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); hideSticky(true); }, { passive: false });
+    }
     sticky.addEventListener('click', function (e) {
       if (e.target === sticky || e.target === stickyClose) hideSticky(true);
     });
