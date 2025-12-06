@@ -199,7 +199,7 @@
     if (!sticky) return;
 
     const stickyInner = sticky.querySelector('.sticky-inner') || sticky;
-    const stickyFallback = sticky.querySelector('.ad-fallback, .ad-blocker-fallback') || null;
+  
     let stickyTimer = null;
     let userClosedSticky = false;
 
