@@ -182,84 +182,121 @@ async function displayNewsDetail(newsData) {
             dateElement.textContent = formatDate(newsData.createdAt);
         }
 
-        function getParagraphs(data){
-            const p = data.paragraphs;
-            if (Array.isArray(p)) {
-                return p.map(s => String(s).trim()).filter(Boolean);
-            }
-            const raw = String(p || data.content || '').trim();
-            if (!raw) return [];
-            let parts = raw.split(/\r?\n\r?\n/).map(s => s.trim()).filter(Boolean);
-            if (parts.length < 2) {
-                parts = raw.split(/\.\s+/).map(s => s.trim()).filter(Boolean);
-            }
-            return parts;
-        }
-        const paragraphs = getParagraphs(newsData);
-        const contentContainer = document.querySelector('.article-content');
-        if (!contentContainer) return;
-
-        
-
         function splitIntoSentences(t){
             return String(t).split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(Boolean);
         }
+        function appendTextWithLinks(el, text){
+            const str = String(text || '');
+            const regex = /((?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.com(?:[^\s,;)]*)?)/gi;
+            let lastIndex = 0;
+            let match;
+            while ((match = regex.exec(str)) !== null) {
+                const before = str.slice(lastIndex, match.index);
+                if (before) el.appendChild(document.createTextNode(before));
+                let href = match[0];
+                if (!/^https?:\/\//i.test(href)) href = 'https://' + href.replace(/^www\./i, 'www.');
+                const a = document.createElement('a');
+                a.href = href;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.className = 'text-primary';
+                a.textContent = match[0];
+                el.appendChild(a);
+                lastIndex = regex.lastIndex;
+            }
+            const rest = str.slice(lastIndex);
+            if (rest) el.appendChild(document.createTextNode(rest));
+        }
+        function normalizeParagraphs(data){
+            const p = data.paragraphs;
+            if (Array.isArray(p)) {
+                return p.map(item => {
+                    if (item && typeof item === 'object') {
+                        const text = String(item.text || '').trim();
+                        let pts = item.points;
+                        if (Array.isArray(pts)) {
+                            pts = pts.map(pt => {
+                                if (pt && typeof pt === 'object') {
+                                    return { text: String(pt.text || '').trim(), bold: !!pt.bold };
+                                }
+                                return { text: String(pt).trim(), bold: false };
+                            }).filter(pt => pt.text);
+                        } else if (pts && typeof pts === 'object') {
+                            pts = [{ text: String(pts.text || '').trim(), bold: !!pts.bold }].filter(pt => pt.text);
+                        } else {
+                            const sentences = splitIntoSentences(String(item.text || '').trim());
+                            pts = sentences.slice(1).map(tx => ({ text: tx, bold: false }));
+                        }
+                        return { text, points: pts };
+                    }
+                    const s = String(item || '').trim();
+                    if (!s) return null;
+                    const sentences = splitIntoSentences(s);
+                    return { text: sentences[0] || '', points: sentences.slice(1).map(tx => ({ text: tx, bold: false })) };
+                }).filter(Boolean);
+            }
+            const raw = String(p || data.content || '').trim();
+            if (!raw) return [];
+            const paras = raw.split(/\r?\n\r?\n/).map(s => s.trim()).filter(Boolean);
+            return paras.map(s => {
+                const sentences = splitIntoSentences(s);
+                return { text: sentences[0] || '', points: sentences.slice(1).map(tx => ({ text: tx, bold: false })) };
+            });
+        }
+        const paragraphs = normalizeParagraphs(newsData);
+        const contentContainer = document.querySelector('.article-content');
+        if (!contentContainer) return;
         function appendStructuredParagraph(container, para){
-            const sentences = splitIntoSentences(para);
-            if (!sentences.length) return;
             const p = document.createElement('p');
-            const strong = document.createElement('strong');
-            strong.textContent = sentences[0];
-            p.appendChild(strong);
-            if (sentences[1]) p.appendChild(document.createTextNode(' ' + sentences[1]));
+            if (para.text) {
+                const strong = document.createElement('strong');
+                appendTextWithLinks(strong, para.text);
+                p.appendChild(strong);
+            }
             container.appendChild(p);
-            if (sentences.length > 2) {
+            if (Array.isArray(para.points) && para.points.length) {
                 const ul = document.createElement('ul');
                 ul.className = 'paragraph-subpoints';
-                const limit = Math.min(3, sentences.length - 2);
-                for (let i = 0; i < limit; i++) {
+                para.points.forEach(pt => {
                     const li = document.createElement('li');
-                    li.textContent = sentences[2 + i];
+                    if (pt.bold) {
+                        const b = document.createElement('strong');
+                        appendTextWithLinks(b, pt.text);
+                        li.appendChild(b);
+                    } else {
+                        appendTextWithLinks(li, pt.text);
+                    }
                     ul.appendChild(li);
-                }
+                });
                 container.appendChild(ul);
-                if (sentences.length > 2 + limit) {
-                    const rest = sentences.slice(2 + limit).join(' ');
-                    const p2 = document.createElement('p');
-                    p2.textContent = rest;
-                    container.appendChild(p2);
-                }
             }
         }
         const manualNodes = contentContainer.querySelectorAll('[data-paragraph]');
         if (manualNodes.length) {
             manualNodes.forEach(node => {
                 const idx = Number(node.getAttribute('data-paragraph')) || 0;
-                const para = paragraphs[idx] || '';
-                const sentences = splitIntoSentences(para);
+                const para = paragraphs[idx] || { text: '', points: [] };
                 node.innerHTML = '';
-                if (sentences.length) {
+                if (para.text) {
                     const strong = document.createElement('strong');
-                    strong.textContent = sentences[0];
+                    appendTextWithLinks(strong, para.text);
                     node.appendChild(strong);
-                    if (sentences[1]) node.appendChild(document.createTextNode(' ' + sentences[1]));
                 }
-                if (sentences.length > 2) {
+                if (Array.isArray(para.points) && para.points.length) {
                     const ul = document.createElement('ul');
                     ul.className = 'paragraph-subpoints';
-                    const limit = Math.min(3, sentences.length - 2);
-                    for (let i = 0; i < limit; i++) {
+                    para.points.forEach(pt => {
                         const li = document.createElement('li');
-                        li.textContent = sentences[2 + i];
+                        if (pt.bold) {
+                            const b = document.createElement('strong');
+                            appendTextWithLinks(b, pt.text);
+                            li.appendChild(b);
+                        } else {
+                            appendTextWithLinks(li, pt.text);
+                        }
                         ul.appendChild(li);
-                    }
+                    });
                     node.parentNode.insertBefore(ul, node.nextSibling);
-                    if (sentences.length > 2 + limit) {
-                        const rest = sentences.slice(2 + limit).join(' ');
-                        const p2 = document.createElement('p');
-                        p2.textContent = rest;
-                        node.parentNode.insertBefore(p2, ul.nextSibling);
-                    }
                 }
             });
             for (let i = manualNodes.length; i < paragraphs.length; i++) {
@@ -267,17 +304,20 @@ async function displayNewsDetail(newsData) {
             }
         } else {
             contentContainer.innerHTML = '';
-            paragraphs.forEach((paragraph) => {
-                appendStructuredParagraph(contentContainer, paragraph);
-            });
+            paragraphs.forEach(para => appendStructuredParagraph(contentContainer, para));
         }
 
         const slotsAttr = contentContainer.getAttribute('data-ad-slots') || '';
         const slots = slotsAttr.split(',').map(s => s.trim()).filter(Boolean);
         if (slots.length) {
-            const anchors = contentContainer.querySelectorAll('p, ul.paragraph-subpoints');
-            for (let i = 0; i < anchors.length; i++) {
-                const anchor = anchors[i];
+            const paragraphsEls = Array.from(contentContainer.querySelectorAll('p'));
+            for (let i = 0; i < paragraphsEls.length; i++) {
+                const pEl = paragraphsEls[i];
+                let anchor = pEl;
+                const next = pEl.nextElementSibling;
+                if (next && next.matches('ul.paragraph-subpoints')) {
+                    anchor = next;
+                }
                 const adSection = document.createElement('div');
                 adSection.className = 'ad-section-responsive my-4';
                 const adBanner = document.createElement('div');

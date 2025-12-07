@@ -81,12 +81,16 @@
 
 .featured-image-container {
     border-radius: 8px;
-    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
 }
+
+
 
 .featured-image-container img {
     width: 100%;
     height: auto;
+    object-fit: contain;
 }
 
 .social-share {
@@ -318,20 +322,11 @@
 /* Featured image sizing and responsiveness */
 .featured-image-container img {
     width: 100%;
-    max-height: 420px;
-    object-fit: cover;
-}
-
-@media (max-width: 992px) {
-    .featured-image-container img {
-        max-height: 320px;
-    }
+    height: auto;
+    object-fit: contain;
 }
 
 @media (max-width: 576px) {
-    .featured-image-container img {
-        max-height: 220px;
-    }
     .paragraph-subpoints {
         margin-left: 1rem;
         padding-left: 1rem;
@@ -1011,5 +1006,3 @@ ins.adsbygoogle {
     visibility: hidden !important;
     pointer-events: none !important;
 }
-
-
