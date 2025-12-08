@@ -3,314 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Applied Jobs - BCVWorld</title>
+    <title>Applications - BCVWorld</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link rel ="stylesheet" href="/css/toaster.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659" crossorigin="anonymous"></script>
     <style>
-        /* Base styles */
-        .page-container {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 24px;
-            padding: 24px;
-            margin: 0 auto;
-        }
-
-        /* Responsive grid layout */
-        @media (min-width: 1200px) {
-            .ads-section {
-                grid-column: 1 / span 3;
-            }
-            .applied-jobs {
-                grid-column: 4 / span 6;
-            }
-            .related-jobs {
-                grid-column: 10 / span 3;
-            }
-        }
-
-        @media (min-width: 992px) and (max-width: 1199px) {
-            .ads-section {
-                grid-column: 1 / span 3;
-            }
-            .applied-jobs {
-                grid-column: 4 / span 5;
-            }
-            .related-jobs {
-                grid-column: 9 / span 4;
-            }
-        }
-
-        @media (min-width: 768px) and (max-width: 991px) {
-            .page-container {
-                grid-template-columns: repeat(8, 1fr);
-            }
-            .ads-section {
-                grid-column: 1 / span 2;
-            }
-            .applied-jobs {
-                grid-column: 3 / span 6;
-            }
-            .related-jobs {
-                grid-column: 1 / -1;
-                margin-top: 24px;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .page-container {
-                grid-template-columns: 1fr;
-                padding: 16px;
-                gap: 16px;
-            }
-            .ads-section,
-            .applied-jobs,
-            .related-jobs {
-                grid-column: 1 / -1;
-                width: 100%;
-            }
-            .ads-section {
-                display: none;
-            }
-        }
-
-        /* Component styles */
-        .ads-section {
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-        }
-
-        .applied-jobs {
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .job-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-            background: #fff;
-        }
-
-        .job-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .related-jobs {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            display: inline-block;
-            margin: 4px 0;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-accepted {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .right-ads-section {
-            width: 100%;
-            position: static;
-            height: fit-content;
-            max-height: none;
-            overflow-y: visible;
-        }
-
-        @media (min-width: 1200px) {
-            .right-ads-section {
-                position: fixed;
-                right: 0;
-                top: 170px;
-                width: 270px;
-                max-height: calc(100vh - 40px);
-                overflow-y: auto;
-            }
-        }
-
-        /* Animated Heading Styles */
-        .animated-heading {
-            position: relative;
-            color: #0a7beb;
-            font-weight: 700;
-            padding-bottom: 15px;
-            margin-bottom: 30px !important;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            animation: fadeInDown 0.8s ease-in-out;
-            text-align: center;
-            font-size: calc(1.2rem + 0.6vw);
-        }
-
-        .animated-heading::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #3498db, #2980b9);
-            animation: expandWidth 0.8s ease-in-out forwards;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes expandWidth {
-            from {
-                width: 0;
-            }
-            to {
-                width: 60px;
-            }
-        }
-
-        .animated-heading:hover::after {
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: translateX(-50%) scaleX(1);
-            }
-            50% {
-                transform: translateX(-50%) scaleX(1.2);
-            }
-            100% {
-                transform: translateX(-50%) scaleX(1);
-            }
-        }
-
-        /* Back Button Styles */
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #0a7beb 0%, #2980b9 100%);
-            color: white;
-            border-radius: 30px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(10, 123, 235, 0.2);
-        }
-
-        .back-button:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 4px 8px rgba(10, 123, 235, 0.3);
-            color: white;
-            background: linear-gradient(135deg, #0a6cd0 0%, #216694 100%);
-        }
-
-        .back-button i {
-            margin-right: 8px;
-            font-size: 1.1em;
-            transition: transform 0.3s ease;
-        }
-
-        .back-button:hover i {
-            transform: translateX(-3px);
-        }
-
-        @media (max-width: 767px) {
-            .back-button {
-                padding: 6px 12px;
-                font-size: 0.9em;
-            }
-            
-            .d-flex {
-                flex-direction: column;
-                gap: 16px;
-            }
-            
-            .animated-heading {
-                font-size: 1.5rem;
-            }
-        }
+        .page-wrap { padding: 0; }
+        .hero-title { font-weight: 700; color: #0a7beb; letter-spacing: .5px; }
+        .card-elevated { border: 1px solid rgba(0,0,0,.06); box-shadow: 0 6px 18px rgba(0,0,0,.08); border-radius: 14px; }
+        .control-label { font-weight: 600; color: #334155; }
+        .btn-gradient { background: linear-gradient(135deg, #0a7beb, #2980b9); border: none; }
+        .btn-gradient:hover { filter: brightness(.95); }
+        .applications-list .job-card { transition: transform .2s ease, box-shadow .2s ease; }
+        .applications-list .job-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.1); }
+        .sticky-ads { position: sticky; top: 100px; }
+        .ads-slot { min-height: 120px; display: flex; align-items: center; justify-content: center; color: #64748b; border: 1px dashed #cbd5e1; }
+        @media (max-width: 991px){ .sticky-ads{ display:none } }
+        @media (max-width: 767px){ .page-wrap{ padding:16px } }
     </style>
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3HJYX95R1T"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag(){dataLayer.push(arguments);} 
   gtag('js', new Date());
-
   gtag('config', 'G-3HJYX95R1T');
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
-    crossorigin="anonymous"></script>
 </script>
 </head>
 <body class="bg-light">
     <div id="header-container"></div>
 
-    <div class="page-container mt-5">
-        <!-- Left Sidebar - Ads Section -->
-        <aside class="ads-section">
-            <div class="sponsored-content">
-                <div class="ad-placeholder mb-4 p-3 bg-light rounded">
-                    <p class="text-muted mb-0">Advertisement</p>
+    <div class="page-wrap mt-4">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <a href="/html/jobs.html" class="btn btn-sm btn-gradient text-white"><i class="bi bi-arrow-left me-1"></i>Back</a>
+                    </div>
+                </div>
+                <div class="col-12 col-xl-3 d-none d-xl-block">
+                    <aside class="sticky-ads">
+                        <div class="ads-slot mb-3 p-3 bg-light rounded">Advertisement</div>
+                        <div class="ads-slot mb-3 p-3 bg-light rounded">Advertisement</div>
+                        <div class="ads-slot mb-3 p-3 bg-light rounded">Advertisement</div>
+                    </aside>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <div class="card card-elevated p-4">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-12 col-md-6">
+                                <label for="companySelect" class="control-label">Company</label>
+                                <select id="companySelect" class="form-select" aria-label="Select company">
+                                    <option value="" selected>Select Company</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="roleSelect" class="control-label">Job Role</label>
+                                <select id="roleSelect" class="form-select" aria-label="Select job role" disabled>
+                                    <option value="" selected>Select Role</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="statusSelect" class="control-label">Application Status</label>
+                                <select id="statusSelect" class="form-select" aria-label="Select status">
+                                    <option value="applied" selected>Applied</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="in progress">In Progress</option>
+                                    <option value="selected">Selected</option>
+                                    <option value="withdrawn">Withdrawn</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6 d-grid d-md-flex justify-content-md-end">
+                                <button id="saveApplicationBtn" class="btn btn-gradient text-white px-4">Save Application</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="applications-list mt-4">
+                        <div class="applied-jobs-list"></div>
+                    </div>
+                </div>
+                <div class="col-12 col-xl-3">
+                    <aside class="sticky-ads">
+                        <div class="ads-slot mb-3 p-3 bg-light rounded">Advertisement</div>
+                        <div class="card card-elevated p-3">
+                            <h5 class="mb-3">Related Jobs</h5>
+                            <div class="related-jobs-list"></div>
+                        </div>
+                        <div class="ads-slot mt-3 p-3 bg-light rounded">Advertisement</div>
+                    </aside>
                 </div>
             </div>
-        </aside>
-
-        <!-- Main Content - Applied Jobs -->
-        <main class="applied-jobs">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="/html/jobs.html" class="back-button">
-                    <i class="bi bi-arrow-left"></i>
-                    <span>Back to Jobs</span>
-                </a>
-                <h2 class="text-center animated-heading mb-0">My Applied Jobs</h2>
-                <div style="width: 100px;"></div> <!-- Spacer for centering -->
-            </div>
-            <div class="applied-jobs-list">
-                <!-- Job cards will be dynamically populated -->
-            </div>
-        </main>
-
-        <!-- Right Sidebar - Related Jobs -->
-        <aside class="related-jobs">
-            <h4 class="mb-4">Related Jobs</h4>
-            <div class="related-jobs-list">
-                <!-- Related jobs will be dynamically populated -->
-            </div>
-        </aside>
+        </div>
     </div>
 
     <div id="footer-container"></div>

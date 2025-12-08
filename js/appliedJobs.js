@@ -1,12 +1,112 @@
 // Import Firebase functions
 import { db } from './firebase-config.js';
-import { collection, query, where, getDocs, doc, addDoc, limit, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, query, where, getDocs, doc, addDoc, limit, orderBy, getDoc, setDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const auth = getAuth();
+let unsubscribeApps;
+
+async function loadCompanies() {
+    const companySelect = document.getElementById('companySelect');
+    if (!companySelect) return;
+    companySelect.innerHTML = '<option value="">Loading...</option>';
+    try {
+        const companies = [];
+        const companiesSnapshot = await getDocs(collection(db, 'companies'));
+        for (const docSnap of companiesSnapshot.docs) {
+            const data = docSnap.data();
+            companies.push({ id: docSnap.id, name: data.name });
+        }
+        const jobsSnapshot = await getDocs(collection(db, 'jobs'));
+        // Push legacy names (repeat as they appear)
+        for (const docSnap of jobsSnapshot.docs) {
+            const data = docSnap.data();
+            if (!data.companyId && data.companyName) {
+                companies.push({ id: `legacy:${data.companyName}`, name: data.companyName });
+            }
+        }
+        companies.sort((a,b) => a.name.localeCompare(b.name));
+        companySelect.innerHTML = '<option value="">Select Company</option>' + companies.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    } catch (e) {
+        companySelect.innerHTML = '<option value="">Failed to load companies</option>';
+    }
+}
+
+async function loadRolesForCompany(companyId) {
+    const roleSelect = document.getElementById('roleSelect');
+    if (!roleSelect) return;
+    roleSelect.disabled = true;
+    roleSelect.innerHTML = '<option value="">Loading...</option>';
+    try {
+        let qRef;
+        if (companyId.startsWith('legacy:')) {
+            const name = companyId.replace('legacy:', '');
+            qRef = query(collection(db, 'jobs'), where('companyName', '==', name));
+        } else {
+            qRef = query(collection(db, 'jobs'), where('companyId', '==', companyId));
+        }
+        const qs = await getDocs(qRef);
+        const options = qs.docs.map(d => {
+            const j = d.data();
+            const title = j.jobTitle || j.title || 'Untitled';
+            return `<option value="${d.id}" data-jobtype="${j.jobType || j.type || 'private'}" data-companyname="${j.companyName || ''}">${title}</option>`;
+        });
+        roleSelect.innerHTML = '<option value="">Select Role</option>' + options.join('');
+        roleSelect.disabled = false;
+    } catch (e) {
+        roleSelect.innerHTML = '<option value="">No roles found</option>';
+        roleSelect.disabled = false;
+    }
+}
+
+async function saveApplication() {
+    const user = auth.currentUser;
+    if (!user) {
+        window.location.href = '/pages/login.html';
+        return;
+    }
+    const companySelect = document.getElementById('companySelect');
+    const roleSelect = document.getElementById('roleSelect');
+    const statusSelect = document.getElementById('statusSelect');
+    const companyId = companySelect?.value || '';
+    const jobId = roleSelect?.value || '';
+    const status = (statusSelect?.value || 'applied').toLowerCase();
+    if (!companyId || !jobId) {
+        showToast('Select company and role', false);
+        return;
+    }
+    try {
+        const jobDocRef = doc(db, 'jobs', jobId);
+        const jobDocSnap = await getDoc(jobDocRef);
+        const job = jobDocSnap.exists() ? jobDocSnap.data() : {};
+        const jobType = job.jobType || job.type || 'private';
+        const jobTitle = job.jobTitle || job.title || '';
+        const companyName = job.companyName || companySelect.options[companySelect.selectedIndex].text;
+        const applicationRef = doc(db, 'jobApplications', `${jobId}_${user.uid}`);
+        await setDoc(applicationRef, {
+            userId: user.uid,
+            jobId,
+            jobType,
+            jobTitle,
+            companyName,
+            appliedAt: serverTimestamp(),
+            status
+        });
+        showToast('Application saved');
+        await loadAppliedJobs();
+    } catch (e) {
+        showToast('Failed to save', false);
+    }
+}
+
+function statusOptionsHtml(current) {
+    const options = ['applied','in progress','rejected','selected','withdrawn'];
+    const cur = (current || '').toLowerCase();
+    return options.map(o => `<option value="${o}" ${cur===o?'selected':''}>${o.replace(/\b\w/g,c=>c.toUpperCase())}</option>`).join('');
+}
 
 // Function to fetch and display applied jobs
-async function loadAppliedJobs() {
+async function loadAppliedJobs(startOverride, endOverride) {
     // In the loadAppliedJobs function, modify the applications data fetching:
     try {
         const user = auth.currentUser;
@@ -20,42 +120,30 @@ async function loadAppliedJobs() {
         const q = query(jobsRef, where('userId', '==', user.uid));
         const querySnapshot = await getDocs(q);
 
-        const applications = [];
-        for (const docSnapshot of querySnapshot.docs) {
+        const applications = (await Promise.all(querySnapshot.docs.map(async (docSnapshot) => {
             const applicationData = docSnapshot.data();
-            // Fetch job details
-            const jobDocRef = doc(db, 'jobs', applicationData.jobId);
-            const jobDoc = await getDoc(jobDocRef);
-            if (jobDoc.exists()) {
-                const jobData = jobDoc.data();
-                // Fetch company details if companyId exists
-                let companyData = {};
-                if (jobData.companyId) {
-                    const companyDocRef = doc(db, 'companies', jobData.companyId);
-                    const companyDoc = await getDoc(companyDocRef);
-                    if (companyDoc.exists()) {
-                        companyData = companyDoc.data();
-                    }
-                }
-                applications.push({
-                    id: docSnapshot.id,
-                    ...applicationData,
-                    jobTitle: jobData.jobTitle,
-                    companyName: companyData.name || jobData.companyName,
-                    companyLogo: companyData.logo || jobData.companyLogo
-                });
+            const jobDoc = await getDoc(doc(db, 'jobs', applicationData.jobId));
+            if (!jobDoc.exists()) return null;
+            const jobData = jobDoc.data();
+            let companyData = null;
+            if (jobData.companyId) {
+                const companyDoc = await getDoc(doc(db, 'companies', jobData.companyId));
+                if (companyDoc.exists()) companyData = companyDoc.data();
             }
-        }
+            return {
+                id: docSnapshot.id,
+                ...applicationData,
+                jobTitle: jobData.jobTitle || jobData.title,
+                companyName: companyData?.name || jobData.companyName,
+                companyLogo: companyData?.logo || jobData.companyLogo
+            };
+        }))).filter(Boolean);
 
         const jobsList = document.querySelector('.applied-jobs-list');
         if (!jobsList) return;
 
-        // Add back button and header
-        const headerHtml = `
-            <div class="d-flex align-items-center mb-4">
-            </div>
-        `;
-        jobsList.insertAdjacentHTML('beforebegin', headerHtml);
+        // Remove old pagination instances to prevent duplicates
+        document.querySelectorAll('nav[aria-label="Applications pagination"]').forEach(el => el.remove());
 
         if (applications.length === 0) {
             jobsList.innerHTML = `
@@ -72,13 +160,33 @@ async function loadAppliedJobs() {
         // Pagination setup - Move this before using totalPages
         const itemsPerPage = 8;
         const totalPages = Math.ceil(applications.length / itemsPerPage);
-        const currentPage = 1;
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
+        const startIndex = typeof startOverride === 'number' ? startOverride : 0;
+        const endIndex = typeof endOverride === 'number' ? endOverride : startIndex + itemsPerPage;
+        const currentPage = Math.floor(startIndex / itemsPerPage) + 1;
         const currentApplications = applications.slice(startIndex, endIndex);
 
-        // Now render the job cards with currentApplications
-        jobsList.innerHTML = currentApplications.map(job => `
+        // Group applications by status
+        const grouped = {
+            applied: [],
+            'in progress': [],
+            rejected: [],
+            selected: [],
+            withdrawn: [],
+            other: []
+        };
+        for (const job of currentApplications) {
+            const s = (job.status || '').toLowerCase();
+            if (s === 'applied') grouped.applied.push(job);
+            else if (s === 'in progress' || s === 'in review') grouped['in progress'].push(job);
+            else if (s === 'rejected') grouped.rejected.push(job);
+            else if (s === 'selected') grouped.selected.push(job);
+            else if (s === 'withdrawn') grouped.withdrawn.push(job);
+            else grouped.other.push(job);
+        }
+
+        const section = (title, items) => items.length ? `
+            <h4 class="mt-3 mb-2">${title}</h4>
+            ${items.map(job => `
             <div class="job-card shadow-lg border rounded-lg p-4 mb-4 bg-white hover-effect">
                 <div class="d-flex align-items-start gap-4">
                     <div class="company-logo-wrapper">
@@ -112,15 +220,33 @@ async function loadAppliedJobs() {
                                     <i class="bi bi-calendar-event me-2"></i>
                                     <span>Applied on ${formatDate(job.appliedAt)}</span>
                                 </div>
+                                <div class="mt-2" style="min-width:160px;">
+                                    <select class="form-select form-select-sm application-status-select" onchange="window.updateApplicationStatus('${job.id}', this.value)">${statusOptionsHtml(job.status)}</select>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        `).join('');
+            `).join('')}
+        ` : '';
 
-        // Add these styles to your CSS
-        const styleSheet = document.createElement('style');
+        jobsList.innerHTML = `
+            ${section('Applied', grouped.applied)}
+            ${section('In Progress', grouped['in progress'])}
+            ${section('Rejected', grouped.rejected)}
+            ${section('Selected', grouped.selected)}
+            ${section('Withdrawn', grouped.withdrawn)}
+            ${section('Other', grouped.other)}
+        `;
+
+        // One-time styles
+        let styleSheet = document.getElementById('applied-jobs-styles');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'applied-jobs-styles';
+            document.head.appendChild(styleSheet);
+        }
         styleSheet.textContent = `
             .job-card {
                 transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -179,92 +305,6 @@ async function loadAppliedJobs() {
                 }
             }
         `;
-
-        document.head.appendChild(styleSheet);
-
-        // Add styles
-
-        styleSheet.textContent = `
-            .job-card {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                border: 1px solid rgba(0,0,0,0.08) !important;
-            }
-
-            .job-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
-            }
-
-            .company-logo-wrapper {
-                position: relative;
-            }
-
-            .company-logo {
-                transition: transform 0.3s ease;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            }
-
-            .job-card:hover .company-logo {
-                transform: scale(1.05);
-            }
-
-            .job-title {
-                font-size: 1.25rem;
-                color: #2c3e50;
-            }
-
-            .company-name {
-                font-size: 0.95rem;
-            }
-
-            .status-badge {
-                font-weight: 500;
-                letter-spacing: 0.5px;
-            }
-
-            .action-buttons .btn {
-                padding: 0.5rem 1.25rem;
-                font-weight: 500;
-                border-radius: 6px;
-            }
-
-            .action-buttons .btn-primary {
-                background: linear-gradient(135deg, #3498db, #2980b9);
-                border: none;
-            }
-
-            .action-buttons .btn-outline-secondary {
-                border-color: #cbd5e1;
-                color: #64748b;
-            }
-
-            .action-buttons .btn-outline-secondary:hover {
-                background-color: #f8fafc;
-                color: #334155;
-            }
-
-            @media (max-width: 768px) {
-                .job-card {
-                    padding: 1rem !important;
-                }
-                
-                .company-logo {
-                    width: 60px !important;
-                    height: 60px !important;
-                }
-                
-                .action-buttons {
-                    flex-direction: column;
-                    gap: 0.75rem;
-                }
-                
-                .action-buttons .btn {
-                    width: 100%;
-                }
-            }
-        `;
-
-        document.head.appendChild(styleSheet);
 
         // Now we can safely use totalPages for pagination
         if (totalPages > 1) {
@@ -306,6 +346,14 @@ function getStatusColor(status) {
             return 'danger';
         case 'in review':
             return 'info';
+        case 'in progress':
+            return 'info';
+        case 'selected':
+            return 'success';
+        case 'withdrawn':
+            return 'secondary';
+        case 'applied':
+            return 'primary';
         default:
             return 'warning';
     }
@@ -469,16 +517,51 @@ window.viewJobDetails = async (jobId) => {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Wait for auth state to be ready
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
         if (user) {
+            await loadCompanies();
             loadAppliedJobs();
             loadRelatedJobs();
+            try {
+                const appsRef = collection(db, 'jobApplications');
+                const appsQuery = query(appsRef, where('userId', '==', user.uid));
+                if (unsubscribeApps) unsubscribeApps();
+                unsubscribeApps = onSnapshot(appsQuery, () => {
+                    loadAppliedJobs();
+                });
+            } catch (_) {}
         } else {
-            console.log('No user logged in');
             window.location.href = '/pages/login.html';
         }
     });
+    const companySelect = document.getElementById('companySelect');
+    const roleSelect = document.getElementById('roleSelect');
+    const saveBtn = document.getElementById('saveApplicationBtn');
+    companySelect?.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (val) {
+            loadRolesForCompany(val);
+        } else {
+            roleSelect.disabled = true;
+            roleSelect.innerHTML = '<option value="">Select Role</option>';
+        }
+    });
+    saveBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        saveApplication();
+    });
+    window.updateApplicationStatus = async (applicationId, newStatus) => {
+        const user = auth.currentUser;
+        if (!user) return;
+        try {
+            const ref = doc(db, 'jobApplications', applicationId);
+            await setDoc(ref, { status: newStatus.toLowerCase(), updatedAt: serverTimestamp() }, { merge: true });
+            showToast('Status updated');
+            await loadAppliedJobs();
+        } catch (e) {
+            showToast('Update failed', false);
+        }
+    };
 });
 
 window.handleNewsletterSubmit = async (event) => {

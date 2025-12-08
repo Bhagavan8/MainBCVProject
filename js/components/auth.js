@@ -1,5 +1,5 @@
 import { auth, db } from '../firebase-config.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -147,5 +147,64 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Google OAuth Handlers
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+
+    async function handleGoogleAuth() {
+        try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            // Upsert user profile in Firestore
+            const userRef = doc(db, 'users', user.uid);
+            const snap = await getDoc(userRef);
+            const name = user.displayName || '';
+            const firstName = name.split(' ')[0] || '';
+            const lastName = name.split(' ').slice(1).join(' ') || '';
+            const baseData = {
+                firstName,
+                lastName,
+                email: user.email || '',
+                profileImage: user.photoURL || '/assets/images/default-avatar.png',
+                lastLogin: new Date()
+            };
+            if (!snap.exists()) {
+                await setDoc(userRef, { ...baseData, createdAt: new Date() });
+            } else {
+                await setDoc(userRef, baseData, { merge: true });
+            }
+
+            // Session storage
+            const sessionData = { ...baseData, uid: user.uid, displayName: firstName };
+            sessionStorage.setItem('userData', JSON.stringify(sessionData));
+
+            Toastify({
+                text: "Signed in with Google! Redirecting...",
+                duration: 2500,
+                gravity: "top",
+                position: "right",
+                style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+            }).showToast();
+
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 1500);
+        } catch (error) {
+            console.error('Google auth error:', error);
+            Toastify({
+                text: error.message || 'Google sign-in failed',
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+            }).showToast();
+        }
+    }
+
+    googleLoginBtn?.addEventListener('click', handleGoogleAuth);
+    googleRegisterBtn?.addEventListener('click', handleGoogleAuth);
 });
     

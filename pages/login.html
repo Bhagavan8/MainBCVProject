@@ -294,6 +294,43 @@
                 height: 70px;
             }
         }
+
+        .google-btn {
+            border-radius: 10px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            background: conic-gradient(#4285F4 0 90deg, #EA4335 90deg 180deg, #FBBC05 180deg 270deg, #34A853 270deg 360deg);
+        }
+        .google-icon::before {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .google-icon::after {
+            content: "G";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -52%);
+            font-size: 11px;
+            font-weight: 700;
+            color: #4285F4;
+            font-family: Arial, Helvetica, sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -352,6 +389,15 @@
                                 Sign In <i class="bi bi-arrow-right ms-2"></i>
                             </button>
                         </form>
+                        <div class="d-flex align-items-center my-3">
+                            <div class="flex-grow-1 border-top"></div>
+                            <span class="px-2 text-muted small">or</span>
+                            <div class="flex-grow-1 border-top"></div>
+                        </div>
+                        <button type="button" id="googleLoginBtn" class="btn w-100 btn-outline-secondary google-btn">
+                            <span class="google-icon" aria-hidden="true"></span>
+                            Continue with Google
+                        </button>
                         <div class="text-center mt-4">
                             <p class="text-muted mb-0">New to BCV World? <a href="/pages/register.html" class="text-primary fw-semibold">Create Account</a></p>
                         </div>
