@@ -1,0 +1,28 @@
+:root{--emi-primary:#16a085;--emi-accent:#f39c12;--emi-muted:#6c757d}
+
+body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,"Noto Sans",sans-serif}
+.emi-page{max-width:none;width:100%}
+.emi-page .card{border-radius:14px}
+.emi-page .card-header{border-bottom:0;background:#fff}
+.emi-amount{font-size:2.2rem;font-weight:700}
+
+.form-range{accent-color:var(--emi-primary)}
+.input-group-text{background:#f8f9fa}
+
+.donut-wrap{display:flex;justify-content:center;align-items:center}
+.donut{transform:rotate(-90deg)}
+.donut-bg{fill:none;stroke:#eee;stroke-width:16}
+.donut-seg{fill:none;stroke-width:16;stroke-linecap:round}
+.donut-seg.principal{stroke:var(--emi-primary)}
+.donut-seg.interest{stroke:var(--emi-accent)}
+
+.legend .legend-dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px}
+.legend .legend-dot.principal{background:var(--emi-primary)}
+.legend .legend-dot.interest{background:var(--emi-accent)}
+
+@media (max-width:576px){.emi-amount{font-size:1.6rem}.donut{width:160px;height:160px}}
+
+input[type="number"]{text-align:right}
+.small{color:var(--emi-muted)}
+
+table thead th{white-space:nowrap}

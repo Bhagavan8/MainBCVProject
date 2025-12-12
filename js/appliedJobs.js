@@ -70,7 +70,9 @@ async function saveApplication() {
     const statusSelect = document.getElementById('statusSelect');
     const companyId = companySelect?.value || '';
     const jobId = roleSelect?.value || '';
-    const status = (statusSelect?.value || 'applied').toLowerCase();
+    let status = (statusSelect?.value || 'applied').toLowerCase();
+    const allowedInitial = ['applied', 'in progress'];
+    if (!allowedInitial.includes(status)) status = 'applied';
     if (!companyId || !jobId) {
         showToast('Select company and role', false);
         return;
@@ -135,7 +137,7 @@ async function loadAppliedJobs(startOverride, endOverride) {
                 ...applicationData,
                 jobTitle: jobData.jobTitle || jobData.title,
                 companyName: companyData?.name || jobData.companyName,
-                companyLogo: companyData?.logo || jobData.companyLogo
+                companyLogo: companyData?.logoURL || companyData?.logo || jobData.companyLogo || jobData.companyLogoURL || ''
             };
         }))).filter(Boolean);
 
@@ -191,7 +193,7 @@ async function loadAppliedJobs(startOverride, endOverride) {
                 <div class="d-flex align-items-start gap-4">
                     <div class="company-logo-wrapper">
                         <div class="company-logo bg-light rounded-lg p-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                            <img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
+                            <img src="${(job.companyLogo && (job.companyLogo.startsWith('http') || job.companyLogo.startsWith('/') || job.companyLogo.startsWith('data:'))) ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
                                  alt="${job.companyName} Logo" 
                                  class="img-fluid rounded"
                                  style="object-fit: contain; width: 100%; height: 100%;"
@@ -221,7 +223,7 @@ async function loadAppliedJobs(startOverride, endOverride) {
                                     <span>Applied on ${formatDate(job.appliedAt)}</span>
                                 </div>
                                 <div class="mt-2" style="min-width:160px;">
-                                    <select class="form-select form-select-sm application-status-select" onchange="window.updateApplicationStatus('${job.id}', this.value)">${statusOptionsHtml(job.status)}</select>
+                                    <select class="form-select form-select-sm application-status-select" ${['rejected','withdrawn'].includes((job.status||'').toLowerCase())?'disabled':''} onchange="window.updateApplicationStatus('${job.id}', this.value)">${statusOptionsHtml(job.status)}</select>
                                 </div>
                             </div>
                         </div>
@@ -412,7 +414,7 @@ async function loadRelatedJobs() {
                 id: docSnapshot.id,
                 ...jobData,
                 companyName: companyData.name || jobData.companyName,
-                companyLogo: companyData.logo || jobData.companyLogo
+                companyLogo: companyData.logoURL || companyData.logo || jobData.companyLogo || jobData.companyLogoURL || ''
             });
         }
 
@@ -423,7 +425,7 @@ async function loadRelatedJobs() {
             <div class="job-card shadow-sm border rounded p-4 mb-3 bg-white hover-effect">
                 <div class="d-flex align-items-start gap-3">
                     <div class="company-logo rounded bg-light p-2" style="width: 60px; height: 60px;">
-                        <img src="${job.companyLogo?.startsWith('http') ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
+                        <img src="${(job.companyLogo && (job.companyLogo.startsWith('http') || job.companyLogo.startsWith('/') || job.companyLogo.startsWith('data:'))) ? job.companyLogo : `/assets/images/companies/${job.companyLogo || 'default-company.webp'}`}" 
                              alt="${job.companyName} Logo" 
                              class="img-fluid rounded"
                              style="object-fit: contain; width: 100%; height: 100%;"
@@ -555,6 +557,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!user) return;
         try {
             const ref = doc(db, 'jobApplications', applicationId);
+            const snap = await getDoc(ref);
+            const current = snap.exists() ? (snap.data().status || '').toLowerCase() : '';
+            if (['rejected','withdrawn'].includes(current)) {
+                showToast('Status is locked');
+                return;
+            }
             await setDoc(ref, { status: newStatus.toLowerCase(), updatedAt: serverTimestamp() }, { merge: true });
             showToast('Status updated');
             await loadAppliedJobs();
