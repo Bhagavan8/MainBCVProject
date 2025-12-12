@@ -26,3 +26,7 @@ input[type="number"]{text-align:right}
 .small{color:var(--emi-muted)}
 
 table thead th{white-space:nowrap}
+
+.seo-section h2,.faq-section h2{font-weight:700}
+.seo-section p{color:#555}
+.faq-section .accordion-button{font-weight:600}
