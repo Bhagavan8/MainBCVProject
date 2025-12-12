@@ -30,3 +30,9 @@ table thead th{white-space:nowrap}
 .seo-section h2,.faq-section h2{font-weight:700}
 .seo-section p{color:#555}
 .faq-section .accordion-button{font-weight:600}
+
+/* Tighten ad spacing to remove visible gaps */
+.emi-page .ad-box{padding:.5rem !important;margin:.5rem 0 !important}
+.emi-page .ad-box.bg-white{background:#fff}
+.emi-page .ad-box ins.adsbygoogle{display:block;min-height:80px}
+@media (max-width:576px){.emi-page .ad-box ins.adsbygoogle{min-height:60px}}
