@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Tools | Convert & Resize | BCVWorld</title>
+  <meta name="description" content="Online file tools: image to PDF, PDF to Word, image converter, resize image, resize PDF. Fast, private, mobile responsive.">
+  <link rel="canonical" href="https://bcvworld.com/html/file-tools.html">
+  <link rel="preload" href="/css/filetools.css" as="style">
+  <link rel="stylesheet" href="/css/filetools.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659" crossorigin="anonymous"></script>
+  <meta name="robots" content="index,follow">
+</head>
+<body>
+  <div id="header-container"></div>
+  <main class="tools-page container catalog-only">
+    <div class="tools-layout">
+      <aside class="ad-box ad-side ad-left">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659" data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      </aside>
+      <div>
+        <h1 class="page-title">File Tools</h1>
+        <section class="tools-catalog">
+          <div class="catalog">
+            <a class="catalog-card" data-target="tool-merge-pdf" href="/html/file-tools-workbench.html#tool-merge-pdf">
+              <div class="catalog-icon">📎</div>
+              <div class="catalog-title">Merge PDF</div>
+              <div class="catalog-desc">Combine PDFs in your chosen order.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-compress-pdf" href="/html/file-tools-workbench.html#tool-compress-pdf">
+              <div class="catalog-icon">🗜️</div>
+              <div class="catalog-title">Compress PDF</div>
+              <div class="catalog-desc">Reduce file size by rasterizing pages.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-rotate-pdf" href="/html/file-tools-workbench.html#tool-rotate-pdf">
+              <div class="catalog-icon">🔁</div>
+              <div class="catalog-title">Rotate PDF</div>
+              <div class="catalog-desc">Rotate pages 90/180/270 degrees.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-crop-pdf" href="/html/file-tools-workbench.html#tool-crop-pdf">
+              <div class="catalog-icon">✂️</div>
+              <div class="catalog-title">Crop PDF</div>
+              <div class="catalog-desc">Select area to keep on pages.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-html2pdf" href="/html/file-tools-workbench.html#tool-html2pdf">
+              <div class="catalog-icon">🌐</div>
+              <div class="catalog-title">HTML to PDF</div>
+              <div class="catalog-desc">Render HTML content to PDF.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-sign-pdf" href="/html/file-tools-workbench.html#tool-sign-pdf">
+              <div class="catalog-icon">✍️</div>
+              <div class="catalog-title">Sign PDF</div>
+              <div class="catalog-desc">Draw or type a signature.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-watermark-add" href="/html/file-tools-workbench.html#tool-watermark-add">
+              <div class="catalog-icon">💧</div>
+              <div class="catalog-title">Add Watermark</div>
+              <div class="catalog-desc">Overlay text or image watermark.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-watermark-remove" href="/html/file-tools-workbench.html#tool-watermark-remove">
+              <div class="catalog-icon">🩹</div>
+              <div class="catalog-title">Cover Watermark</div>
+              <div class="catalog-desc">Mask watermark area visually.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-pdf2excel" href="/html/file-tools-workbench.html#tool-pdf2excel">
+              <div class="catalog-icon">➡️📊</div>
+              <div class="catalog-title">PDF to Excel</div>
+              <div class="catalog-desc">Extract text to CSV/XLSX.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-img2pdf" href="/html/file-tools-workbench.html#tool-img2pdf">
+              <div class="catalog-icon">🖼️</div>
+              <div class="catalog-title">Image to PDF</div>
+              <div class="catalog-desc">Create a single PDF from images.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-pdf2word" href="/html/file-tools-workbench.html#tool-pdf2word">
+              <div class="catalog-icon">🔤</div>
+              <div class="catalog-title">PDF to Word</div>
+              <div class="catalog-desc">Extract text to DOCX.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-word2pdf" href="/html/file-tools-workbench.html#tool-word2pdf">
+              <div class="catalog-icon">📝</div>
+              <div class="catalog-title">Word to PDF</div>
+              <div class="catalog-desc">Render DOCX as PDF.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-excel2pdf" href="/html/file-tools-workbench.html#tool-excel2pdf">
+              <div class="catalog-icon">📊</div>
+              <div class="catalog-title">Excel to PDF</div>
+              <div class="catalog-desc">Print a sheet to PDF.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-img-convert" href="/html/file-tools-workbench.html#tool-img-convert">
+              <div class="catalog-icon">🧩</div>
+              <div class="catalog-title">Image Converter</div>
+              <div class="catalog-desc">Convert image formats.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-resize-img" href="/html/file-tools-workbench.html#tool-resize-img">
+              <div class="catalog-icon">📐</div>
+              <div class="catalog-title">Resize Image</div>
+              <div class="catalog-desc">Set exact dimensions.</div>
+            </a>
+            <a class="catalog-card" data-target="tool-resize-pdf" href="/html/file-tools-workbench.html#tool-resize-pdf">
+              <div class="catalog-icon">🗜️</div>
+              <div class="catalog-title">Resize PDF</div>
+              <div class="catalog-desc">Scale page content.</div>
+            </a>
+          </div>
+        </section>
+        <div class="tabs">
+          <button class="tab-btn active" data-target="tool-img2pdf">Image to PDF</button>
+          <button class="tab-btn" data-target="tool-pdf2word">PDF to Word</button>
+          <button class="tab-btn" data-target="tool-img-convert">Image Converter</button>
+          <button class="tab-btn" data-target="tool-resize-img">Resize Image</button>
+          <button class="tab-btn" data-target="tool-resize-pdf">Resize PDF</button>
+          <button class="tab-btn" data-target="tool-word2pdf">Word to PDF</button>
+          <button class="tab-btn" data-target="tool-excel2pdf">Excel to PDF</button>
+          <button class="tab-btn" data-target="tool-pdf2excel">PDF to Excel</button>
+          <button class="tab-btn" data-target="tool-compress-pdf">Compress PDF</button>
+          <button class="tab-btn" data-target="tool-rotate-pdf">Rotate PDF</button>
+          <button class="tab-btn" data-target="tool-html2pdf">HTML to PDF</button>
+          <button class="tab-btn" data-target="tool-sign-pdf">Sign PDF</button>
+          <button class="tab-btn" data-target="tool-watermark-add">Add Watermark</button>
+          <button class="tab-btn" data-target="tool-watermark-remove">Cover Watermark</button>
+          <button class="tab-btn" data-target="tool-merge-pdf">Merge PDF</button>
+        </div>
+        <div class="ad-box ad-top">
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659" data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        </div>
+    <section id="tool-img2pdf" class="tool-section">
+    <div class="card">
+      <div class="card-header"><span>Upload Images</span></div>
+      <div class="card-body grid">
+        <div class="input-group full">
+          <label>Select files</label>
+          <input type="file" id="imgFiles" accept="image/*" multiple>
+        </div>
+        <div class="controls">
+          <div class="input-group">
+            <label>Page size</label>
+            <select id="pageSize">
+              <option value="a4">A4</option>
+              <option value="letter">Letter</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Orientation</label>
+            <select id="orientation">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Margins (mm)</label>
+            <input id="margins" type="number" min="0" value="10">
+          </div>
+          <div class="input-group">
+            <label>Quality</label>
+            <input id="quality" type="range" min="0.5" max="1" step="0.05" value="1">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="convertBtn">Convert to PDF</button>
+          <button class="btn secondary" id="clearBtn">Clear</button>
+        </div>
+        <div class="preview" id="preview">Preview will appear here after upload</div>
+        <div class="note">Files are processed in your browser. Nothing is uploaded.</div>
+      </div>
+    </div>
+    </section>
+    <section id="tool-compress-pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Compress PDF</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="compressSrc" accept="application/pdf">
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Quality</label>
+              <input id="compressQuality" type="range" min="0.4" max="1" step="0.05" value="0.75">
+            </div>
+            <div class="input-group">
+              <label>DPI</label>
+              <input id="compressDpi" type="number" min="72" max="200" value="120">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="compressBtn">Compress & Download</button>
+            <button class="btn secondary" id="compressClear">Clear</button>
+          </div>
+          <div class="preview" id="compressPreview">Ready</div>
+          <div class="note">Pages are rasterized to reduce size; text remains image-based.</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-rotate-pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Rotate PDF</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="rotateSrc" accept="application/pdf">
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Rotation</label>
+              <select id="rotateDeg">
+                <option value="90">90°</option>
+                <option value="180">180°</option>
+                <option value="270">270°</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="rotateBtn">Rotate & Download</button>
+            <button class="btn secondary" id="rotateClear">Clear</button>
+          </div>
+          <div class="preview" id="rotatePreview">Ready</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-html2pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>HTML to PDF</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>HTML</label>
+            <textarea id="htmlInput" rows="6" placeholder="<h1>Hello</h1><p>Content..."></textarea>
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Page size</label>
+              <select id="htmlPageSize"><option value="a4">A4</option><option value="letter">Letter</option></select>
+            </div>
+            <div class="input-group">
+              <label>Orientation</label>
+              <select id="htmlOrientation"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="html2pdfBtn">Convert</button>
+            <button class="btn secondary" id="html2pdfClear">Clear</button>
+          </div>
+          <div class="preview" id="html2pdfPreview">Ready</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-sign-pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Sign PDF</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="signSrc" accept="application/pdf">
+          </div>
+          <div class="input-group full">
+            <label>Draw signature</label>
+            <canvas id="signPad" height="160"></canvas>
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Size (px)</label>
+              <input type="number" id="signSize" min="40" value="160">
+            </div>
+            <div class="input-group">
+              <label>Page</label>
+              <select id="signPage"><option value="1">First</option><option value="all">All</option></select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="signBtn">Apply & Download</button>
+            <button class="btn secondary" id="signClear">Clear</button>
+          </div>
+          <div class="preview" id="signPreview">Ready</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-watermark-add" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Add Watermark</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="wmSrc" accept="application/pdf">
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Text</label>
+              <input id="wmText" type="text" placeholder="CONFIDENTIAL">
+            </div>
+            <div class="input-group">
+              <label>Opacity</label>
+              <input id="wmOpacity" type="range" min="0.1" max="1" step="0.05" value="0.2">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="wmAddBtn">Add & Download</button>
+            <button class="btn secondary" id="wmClear">Clear</button>
+          </div>
+          <div class="preview" id="wmPreview">Ready</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-watermark-remove" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Cover Watermark</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="wmrSrc" accept="application/pdf">
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>X (pt)</label>
+              <input id="wmrX" type="number" min="0" value="100">
+            </div>
+            <div class="input-group">
+              <label>Y (pt)</label>
+              <input id="wmrY" type="number" min="0" value="100">
+            </div>
+            <div class="input-group">
+              <label>W (pt)</label>
+              <input id="wmrW" type="number" min="10" value="200">
+            </div>
+            <div class="input-group">
+              <label>H (pt)</label>
+              <input id="wmrH" type="number" min="10" value="60">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="wmrBtn">Cover & Download</button>
+            <button class="btn secondary" id="wmrClear">Clear</button>
+          </div>
+          <div class="preview" id="wmrPreview">Ready</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-pdf2excel" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>PDF to Excel</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="pdf2xlSrc" accept="application/pdf">
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="pdf2xlBtn">Export to XLSX</button>
+            <button class="btn secondary" id="pdf2xlClear">Clear</button>
+          </div>
+          <div class="preview" id="pdf2xlPreview">Ready</div>
+          <div class="note">Basic text extraction to CSV/XLSX; complex tables may need manual cleanup.</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-pdf2word" class="tool-section d-none">
+    <div class="card">
+      <div class="card-header"><span>Upload PDF</span></div>
+      <div class="card-body grid">
+        <div class="input-group full">
+          <label>Select file</label>
+          <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+        <div class="controls">
+          <div class="input-group">
+            <label>Merge pages</label>
+            <select id="mergeMode">
+              <option value="pagebreak">Page Breaks</option>
+              <option value="continuous">Continuous</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Title</label>
+            <input id="docTitle" type="text" placeholder="Document title">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="convertDocx">Convert to DOCX</button>
+          <button class="btn secondary" id="clearDocx">Clear</button>
+        </div>
+        <div class="preview" id="wordPreview">Ready</div>
+        <div class="note">Text-only conversion. Complex layouts and images may not be preserved.</div>
+      </div>
+    </div>
+    </section>
+    <section id="tool-img-convert" class="tool-section d-none">
+    <div class="card">
+      <div class="card-header"><span>Upload Image</span></div>
+      <div class="card-body grid">
+        <div class="input-group full">
+          <label>Select file</label>
+          <input type="file" id="srcImage" accept="image/*">
+        </div>
+        <div class="controls">
+          <div class="input-group">
+            <label>Output format</label>
+            <select id="outFormat">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Quality</label>
+            <input id="outQuality" type="range" min="0.5" max="1" step="0.05" value="0.9">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="convertImage">Convert</button>
+          <button class="btn secondary" id="clearImage">Clear</button>
+        </div>
+        <div class="preview" id="imgPreview">Preview</div>
+      </div>
+    </div>
+    </section>
+    <section id="tool-resize-img" class="tool-section d-none">
+    <div class="card">
+      <div class="card-header"><span>Upload Image</span></div>
+      <div class="card-body grid">
+        <div class="input-group full">
+          <label>Select file</label>
+          <input type="file" id="resizeSrc" accept="image/*">
+        </div>
+        <div class="controls">
+          <div class="input-group">
+            <label>Width (px)</label>
+            <input type="number" id="targetW" min="1" placeholder="e.g. 1024">
+          </div>
+          <div class="input-group">
+            <label>Height (px)</label>
+            <input type="number" id="targetH" min="1" placeholder="e.g. 768">
+          </div>
+          <div class="input-group">
+            <label>Keep aspect</label>
+            <select id="keepAspect">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Quality</label>
+            <input id="resizeQuality" type="range" min="0.5" max="1" step="0.05" value="0.9">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="resizeBtn">Resize & Download</button>
+          <button class="btn secondary" id="resizeClear">Clear</button>
+        </div>
+        <div class="preview" id="resizePreview">Preview</div>
+      </div>
+    </div>
+    </section>
+    <section id="tool-resize-pdf" class="tool-section d-none">
+    <div class="card">
+      <div class="card-header"><span>Upload PDF</span></div>
+      <div class="card-body grid">
+        <div class="input-group full">
+          <label>Select file</label>
+          <input type="file" id="pdfInput" accept="application/pdf">
+        </div>
+        <div class="controls">
+          <div class="input-group">
+            <label>Scale (%)</label>
+            <input type="number" id="scalePct" min="10" max="200" value="80">
+          </div>
+          <div class="input-group">
+            <label>Target size</label>
+            <select id="targetSize">
+              <option value="auto">Auto</option>
+              <option value="a4">A4</option>
+              <option value="letter">Letter</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="resizePdfBtn">Resize & Download</button>
+          <button class="btn secondary" id="clearPdfBtn">Clear</button>
+        </div>
+        <div class="preview" id="pdfPreview">Ready</div>
+        <div class="note">This reflows page content by scaling. It does not recompress embedded images.</div>
+      </div>
+    </div>
+    </section>
+    <section id="tool-word2pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Upload DOCX</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="docxFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Page size</label>
+              <select id="wdPageSize">
+                <option value="a4">A4</option>
+                <option value="letter">Letter</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Orientation</label>
+              <select id="wdOrientation">
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Margins (mm)</label>
+              <input id="wdMargins" type="number" min="0" value="10">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="convertWordPdf">Convert to PDF</button>
+            <button class="btn secondary" id="clearWordPdf">Clear</button>
+          </div>
+          <div class="preview" id="wordHtmlPreview">Ready</div>
+          <div class="note">Text-focused conversion. Complex layouts and images may be simplified.</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-excel2pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Upload Excel</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select file</label>
+            <input type="file" id="xlsxFile" accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv">
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Sheet</label>
+              <select id="sheetSelect"><option value="">Select after upload</option></select>
+            </div>
+            <div class="input-group">
+              <label>Orientation</label>
+              <select id="xlOrientation">
+                <option value="landscape">Landscape</option>
+                <option value="portrait">Portrait</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Page size</label>
+              <select id="xlPageSize">
+                <option value="a4">A4</option>
+                <option value="letter">Letter</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="convertExcelPdf">Convert to PDF</button>
+            <button class="btn secondary" id="clearExcelPdf">Clear</button>
+          </div>
+          <div class="preview" id="excelHtmlPreview">Ready</div>
+          <div class="note">Converts visible sheet to a printable table. Very large sheets may truncate.</div>
+        </div>
+      </div>
+    </section>
+    <section id="tool-merge-pdf" class="tool-section d-none">
+      <div class="card">
+        <div class="card-header"><span>Upload PDFs</span></div>
+        <div class="card-body grid">
+          <div class="input-group full">
+            <label>Select files</label>
+            <input type="file" id="mergeFiles" accept="application/pdf" multiple>
+          </div>
+          <div class="controls">
+            <div class="input-group">
+              <label>Output name</label>
+              <input id="mergeName" type="text" placeholder="merged.pdf" value="merged.pdf">
+            </div>
+            <div class="input-group">
+              <label>Order</label>
+              <select id="mergeOrder">
+                <option value="name">By name</option>
+                <option value="time">By upload</option>
+              </select>
+            </div>
+          </div>
+          <div class="merge-layout">
+            <div class="preview" id="mergePreview">Selected files will appear here</div>
+            <aside class="merge-actions">
+              <button class="merge-action add" id="mergeAdd">+</button>
+              <button class="merge-action clear" id="mergeActionClear">⌫</button>
+            </aside>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="mergeBtn">Merge & Download</button>
+            <button class="btn secondary" id="clearMerge">Clear</button>
+          </div>
+          <div class="note">Merges PDFs in-browser using secure client-side processing.</div>
+        </div>
+      </div>
+    </section>
+    <div class="ad-box ad-bottom">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659" data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    </div>
+    </div>
+    <aside class="ad-box ad-side ad-right">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659" data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    </aside>
+    </div>
+  </main>
+  <div id="footer-container"></div>
+  <script type="module" src="/js/components/component-loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script>pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";</script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.6.0/build/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="/js/image-to-pdf.js" defer></script>
+  <script src="/js/pdf-to-word.js" defer></script>
+  <script src="/js/image-converter.js" defer></script>
+  <script src="/js/resize-image.js" defer></script>
+  <script src="/js/resize-pdf.js" defer></script>
+  <script src="/js/word-to-pdf.js" defer></script>
+  <script src="/js/excel-to-pdf.js" defer></script>
+  <script src="/js/merge-pdf.js" defer></script>
+  <script src="/js/compress-pdf.js" defer></script>
+  <script src="/js/rotate-pdf.js" defer></script>
+  <script src="/js/html-to-pdf.js" defer></script>
+  <script src="/js/sign-pdf.js" defer></script>
+  <script src="/js/watermark-add.js" defer></script>
+  <script src="/js/watermark-remove.js" defer></script>
+  <script src="/js/pdf-to-excel.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const buttons = document.querySelectorAll('.tab-btn');
+      const sections = document.querySelectorAll('.tool-section');
+      const cards = document.querySelectorAll('.catalog-card');
+      const show = (id) => {
+        sections.forEach(s => { if (s.id === id) s.classList.remove('d-none'); else s.classList.add('d-none'); });
+        buttons.forEach(b => { b.classList.toggle('active', b.getAttribute('data-target') === id); });
+        cards.forEach(c => { c.classList.toggle('active', c.getAttribute('data-target') === id); });
+        if (id && location.hash !== '#' + id) location.hash = id;
+      };
+      buttons.forEach(b => b.addEventListener('click', () => show(b.getAttribute('data-target'))));
+      cards.forEach(c => c.addEventListener('click', () => show(c.getAttribute('data-target'))));
+      const initial = (location.hash && document.getElementById(location.hash.slice(1))) 
+        ? location.hash.slice(1) 
+        : (document.querySelector('.tab-btn.active')?.getAttribute('data-target') || 'tool-img2pdf');
+      show(initial);
+      window.addEventListener('hashchange', () => {
+        const id = location.hash.slice(1);
+        if (document.getElementById(id)) show(id);
+      });
+    });
+  </script>
+</body>
+</html>
