@@ -3,7 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BCVWorld Java Resources - Download Center</title>
+  <title>Java Resources PDF Download | Core Java, Spring, Microservices, SQL</title>
+  <meta name="description" content="Download free Java PDF resources: Core Java, Spring & Spring Boot, Microservices, SQL, JUnit, Maven/Git/Gradle, Streams & Coding. Mobile responsive, ad-supported downloads.">
+  <meta name="keywords" content="Java PDF, Core Java notes, Spring Boot PDF, Microservices design patterns PDF, SQL PDF, JUnit Mockito PDF, Maven Git Gradle PDF, Java Streams coding questions">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="BCVWorld">
+  <link rel="canonical" href="https://bcvworld.com/html/javaresource.html">
+  <meta property="og:title" content="Java Resources PDF Download | Core Java, Spring, Microservices, SQL">
+  <meta property="og:description" content="Comprehensive Java PDFs for learning and interviews. Clean UI, mobile responsive, and secure downloads after ad view.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bcvworld.com/html/javaresource.html">
+  <meta property="og:site_name" content="BCVWorld">
+  <meta property="og:image" content="https://bcvworld.com/assets/images/bcvworld-og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Java Resources PDF Download | Core Java, Spring, Microservices, SQL">
+  <meta name="twitter:description" content="Free Java study PDFs with ad-supported downloads. Optimized for mobile.">
+  <meta name="twitter:image" content="https://bcvworld.com/assets/images/twitter-image.webp">
 
   <!-- Global CONFIG (must be before scripts that read CONFIG) -->
   <script>
@@ -28,8 +46,32 @@
 
   <link href="/css/javaresource.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Java Resources PDF Download",
+    "url": "https://bcvworld.com/html/javaresource.html",
+    "inLanguage": "en-IN",
+    "about": [
+      "Core Java", "Spring", "Spring Boot", "Microservices", "SQL", "JUnit", "Mockito", "Maven", "Git", "Gradle", "Streams"
+    ],
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "BCVWorld",
+      "url": "https://bcvworld.com"
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bcvworld.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Java Resources", "item": "https://bcvworld.com/html/javaresource.html" }
+      ]
+    }
+  }
+  </script>
 </head>
-<body>
+<body id="javaresource-page">
   <div id="header-container"></div>
 
   <!-- Hero -->
@@ -86,7 +128,27 @@
           </select>
         </div>
 
-        <div class="resource-list"></div>
+        <div class="resource-list">
+          <div class="section-ad">
+            <div class="ad-container">
+              <div class="ad-label">Advertisement</div>
+              <div class="ad-content horizontal-ad">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-6284022198338659"
+                     data-ad-slot="7551857423"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+              </div>
+            </div>
+          </div>
+          <div class="toc" id="tocContainer">
+            <div class="toc-title">Table of Contents</div>
+            <div class="toc-list" id="tocList"></div>
+          </div>
+          <div id="listContainer"></div>
+          <div class="pagination-controls" id="paginationControls"></div>
+        </div>
 
         <div class="section-ad">
           <div class="ad-container">
@@ -95,7 +157,7 @@
               <ins class="adsbygoogle"
                    style="display:block"
                    data-ad-client="ca-pub-6284022198338659"
-                   data-ad-slot="8659542079"
+                   data-ad-slot="9603305692"
                    data-ad-format="auto"
                    data-full-width-responsive="true"></ins>
             </div>
@@ -292,7 +354,8 @@
     }
 
     // ---------- Query key nodes EARLY ----------
-    const cardsContainer = document.querySelector('.resource-list');
+    const cardsContainer = document.getElementById('listContainer');
+    const paginationControls = document.getElementById('paginationControls');
     const pageSize = 10;
     let currentPage = 1;
     let dynamicTotalPages = Math.max(1, Math.ceil(pdfFiles.length / pageSize));
@@ -399,37 +462,68 @@
       });
     }
 
+    function renderTOC() {
+      const list = document.getElementById('tocList');
+      if (!list) return;
+      const cats = ['all','core','spring','microservices','sql','testing','tools','streams','other'];
+      const labels = {
+        all:'All',
+        core:'Core Java',
+        spring:'Spring & Boot',
+        microservices:'Microservices',
+        sql:'SQL & DB',
+        testing:'Testing',
+        tools:'Maven/Git/Gradle',
+        streams:'Streams & Coding',
+        other:'Other'
+      };
+      const counts = cats.reduce((acc, c) => { acc[c]=0; return acc; }, {});
+      pdfFiles.forEach(f => { counts[getCategory(f)]++; counts['all']++; });
+      let html = cats.map(c => {
+        const active = c === selectedCategory ? 'active' : '';
+        return `<button class="toc-item ${active}" data-cat="${c}">${labels[c]}<span>(${counts[c]})</span></button>`;
+      }).join('');
+      list.innerHTML = html;
+      list.querySelectorAll('.toc-item').forEach(btn => {
+        btn.onclick = () => { selectedCategory = btn.getAttribute('data-cat') || 'all'; renderTOC(); renderPage(1); };
+      });
+    }
+
     function renderPage(page) {
       const filtered = applyFilters(pdfFiles);
       dynamicTotalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
       currentPage = Math.max(1, Math.min(page, dynamicTotalPages));
+      if (!cardsContainer) return;
       const start = (currentPage - 1) * pageSize;
       const end = start + pageSize;
-      const items = filtered.slice(start, end);
-
+      const slice = filtered.slice(start, end);
       let html = '';
-      items.forEach((file, idx) => {
+      slice.forEach((file, idx) => {
         html += buildItem(file);
-        if ((idx + 1) % 2 === 0) {
+        if ((idx + 1) % 3 === 0) {
           html += buildInlineAd(start + idx + 1);
         }
       });
-      html += buildPagination();
-      if (cardsContainer) cardsContainer.innerHTML = html;
-
+      cardsContainer.innerHTML = html;
+      if (paginationControls) paginationControls.innerHTML = buildPagination();
       setTimeout(() => loadAllAds(), 150);
       attachPaginationHandlers();
       attachDownloadHandlers();
     }
 
-    function attachPaginationHandlers() {
-      if (!cardsContainer) return;
-      const prev = cardsContainer.querySelector('.page-prev');
-      const next = cardsContainer.querySelector('.page-next');
-      const links = cardsContainer.querySelectorAll('.page-link');
-      if (prev) prev.addEventListener('click', () => renderPage(currentPage - 1));
-      if (next) next.addEventListener('click', () => renderPage(currentPage + 1));
-      links.forEach(l => l.addEventListener('click', () => renderPage(parseInt(l.getAttribute('data-page'), 10))));
+    function attachPaginationHandlers(){
+      if (!paginationControls) return;
+      const prev = paginationControls.querySelector('.page-prev');
+      const next = paginationControls.querySelector('.page-next');
+      const links = paginationControls.querySelectorAll('.page-link');
+      if (prev) prev.onclick = () => renderPage(currentPage - 1);
+      if (next) next.onclick = () => renderPage(currentPage + 1);
+      links.forEach(link => {
+        link.onclick = (e) => {
+          const p = Number(link.getAttribute('data-page'));
+          if (!isNaN(p)) renderPage(p);
+        };
+      });
     }
 
     function attachDownloadHandlers() {
@@ -459,7 +553,7 @@
           try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){ /* ignore */ }
 
           adInterval = setInterval(() => {
-            adProgressValue += 1;
+            adProgressValue += 3;
             if (progressBar) progressBar.style.width = adProgressValue + '%';
             if (progressText) progressText.textContent = adProgressValue + '%';
             if (adProgressValue >= 100) {
@@ -618,8 +712,8 @@
         }
 
         // ORIGINAL: show after 30s. For testing, change 30000 -> 3000
-        setTimeout(showPopupAd, 30000);
-        setInterval(() => { if (!isVisible(popupAd)) showPopupAd(); }, 60000);
+        setTimeout(showPopupAd, 9000);
+        setInterval(() => { if (!isVisible(popupAd)) showPopupAd(); }, 18000);
 
         if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.classList.remove('show'); });
       }
@@ -638,9 +732,8 @@
       function closeAdsPopup() { if (!adsPopup) return; adsPopup.classList.remove('show'); }
 
       if (adsPopupClose) adsPopupClose.addEventListener('click', closeAdsPopup);
-      // ORIGINAL: show after 15s. For testing, change 15000 -> 3000
-      setTimeout(() => { if (adsPopup) showAdsPopup(); }, 15000);
-      setInterval(() => { if (adsPopup && (!adsPopup.style.display || adsPopup.style.display === 'none')) showAdsPopup(); }, 120000);
+      setTimeout(() => { if (adsPopup) showAdsPopup(); }, 4500);
+      setInterval(() => { if (adsPopup && (!adsPopup.style.display || adsPopup.style.display === 'none')) showAdsPopup(); }, 36000);
       window.addEventListener('click', function (e) { if (adsPopup && e.target === adsPopup) closeAdsPopup(); });
 
       // initial ad load + responsive reload
@@ -667,6 +760,7 @@
     function init(){
       // call handler attach and initial render
       initUIHandlers();
+      renderTOC();
     }
 
     if (document.readyState === 'loading') {
