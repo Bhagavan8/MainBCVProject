@@ -459,6 +459,55 @@
                         </div>
                     </div>
 
+                   <div class="price-alert-container">
+        <div class="advertisement-label">Advertisement</div>
+        <div class="price-alert-ad">
+            <div class="sponsored-label">Sponsored</div>
+            
+            <div class="alert-content-wrapper">
+                <div class="alert-brand-section">
+                    <div class="alert-icon-box">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="new-badge">NEW</div>
+                </div>
+                
+                <div class="alert-text-section">
+                    <h2 class="alert-main-title">Instant Price Alerts with INDmoney</h2>
+                    <p class="alert-description-text">Get real‑time notifications for stocks, ETFs, and mutual funds. Invest across US and Indian markets in 6,000+ instruments with zero commission.</p>
+                    
+                    <div class="alert-features-list">
+                        <div class="alert-feature-item">
+                            <i class="fas fa-bolt"></i> Real-time Alerts
+                        </div>
+                        <div class="alert-feature-item">
+                            <i class="fas fa-globe"></i> US & India Markets
+                        </div>
+                        <div class="alert-feature-item">
+                            <i class="fas fa-shield-alt"></i> Secure Platform
+                        </div>
+                        <div class="alert-feature-item">
+                            <i class="fas fa-rupee-sign"></i> Zero Commission
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-action-section">
+                    <a href=" https://indmoney.onelink.me/RmHC/bm7r9h7z" target="_blank" rel="noopener" class="download-app-btn">
+                        <i class="fas fa-download"></i> Download App
+                    </a>
+                </div>
+            </div>
+            
+            <div class="alert-footer-area">
+                <div class="advertisement-disclaimer">Advertisement: INDmoney is a SEBI-registered investment advisor. Investing in securities market involves risk.</div>
+                <button class="close-ad-button" title="Close ad">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
                     
 
                     <div class="ad-section mt-4">
@@ -620,6 +669,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
     <script type="module" src="/js/job-details.js"></script>
     <script type="module" src="/js/job-stats.js"></script>
+    <script src="/js/ads.js"></script>
+    <script type="module" src="/js/push.js"></script>
     <script type="module">
         import { auth, db } from '/js/firebase-config.js';
         import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -659,6 +710,32 @@
             setVisByState();
         });
         setVisByState();
+    </script>
+    <script>
+        (function(){
+            const targetUrl = 'https://indmoney.onelink.me/RmHC/bm7r9h7z';
+            function go() {
+                const w = window.open(targetUrl, '_blank');
+                if (w) w.opener = null;
+            }
+            ['.price-alert-container', '.price-alert-ad'].forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) {
+                    el.addEventListener('click', go);
+                    el.addEventListener('keydown', e => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+                    });
+                    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+                }
+            });
+            ['.close-ad-button', '.download-app-btn'].forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) {
+                    el.addEventListener('click', e => e.stopPropagation());
+                    el.addEventListener('keydown', e => e.stopPropagation());
+                }
+            });
+        })();
     </script>
     <script type="module">
         import { db } from '/js/firebase-config.js';
@@ -826,9 +903,7 @@
             // No auto-open; open only when user clicks the FAB
         });
     </script>
-    <style>
-
-    </style>
+ 
 
     <script>
         // IMPROVED Ads Popup functionality
@@ -857,9 +932,26 @@
             // no interactive save button in banner
         });
         
-
+const closeAdBtn = document.querySelector('.close-ad-button');
+        const adMainContainer = document.querySelector('.price-alert-container');
+        
+        closeAdBtn.addEventListener('click', function() {
+            if (confirm('Close this advertisement?')) {
+                adMainContainer.style.opacity = '0';
+                adMainContainer.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    adMainContainer.style.display = 'none';
+                }, 300);
+            }
+        });
+        
+        // CTA button click tracking
+        const downloadBtn = document.querySelector('.download-app-btn');
+        downloadBtn.addEventListener('click', function(e) {
+            console.log('Ad click tracked: INDmoney Download with code INDSAVE50');
+        });
     </script>
-    <script src="/js/ads.js"></script>
+  
 </body>
 
 </html>

@@ -140,3 +140,245 @@
 
     /* ensure ins.adsbygoogle takes space when present */
     ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:50px; }
+
+    .price-alert-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .advertisement-label {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+        }
+        
+        .price-alert-ad {
+            background: linear-gradient(135deg, #f0f7ff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .alert-content-wrapper {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .alert-brand-section {
+            flex: 0 0 auto;
+            margin-right: 20px;
+            position: relative;
+        }
+        
+        .alert-icon-box {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #10b981;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.4);
+        }
+        
+        .alert-text-section {
+            flex: 1;
+            padding-right: 20px;
+        }
+        
+        .alert-main-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        
+        .alert-description-text {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .alert-features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-feature-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .alert-feature-item i {
+            color: #3b82f6;
+            font-size: 10px;
+        }
+        
+        
+        .alert-action-section {
+            flex: 0 0 auto;
+            min-width: 180px;
+        }
+        
+        .download-app-btn {
+            display: block;
+            background: linear-gradient(to right, #10b981, #34d399);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .price-alert-container,
+        .price-alert-ad {
+            cursor: pointer;
+        }
+        
+        .download-app-btn i {
+            margin-right: 8px;
+        }
+        
+        .alert-footer-area {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 20px;
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .advertisement-disclaimer {
+            font-style: italic;
+        }
+        
+        .close-ad-button {
+            color: #94a3b8;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        
+        .sponsored-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        @media (max-width: 900px) {
+            .alert-content-wrapper {
+                flex-direction: column;
+                padding: 25px 20px;
+            }
+            
+            .alert-brand-section {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .alert-text-section {
+                padding-right: 0;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            .alert-features-list {
+                justify-content: center;
+            }
+            
+            .alert-action-section {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .alert-main-title {
+                font-size: 17px;
+            }
+            
+            .alert-description-text {
+                font-size: 13.5px;
+            }
+            
+            .alert-features-list {
+                gap: 6px;
+            }
+            
+            .alert-feature-item {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+            
+            .discount-code-box {
+                font-size: 12px;
+                padding: 5px 12px;
+            }
+            
+            .download-app-btn {
+                padding: 11px 20px;
+                font-size: 14px;
+            }
+            
+            .alert-footer-area {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }

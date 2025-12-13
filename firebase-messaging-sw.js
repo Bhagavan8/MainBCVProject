@@ -1,26 +1,37 @@
-importScripts('https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.x.x/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
-firebase.initializeApp({
-    apiKey: "AIzaSyD9XVaB4VMsipGQ4fQ45TX7PxbM3Du5_XE",
-    authDomain: "bcvworld-cc40e.firebaseapp.com",
-    projectId: "bcvworld-cc40e",
-    storageBucket: "bcvworld-cc40e.firebasestorage.app",
-    messagingSenderId: "1083295808227",
-    appId: "1:1083295808227:web:8070d080beb7e9a819a3d6",
-    measurementId: "G-FVTSKKNJBH"
-});
+const encryptedConfig = "eyJhcGlLZXkiOiJBSXphU3lEOVhWYUI0Vk1zaXBHUTRmUTQ1VFg3UHhiTTNEdTVfWEUiLCJhdXRoRG9tYWluIjoiYmN2d29ybGQtY2M0MGUuZmlyZWJhc2VhcHAuY29tIiwicHJvamVjdElkIjoiYmN2d29ybGQtY2M0MGUiLCJzdG9yYWdlQnVja2V0IjoiYmN2d29ybGQtY2M0MGUuZmlyZWJhc2VzdG9yYWdlLmFwcCIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiMTA4MzI5NTgwODIyNyIsImFwcElkIjoiMToxMDgzMjk1ODA4MjI3OndlYjo4MDcwZDA4MGJlYjdlOWE4MTlhM2Q2IiwibWVhc3VyZW1lbnRJZCI6IkctRlZUU0tLTkpCSCJ9";
 
-const messaging = firebase.messaging();
+function decryptConfig(encrypted) {
+  try {
+    const decoded = atob(encrypted);
+    return JSON.parse(decoded);
+  } catch (e) {
+    return null;
+  }
+}
 
-messaging.onBackgroundMessage((payload) => {
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: '/assets/images/logo.png',
-        badge: '/assets/images/badge.png',
-        data: payload.data
-    };
+const cfg = decryptConfig(encryptedConfig);
+if (cfg) {
+  firebase.initializeApp(cfg);
+  const messaging = firebase.messaging();
 
-    self.registration.showNotification(notificationTitle, notificationOptions);
+  messaging.onBackgroundMessage(function(payload) {
+    const title = payload.notification?.title || 'New Update';
+    const body = payload.notification?.body || '';
+    const icon = payload.notification?.icon || '/assets/icons/icon-192.png';
+    const click_action = payload.notification?.click_action || '/';
+    self.registration.showNotification(title, {
+      body,
+      icon,
+      data: { url: click_action }
+    });
+  });
+}
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  const url = event.notification?.data?.url || '/';
+  event.waitUntil(clients.openWindow(url));
 });
