@@ -3,6 +3,19 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthP
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
+    function getRedirectURL() {
+        const params = new URLSearchParams(window.location.search);
+        const r = params.get('redirect');
+        if (r) {
+            try {
+                const u = new URL(r, window.location.origin);
+                if (u.origin === window.location.origin) {
+                    return u.pathname + u.search + u.hash;
+                }
+            } catch (e) {}
+        }
+        return '/index.html';
+    }
     // Registration Form Handler
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -116,9 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
                     }).showToast();
 
-                    // Redirect to index page
                     setTimeout(() => {
-                        window.location.href = '/index.html';
+                        window.location.href = getRedirectURL();
                     }, 2000);
                 } else {
                     throw new Error('User data not found');
@@ -190,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }).showToast();
 
             setTimeout(() => {
-                window.location.href = '/index.html';
+                window.location.href = getRedirectURL();
             }, 1500);
         } catch (error) {
             console.error('Google auth error:', error);

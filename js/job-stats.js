@@ -21,7 +21,7 @@ class JobStatsManager {
         this.collectionName = this.jobType === 'private' ? 'jobs' : `${this.jobType}Jobs`;
         this.viewsTracked = false;
         this.hasInitialized = false;
-        this.commentsPerPage = 8;
+        this.commentsPerPage = 5;
         this.currentPage = 1;
         this.totalComments = 0;
         this.init();
@@ -30,6 +30,7 @@ class JobStatsManager {
     async init() {
         this.setupAuthStateListener();
         this.setupComments();
+        this.updateCommentUIVisibility();
         await this.loadJobStats();
         await this.trackPageView();
         this.setupLikeButton();
@@ -58,6 +59,7 @@ class JobStatsManager {
     
     setupAuthStateListener() {
         auth.onAuthStateChanged(async (user) => {
+            this.updateCommentUIVisibility();
             await this.loadJobStats();
             this.setupLikeButton();
             await this.loadComments();
@@ -132,6 +134,8 @@ class JobStatsManager {
         try {
             if (!this.jobId) return;
             
+            this.updateCommentUIVisibility();
+            
             const commentsRef = collection(db, 'jobComments');
             
             // Get total comments count
@@ -151,13 +155,12 @@ class JobStatsManager {
 
             const commentsList = document.getElementById('commentsList');
             const commentForm = document.querySelector('.comment-form');
+            const loginPrompt = document.getElementById('loginPrompt');
 
             if (!commentsList) return;
 
             // Show/hide comment form based on auth state
-            if (commentForm) {
-                commentForm.style.display = auth.currentUser ? 'block' : 'none';
-            }
+            this.updateCommentUIVisibility();
 
             // Show loading state
             commentsList.innerHTML = `
@@ -194,36 +197,36 @@ class JobStatsManager {
                     const userData = userDoc.data();
                     const firstName = userData?.firstName || 'Anonymous';
 
+                    const dateParts = this.formatDateParts(timestamp);
                     return `
                         <div class="comment-item animate__animated animate__fadeIn">
-                            <div class="comment-header">
-                                <div class="comment-author">
-                                    <i class="bi bi-person-circle me-2"></i>
-                                    ${this.escapeHTML(firstName)}
+                            <div class="comment-row">
+                                <div class="comment-content">
+                                    ${this.escapeHTML(this.truncateText(String(comment.content || ''), 80))}
                                 </div>
-                                <div class="comment-date">
-                                    ${this.formatDate(timestamp)}
+                                <div class="comment-meta">
+                                    <div class="comment-author">
+                                        <i class="bi bi-person-circle me-1"></i>${this.escapeHTML(firstName)}
+                                    </div>
+                                    <div class="comment-date">${this.escapeHTML(dateParts.relative)} • ${this.escapeHTML(dateParts.absolute)}</div>
                                 </div>
-                            </div>
-                            <div class="comment-content mt-2">
-                                ${this.escapeHTML(comment.content)}
                             </div>
                         </div>`;
                 } catch (error) {
                     console.error('Error fetching user data:', error);
+                    const dateParts = this.formatDateParts(timestamp);
                     return `
                         <div class="comment-item animate__animated animate__fadeIn">
-                            <div class="comment-header">
-                                <div class="comment-author">
-                                    <i class="bi bi-person-circle me-2"></i>
-                                    Anonymous
+                            <div class="comment-row">
+                                <div class="comment-content">
+                                    ${this.escapeHTML(this.truncateText(String(comment.content || ''), 80))}
                                 </div>
-                                <div class="comment-date">
-                                    ${this.formatDate(timestamp)}
+                                <div class="comment-meta">
+                                    <div class="comment-author">
+                                        <i class="bi bi-person-circle me-1"></i>Anonymous
+                                    </div>
+                                    <div class="comment-date">${this.escapeHTML(dateParts.relative)} • ${this.escapeHTML(dateParts.absolute)}</div>
                                 </div>
-                            </div>
-                            <div class="comment-content mt-2">
-                                ${this.escapeHTML(comment.content)}
                             </div>
                         </div>`;
                 }
@@ -283,10 +286,71 @@ class JobStatsManager {
         }
     }
 
+    formatDateParts(date) {
+        const now = new Date();
+        const diff = now - date;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        let relative;
+        if (days > 0) {
+            relative = `${days} day${days > 1 ? 's' : ''} ago`;
+        } else if (hours > 0) {
+            relative = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        } else if (minutes > 0) {
+            relative = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+        } else {
+            relative = 'Just now';
+        }
+
+        const formatter = new Intl.DateTimeFormat('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'Asia/Kolkata'
+        });
+        const parts = formatter.formatToParts(date);
+        const get = (t) => parts.find(p => p.type === t)?.value || '';
+        const day = get('day');
+        const month = get('month');
+        const year = get('year');
+        const hour = get('hour');
+        const minute = get('minute');
+        const dayPeriod = (get('dayPeriod') || '').toUpperCase();
+        const absolute = `${day} ${month} ${year}, ${hour}:${minute} ${dayPeriod}`;
+
+        return { relative, absolute };
+    }
+
     escapeHTML(str) {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+    
+    updateCommentUIVisibility() {
+        const commentForm = document.querySelector('.comment-form');
+        const loginPrompt = document.getElementById('loginPrompt');
+        const isLoggedIn = !!(auth.currentUser || sessionStorage.getItem('userData'));
+        if (commentForm) commentForm.style.display = isLoggedIn ? 'block' : 'none';
+        if (loginPrompt) {
+            if (isLoggedIn) {
+                loginPrompt.remove();
+            } else {
+                loginPrompt.style.display = 'flex';
+            }
+        }
+    }
+    
+    truncateText(str, maxLen = 80) {
+        if (!str) return '';
+        if (str.length <= maxLen) return str;
+        return str.slice(0, maxLen).trim() + '...';
     }
 
     async loadJobStats() {
@@ -444,28 +508,55 @@ class JobStatsManager {
     }
 
     generatePaginationHTML(totalPages) {
-        let html = '<nav aria-label="Comments pagination"><ul class="pagination">';
+        const maxVisible = 5;
+        let start = Math.max(1, this.currentPage - 2);
+        let end = Math.min(totalPages, start + maxVisible - 1);
+        start = Math.max(1, end - maxVisible + 1);
+
+        let html = '<nav aria-label="Comments pagination"><ul class="pagination pagination-sm flex-wrap justify-content-center">';
         
         // Previous button
         html += `
             <li class="page-item ${this.currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${this.currentPage - 1}">
+                <a class="page-link" href="#" data-page="${this.currentPage - 1}" aria-label="Previous">
                     <i class="bi bi-chevron-left"></i>
                 </a>
             </li>`;
 
-        // Page numbers
-        for (let i = 1; i <= totalPages; i++) {
+        // First page and leading ellipsis
+        if (start > 1) {
+            html += `
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="1">1</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">…</span>
+                </li>`;
+        }
+
+        // Visible page numbers
+        for (let i = start; i <= end; i++) {
             html += `
                 <li class="page-item ${this.currentPage === i ? 'active' : ''}">
                     <a class="page-link" href="#" data-page="${i}">${i}</a>
                 </li>`;
         }
 
+        // Trailing ellipsis and last page
+        if (end < totalPages) {
+            html += `
+                <li class="page-item disabled">
+                    <span class="page-link">…</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a>
+                </li>`;
+        }
+
         // Next button
         html += `
             <li class="page-item ${this.currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${this.currentPage + 1}">
+                <a class="page-link" href="#" data-page="${this.currentPage + 1}" aria-label="Next">
                     <i class="bi bi-chevron-right"></i>
                 </a>
             </li>`;
