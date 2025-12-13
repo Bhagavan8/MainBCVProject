@@ -105,6 +105,50 @@ async function saveToken(token) {
   } catch (e) {}
 }
 
+function showTokenBanner(token) {
+  if (!token) return;
+  const box = document.createElement('div');
+  box.style.position = 'fixed';
+  box.style.top = '12px';
+  box.style.left = '12px';
+  box.style.zIndex = '99999';
+  box.style.background = '#0f172a';
+  box.style.color = '#fff';
+  box.style.padding = '10px 12px';
+  box.style.borderRadius = '10px';
+  box.style.fontSize = '12px';
+  box.style.boxShadow = '0 8px 18px rgba(0,0,0,0.25)';
+  box.style.maxWidth = 'calc(100% - 24px)';
+  box.style.wordBreak = 'break-all';
+  const label = document.createElement('div');
+  label.textContent = 'Push token (copy to send test):';
+  label.style.fontWeight = '700';
+  label.style.marginBottom = '6px';
+  const tokenEl = document.createElement('div');
+  tokenEl.textContent = token;
+  const btn = document.createElement('button');
+  btn.textContent = 'Copy';
+  btn.style.marginTop = '8px';
+  btn.style.background = '#2563eb';
+  btn.style.border = 'none';
+  btn.style.color = '#fff';
+  btn.style.padding = '6px 10px';
+  btn.style.borderRadius = '8px';
+  btn.style.fontWeight = '600';
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(token);
+      btn.textContent = 'Copied';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    } catch {}
+  });
+  box.appendChild(label);
+  box.appendChild(tokenEl);
+  box.appendChild(btn);
+  document.body.appendChild(box);
+  setTimeout(() => { box.remove(); }, 180000); // auto remove after 3 min
+}
+
 async function init() {
   const sw = await registerServiceWorker();
   const canMessaging = await isSupported().catch(() => false);
@@ -133,8 +177,16 @@ async function init() {
         let token = null;
         try {
           token = await getToken(messaging, { vapidKey: vapid, serviceWorkerRegistration: sw });
-        } catch (e) {}
-        if (token) await saveToken(token);
+        } catch (e) {
+          console.warn('getToken error', e);
+        }
+        if (token) {
+          console.log('FCM token', token);
+          showTokenBanner(token);
+          await saveToken(token);
+        } else {
+          console.warn('No token returned. Ensure VAPID public key is set: window.CONFIG.vapidPublicKey');
+        }
         onMessage(messaging, (payload) => {
           const title = payload.notification?.title || 'New Update';
           const body = payload.notification?.body || '';
