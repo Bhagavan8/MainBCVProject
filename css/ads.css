@@ -125,6 +125,10 @@
 }
 
     /* Mobile adjustments (small screens) */
+    @media (max-width: 768px) {
+      .sticky-ad { display: none !important; }
+    }
+    
     @media (max-width: 600px) {
       .ad-popup-card { padding: 12px; max-width: 360px; }
       :root { --sticky-height-desktop: var(--sticky-height-mobile); }
