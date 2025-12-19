@@ -23,8 +23,15 @@ body {
     background-color: var(--bg-white);
     font-size: 14px;
     overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    word-wrap: break-word;
 }
 
+img, iframe, ins {
+    max-width: 100%;
+    height: auto;
+}
 
 /* ===== LAYOUT & CONTAINERS ===== */
 .page-wrapper {
@@ -40,12 +47,15 @@ body {
 @media (max-width: 991px) {
     .page-wrapper {
         flex-direction: column;
-        padding: 0 12px;
+        padding: 0 10px;
         gap: 0;
+        overflow-x: hidden;
     }
     
     .main-container {
         padding: 10px 0;
+        width: 100%;
+        overflow-x: hidden;
     }
 }
 
@@ -127,6 +137,12 @@ body {
     padding: 24px;
     margin-bottom: 20px;
     text-align: center;
+}
+
+@media (max-width: 767px) {
+    .job-header {
+        padding: 16px;
+    }
 }
 
 .company-info {
@@ -427,6 +443,12 @@ body {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+    .job-details-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 .detail-item {
