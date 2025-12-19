@@ -899,7 +899,12 @@ class JobDetailsManager {
             'btech': 'B.Tech',
             'mtech': 'M.Tech',
             'be': 'B.E',
-            'me': 'M.E'
+            'me': 'M.E',
+            'cs': 'CS',
+            'it': 'IT',
+            'eee': 'EEE',
+            'ece': 'ECE',
+            'mca': 'MCA'
         };
 
         return string.split(/(\s+|\/|,)/).map(part => {

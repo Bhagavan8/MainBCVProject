@@ -22,6 +22,7 @@ body {
     color: var(--text-primary);
     background-color: var(--bg-white);
     font-size: 14px;
+    overflow-x: hidden;
 }
 
 
@@ -35,6 +36,19 @@ body {
     width: 100%;
     gap: 20px;
 }
+
+@media (max-width: 991px) {
+    .page-wrapper {
+        flex-direction: column;
+        padding: 0 12px;
+        gap: 0;
+    }
+    
+    .main-container {
+        padding: 10px 0;
+    }
+}
+
 
 .main-container {
     flex: 1;
