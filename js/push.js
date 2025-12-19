@@ -182,7 +182,7 @@ async function init() {
         }
         if (token) {
           console.log('FCM token', token);
-          showTokenBanner(token);
+          // showTokenBanner(token); // Debug only
           await saveToken(token);
         } else {
           console.warn('No token returned. Ensure VAPID public key is set: window.CONFIG.vapidPublicKey');
