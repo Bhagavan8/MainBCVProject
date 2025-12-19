@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion Box - Help Us Improve | BCVWorld</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/css/suggestion.css" rel="stylesheet">
+    <link href="/css/loader.css" rel="stylesheet">
+    <link href="/css/toaster.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="pageLoader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Header will be injected here or we can use a standard header structure -->
+    <div id="header-container"></div>
+    
+    <!-- Using a simplified header structure similar to index.html if header-container fails or for consistency -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">
+                BCV<span class="text-dark">World</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/html/jobs.html">Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/html/suggestion.html">Suggestion</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/html/contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="suggestion-header">
+        <div class="container text-center">
+            <h1 class="display-4 mb-3">We Value Your Voice</h1>
+            <p class="lead mb-4">Help us shape the future of your career search. Share your suggestions and job preferences.</p>
+            <div class="badges-container">
+                <span class="badge bg-light text-dark mx-2"><i class="bi bi-shield-lock-fill text-success"></i> 100% Confidential</span>
+                <span class="badge bg-light text-dark mx-2"><i class="bi bi-envelope-check-fill text-primary"></i> Daily Job Alerts</span>
+                <span class="badge bg-light text-dark mx-2"><i class="bi bi-people-fill text-info"></i> Priority Referrals</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                <!-- Authentication Check Container -->
+                <div id="auth-check-container" class="text-center py-5 d-none">
+                    <div class="card border-0 shadow-sm p-5">
+                        <div class="mb-4">
+                            <i class="bi bi-lock-fill text-warning display-1"></i>
+                        </div>
+                        <h3>Login Required</h3>
+                        <p class="text-muted mb-4">Please login or register to submit your suggestions. This ensures your data remains secure and confidential.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="/pages/login.html?redirect=/html/suggestion.html" class="btn btn-primary px-4 py-2">Login</a>
+                            <a href="/pages/register.html?redirect=/html/suggestion.html" class="btn btn-outline-primary px-4 py-2">Register</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggestion Form Container -->
+                <div id="suggestion-form-container" class="d-none">
+                    <div class="card border-0 shadow-lg rounded-3 overflow-hidden">
+                        <div class="card-header bg-white p-4 border-bottom">
+                            <h4 class="mb-0"><i class="bi bi-lightbulb text-warning me-2"></i> Submit Your Suggestion</h4>
+                            <p class="text-muted small mb-0 mt-2">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Your name and email are encrypted and will not be shared publicly.
+                            </p>
+                        </div>
+                        <div class="card-body p-4 p-md-5">
+                            <form id="suggestionForm">
+                                <!-- Hidden User Fields (Auto-filled) -->
+                                <input type="hidden" id="userId" name="userId">
+                                <input type="hidden" id="userEmail" name="userEmail">
+                                <input type="hidden" id="userName" name="userName">
+
+                                <div class="row g-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="jobPreference" class="form-label fw-bold">What kind of jobs are you looking for?</label>
+                                        <select class="form-select" id="jobPreference" required>
+                                            <option value="" selected disabled>Select your preference...</option>
+                                            <option value="all">All Jobs</option>
+                                            <option value="software_developer">Software Developer / Engineer</option>
+                                            <option value="data_analyst">Data Analyst / Scientist</option>
+                                            <option value="web_developer">Web Developer (Frontend/Backend/Fullstack)</option>
+                                            <option value="testing">QA / Testing</option>
+                                            <option value="devops">DevOps / Cloud Engineer</option>
+                                            <option value="non_voice">Non-Voice Process</option>
+                                            <option value="voice">Voice Process</option>
+                                            <option value="referral">Referral</option>
+                                            <option value="content">Content Writing/Creation</option>
+                                            <option value="part_time">Part Time</option>
+                                            <option value="it_jobs">IT Jobs</option>
+                                            <option value="non_it_jobs">Non-IT Jobs</option>
+                                            <option value="internship">Internship (Any Role)</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="helpType" class="form-label fw-bold">What help is required?</label>
+                                        <select class="form-select" id="helpType" required>
+                                            <option value="" selected disabled>Select help type...</option>
+                                            <option value="job_alert">Daily Job Alerts</option>
+                                            <option value="guidance">Career Guidance</option>
+                                            <option value="suggestion">Suggestion/Feedback</option>
+                                            <option value="referral_help">Referral Assistance</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- QR Code Container (Hidden by default) -->
+                                    <div id="qrCodeContainer" class="col-12 mb-4 d-none animate-fade-in">
+                                        <div class="qr-box p-4 rounded-3 text-center bg-light border border-primary border-opacity-25">
+                                            <h5 class="text-primary mb-3" id="qrTitle">Connect with us on WhatsApp</h5>
+                                            <p class="text-muted small mb-3" id="qrDescription">Scan the QR code to reach us directly for guidance and referrals.</p>
+                                            <div class="qr-image-wrapper mx-auto bg-white p-2 shadow-sm rounded" style="max-width: 200px;">
+                                                <!-- Placeholder for the user's QR code -->
+                                                <img src="/assets/images/whatsapp-qr.png" alt="WhatsApp QR Code" class="img-fluid" id="qrImage" onerror="this.src='https://placehold.co/200x200?text=WhatsApp+QR'">
+                                            </div>
+                                            <p class="mt-3 mb-0 small text-success fw-bold"><i class="bi bi-whatsapp"></i> Direct Chat Available</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <label for="suggestionText" class="form-label fw-bold">Your Suggestions / Feedback / Query</label>
+                                        <textarea class="form-control" id="suggestionText" rows="5" placeholder="Tell us what features you'd like to see, or details about your dream job..." required></textarea>
+                                        <div class="form-text">
+                                            We read every suggestion to improve our platform for you.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mt-4">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="emailConsent" checked>
+                                            <label class="form-check-label small text-muted" for="emailConsent">
+                                                I agree to receive daily job alerts and referral opportunities via email.
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
+                                            <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                                            Submit Suggestion
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer bg-light p-4 text-center">
+                            <small class="text-muted">
+                                By submitting, you agree to our <a href="/html/terms.html">Terms of Service</a> and <a href="/html/privacy.html">Privacy Policy</a>.
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefits Section -->
+                    <div class="row mt-5 g-4 text-center">
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <div class="mb-3 text-primary"><i class="bi bi-bell-fill fs-2"></i></div>
+                                <h5>Instant Alerts</h5>
+                                <p class="text-muted small">Get notified immediately when new openings match your profile.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <div class="mb-3 text-success"><i class="bi bi-person-check-fill fs-2"></i></div>
+                                <h5>Direct Referrals</h5>
+                                <p class="text-muted small">Access to exclusive referral opportunities from our network.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <div class="mb-3 text-info"><i class="bi bi-shield-check fs-2"></i></div>
+                                <h5>Secure Data</h5>
+                                <p class="text-muted small">Your information is encrypted and treated with strict confidentiality.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 BCVWorld. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="module" src="/js/suggestion.js"></script>
+</body>
+
+</html>
