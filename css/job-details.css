@@ -26,10 +26,12 @@ body {
     width: 100%;
     position: relative;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
-img, iframe, ins {
-    max-width: 100%;
+img, iframe, ins, video, object, embed {
+    max-width: 100% !important;
     height: auto;
 }
 
@@ -42,6 +44,7 @@ img, iframe, ins {
     padding: 0 16px;
     width: 100%;
     gap: 20px;
+    overflow-x: hidden;
 }
 
 @media (max-width: 991px) {
@@ -50,11 +53,13 @@ img, iframe, ins {
         padding: 0 10px;
         gap: 0;
         overflow-x: hidden;
+        max-width: 100%;
     }
     
     .main-container {
         padding: 10px 0;
         width: 100%;
+        max-width: 100%;
         overflow-x: hidden;
     }
 }
@@ -412,28 +417,35 @@ img, iframe, ins {
     line-height: 1.7;
     width: 100%;
     text-align: left;
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .description-content p {
     margin-bottom: 16px;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .description-content ul,
 .description-content ol {
     margin: 16px 0;
-    padding-left: 24px;
+    padding-left: 20px;
+    max-width: 100%;
 }
 
 .description-content li {
     margin-bottom: 8px;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
-.qualifications-list { list-style: disc; margin: 12px 0; padding-left: 24px; }
-.qualification-point { margin-bottom: 8px; }
+.qualifications-list { list-style: disc; margin: 12px 0; padding-left: 20px; max-width: 100%; }
+.qualification-point { margin-bottom: 8px; overflow-wrap: break-word; word-break: break-word; }
 
 /* ===== JOB DETAILS GRID ===== */
 .job-details-container {
@@ -507,19 +519,24 @@ img, iframe, ins {
     color: var(--text-secondary);
     line-height: 1.7;
     width: 100%;
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
     text-align: left;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .qualifications-content ul {
     padding-left: 20px;
+    max-width: 100%;
 }
 
 .qualifications-content li {
     margin-bottom: 10px;
     position: relative;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* ===== COMMUNITY SECTION ===== */
@@ -720,6 +737,8 @@ img, iframe, ins {
     margin: 24px 0;
     text-align: center;
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .ad-container,
@@ -728,12 +747,14 @@ img, iframe, ins {
     border-radius: var(--border-radius);
     padding: 20px;
     width: 100%;
+    max-width: 100%;
     min-height: 250px;
     /* Increased minimum height */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
 }
 
 .ad-label {
@@ -795,12 +816,13 @@ img, iframe, ins {
         left: auto;
         right: auto;
         width: 100%;
+        min-width: auto !important;
         padding: 8px 0;
         box-shadow: none;
         background: transparent;
     }
-    .ad-right { display: none !important; }
-    .ad-left { display: block; }
+    .ad-right { display: block !important; }
+    .ad-left { display: block !important; }
     .ad-close { top: 6px; right: 6px; width: 28px; height: 28px; line-height: 26px; z-index: 100003; }
 }
 
