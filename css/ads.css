@@ -107,6 +107,7 @@
       position:relative;
       padding: 6px 14px;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
 .sticky-close {
@@ -126,7 +127,7 @@
 
     /* Mobile adjustments (small screens) */
     @media (max-width: 768px) {
-      .sticky-ad { display: none !important; }
+      /* .sticky-ad { display: none !important; } */
     }
     
     @media (max-width: 600px) {
