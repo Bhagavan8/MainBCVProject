@@ -3,7 +3,7 @@
       --card-radius: 12px;
       --max-card-width: 420px;
       --sticky-height-desktop: 90px;
-      --sticky-height-mobile: 40px;
+      --sticky-height-mobile: 60px;
       --z-popup: 99999;
       --z-sticky: 99998;
     }
@@ -107,7 +107,6 @@
       position:relative;
       padding: 6px 14px;
       box-sizing: border-box;
-      overflow: hidden;
     }
 
 .sticky-close {
@@ -127,14 +126,13 @@
 
     /* Mobile adjustments (small screens) */
     @media (max-width: 768px) {
-      /* .sticky-ad { display: none !important; } */
+      .sticky-ad { display: none !important; }
     }
     
     @media (max-width: 600px) {
       .ad-popup-card { padding: 12px; max-width: 360px; }
       :root { --sticky-height-desktop: var(--sticky-height-mobile); }
-      .sticky-inner { padding: 2px 10px; }
-      .ad-container { min-height: 40px; }
+      .ad-container { min-height: 50px; }
       .ad-popup-card { gap: 8px; }
     }
 
@@ -145,7 +143,7 @@
     }
 
     /* ensure ins.adsbygoogle takes space when present */
-    ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:40px; }
+    ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:50px; }
 
     .price-alert-container {
             max-width: 1000px;
