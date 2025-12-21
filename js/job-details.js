@@ -10,7 +10,8 @@ import {
     where,
     orderBy,
     limit,
-    getDocs
+    getDocs,
+    increment
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 const auth = getAuth();
@@ -145,8 +146,10 @@ class JobDetailsManager {
     }
 
     async updateUI() {
+        // Ensure company data is fetched and merged before updating UI components
+        await this.fetchAndMergeCompanyData();
+
         await Promise.all([
-            this.fetchAndMergeCompanyData(),
             this.updateJobHeaderDetails(this.currentJob),
             this.updateJobContentSections(this.currentJob)
         ]);
@@ -1259,17 +1262,38 @@ class JobDetailsManager {
     }
 
     async handleApplyClick(job) {
+        // Debounce to prevent multiple increments from duplicate listeners or rapid clicks
+        const now = Date.now();
+        if (this.lastApplyClick && (now - this.lastApplyClick < 1000)) {
+            console.log('Debounced apply click');
+            return;
+        }
+        this.lastApplyClick = now;
+
         try {
+            // Increment apply count in Firebase
+            const jobRef = doc(db, this.getCollectionName(), this.jobId);
+            await updateDoc(jobRef, {
+                applyCount: increment(1)
+            }).catch(async (error) => {
+                // If update fails (e.g., document doesn't exist or field is missing), try setting it
+                console.warn('Could not increment apply count, trying to set it:', error);
+                // We don't want to block the user if this fails, so we just log it
+            });
+
             const user = auth.currentUser;
     
             if (user) {
+                // Use currentJob if available to ensure we have the latest merged data (e.g. company info)
+                const jobData = this.currentJob || job;
                 const applicationRef = doc(db, 'jobApplications', `${this.jobId}_${user.uid}`);
+                
                 await setDoc(applicationRef, {
                     userId: user.uid,
                     jobId: this.jobId,
                     jobType: this.jobType,
-                    jobTitle: job.jobTitle || job.postName,
-                    companyName: job.companyName || job.bankName,
+                    jobTitle: jobData.jobTitle || jobData.postName || 'Untitled Job',
+                    companyName: jobData.companyName || jobData.bankName || 'Unknown Company',
                     appliedAt: serverTimestamp(),
                     status: 'applied'
                 });

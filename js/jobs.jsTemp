@@ -1,0 +1,81 @@
+
+window.handleSearchWithSuggestions = debounce(async (event) => {
+    const searchTerm = event.target.value.toLowerCase().trim();
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    
+    // Update main list
+    applyFilters();
+
+    if (!searchTerm || searchTerm.length < 3) {
+        if (suggestionsBox) suggestionsBox.classList.add('d-none');
+        return;
+    }
+
+    try {
+        if (!window.allJobsCache) {
+             const [bank, gov, pvt] = await Promise.all([
+                getDocs(query(collection(db, 'bankJobs'), where('isActive', '==', true))),
+                getDocs(query(collection(db, 'governmentJobs'), where('isActive', '==', true))),
+                getDocs(query(collection(db, 'jobs'), where('isActive', '==', true)))
+             ]);
+             window.allJobsCache = [
+                 ...bank.docs.map(d => ({...d.data(), type: 'bank'})),
+                 ...gov.docs.map(d => ({...d.data(), type: 'government'})),
+                 ...pvt.docs.map(d => ({...d.data(), type: 'private'}))
+             ];
+        }
+        
+        const jobs = window.allJobsCache;
+        const suggestions = new Set();
+        
+        jobs.forEach(job => {
+            const title = job.title || job.jobTitle || job.postName || '';
+            const company = job.company || job.companyName || job.department || job.bankName || '';
+            const loc = job.location || job.state || '';
+            
+            if (title.toLowerCase().includes(searchTerm)) suggestions.add(title);
+            if (company.toLowerCase().includes(searchTerm)) suggestions.add(company);
+            if (loc.toLowerCase().includes(searchTerm)) suggestions.add(loc);
+            if (job.skills) {
+                job.skills.forEach(s => {
+                    if (s.toLowerCase().includes(searchTerm)) suggestions.add(s);
+                });
+            }
+        });
+        
+        const uniqueSuggestions = Array.from(suggestions).slice(0, 5);
+        
+        if (suggestionsBox && uniqueSuggestions.length > 0) {
+            suggestionsBox.innerHTML = uniqueSuggestions.map(s => `
+                <div class="p-2 border-bottom suggestion-item hover-bg-light" style="cursor: pointer;" 
+                    onclick="selectSuggestion('${s.replace(/'/g, "\\'")}')">
+                    <i class="bi bi-search me-2 text-muted"></i>${s}
+                </div>
+            `).join('');
+            suggestionsBox.classList.remove('d-none');
+        } else if (suggestionsBox) {
+            suggestionsBox.classList.add('d-none');
+        }
+        
+    } catch (e) {
+        console.error("Error fetching suggestions", e);
+    }
+
+}, 300);
+
+window.selectSuggestion = (value) => {
+    const input = document.getElementById('jobSearch');
+    if (input) {
+        input.value = value;
+        document.getElementById('searchSuggestions').classList.add('d-none');
+        applyFilters(); 
+    }
+};
+
+document.addEventListener('click', (e) => {
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    const searchInput = document.getElementById('jobSearch');
+    if (suggestionsBox && searchInput && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.classList.add('d-none');
+    }
+});

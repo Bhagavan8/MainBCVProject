@@ -690,47 +690,98 @@ window.handleFilters = debounce(() => {
 }, 300);
 
 window.applyFilters = async () => {
-    const jobType = document.getElementById('jobTypeFilter').value;
+    const jobTypeEl = document.getElementById('jobTypeFilter');
+    const jobType = jobTypeEl ? jobTypeEl.value : 'all';
     const location = document.getElementById('locationFilter').value;
     const isFresher = document.getElementById('fresherCheck').checked;
     const isExperienced = document.getElementById('experiencedCheck').checked;
+    const searchInput = document.getElementById('jobSearch');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
     try {
         let jobs = {};
         
+        // Helper to check if a job matches search term
+        const matchesSearch = (job) => {
+            if (!searchTerm) return true;
+            const title = job.title || job.jobTitle || job.postName || '';
+            const company = job.company || job.companyName || job.department || job.bankName || '';
+            const loc = job.location || job.state || '';
+            const skills = job.skills || [];
+            
+            const searchableText = `
+                ${title.toLowerCase()} 
+                ${company.toLowerCase()} 
+                ${loc.toLowerCase()} 
+                ${skills.join(' ').toLowerCase()}
+            `;
+            return searchableText.includes(searchTerm);
+        };
+        
+        // Helper to normalize location for comparison
+        const normalizeLocation = (loc) => {
+            if (!loc) return '';
+            let normalized = loc.toLowerCase().trim();
+            if (normalized.includes('bangalore') || normalized.includes('bengaluru') || normalized.includes('bangaluru')) return 'Bengaluru';
+            if (normalized.includes('hyderabad')) return 'Hyderabad';
+            if (normalized.includes('pune')) return 'Pune';
+            if (normalized.includes('mumbai')) return 'Mumbai';
+            if (normalized.includes('chennai')) return 'Chennai';
+            if (normalized.includes('delhi') || normalized.includes('noida') || normalized.includes('gurgaon') || normalized.includes('gurugram')) return 'Delhi NCR';
+            return loc; // Fallback to original if no match
+        };
+
+        const filterByLocation = (jobLoc) => {
+             if (location === 'all') return true;
+             
+             // Normalize both the job location and the selected filter location
+             const jobNorm = normalizeLocation(jobLoc || '').toLowerCase();
+             const filterNorm = location.toLowerCase(); // The location filter value is already normalized by populateLocationFilter
+             
+             return jobNorm === filterNorm;
+        };
+
         if (jobType === 'all' || jobType === 'bank') {
             const bankRef = collection(db, 'bankJobs');
             const conditions = [where('isActive', '==', true)];
-            if (location !== 'all') conditions.push(where('location', '==', location));
+            // Don't filter by location in query anymore, do it in memory
+            // if (location !== 'all') conditions.push(where('location', '==', location));
             const bankSnapshot = await getDocs(query(bankRef, ...conditions));
-            jobs.bank = bankSnapshot.docs.map(doc => ({ id: doc.id, type: 'bank', ...doc.data() }));
+            jobs.bank = bankSnapshot.docs
+                .map(doc => ({ id: doc.id, type: 'bank', ...doc.data() }))
+                .filter(job => matchesSearch(job) && filterByLocation(job.location || job.state));
         }
 
         if (jobType === 'all' || jobType === 'government') {
             const govRef = collection(db, 'governmentJobs');
             const conditions = [where('isActive', '==', true)];
-            if (location !== 'all') conditions.push(where('location', '==', location));
+            // Don't filter by location in query anymore, do it in memory
+            // if (location !== 'all') conditions.push(where('location', '==', location));
             const govSnapshot = await getDocs(query(govRef, ...conditions));
-            jobs.government = govSnapshot.docs.map(doc => ({ id: doc.id, type: 'government', ...doc.data() }));
+            jobs.government = govSnapshot.docs
+                .map(doc => ({ id: doc.id, type: 'government', ...doc.data() }))
+                .filter(job => matchesSearch(job) && filterByLocation(job.location || job.state));
         }
 
         if (jobType === 'all' || jobType === 'private') {
             const privateRef = collection(db, 'jobs');
             const conditions = [where('isActive', '==', true)];
-            if (location !== 'all') conditions.push(where('location', '==', location));
+            // Don't filter by location in query anymore, do it in memory
+            // if (location !== 'all') conditions.push(where('location', '==', location));
             if (isFresher && !isExperienced) conditions.push(where('experience', '==', 'fresher'));
             else if (!isFresher && isExperienced) conditions.push(where('experience', '!=', 'fresher'));
             
             const privateSnapshot = await getDocs(query(privateRef, ...conditions));
             jobs.private = await Promise.all(privateSnapshot.docs.map(async docItem => {
-                const jobData = { id: docItem.id, type: 'private', ...docItem.data() };
+                let jobData = { id: docItem.id, type: 'private', ...docItem.data() };
+                
                 if (jobData.companyId) {
                     try {
                         const companyRef = doc(db, 'companies', jobData.companyId);
                         const companyDoc = await getDoc(companyRef);
                         if (companyDoc.exists()) {
                             const companyData = companyDoc.data();
-                            return {
+                            jobData = {
                                 ...jobData,
                                 companyName: companyData.name || jobData.companyName || '',
                                 companyLogo: companyData.logoURL || jobData.companyLogo || '',
@@ -742,11 +793,17 @@ window.applyFilters = async () => {
                         console.error('Error fetching company details:', error);
                     }
                 }
+
+                if (!matchesSearch(jobData)) return null;
+                if (!filterByLocation(jobData.location)) return null;
+                
                 return jobData;
             }));
+            // Filter out nulls
+            jobs.private = jobs.private.filter(j => j !== null);
         }
 
-        displayJobs(jobs, 'filter', { jobType, location, isFresher, isExperienced });
+        displayJobs(jobs, 'filter', { jobType, location, isFresher, isExperienced, searchTerm });
     } catch (error) {
         console.error('Error applying filters:', error);
         showToast('Error applying filters. Please try again.', false);
@@ -863,39 +920,105 @@ const loadSidebarJobs = async () => {
     }
 };
 
-window.handleSearch = debounce(async (event) => {
+window.handleSearchWithSuggestions = debounce(async (event) => {
     const searchTerm = event.target.value.toLowerCase().trim();
-    if (!searchTerm) return initializeJobs();
+    const suggestionsBox = document.getElementById('searchSuggestions');
     
-    try {
-        const jobs = {
-            bank: await getJobs('bank'),
-            government: await getJobs('government'),
-            private: await getJobs('private')
-        };
+    // Update main list via applyFilters which now handles search
+    applyFilters();
 
-        // Filter jobs based on search term
-        const filteredJobs = {};
-        Object.entries(jobs).forEach(([type, jobsList]) => {
-            filteredJobs[type] = jobsList.filter(job => {
-                const searchableText = `
-                    ${job.title?.toLowerCase() || ''} 
-                    ${job.company ? job.company.charAt(0).toUpperCase() + job.company.slice(1).toLowerCase() : ''} 
-                    ${job.location?.toLowerCase() || ''} 
-                    ${job.description?.toLowerCase() || ''} 
-                    ${job.skills?.join(' ').toLowerCase() || ''}
-                    ${job.referralCode?.toLowerCase() || ''}
-                `;
-                return searchableText.includes(searchTerm);
-            });
-        });
-
-        displayJobs(filteredJobs, 'search', searchTerm);
-    } catch (error) {
-        console.error('Search error:', error);
-        showToast('Error searching jobs. Please try again.', false);
+    if (!searchTerm || searchTerm.length < 3) {
+        if (suggestionsBox) suggestionsBox.classList.add('d-none');
+        return;
     }
+
+    try {
+        if (!window.allJobsCache) {
+             const [bank, gov, pvt, companiesSnap] = await Promise.all([
+                getDocs(query(collection(db, 'bankJobs'), where('isActive', '==', true))),
+                getDocs(query(collection(db, 'governmentJobs'), where('isActive', '==', true))),
+                getDocs(query(collection(db, 'jobs'), where('isActive', '==', true))),
+                getDocs(query(collection(db, 'companies')))
+             ]);
+
+             const companiesMap = new Map();
+             companiesSnap.docs.forEach(doc => {
+                 companiesMap.set(doc.id, doc.data());
+             });
+
+             window.allJobsCache = [
+                 ...bank.docs.map(d => ({...d.data(), type: 'bank'})),
+                 ...gov.docs.map(d => ({...d.data(), type: 'government'})),
+                 ...pvt.docs.map(d => {
+                     const data = d.data();
+                     let companyName = data.companyName;
+                     if (data.companyId && companiesMap.has(data.companyId)) {
+                         const company = companiesMap.get(data.companyId);
+                         companyName = company.name || companyName;
+                     }
+                     return {...data, companyName, type: 'private'};
+                 })
+             ];
+        }
+        
+        const jobs = window.allJobsCache;
+        const suggestions = new Set();
+        
+        jobs.forEach(job => {
+            const title = job.title || job.jobTitle || job.postName || '';
+            const company = job.company || job.companyName || job.department || job.bankName || '';
+            const loc = job.location || job.state || '';
+            
+            if (title.toLowerCase().includes(searchTerm)) suggestions.add(title);
+            if (company.toLowerCase().includes(searchTerm)) suggestions.add(company);
+            if (loc.toLowerCase().includes(searchTerm)) suggestions.add(loc);
+            if (job.skills) {
+                job.skills.forEach(s => {
+                    if (s.toLowerCase().includes(searchTerm)) suggestions.add(s);
+                });
+            }
+        });
+        
+        const uniqueSuggestions = Array.from(suggestions).slice(0, 5);
+        
+        if (suggestionsBox && uniqueSuggestions.length > 0) {
+            suggestionsBox.innerHTML = uniqueSuggestions.map(s => `
+                <div class="p-2 border-bottom suggestion-item" style="cursor: pointer; transition: background-color 0.2s;" 
+                    onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'"
+                    onclick="selectSuggestion('${s.replace(/'/g, "\\'")}')">
+                    <i class="bi bi-search me-2 text-muted small"></i><span class="small">${s}</span>
+                </div>
+            `).join('');
+            suggestionsBox.classList.remove('d-none');
+        } else if (suggestionsBox) {
+            suggestionsBox.classList.add('d-none');
+        }
+        
+    } catch (e) {
+        console.error("Error fetching suggestions", e);
+    }
+
 }, 300);
+
+window.selectSuggestion = (value) => {
+    const input = document.getElementById('jobSearch');
+    if (input) {
+        input.value = value;
+        document.getElementById('searchSuggestions').classList.add('d-none');
+        applyFilters(); 
+    }
+};
+
+document.addEventListener('click', (e) => {
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    const searchInput = document.getElementById('jobSearch');
+    if (suggestionsBox && searchInput && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.classList.add('d-none');
+    }
+});
+
+// Alias for backward compatibility if needed, though we use handleSearchWithSuggestions in HTML
+window.handleSearch = window.handleSearchWithSuggestions;
 
 
 
@@ -1223,13 +1346,62 @@ async function populateLocationFilter() {
                 locationFilter.remove(1);
             }
 
+            // Normalization helper function
+            const normalizeLocation = (loc) => {
+                if (!loc) return '';
+                // Common normalizations
+                let normalized = loc.toLowerCase().trim();
+                
+                // Handle various Bengaluru formats
+                if (normalized.includes('bangalore') || 
+                    normalized.includes('bengaluru') || 
+                    normalized.includes('bangaluru')) {
+                    return 'Bengaluru';
+                }
+                
+                // Handle Hyderabad
+                if (normalized.includes('hyderabad')) {
+                    return 'Hyderabad';
+                }
+                
+                // Handle Pune
+                if (normalized.includes('pune')) {
+                    return 'Pune';
+                }
+                
+                // Handle Mumbai
+                if (normalized.includes('mumbai')) {
+                    return 'Mumbai';
+                }
+                
+                // Handle Chennai
+                if (normalized.includes('chennai')) {
+                    return 'Chennai';
+                }
+                
+                // Handle Delhi/NCR
+                if (normalized.includes('delhi') || normalized.includes('noida') || normalized.includes('gurgaon') || normalized.includes('gurugram')) {
+                    return 'Delhi NCR';
+                }
+                
+                // Return capitalized first letter for others
+                return loc.split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                    .join(' ');
+            };
+
+            // Process and normalize locations
+            const uniqueLocations = new Set();
+            sortedLocations.forEach(loc => {
+                const normalized = normalizeLocation(loc);
+                if (normalized) uniqueLocations.add(normalized);
+            });
+
             // Add sorted unique locations
-            sortedLocations.forEach(location => {
+            Array.from(uniqueLocations).sort().forEach(location => {
                 const option = document.createElement('option');
                 option.value = location;
-                // Trim location name if longer than 20 characters
-                option.textContent = location.length > 20 ? location.substring(0, 20) + '...' : location;
-                // Add title attribute for tooltip
+                option.textContent = location;
                 option.title = location;
                 locationFilter.appendChild(option);
             });
@@ -1241,11 +1413,18 @@ async function populateLocationFilter() {
 }
 window.clearFilters = async () => {
     // Reset all filters to default values
-    document.getElementById('jobTypeFilter').value = 'all';
+    const jobTypeEl = document.getElementById('jobTypeFilter');
+    if (jobTypeEl) jobTypeEl.value = 'all';
+    
     document.getElementById('locationFilter').value = 'all';
     document.getElementById('fresherCheck').checked = false;
     document.getElementById('experiencedCheck').checked = false;
-   
+    
+    const searchInput = document.getElementById('jobSearch');
+    if (searchInput) searchInput.value = '';
+
+    const suggestionsBox = document.getElementById('searchSuggestions');
+    if (suggestionsBox) suggestionsBox.classList.add('d-none');
 
     // Fetch and display all jobs
     try {

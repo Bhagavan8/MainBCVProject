@@ -74,6 +74,7 @@
     <link rel="stylesheet" href="/css/social-share.css">
     <script src="/js/social-share.js" defer></script>
     <link href="/css/jobs.css" rel="stylesheet">
+    <link href="/css/ads.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/loader.css">
     <link rel="stylesheet" href="/css/toaster.css">
     <noscript>
@@ -112,46 +113,56 @@
 <body>
     <noscript> <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQNPNWJ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="header-container"></div>
-    <div class="ad-box bg-white p-3 rounded-3">
-        <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-format="fluid"
-            data-ad-layout-key="-fb+5w+4e-db+86"
-            data-ad-client="ca-pub-6284022198338659"
-            data-ad-slot="1751277310"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-           </script>
-    </div>
     <div class="container-fluid py-5">
+        <!-- Top Ad -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <div class="ad-box bg-white p-3 rounded-3">
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-format="fluid"
+                        data-ad-layout-key="-fb+5w+4e-db+86"
+                        data-ad-client="ca-pub-6284022198338659"
+                        data-ad-slot="1751277310"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
-            <div class="col-lg-3 order-lg-1">
-                <div class="card shadow-sm mb-4 animate-fade-in">
-                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0 recent-jobs-title">Recent Jobs</h2>
-                        <span class="badge bg-primary rounded-pill" id="recentJobsCount">0</span>
-                    </div>
-                    <div class="card-body p-0">
-                        <div id="recentJobs" class="list-group list-group-flush job-list-animate"  style="min-height: 150px">
-                        </div>
+            <!-- Left Sidebar -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <!-- Jobs By Category Widget -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3 pb-2 border-bottom border-2 border-primary" style="font-size: 0.9rem;">Jobs By Category</h6>
+                    <div class="list-group list-group-flush small">
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('private'); return false;">IT Jobs</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('government'); return false;">Government Jobs</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('bank'); return false;">Bank Jobs</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('private'); return false;">BPO Jobs</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('private'); return false;">Core Jobs</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('private'); return false;">Civil Jobs</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByJobType('private'); return false;">Mechanical Jobs</a>
                     </div>
                 </div>
 
-                <div class="animate-fade-in">
-                    <div class="card-body text-center p-2">
-                        <!-- Vertical Display Ad Unit -->
-                        <ins class="adsbygoogle" style="display:block; height:600px;"
-                            data-ad-client="ca-pub-6284022198338659" data-ad-slot="3700699522" data-ad-format="vertical"
-                            data-full-width-responsive="false"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                           </script>
+                <!-- Sticky Ad -->
+                <div class="sticky-top" style="top: 100px; z-index: 1;">
+                    <div class="ad-container">
+                        <ins class="adsbygoogle" style="display:block"
+                            data-ad-client="ca-pub-6284022198338659" data-ad-slot="3700699522" data-ad-format="auto"
+                            data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
                     </div>
                 </div>
             </div>
 
             <!-- Main Content Area -->
-            <div class="col-lg-6 order-lg-2">
+            <div class="col-lg-8">
                 <!-- Filters Section -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
@@ -165,14 +176,15 @@
                         <div class="row gy-3">
                             <!-- Job Type Filter -->
                             <div class="col-12 col-md-6 col-lg-4">
-                                <label for="jobTypeFilter" class="form-label fw-bold">Job Type</label>
-                                <select id="jobTypeFilter" class="form-select form-select-sm" onchange="handleFilters()"
-                                    aria-label="Select job type">
-                                    <option value="all">All Job Types</option>
-                                    <option value="government">Government Jobs</option>
-                                    <option value="private">Private Jobs</option>
-                                    <option value="bank">Bank Jobs</option>
-                                </select>
+                                <label for="jobSearch" class="form-label fw-bold">Search Jobs</label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control form-control-sm" id="jobSearch" 
+                                        placeholder="Skills, Company, or Location" 
+                                        oninput="handleSearchWithSuggestions(event)" autocomplete="off">
+                                    <div id="searchSuggestions" class="position-absolute w-100 bg-white shadow-sm rounded-bottom border d-none" 
+                                        style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Location Filter -->
@@ -269,58 +281,56 @@
                     </div>
                 </div>
             </div>
-          
-            
 
             <!-- Right Sidebar -->
-            <div class="col-lg-3 order-lg-3">
-                <!-- Most Viewed Jobs -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <!-- Jobs By Location Widget -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3 pb-2 border-bottom border-2 border-info" style="font-size: 0.9rem;">Jobs By Location</h6>
+                    <div class="list-group list-group-flush small">
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Andhra Pradesh'); return false;">Jobs in Andhra Pradesh</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Bangalore'); return false;">Jobs in Bangalore</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Chennai'); return false;">Jobs in Chennai</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Delhi'); return false;">Jobs in Delhi</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Gurgaon'); return false;">Jobs in Gurgaon</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Hyderabad'); return false;">Jobs in Hyderabad</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Mumbai'); return false;">Jobs in Mumbai</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('NCR'); return false;">Jobs in NCR</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Noida'); return false;">Jobs in Noida</a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted" onclick="filterByLocation('Pune'); return false;">Jobs in Pune</a>
+                    </div>
+                </div>
 
-                <div class="animate-fade-in">
-                    <div class="card-body text-center p-2">
+                <!-- Sticky Ad -->
+                <div class="sticky-top" style="top: 100px; z-index: 1;">
+                    <div class="ad-container">
                         <ins class="adsbygoogle"
-                             style="display:inline-block;width:300px;height:600px"
+                             style="display:block"
                              data-ad-client="ca-pub-6284022198338659"
-                             data-ad-slot="6863685969"></ins>
+                             data-ad-slot="6863685969"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                         <script>
                             (adsbygoogle = window.adsbygoogle || []).push({});
                         </script>
                     </div>
                 </div>
-                <!-- Company Wise Jobs -->
-                <div class="card shadow-sm mb-4 animate-fade-in">
-                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0 company-jobs-title">Company Wise Jobs</h2>
-                        <span class="badge bg-info rounded-pill" id="companyCount">0</span>
-                    </div>
-                    <div class="card-body p-0">
-                        <div id="companyJobs" class="list-group list-group-flush">
-                            <!-- Companies will be loaded here -->
-                        </div>
-                        <div id="companyRoles" class="list-group list-group-flush d-none">
-                            <!-- Job roles for selected company will be shown here -->
-                            <div class="p-2 border-bottom">
-                                <button class="btn btn-link btn-sm text-decoration-none p-0"
-                                    onclick="showCompanyList()">
-                                    <i class="bi bi-arrow-left"></i> Back to Companies
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <!-- Job Categories -->
-                <div class="animate-fade-in">
-                    <div class="card-body text-center p-2">
-                        <ins class="adsbygoogle"
-                        style="display:inline-block;width:300px;height:600px"
+        <!-- Bottom Ad -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                        style="display:block"
                         data-ad-client="ca-pub-6284022198338659"
-                        data-ad-slot="9974733336"></ins>
-                            <script>
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                           </script>
-
-                    </div>
+                        data-ad-slot="9974733336"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 </div>
             </div>
         </div>
