@@ -708,12 +708,16 @@ window.applyFilters = async () => {
             const company = job.company || job.companyName || job.department || job.bankName || '';
             const loc = job.location || job.state || '';
             const skills = job.skills || [];
+            const referralCode = job.referralCode ? String(job.referralCode) : '';
             
             const searchableText = `
                 ${title.toLowerCase()} 
                 ${company.toLowerCase()} 
                 ${loc.toLowerCase()} 
                 ${skills.join(' ').toLowerCase()}
+                ${referralCode.toLowerCase()}
+                ref: ${referralCode.toLowerCase()}
+                ref:${referralCode.toLowerCase()}
             `;
             return searchableText.includes(searchTerm);
         };
@@ -968,10 +972,18 @@ window.handleSearchWithSuggestions = debounce(async (event) => {
             const title = job.title || job.jobTitle || job.postName || '';
             const company = job.company || job.companyName || job.department || job.bankName || '';
             const loc = job.location || job.state || '';
+            const referralCode = job.referralCode ? String(job.referralCode) : '';
             
             if (title.toLowerCase().includes(searchTerm)) suggestions.add(title);
             if (company.toLowerCase().includes(searchTerm)) suggestions.add(company);
             if (loc.toLowerCase().includes(searchTerm)) suggestions.add(loc);
+            
+            if (referralCode) {
+                if (referralCode.toLowerCase().includes(searchTerm)) suggestions.add(referralCode);
+                const refString = `Ref: ${referralCode}`;
+                if (refString.toLowerCase().includes(searchTerm)) suggestions.add(refString);
+            }
+
             if (job.skills) {
                 job.skills.forEach(s => {
                     if (s.toLowerCase().includes(searchTerm)) suggestions.add(s);
