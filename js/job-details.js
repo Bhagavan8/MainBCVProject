@@ -1274,11 +1274,14 @@ class JobDetailsManager {
             // Increment apply count in Firebase
             const jobRef = doc(db, this.getCollectionName(), this.jobId);
             await updateDoc(jobRef, {
-                applyCount: increment(1)
-            }).catch(async (error) => {
-                // If update fails (e.g., document doesn't exist or field is missing), try setting it
-                console.warn('Could not increment apply count, trying to set it:', error);
-                // We don't want to block the user if this fails, so we just log it
+                applyCount: increment(1),
+                lastAppliedAt: serverTimestamp()
+            }).catch((error) => {
+                if (error.code === 'permission-denied') {
+                    console.warn('Apply count increment skipped: Firestore Security Rules require authentication.');
+                } else {
+                    console.warn('Could not increment apply count:', error);
+                }
             });
 
             const user = auth.currentUser;
