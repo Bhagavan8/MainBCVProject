@@ -847,6 +847,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #f8f9fa; /* Placeholder bg */
+        }
+        
+        /* Force ad visibility in popup */
+        .ads-popup-body ins.adsbygoogle {
+             display: block !important;
+             min-height: 280px !important;
+             width: 100% !important;
+             background: #f1f1f1;
         }
 
         /* Animations */
