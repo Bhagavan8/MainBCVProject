@@ -576,6 +576,11 @@
         }
 
         /* Ads */
+        .section-ad {
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+        
         .ad-container {
             margin: 1rem 0;
             text-align: center;
@@ -583,12 +588,35 @@
             border: 1px dashed #ced4da;
             padding: 0.5rem;
             border-radius: 4px;
+            position: relative;
+            min-height: 100px; /* Ensure visibility */
         }
+        
+        .ad-container::before {
+            content: 'Ad Space (Visible on Live Site)';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #adb5bd;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ad-content {
+            position: relative;
+            z-index: 1; /* Ad sits on top of placeholder text */
+            min-height: 90px;
+        }
+
         .ad-label {
             font-size: 0.7rem;
             color: #adb5bd;
             text-transform: uppercase;
             margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
         }
         .ads-section {
             display: flex;
