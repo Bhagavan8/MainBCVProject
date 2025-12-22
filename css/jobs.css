@@ -102,6 +102,10 @@ body {
     font-weight: 600;
     color: #1e40af;
     margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40ch;
 }
 
 .job-title {
@@ -109,6 +113,10 @@ body {
     font-weight: 600;
     color: #1a202c;
     margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50ch;
 }
 
 .rating-container {
@@ -307,10 +315,10 @@ body {
         margin-left: auto; /* Push button to right */
     }
 
-    /* Truncate titles to approx 17 chars on mobile */
+    /* Truncate titles to approx 16 chars on mobile */
     .company-title,
     .job-title {
-        max-width: 17ch !important;
+        max-width: 16ch !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

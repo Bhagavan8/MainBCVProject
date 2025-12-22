@@ -230,11 +230,11 @@ function createJobCard(job, type) {
                     `}
                 </div>
                 <div class="header-info">
-                    <h3 class="company-title text-truncate" title="${getValue(job.companyName || (type === 'bank' ? job.bankName : job.department))}">
-                        ${trimText(getValue(job.companyName || (type === 'bank' ? job.bankName : job.department)), 40)}
+                    <h3 class="company-title" title="${getValue(job.companyName || (type === 'bank' ? job.bankName : job.department))}">
+                        ${getValue(job.companyName || (type === 'bank' ? job.bankName : job.department))}
                     </h3>
-                    <p class="job-title text-truncate" title="${getValue(type === 'private' ? job.jobTitle : job.postName)}">
-                        ${trimText(getValue(type === 'private' ? job.jobTitle : job.postName), 50)}
+                    <p class="job-title" title="${getValue(type === 'private' ? job.jobTitle : job.postName)}">
+                        ${getValue(type === 'private' ? job.jobTitle : job.postName)}
                     </p>
                 </div>
             </div>
