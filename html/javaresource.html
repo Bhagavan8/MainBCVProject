@@ -255,11 +255,14 @@
         <button class="close-modal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
-        <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
-          data-ad-client="ca-pub-6284022198338659" data-ad-slot="3392831892"></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <!-- Ad Container for Display Ad -->
+        <div class="ad-container-modal">
+          <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
+            data-ad-client="ca-pub-6284022198338659" data-ad-slot="3392831892"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
 
         <div class="download-progress">
           <p>Ad Progress: <span id="progressText">0%</span></p>
@@ -618,7 +621,8 @@
             finalDownload = document.getElementById('finalDownload');
 
             if (downloadModal) downloadModal.classList.add('show');
-            ensureAdOrFallback('.ad-video-placeholder', 4831035752);
+            // Inject Display Ad (Slot 3392831892) into the modal container
+            ensureAdOrFallback('.ad-container-modal', 3392831892);
             stopAdProgress();
             resetDownloadState();
 
