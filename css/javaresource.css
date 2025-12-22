@@ -779,8 +779,8 @@
             transform: translate(-50%, -50%);
             bottom: auto;
             right: auto;
-            width: 400px;
-            height: 400px;
+            width: 500px; /* Increased from 400px */
+            height: 450px; /* Increased from 400px to maintain proportion */
             background: white;
             box-shadow: 0 0 20px rgba(0,0,0,0.3);
             border-radius: 12px;
