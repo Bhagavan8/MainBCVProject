@@ -289,12 +289,22 @@ body {
     }
 
     .card-footer {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row; /* Ensure row layout on mobile */
+        flex-wrap: wrap; /* Allow wrapping */
+        align-items: center;
+    }
+
+    .footer-actions {
+        flex-wrap: wrap; /* Allow actions to wrap */
+        gap: 0.5rem; /* Add gap between elements */
     }
 
     .apply-button {
-        width: 100%;
+        width: auto; /* Prevent full width button */
+    }
+
+    .apply-btn-container {
+        margin-left: auto; /* Push button to right */
     }
 
     /* Truncate titles to approx 17 chars on mobile */

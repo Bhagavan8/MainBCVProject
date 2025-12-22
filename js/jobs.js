@@ -332,7 +332,7 @@ function createJobCard(job, type) {
                         </span>
                     </div>
                 ` : ''}
-               <div class="d-inline-flex apply-btn-container">
+               <div class="d-inline-flex apply-btn-container ms-auto">
                 <button class="btn btn-primary btn-sm apply-btn" data-job-id="${job.id}" data-job-type="${type}">
                     <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                     <span>View</span>
