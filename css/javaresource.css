@@ -703,16 +703,59 @@
             text-align: center;
         }
         .ad-video-container {
-            background: #000;
+            background: #f8f9fa; /* Changed from black to light gray for better ad visibility */
             width: 100%;
-            height: 250px;
+            height: 280px; /* Slightly increased height */
             margin-bottom: 1rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            border-radius: 4px;
+            color: #333;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            overflow: hidden;
+        }
+        .ad-video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f3f5;
+            background-image: linear-gradient(45deg, #e9ecef 25%, transparent 25%, transparent 75%, #e9ecef 75%, #e9ecef), 
+                              linear-gradient(45deg, #e9ecef 25%, transparent 25%, transparent 75%, #e9ecef 75%, #e9ecef);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            position: relative;
+        }
+        .ad-video-placeholder::after {
+            content: "Advertisement";
+            position: absolute;
+            font-size: 1.2rem;
+            color: #adb5bd;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 0;
+        }
+        .ad-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border: 1px dashed #dee2e6;
+            padding: 1rem;
+            text-align: center;
+        }
+        /* Ensure ad sits on top of placeholder background */
+        .ad-video-placeholder ins.adsbygoogle {
+            z-index: 1;
+            background: white; /* Cover the placeholder pattern when ad loads */
         }
         .download-progress {
             margin: 1rem 0;

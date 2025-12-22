@@ -625,9 +625,12 @@
             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { /* ignore */ }
 
             adInterval = setInterval(() => {
-              adProgressValue += 3;
+              adProgressValue += 2; // Slower progress
+              if (adProgressValue > 100) adProgressValue = 100;
+              
               if (progressBar) progressBar.style.width = adProgressValue + '%';
               if (progressText) progressText.textContent = adProgressValue + '%';
+              
               if (adProgressValue >= 100) {
                 stopAdProgress();
                 setTimeout(() => {
@@ -687,7 +690,19 @@
           // clear any existing children
           container.innerHTML = '';
 
-          // If AdSense is available, add a real ad element
+          // 1. Localhost / Dev Check: Show visual placeholder immediately
+          const isLocal = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+          if (isLocal) {
+             const demoAd = document.createElement('div');
+             demoAd.className = 'ad-fallback';
+             demoAd.style.background = '#e2e6ea';
+             demoAd.style.color = '#495057';
+             demoAd.innerHTML = '<div style="text-align:center"><h4>Demo Ad Mode</h4><p>AdSense does not load on localhost.</p></div>';
+             container.appendChild(demoAd);
+             return;
+          }
+
+          // 2. If AdSense is available, add a real ad element
           if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
             const ins = document.createElement('ins');
             ins.className = 'adsbygoogle';
@@ -701,10 +716,10 @@
             return;
           }
 
-          // Fallback placeholder (non-blocking UI when ads are blocked or not loaded)
+          // 3. Fallback placeholder (non-blocking UI when ads are blocked or not loaded)
           const placeholder = document.createElement('div');
           placeholder.className = 'ad-fallback';
-          placeholder.innerHTML = '<div>Sponsored • Ad content unavailable. Please wait for the timer.</div>';
+          placeholder.innerHTML = '<div>Sponsored • Ad content unavailable.<br><small>Please disable ad blocker to support us.</small></div>';
           container.appendChild(placeholder);
         } catch (err) {
           // don't break everything if something unexpected happens
