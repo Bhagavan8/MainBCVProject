@@ -1,6 +1,6 @@
 import { auth, db } from '../firebase-config.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     function getRedirectURL() {
@@ -16,6 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return '/index.html';
     }
+    // Helper to handle referrals
+    async function handleReferral() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const refId = params.get('ref');
+            
+            if (refId) {
+                // Verify referrer exists
+                const refDoc = await getDoc(doc(db, "users", refId));
+                if (refDoc.exists()) {
+                    // Increment referral count
+                    await updateDoc(doc(db, "users", refId), {
+                        referralCount: increment(1)
+                    });
+                    console.log("Referral applied for:", refId);
+                }
+            }
+        } catch (error) {
+            console.error("Error applying referral:", error);
+            // Don't block registration if referral fails
+        }
+    }
+
     // Registration Form Handler
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -47,8 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     phone: '+91' + phone,
                     dob,
                     createdAt: new Date(),
-                    lastLogin: new Date()
+                    lastLogin: new Date(),
+                    referralCount: 0 // Initialize referral count
                 });
+
+                // Handle referral if present
+                await handleReferral();
 
                 // Show success message
                 Toastify({
@@ -184,7 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastLogin: new Date()
             };
             if (!snap.exists()) {
-                await setDoc(userRef, { ...baseData, createdAt: new Date() });
+                await setDoc(userRef, { ...baseData, createdAt: new Date(), referralCount: 0 });
+                // Handle referral if present for new Google users
+                await handleReferral();
             } else {
                 await setDoc(userRef, baseData, { merge: true });
             }

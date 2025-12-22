@@ -70,6 +70,7 @@
 
   <div class="container">
     <div class="main-content">
+      
       <!-- Left ads -->
       <aside class="ads-section">
         <div class="ad-container">
@@ -98,6 +99,64 @@
 
       <!-- Download cards area -->
       <section class="download-section">
+        <!-- Referral Program Banner -->
+        <div id="referral-program-container" class="premium-referral-card" style="display: none;">
+          <div class="referral-header">
+            <i class="bi bi-star-fill"></i>
+            <h3>Unlock Downloads & Remove Ads!</h3>
+          </div>
+          
+          <p class="referral-desc">
+            <strong>Unlock Downloads:</strong> Share our WhatsApp Channel to <strong>3 Groups</strong> OR Refer <strong>3 Friends</strong>.<br>
+            <strong>Remove Ads:</strong> Refer <strong>5 Friends</strong> to get Premium Ad-Free access!
+          </p>
+          
+          <div id="referral-status-loading" class="text-center py-4">
+            <div class="spinner-border text-light" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div id="referral-status-content" style="display: none;">
+            <div class="referral-stats">
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Your Progress</span>
+                  <span><span id="referral-count">0</span>/5 Friends</span>
+                </div>
+                <div class="custom-progress">
+                  <div id="referral-progress-bar" class="custom-progress-bar" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="share-actions">
+              <div class="input-group-custom">
+                <input type="text" id="referral-link" readonly value="Loading link...">
+                <button class="btn-copy" id="copy-referral-btn">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+              
+              <a href="#" id="whatsapp-share-btn" class="btn-whatsapp" target="_blank">
+                <i class="bi bi-whatsapp"></i> Share Channel
+              </a>
+              
+              <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o" id="join-channel-btn" class="btn-whatsapp-channel" target="_blank">
+                <i class="bi bi-whatsapp"></i> Join Channel
+              </a>
+            </div>
+          </div>
+          
+          <div id="referral-login-prompt" class="login-prompt-card" style="display: none;">
+            <h4 class="text-dark mb-2">Login Required</h4>
+            <p class="text-muted mb-3">Join our community to track referrals and remove ads.</p>
+            <a href="/pages/login.html?redirect=/html/javaresource.html" class="login-btn-pulse">
+              Log In / Register
+            </a>
+          </div>
+        </div>
+
         <h2>Java Resources</h2>
         <div class="resource-controls">
           <input type="text" id="searchInput" class="resource-search" placeholder="Search resources" />
@@ -519,6 +578,39 @@
         const newBtn = button.cloneNode(true);
         button.parentNode.replaceChild(newBtn, button);
         newBtn.addEventListener('click', function () {
+          if (!window.isUserLoggedIn) {
+             if (typeof Toastify === 'function') {
+                 Toastify({ text: "Please Log In to Download", duration: 3000, gravity: "top", position: "center", style: { background: "#e76f00" } }).showToast();
+             } else {
+                 alert("Please Log In to Download");
+             }
+             setTimeout(() => { window.location.href = '/pages/login.html?redirect=' + encodeURIComponent(window.location.pathname); }, 1000);
+             return;
+          }
+
+          // Check if download is unlocked (via share or referral)
+          // User Requirement: 3 Shares (of Channel) OR 3 Referrals to unlock. 5 Referrals for Premium.
+          const shareTarget = 3;
+          const referralUnlockTarget = 3;
+          
+          if (!window.isDownloadUnlocked && !window.isPremium) {
+              if (typeof Toastify === 'function') {
+                 Toastify({ 
+                     text: `🔒 Share Channel to ${shareTarget} Groups OR Refer ${referralUnlockTarget} Friends to Unlock Downloads!`, 
+                     duration: 4000, 
+                     gravity: "top", 
+                     position: "center", 
+                     style: { background: "#dc3545", boxShadow: "0 3px 10px rgba(0,0,0,0.2)" } 
+                 }).showToast();
+              } else {
+                 alert(`Share Channel to ${shareTarget} Groups OR Refer ${referralUnlockTarget} Friends to Unlock Downloads!`);
+              }
+              // Scroll to referral section
+              const refSection = document.getElementById('referral-program-container');
+              if (refSection) refSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              return;
+          }
+
           openPopunder();
           const file = this.getAttribute('data-file');
           currentFile = file;
@@ -760,5 +852,220 @@
   <script type="module" src="/js/download-tracker.js"></script>
   <script type="module" src="/js/components/component-loader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script type="module">
+    import { auth, db } from '/js/firebase-config.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { doc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const referralContainer = document.getElementById('referral-program-container');
+        const loadingDiv = document.getElementById('referral-status-loading');
+        const contentDiv = document.getElementById('referral-status-content');
+        const loginPromptDiv = document.getElementById('referral-login-prompt');
+        const countSpan = document.getElementById('referral-count');
+        const progressBar = document.getElementById('referral-progress-bar');
+        const linkInput = document.getElementById('referral-link');
+        const copyBtn = document.getElementById('copy-referral-btn');
+        const whatsappBtn = document.getElementById('whatsapp-share-btn');
+        const joinChannelBtn = document.getElementById('join-channel-btn');
+        
+        // State
+        window.isDownloadUnlocked = false;
+        window.isPremium = false;
+        let currentUser = null;
+
+        // Copy button handler
+        copyBtn?.addEventListener('click', () => {
+            linkInput.select();
+            document.execCommand('copy');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        });
+        
+        // Helper to unlock downloads
+        async function unlockDownloads() {
+            if (currentUser) {
+                 try {
+                     const userRef = doc(db, "users", currentUser.uid);
+                     await updateDoc(userRef, {
+                         shareCount: increment(1)
+                     });
+                     
+                     // Calculate new status (optimistic)
+                     const currentShares = (window.currentShareCount || 0) + 1;
+                     window.currentShareCount = currentShares; // update local
+                     
+                     const shareTarget = 3;
+                     
+                     if (currentShares >= shareTarget) {
+                         window.isDownloadUnlocked = true;
+                         if (typeof Toastify === 'function') {
+                            Toastify({ text: "Downloads unlocked! Thanks for your support.", duration: 3000, gravity: "top", position: "center", style: { background: "#28a745" } }).showToast();
+                         }
+                     } else {
+                         const remaining = shareTarget - currentShares;
+                         if (typeof Toastify === 'function') {
+                            Toastify({ text: `Thanks! Share Channel ${remaining} more times to unlock downloads.`, duration: 3000, gravity: "top", position: "center", style: { background: "#17a2b8" } }).showToast();
+                         }
+                     }
+                 } catch (err) {
+                     console.error("Error updating unlock status:", err);
+                 }
+             }
+        }
+
+        // WhatsApp Share Handler
+        whatsappBtn?.addEventListener('click', async (e) => {
+             await unlockDownloads();
+        });
+
+        // Join Channel Handler
+        joinChannelBtn?.addEventListener('click', async (e) => {
+             await unlockDownloads();
+        });
+
+        function hideAds() {
+            // Hide all ad containers and sections
+            const adSelectors = [
+                '.ads-section', 
+                '.ad-container', 
+                'ins.adsbygoogle',
+                '#ad-modal',
+                '.modal-backdrop',
+                '.section-ad'
+            ];
+            
+            adSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.style.display = 'none !important';
+                    el.classList.add('d-none');
+                    el.remove();
+                });
+            });
+
+            window.showAdModal = () => { console.log("Ads disabled for this user"); };
+            
+            // Hide referral banner if goal reached
+            if (referralContainer) {
+                referralContainer.innerHTML = `
+                    <div class="alert alert-success text-center mb-0 shadow-sm border-0" style="background: #d4edda; color: #155724;">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <strong>Premium Active!</strong> You are enjoying an ad-free experience with instant downloads.
+                    </div>
+                `;
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            window.isUserLoggedIn = !!user;
+            currentUser = user;
+            
+            if (referralContainer) referralContainer.style.display = 'block';
+            
+            if (user) {
+                if (loadingDiv) loadingDiv.style.display = 'block'; 
+                if (loginPromptDiv) loginPromptDiv.style.display = 'none';
+
+                // Listen for referral count updates in real-time
+                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if (loadingDiv) loadingDiv.style.display = 'none';
+                    if (contentDiv) contentDiv.style.display = 'block';
+
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const referralCount = data.referralCount || 0;
+                        const shareCount = data.shareCount || 0;
+                        window.currentShareCount = shareCount; // Sync local state
+                        
+                        // User Requirements:
+                        // Unlock Download: 3 Shares OR 3 Referrals
+                        // Premium (Ad-Free): 5 Referrals
+                        const referralUnlockTarget = 3;
+                        const shareTarget = 3;
+                        const premiumTarget = 5;
+                        
+                        // Logic: Unlock if >= 3 referrals OR >= 3 shares
+                        window.isDownloadUnlocked = (referralCount >= referralUnlockTarget || shareCount >= shareTarget);
+                        
+                        // Logic: Remove ads if >= 5 referrals
+                        const progress = Math.min((referralCount / premiumTarget) * 100, 100);
+
+                        // Update UI
+                        if (countSpan) countSpan.textContent = referralCount;
+                        if (progressBar) progressBar.style.width = `${progress}%`;
+                        
+                        // Set referral link
+                        const refLink = `${window.location.origin}/pages/register.html?ref=${user.uid}`;
+                        if (linkInput) linkInput.value = refLink;
+
+                        // WhatsApp Share (Promote Channel + Referral Link)
+                        if (whatsappBtn) {
+                             const channelLink = "https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o";
+                             const msg = encodeURIComponent(`🚀 *Join the BCV World Java Channel!* \n\nGet free Java PDFs (Core, Spring, Microservices) and coding resources daily.\n\n👇 *Join Here:* \n${channelLink}\n\n(Register here to remove ads: ${refLink})`);
+                             whatsappBtn.href = `https://wa.me/?text=${msg}`;
+                        }
+
+                        // Check ad status
+                        if (referralCount >= premiumTarget) {
+                            window.isPremium = true;
+                            hideAds();
+                            enableInstantDownload();
+                        }
+                    } else {
+                         // Fallback
+                         if (loadingDiv) loadingDiv.style.display = 'none';
+                         if (contentDiv) contentDiv.style.display = 'block';
+                         const refLink = `${window.location.origin}/pages/register.html?ref=${user.uid}`;
+                         if (linkInput) linkInput.value = refLink;
+                         if (whatsappBtn) {
+                             const msg = encodeURIComponent(`Hey! Check out these free Java resources and remove ads for free! Register here: ${refLink}`);
+                             whatsappBtn.href = `https://wa.me/?text=${msg}`;
+                         }
+                    }
+                });
+            } else {
+                if (loadingDiv) loadingDiv.style.display = 'none';
+                if (contentDiv) contentDiv.style.display = 'none';
+                if (loginPromptDiv) loginPromptDiv.style.display = 'block';
+            }
+        });
+
+        function enableInstantDownload() {
+            // Watch for download modal opening
+            const modal = document.getElementById('downloadModal');
+            if (!modal) return;
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (modal.classList.contains('show')) {
+                            // Modal opened, skip timer
+                            const progressBar = document.getElementById('adProgress');
+                            const progressText = document.getElementById('progressText');
+                            const downloadReady = document.getElementById('downloadReady');
+                            
+                            if (progressBar) progressBar.style.width = '100%';
+                            if (progressText) progressText.textContent = '100%';
+                            
+                            // Hide ad placeholder in modal
+                            const adPlaceholder = modal.querySelector('.ad-video-container');
+                            if (adPlaceholder) adPlaceholder.style.display = 'none';
+
+                            // Show download button immediately
+                            setTimeout(() => {
+                                if (downloadReady) downloadReady.style.display = 'block';
+                            }, 100);
+                        }
+                    }
+                });
+            });
+
+            observer.observe(modal, { attributes: true });
+        }
+    });
+  </script>
 </body>
 </html>
