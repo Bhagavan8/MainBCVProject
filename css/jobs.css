@@ -977,68 +977,69 @@ body {
         padding: 0.75rem 1rem;
     }
     }
-    @media (max-width: 576px) {
+/* Reverting Grid - Default to Block (Vertical List) */
+.jobs-container {
+    width: 100%;
+}
+
+.job-item {
+    width: 100%;
+}
+
+/* Mobile Responsive Adjustments Only */
+@media (max-width: 576px) {
     .date-filter-container {
         min-width: 100%;
     }
 
     .jobs-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .job-item {
-        width: 100%;
-        max-width: 100%;
-        margin: 0 auto;
+        padding: 0;
     }
 
     .job-card {
-        width: 100%;
-        margin: 0 auto 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-
+    
+    .card-header-content {
+        flex-direction: row; 
+        align-items: center;
+    }
+    
+    .logo-container {
+        margin-bottom: 0;
+        margin-right: 1rem;
+    }
+    
     .footer-actions {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0.5rem !important;
-        align-items: center !important;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
     }
-
-    .footer-actions .date-info,
-    .footer-actions .referral-code {
+    
+    .footer-actions .date-info {
+        width: 100%;
+        justify-content: space-between;
         margin-right: 0 !important;
+        font-size: 0.8rem;
+        color: #6c757d;
+        background: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 6px;
+    }
+
+    .footer-actions .apply-btn-container {
         width: 100%;
-        justify-content: flex-start;
     }
-
-    .footer-actions > div:first-child {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 1rem !important;
-        width: 100%;
-    }
-
-    .date-info, .referral-code {
-        margin: 0 !important;
-        font-size: 0.875rem;
-        white-space: nowrap;
-        text-align: center;
-    }
-
-    .apply-btn-container {
-        width: 100%;
-        display: flex !important;
-        justify-content: center !important;
-        margin-top: 0.5rem;
-    }
-
+    
     .apply-btn {
-        min-width: 120px;
-        padding: 0.375rem 0.75rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.6rem;
     }
 }
 

@@ -755,50 +755,68 @@
             display: block;
         }
         
-        /* Bottom Right Popup */
+        /* Centered Square Popup */
         .popup-ad {
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            bottom: auto;
+            right: auto;
+            width: 400px;
+            height: 400px;
             background: white;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            border-radius: 12px;
             border: 1px solid #ddd;
             overflow: hidden;
+            z-index: 2000;
+            max-width: 90vw; /* Responsive fix */
+            max-height: 90vh; /* Responsive fix */
         }
         .popup-body {
-            padding: 10px;
+            padding: 15px;
             position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         .popup-close {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 10px;
+            right: 10px;
             background: #fff;
             border: 1px solid #ccc;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
-            font-size: 16px;
-            line-height: 22px;
+            font-size: 18px;
+            line-height: 26px;
             text-align: center;
             z-index: 2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .popup-title {
-            font-size: 0.8rem;
-            color: #999;
-            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
         }
         .popup-ad-content {
-            min-height: 250px;
+            flex: 1;
             background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
         }
         .popup-timer {
             font-size: 0.75rem;
             color: #666;
             margin-top: 5px;
-            text-align: right;
+            text-align: center;
         }
 
         /* Center Popup */

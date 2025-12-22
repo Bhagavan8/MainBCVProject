@@ -287,11 +287,11 @@
           (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
       </div>
-      <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">10</span> seconds</div>
+      <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">7</span> seconds</div>
     </div>
   </div>
 
-  <!-- Ads Popup (center modal) -->
+  <!-- Ads Popup (center modal)
   <div class="ads-popup" id="adsPopup" role="dialog" aria-modal="true">
     <div class="ads-popup-content">
       <div class="ads-popup-header">
@@ -299,10 +299,10 @@
         <button class="ads-popup-close" id="adsPopupClose" aria-label="Close">&times;</button>
       </div>
       <div class="ads-popup-body">
-         <!-- Ad injected via JS to prevent empty white space if hidden -->
-      </div>
+         <!-Ad injected via JS to prevent empty white space if hidden -->
+      <!-- </div>
     </div>
-  </div>
+  </div> --> 
 
   <div id="footer-container"></div>
 
@@ -770,7 +770,7 @@
 
         function startPopupTimer() {
           if (!timerCount) return;
-          let count = 10;
+          let count = 7;
           timerCount.textContent = count;
           const timer = setInterval(() => {
             count--;
