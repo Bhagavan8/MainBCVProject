@@ -291,11 +291,18 @@ function createJobCard(job, type) {
             ${type === 'private' && job.skills ? `
                 <div class="skills-info mb-2 overflow-hidden">
                     <div class="skills-list d-flex flex-nowrap gap-2 overflow-x-auto py-1">
-                        ${job.skills.slice(0, 4).map(skill => `
-                            <span class="badge bg-light text-dark text-nowrap">${trimText(skill, 12)}</span>
+                        ${job.skills.slice(0, 4).map((skill, index) => `
+                            <span class="badge bg-light text-dark text-nowrap ${index >= 2 ? 'd-none d-md-inline-block' : ''}">${trimText(skill, 12)}</span>
                         `).join('')}
+                        
+                        ${/* Mobile Badge: Show if more than 2 skills */ ''}
+                        ${job.skills.length > 2 ? `
+                            <span class="badge bg-light text-dark text-nowrap d-inline-block d-md-none">+${job.skills.length - 2}</span>
+                        ` : ''}
+
+                        ${/* Desktop Badge: Show if more than 4 skills */ ''}
                         ${job.skills.length > 4 ? `
-                            <span class="badge bg-light text-dark text-nowrap">+${job.skills.length - 4}</span>
+                            <span class="badge bg-light text-dark text-nowrap d-none d-md-inline-block">+${job.skills.length - 4}</span>
                         ` : ''}
                     </div>
                 </div>
@@ -328,7 +335,7 @@ function createJobCard(job, type) {
                <div class="d-inline-flex apply-btn-container">
                 <button class="btn btn-primary btn-sm apply-btn" data-job-id="${job.id}" data-job-type="${type}">
                     <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
-                    <span>Apply</span>
+                    <span>View</span>
                 </button>
             </div>
             </div>

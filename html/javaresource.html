@@ -279,21 +279,15 @@
     </div>
   </div>
 
-  <!-- Popup Ad -->
-  <div class="popup-ad" id="popupAd" role="dialog" aria-modal="true">
-    <div class="popup-body">
-      <button class="popup-close" aria-label="Close">&times;</button>
-      <h3 class="popup-title">Sponsored</h3>
-      <div class="popup-ad-content">
-         <div class="ad-container-modal">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-          data-ad-slot="9525901183" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-        </div>
-      </div>
-      <div class="popup-timer" id="popupTimer">This ad will close in <span id="timerCount">7</span> seconds</div>
+  <!-- Sticky Footer Ad -->
+  <div class="sticky-footer-ad" id="stickyFooterAd">
+    <button class="sticky-ad-close" aria-label="Close Ad">&times;</button>
+    <div class="sticky-ad-container">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="9525901183" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
   </div>
 
@@ -785,39 +779,13 @@
 
         window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) { stopAdProgress(); resetDownloadState(); downloadModal.classList.remove('show'); } });
 
-        // Popup ad logic (defensive) + exclusivity with special ads
-        const popupAd = document.getElementById('popupAd');
-        const popupClose = document.querySelector('.popup-close');
-        const timerCount = document.getElementById('timerCount');
-
-        function startPopupTimer() {
-          if (!timerCount) return;
-          let count = 7;
-          timerCount.textContent = count;
-          const timer = setInterval(() => {
-            count--;
-            timerCount.textContent = count;
-            if (count <= 0) {
-              clearInterval(timer);
-              if (popupAd) popupAd.style.display = 'none';
-            }
-          }, 1000);
-        }
-
-        if (popupAd) {
-          function anyAdPopupOpen() { const ap = document.getElementById('adsPopup'); return isVisible(popupAd) || (ap && isVisible(ap)); }
-          function showPopupAd() {
-            if (anyAdPopupOpen()) return;
-            popupAd.classList.add('show');
-            requestAnimationFrame(() => { ensureAdOrFallback('.popup-ad-content', 9525901183); });
-            startPopupTimer();
-          }
-
-          // ORIGINAL: show after 30s. For testing, change 30000 -> 3000
-          setTimeout(showPopupAd, 9000);
-          setInterval(() => { if (!isVisible(popupAd)) showPopupAd(); }, 18000);
-
-          if (popupClose) popupClose.addEventListener('click', () => { if (popupAd) popupAd.classList.remove('show'); });
+        // Sticky Footer Ad Close Logic
+        const stickyFooterAd = document.getElementById('stickyFooterAd');
+        const stickyAdClose = document.querySelector('.sticky-ad-close');
+        if (stickyAdClose && stickyFooterAd) {
+          stickyAdClose.addEventListener('click', function() {
+            stickyFooterAd.style.display = 'none';
+          });
         }
 
         // Ads popup (center)
@@ -827,7 +795,7 @@
         function showAdsPopup() {
           if (!adsPopup) return;
           // Do not show if popupAd is visible
-          if (popupAd && isVisible(popupAd)) return;
+          // if (popupAd && isVisible(popupAd)) return; // Removed popupAd check
           adsPopup.classList.add('show');
           renderAdIn('.ads-popup-body', 4089957271);
         }
@@ -846,14 +814,14 @@
         window.addEventListener('keydown', function (e) {
           if (e.key === 'Escape' || e.key === 'Esc') {
             if (downloadModal) downloadModal.classList.remove('show');
-            if (popupAd) popupAd.classList.remove('show');
+            // if (popupAd) popupAd.classList.remove('show'); // Removed
             if (adsPopup) adsPopup.classList.remove('show');
           }
         });
 
         // expose debug helpers
         window.showAdsPopupNow = showAdsPopup;
-        window.showPopupAdNow = function () { const p = document.getElementById('popupAd'); if (p) p.classList.add('show'); requestAnimationFrame(() => ensureAdOrFallback('.popup-ad-content', 9525901183)); };
+        // window.showPopupAdNow = ... Removed
         window.testOpenDownloadModal = function (url) { const p = document.getElementById('downloadModal'); if (p) p.classList.add('show'); const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download', (url || 'file').split('/').pop()); } };
 
         console.log('UI handlers attached. adsbygoogle defined:', !!window.adsbygoogle);
