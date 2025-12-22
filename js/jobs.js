@@ -560,6 +560,54 @@ async function filterByCategory(category) {
 // Make function globally available
 window.filterByCategory = filterByCategory;
 
+window.filterByJobType = (type) => {
+    // Redirect to filterByCategory for consistent behavior
+    window.filterByCategory(type);
+};
+
+window.filterByLocation = (location) => {
+    const locationSelect = document.getElementById('locationFilter');
+    if (!locationSelect) return;
+
+    // Normalization helper (matching populateLocationFilter logic)
+    const normalize = (loc) => {
+        if (!loc) return '';
+        let normalized = loc.toLowerCase().trim();
+        
+        if (normalized.includes('bangalore') || normalized.includes('bengaluru')) return 'Bengaluru';
+        if (normalized.includes('hyderabad')) return 'Hyderabad';
+        if (normalized.includes('pune')) return 'Pune';
+        if (normalized.includes('mumbai')) return 'Mumbai';
+        if (normalized.includes('chennai')) return 'Chennai';
+        if (normalized.includes('delhi') || normalized.includes('noida') || normalized.includes('gurgaon') || normalized.includes('gurugram') || normalized.includes('ncr')) return 'Delhi NCR';
+        
+        // Fallback: try to match exactly or case-insensitive
+        return loc;
+    };
+
+    const targetVal = normalize(location);
+    
+    // Find option with this value
+    let found = false;
+    for (let i = 0; i < locationSelect.options.length; i++) {
+        if (locationSelect.options[i].value === targetVal) {
+            locationSelect.selectedIndex = i;
+            found = true;
+            break;
+        }
+    }
+    
+    if (found) {
+        window.handleFilters();
+        // Scroll to jobs grid
+        document.getElementById('jobsGrid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        console.warn('Location not found in filter:', targetVal);
+        // Optional: show a toast or alert that no jobs found for this location
+    }
+};
+
+
 async function updateCategoryCounts() {
     try {
         // Get total count for all jobs

@@ -4,12 +4,18 @@ body {
     line-height: 1.6;
     background-color: #ffffff;
 }
+
+.jobs-main-container {
+    padding-top: 60px;
+    padding-bottom: 3rem;
+}
+
 .job-card {
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 1.25rem;
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
@@ -985,7 +991,7 @@ body {
 
     .job-item {
         width: 100%;
-        max-width: 400px;
+        max-width: 100%;
         margin: 0 auto;
     }
 
@@ -997,8 +1003,15 @@ body {
     .footer-actions {
         display: flex !important;
         flex-direction: column !important;
-        gap: 1rem !important;
+        gap: 0.5rem !important;
         align-items: center !important;
+    }
+
+    .footer-actions .date-info,
+    .footer-actions .referral-code {
+        margin-right: 0 !important;
+        width: 100%;
+        justify-content: flex-start;
     }
 
     .footer-actions > div:first-child {
