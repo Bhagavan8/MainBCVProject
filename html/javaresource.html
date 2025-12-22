@@ -255,10 +255,11 @@
         <button class="close-modal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="ad-video-container">
-          <div class="ad-video-placeholder"></div>
-          <p>Please view the advertisement to enable download.</p>
-        </div>
+        <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
+          data-ad-client="ca-pub-6284022198338659" data-ad-slot="3392831892"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
 
         <div class="download-progress">
           <p>Ad Progress: <span id="progressText">0%</span></p>
@@ -300,9 +301,9 @@
       </div>
       <div class="ads-popup-body">
          <!-Ad injected via JS to prevent empty white space if hidden -->
-      <!-- </div>
+  <!-- </div>
     </div>
-  </div> --> 
+  </div> -->
 
   <div id="footer-container"></div>
 
@@ -627,10 +628,10 @@
             adInterval = setInterval(() => {
               adProgressValue += 2; // Slower progress
               if (adProgressValue > 100) adProgressValue = 100;
-              
+
               if (progressBar) progressBar.style.width = adProgressValue + '%';
               if (progressText) progressText.textContent = adProgressValue + '%';
-              
+
               if (adProgressValue >= 100) {
                 stopAdProgress();
                 setTimeout(() => {
@@ -693,13 +694,13 @@
           // 1. Localhost / Dev Check: Show visual placeholder immediately
           const isLocal = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
           if (isLocal) {
-             const demoAd = document.createElement('div');
-             demoAd.className = 'ad-fallback';
-             demoAd.style.background = '#e2e6ea';
-             demoAd.style.color = '#495057';
-             demoAd.innerHTML = '<div style="text-align:center"><h4>Demo Ad Mode</h4><p>AdSense does not load on localhost.</p></div>';
-             container.appendChild(demoAd);
-             return;
+            const demoAd = document.createElement('div');
+            demoAd.className = 'ad-fallback';
+            demoAd.style.background = '#e2e6ea';
+            demoAd.style.color = '#495057';
+            demoAd.innerHTML = '<div style="text-align:center"><h4>Demo Ad Mode</h4><p>AdSense does not load on localhost.</p></div>';
+            container.appendChild(demoAd);
+            return;
           }
 
           // 2. If AdSense is available, add a real ad element
@@ -892,40 +893,40 @@
       let currentUser = null;
 
       // Copy button handler
-        copyBtn?.addEventListener('click', async () => {
-            const link = linkInput.value;
-            if (!link || link === "Loading link...") return;
+      copyBtn?.addEventListener('click', async () => {
+        const link = linkInput.value;
+        if (!link || link === "Loading link...") return;
 
-            try {
-                await navigator.clipboard.writeText(link);
-                
-                // Visual feedback
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
-                copyBtn.style.background = "#28a745";
-                
-                // Toast
-                if (typeof Toastify === 'function') {
-                    Toastify({ 
-                        text: "Link Copied to Clipboard! 📋", 
-                        duration: 3000, 
-                        gravity: "bottom", 
-                        position: "center", 
-                        style: { background: "#28a745", borderRadius: "25px" } 
-                    }).showToast();
-                }
+        try {
+          await navigator.clipboard.writeText(link);
 
-                setTimeout(() => {
-                    copyBtn.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
-                    copyBtn.style.background = ""; // Reset to default CSS
-                }, 2500);
-            } catch (err) {
-                // Fallback for older browsers
-                linkInput.select();
-                document.execCommand('copy');
-                alert("Link copied!");
-            }
-        });
+          // Visual feedback
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
+          copyBtn.style.background = "#28a745";
+
+          // Toast
+          if (typeof Toastify === 'function') {
+            Toastify({
+              text: "Link Copied to Clipboard! 📋",
+              duration: 3000,
+              gravity: "bottom",
+              position: "center",
+              style: { background: "#28a745", borderRadius: "25px" }
+            }).showToast();
+          }
+
+          setTimeout(() => {
+            copyBtn.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
+            copyBtn.style.background = ""; // Reset to default CSS
+          }, 2500);
+        } catch (err) {
+          // Fallback for older browsers
+          linkInput.select();
+          document.execCommand('copy');
+          alert("Link copied!");
+        }
+      });
 
       // Helper to unlock downloads
       async function unlockDownloads() {
