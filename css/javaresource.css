@@ -762,48 +762,78 @@
             background: #218838;
         }
 
-        /* Sticky Footer Ad */
-        .sticky-footer-ad {
+        /* Popups */
+        .popup-ad, .ads-popup {
+            display: none;
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-            z-index: 9999;
-            padding: 15px 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-top: 1px solid #eee;
-            min-height: 120px; /* Increased height for visibility */
+            z-index: 1001;
         }
-
-        .sticky-ad-close {
+        .popup-ad.show, .ads-popup.show {
+            display: block;
+        }
+        
+        /* Centered Square Popup */
+        .popup-ad {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            bottom: auto;
+            right: auto;
+            width: 500px; /* Increased from 400px */
+            height: 450px; /* Increased from 400px to maintain proportion */
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            z-index: 2000;
+            max-width: 90vw; /* Responsive fix */
+            max-height: 90vh; /* Responsive fix */
+        }
+        .popup-body {
+            padding: 15px;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .popup-close {
             position: absolute;
-            top: -20px;
+            top: 10px;
             right: 10px;
             background: #fff;
             border: 1px solid #ccc;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 24px;
-            line-height: 34px;
-            text-align: center;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            color: #333;
-            z-index: 10000;
-            font-weight: bold;
+            font-size: 18px;
+            line-height: 26px;
+            text-align: center;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .sticky-ad-container {
-            width: 100%;
-            max-width: 970px; /* Max width for standard leaderboard */
+        .popup-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .popup-ad-content {
+            flex: 1;
+            background: #f8f9fa;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .popup-timer {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 5px;
+            text-align: center;
         }
 
         /* Center Popup */

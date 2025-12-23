@@ -158,6 +158,7 @@ async function getJobs(jobType) {
             if (!isRecent || !isNotExpired) return null;
 
             // Fetch company details if available
+            let companyDetails = {};
             if (jobData.companyId) {
                 try {
                     const companyRef = doc(db, 'companies', jobData.companyId);
@@ -165,14 +166,11 @@ async function getJobs(jobType) {
 
                     if (companyDoc.exists()) {
                         const companyData = companyDoc.data();
-                        return {
-                            ...jobData,
+                        companyDetails = {
                             companyName: companyData.name || jobData.companyName || '',
                             companyLogo: companyData.logoURL || jobData.companyLogo || '',
                             companyWebsite: companyData.website || jobData.companyWebsite || '',
-                            companyAbout: companyData.about || jobData.companyAbout || '',
-                            createdAt,
-                            lastDate
+                            companyAbout: companyData.about || jobData.companyAbout || ''
                         };
                     }
                 } catch (error) {
@@ -180,8 +178,25 @@ async function getJobs(jobType) {
                 }
             }
 
+            // Fetch user details (posted by)
+            let postedByName = 'bcvworld';
+            if (jobData.userId) {
+                try {
+                    const userRef = doc(db, 'users', jobData.userId);
+                    const userDoc = await getDoc(userRef);
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        postedByName = userData.firstName || userData.displayName || userData.name || 'bcvworld';
+                    }
+                } catch (error) {
+                    console.error(`Error fetching user details for job ${jobData.id}:`, error);
+                }
+            }
+
             return {
                 ...jobData,
+                ...companyDetails,
+                postedByName,
                 createdAt,
                 lastDate
             };
@@ -210,142 +225,84 @@ function createJobCard(job, type) {
         if (!text) return '';
         return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     };
-
-    const headerSection = `
-        <div class="card-header-section">
-            <div class="card-header-content">
-                <div class="logo-container">
-                    ${type === 'private' ? `
-                        <img src="${job.companyLogo || '/assets/images/companies/default-company.webp'}" 
-                            alt="${getValue(job.companyName)} Logo" 
-                            class="company-logo"
-                            loading="lazy"
-                            width="48"
-                            height="48"
-                            onerror="this.src='/assets/images/companies/default-company.webp'">
-                    ` : type === 'bank' ? `
-                        <i class="bi bi-bank2 icon-large text-primary" aria-hidden="true"></i>
-                    ` : `
-                        <i class="bi bi-building-fill icon-large text-danger" aria-hidden="true"></i>
-                    `}
-                </div>
-                <div class="header-info">
-                    <h3 class="company-title" title="${getValue(job.companyName || (type === 'bank' ? job.bankName : job.department))}">
-                        ${getValue(job.companyName || (type === 'bank' ? job.bankName : job.department))}
-                    </h3>
-                    <p class="job-title" title="${getValue(type === 'private' ? job.jobTitle : job.postName)}">
-                        ${getValue(type === 'private' ? job.jobTitle : job.postName)}
-                    </p>
-                </div>
-            </div>
-        </div>`;
-
-    // In your displayJobs function, after setting the jobsGrid innerHTML
-    jobsGrid.addEventListener('click', (e) => {
-        const applyButton = e.target.closest('.apply-btn');
-        if (applyButton) {
-            const jobId = applyButton.dataset.jobId;
-            const jobType = applyButton.dataset.jobType;
-            if (jobId && jobType) {
-                window.location.href = `/html/job-details.html?id=${jobId}&type=${jobType}`;
-            }
+    
+    const formatDateDisplay = (dateInput) => {
+        if (!dateInput) return '';
+        try {
+             const date = dateInput.toDate ? dateInput.toDate() : new Date(dateInput);
+             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch (e) {
+            return '';
         }
-    });
+    };
 
-    const detailsSection = `
-        <div class="job-details">
-            <div class="details-flex">
-                <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.state || job.location)}">
-                    <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>
-                    <span class="details-text text-truncate">${trimText(getValue(job.state || job.location), 20)}</span>
-                </div>
-                ${type === 'private' ? `
-                    <div class="details-item d-inline-flex align-items-center me-3">
-                        <i class="bi bi-briefcase me-1" aria-hidden="true"></i>
-                        <span class="details-text">${getValue(job.experience) === 'fresher' ? 'Fresher' : `${getValue(job.experience)} Years`}</span>
-                    </div>
-                    <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.educationLevel)}">
-                        <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
-                        <span class="details-text text-truncate">${trimText(getValue(job.educationLevel), 18)}</span>
-                    </div>
-                ` : `
-                    <div class="details-item d-inline-flex align-items-center me-3">
-                        <i class="bi bi-people me-1" aria-hidden="true"></i>
-                        <span class="details-text">${getValue(job.vacancies)} Vacancies</span>
-                    </div>
-                    <div class="details-item d-inline-flex align-items-center me-3" title="${getValue(job.qualification)}">
-                        <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
-                        <span class="details-text text-truncate">${trimText(getValue(job.qualification), 15)}</span>
-                    </div>
-                    ${job.ageLimit ? `
-                        <div class="details-item d-inline-flex align-items-center me-3">
-                            <i class="bi bi-person me-1" aria-hidden="true"></i>
-                            <span class="details-text">Age: ${job.ageLimit}y</span>
-                        </div>
-                    ` : ''}
-                `}
-            </div>
-        </div>`;
-    const footerSection = `
-        <div class="card-footer p-2">
-            ${type === 'private' && job.skills ? `
-                <div class="skills-info mb-2 overflow-hidden">
-                    <div class="skills-list d-flex flex-nowrap gap-2 overflow-x-auto py-1">
-                        ${job.skills.slice(0, 4).map((skill, index) => `
-                            <span class="badge bg-light text-dark text-nowrap ${index >= 2 ? 'd-none d-md-inline-block' : ''}">${trimText(skill, 12)}</span>
-                        `).join('')}
-                        
-                        ${/* Mobile Badge: Show if more than 2 skills */ ''}
-                        ${job.skills.length > 2 ? `
-                            <span class="badge bg-light text-dark text-nowrap d-inline-block d-md-none">+${job.skills.length - 2}</span>
-                        ` : ''}
+    // Determine Logo
+    let logoSrc = '/assets/images/companies/default-company.webp';
+    if (type === 'private' && job.companyLogo) logoSrc = job.companyLogo;
+    
+    // Determine Titles and Location
+    let companyName = getValue(job.companyName);
+    let jobTitle = getValue(job.jobTitle);
+    let location = getValue(job.location || job.state);
+    
+    if (type === 'bank') {
+        companyName = getValue(job.bankName);
+        jobTitle = getValue(job.postName);
+    } else if (type === 'government') {
+        companyName = getValue(job.department);
+        jobTitle = getValue(job.postName);
+    }
 
-                        ${/* Desktop Badge: Show if more than 4 skills */ ''}
-                        ${job.skills.length > 4 ? `
-                            <span class="badge bg-light text-dark text-nowrap d-none d-md-inline-block">+${job.skills.length - 4}</span>
-                        ` : ''}
-                    </div>
-                </div>
-            ` : ''}
-            <div class="d-flex align-items-center justify-content-between footer-actions">
-                <div class="date-info d-inline-flex align-items-center" style="margin-right: 90px; min-width: fit-content;">
-                    <span class="post-date d-inline-flex align-items-center">
-                        <i class="bi bi-clock me-1" aria-hidden="true"></i>
-                        <span class="small">${type === 'bank' ? formatDate(job.postedAt) : formatDate(job.createdAt)}</span>
-                    </span>
-                    ${(type === 'bank' || type === 'government') && job.lastDate ? `
-                        <span class="deadline d-inline-flex align-items-center ms-2">
-                            <i class="bi bi-calendar-event me-1" aria-hidden="true"></i>
-                            <span class="small">Last: ${formatDate(job.lastDate)}</span>
-                        </span>
-                    ` : ''}
-                </div>
-                ${type === 'private' && job.referralCode ? `
-                    <div class="referral-code d-inline-flex" style="margin-right: 125px; min-width: fit-content;">
-                        <span class="badge bg-info d-inline-flex align-items-center">
-                            <i class="bi bi-ticket-perforated me-1" aria-hidden="true"></i>
-                            ${(() => {
-                                const full = String(job.referralCode);
-                                const short = full.length > 5 ? (full.slice(0,5) + '...') : full;
-                                return `<span class=\"ref-code\" tabindex=\"0\" title=\"${full}\" data-full=\"${full}\">Ref: ${short}</span>`;
-                            })()}
-                        </span>
-                    </div>
-                ` : ''}
-               <div class="d-inline-flex apply-btn-container ms-auto">
-                <button class="btn btn-primary btn-sm apply-btn" data-job-id="${job.id}" data-job-type="${type}">
-                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
-                    <span>View</span>
-                </button>
-            </div>
-            </div>
-        </div>`;
+    // Construct Header Title
+    const headerTitle = `${jobTitle} | ${companyName} | ${location}`;
+
+    // Description (Strip HTML)
+    let description = job.description || job.about || '';
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = description;
+    let plainTextDesc = tmp.textContent || tmp.innerText || "";
+    plainTextDesc = trimText(plainTextDesc, 180);
+
+    const jobLink = `/html/job-details.html?id=${job.id}&type=${type}`;
+    const dateStr = formatDateDisplay(job.createdAt || job.postedAt);
 
     return `
-        <div class="job-card ${type}-job">
-            ${headerSection}
-            ${detailsSection}
-            ${footerSection}
+        <div class="job-list-card">
+            <div class="job-card-body">
+                <div class="job-logo-wrapper">
+                    ${type === 'private' ? `
+                        <img src="${logoSrc}" alt="${companyName}" class="job-logo-img" onerror="this.src='/assets/images/companies/default-company.webp'">
+                    ` : type === 'bank' ? `
+                        <i class="bi bi-bank2 text-primary" style="font-size: 32px;"></i>
+                    ` : `
+                        <i class="bi bi-building-fill text-danger" style="font-size: 32px;"></i>
+                    `}
+                </div>
+                <div class="job-content-wrapper">
+                    <h3 class="job-title-heading">
+                        <a href="${jobLink}" class="job-link">
+                            ${headerTitle}
+                        </a>
+                    </h3>
+                    <div class="job-meta-info">
+                        <span class="meta-entry">
+                            <i class="bi bi-person"></i> <span class="meta-text">${job.postedByName || 'bcvworld'}</span>
+                        </span>
+                        <span class="meta-entry">
+                            <i class="bi bi-clock"></i> <span class="meta-text">${dateStr}</span>
+                        </span>
+                        <span class="meta-entry">
+                            <i class="bi bi-folder"></i> <span class="meta-text">${location}</span>
+                        </span>
+                    </div>
+                    <div class="job-excerpt">
+                        ${plainTextDesc}
+                    </div>
+                    <div class="job-action">
+                        <a href="${jobLink}" class="btn-continue-reading">Continue Reading</a>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -408,9 +365,7 @@ function updatePaginationUI() {
     const jobsHTML = `
         <div class="jobs-container">
             ${paginatedJobs.map(job => `
-                <div class="job-item">
                     ${createJobCard(job, job.type)}
-                </div>
             `).join('')}
         </div>
         ${totalPages > 1 ? createPaginationControls(currentPaginationState.page, totalPages) : ''}
@@ -534,6 +489,7 @@ async function filterByCategory(category) {
                 };
 
                 // If job has companyId, fetch company details
+                let companyDetails = {};
                 if (jobData.companyId) {
                     try {
                         const companyRef = doc(db, 'companies', jobData.companyId);
@@ -541,8 +497,7 @@ async function filterByCategory(category) {
 
                         if (companyDoc.exists()) {
                             const companyData = companyDoc.data();
-                            return {
-                                ...jobData,
+                            companyDetails = {
                                 companyName: companyData.name || jobData.companyName || '',
                                 companyLogo: companyData.logoURL || jobData.companyLogo || '',
                                 companyWebsite: companyData.website || jobData.companyWebsite || '',
@@ -553,7 +508,27 @@ async function filterByCategory(category) {
                         console.error('Error fetching company details:', error);
                     }
                 }
-                return jobData;
+
+                // Fetch user details (posted by)
+                let postedByName = 'bcvworld';
+                if (jobData.userId) {
+                    try {
+                        const userRef = doc(db, 'users', jobData.userId);
+                        const userDoc = await getDoc(userRef);
+                        if (userDoc.exists()) {
+                            const userData = userDoc.data();
+                            postedByName = userData.firstName || userData.displayName || userData.name || 'bcvworld';
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching user details for job ${jobData.id}:`, error);
+                    }
+                }
+
+                return {
+                    ...jobData,
+                    ...companyDetails,
+                    postedByName
+                };
             }));
         }
         displayJobs(jobs);
