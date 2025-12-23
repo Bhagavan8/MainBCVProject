@@ -12,20 +12,75 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
         }
-        .policy-section {
-            margin-bottom: 30px;
+        .policy-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
         }
-        .policy-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+        .policy-header h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
         .last-updated {
-            color: #666;
-            font-style: italic;
-            margin-bottom: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .policy-section {
+            margin-bottom: 35px;
+        }
+        .policy-section h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .policy-section h2 i {
+            color: #0d6efd;
+            font-size: 1.2rem;
+        }
+        .policy-section h3 {
+            color: #34495e;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .policy-section p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .policy-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .policy-section ul li {
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .disclaimer-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .adsense-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -33,74 +88,88 @@
     <div id="header-container"></div>
 
     <main class="policy-content">
-        <h1>Privacy Policy</h1>
-        <p class="last-updated">Last Updated: January 1, 2024</p>
+        <div class="policy-header">
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: December 24, 2025</p>
+        </div>
 
         <div class="policy-section">
-            <h2>1. Information We Collect</h2>
+            <p>At BCVWorld, accessible from https://bcvworld.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by BCVWorld and how we use it.</p>
+            <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-shield-lock"></i> 1. Information We Collect</h2>
+            
             <h3>1.1 Personal Information</h3>
-            <p>We collect information that you provide directly to us, including:</p>
+            <p>When you register for an account, apply for a job, or contact us, we may ask for your personal information, including:</p>
             <ul>
-                <li>Name and contact information</li>
-                <li>Email address</li>
-                <li>Professional information (for job applications)</li>
-                <li>Account credentials</li>
+                <li>Name and contact details (email address, phone number)</li>
+                <li>Professional Resume/CV and Portfolio links</li>
+                <li>Employment history and educational background</li>
+                <li>Job preferences and salary expectations</li>
             </ul>
 
-            <h3>1.2 Automatically Collected Information</h3>
-            <p>When you visit our website, we automatically collect:</p>
+            <h3>1.2 Log Files</h3>
+            <p>BCVWorld follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable.</p>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-google"></i> 2. Google DoubleClick DART Cookie</h2>
+            <div class="adsense-box">
+                <p>Google is one of a third-party vendor on our site. It also uses cookies, known as DART cookies, to serve ads to our site visitors based upon their visit to www.website.com and other sites on the internet.</p>
+                <p>However, visitors may choose to decline the use of DART cookies by visiting the Google ad and content network Privacy Policy at the following URL – <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">https://policies.google.com/technologies/ads</a></p>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-megaphone"></i> 3. Advertising Partners Privacy Policies</h2>
+            <p>You may consult this list to find the Privacy Policy for each of the advertising partners of BCVWorld.</p>
+            <p>Third-party ad servers or ad networks use technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on BCVWorld, which are sent directly to users' browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on websites that you visit.</p>
+            <p>Note that BCVWorld has no access to or control over these cookies that are used by third-party advertisers.</p>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-cookie"></i> 4. Cookies and Web Beacons</h2>
+            <p>Like any other website, BCVWorld uses "cookies". These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.</p>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-briefcase"></i> 5. Job Application & User Data</h2>
+            <p>Information you provide in your profile and job applications is shared with:</p>
             <ul>
-                <li>Device information (browser type, operating system)</li>
-                <li>IP address and location data</li>
-                <li>Usage data and browsing patterns</li>
-                <li>Cookies and similar technologies</li>
+                <li><strong>Recruiters & Employers:</strong> When you apply for a specific job, your resume and profile details are made available to the employer posting that job.</li>
+                <li><strong>System Administrators:</strong> To ensure the platform runs smoothly and to prevent spam or fraudulent activities.</li>
+            </ul>
+            <p>We do not sell your personal contact information to third-party marketing agencies without your explicit consent.</p>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-exclamation-triangle"></i> 6. Disclaimer</h2>
+            <div class="disclaimer-box">
+                <h3>Important Notice for Job Seekers</h3>
+                <p><strong>No Guarantee of Employment:</strong> BCVWorld serves as a platform to connect job seekers with employers. We do not guarantee that your application will result in an interview or a job offer.</p>
+                <p><strong>Verification Recommended:</strong> While we strive to verify all job postings, we advise users to be cautious. <strong>BCVWorld and legitimate employers will NEVER ask for money</strong> in exchange for a job offer or interview. If you encounter any such request, please report it to us immediately.</p>
+                <p><strong>Content Accuracy:</strong> The job details, company information, and other content on this site are for informational purposes. We are not responsible for any inaccuracies in the information provided by third-party recruiters.</p>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h2><i class="bi bi-shield-check"></i> 7. GDPR Data Protection Rights</h2>
+            <p>We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>
+            <ul>
+                <li>The right to access – You have the right to request copies of your personal data.</li>
+                <li>The right to rectification – You have the right to request that we correct any information you believe is inaccurate.</li>
+                <li>The right to erasure – You have the right to request that we erase your personal data, under certain conditions.</li>
             </ul>
         </div>
 
         <div class="policy-section">
-            <h2>2. How We Use Your Information</h2>
-            <p>We use the collected information for:</p>
+            <h2><i class="bi bi-envelope"></i> 8. Contact Information</h2>
+            <p>If you have any questions about our Privacy Policy or Disclaimer, please contact us:</p>
             <ul>
-                <li>Providing and improving our services</li>
-                <li>Processing job applications</li>
-                <li>Sending newsletters and updates</li>
-                <li>Analyzing website performance</li>
-                <li>Ensuring security and preventing fraud</li>
-            </ul>
-        </div>
-
-        <div class="policy-section">
-            <h2>3. Cookie Policy</h2>
-            <p>We use cookies and similar tracking technologies to:</p>
-            <ul>
-                <li>Remember your preferences</li>
-                <li>Analyze site traffic and usage</li>
-                <li>Personalize content and ads</li>
-                <li>Improve user experience</li>
-            </ul>
-            <p>You can control cookies through your browser settings.</p>
-        </div>
-
-        <div class="policy-section">
-            <h2>4. Data Security</h2>
-            <p>We implement appropriate security measures to protect your data, including:</p>
-            <ul>
-                <li>Encryption of sensitive information</li>
-                <li>Regular security assessments</li>
-                <li>Access controls and authentication</li>
-                <li>Secure data storage practices</li>
-            </ul>
-        </div>
-
-        <div class="policy-section">
-            <h2>5. Your Rights</h2>
-            <p>You have the right to:</p>
-            <ul>
-                <li>Access your personal data</li>
-                <li>Correct inaccurate information</li>
-                <li>Request deletion of your data</li>
-                <li>Opt-out of marketing communications</li>
-                <li>Lodge a complaint with supervisory authorities</li>
+                <li>By email: help.bcv@bcvworld.com</li>
+                <li>By visiting this page on our website: <a href="/html/contact.html">Contact Us</a></li>
             </ul>
         </div>
     </main>

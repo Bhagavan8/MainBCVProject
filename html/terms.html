@@ -12,20 +12,75 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
         }
-        .terms-section {
-            margin-bottom: 30px;
+        .terms-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
         }
-        .terms-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+        .terms-header h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
         .last-updated {
-            color: #666;
-            font-style: italic;
-            margin-bottom: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .terms-section {
+            margin-bottom: 35px;
+        }
+        .terms-section h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .terms-section h2 i {
+            color: #0d6efd;
+            font-size: 1.2rem;
+        }
+        .terms-section h3 {
+            color: #34495e;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .terms-section p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .terms-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .terms-section ul li {
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .warning-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .info-box {
+            background-color: #eef2f7;
+            border-left: 4px solid #0d6efd;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -33,65 +88,96 @@
     <div id="header-container"></div>
 
     <main class="terms-content">
-        <h1>Terms and Conditions</h1>
-        <p class="last-updated">Last Updated: April 20, 2025</p>
-
-        <div class="terms-section">
-            <h2>1. Agreement to Terms</h2>
-            <p>By accessing and using BCVWorld, you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, you may not access our services.</p>
+        <div class="terms-header">
+            <h1>Terms and Conditions</h1>
+            <p class="last-updated">Last Updated: December 24, 2025</p>
         </div>
 
         <div class="terms-section">
-            <h2>2. User Responsibilities</h2>
-            <h3>2.1 Account Creation</h3>
-            <p>When creating an account, you must provide accurate and complete information. You are responsible for maintaining the confidentiality of your account credentials.</p>
+            <p>Welcome to BCVWorld! These terms and conditions outline the rules and regulations for the use of BCVWorld's Website, located at https://bcvworld.com.</p>
+            <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use BCVWorld if you do not agree to take all of the terms and conditions stated on this page.</p>
+        </div>
 
-            <h3>2.2 Prohibited Activities</h3>
-            <p>Users must not:</p>
+        <div class="terms-section">
+            <h2><i class="bi bi-person-badge"></i> 1. User Accounts</h2>
+            <h3>1.1 Registration & Security</h3>
+            <p>To access certain features (like applying for jobs or posting listings), you must register for an account. You agree to:</p>
             <ul>
-                <li>Violate any applicable laws or regulations</li>
-                <li>Infringe on intellectual property rights</li>
-                <li>Upload malicious content or software</li>
-                <li>Attempt to gain unauthorized access</li>
-                <li>Engage in fraudulent activities</li>
+                <li>Provide accurate, current, and complete information during registration.</li>
+                <li>Maintain the security of your password and accept all risks of unauthorized access to your account.</li>
+                <li>Notify us immediately if you discover or suspect any security breaches.</li>
+            </ul>
+
+            <h3>1.2 Account Termination</h3>
+            <p>We reserve the right to suspend or terminate your account at any time, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties, or for any other reason.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2><i class="bi bi-briefcase"></i> 2. For Job Seekers</h2>
+            <p>BCVWorld provides a free platform for job seekers to find employment opportunities. By using our services, you agree that:</p>
+            <ul>
+                <li><strong>Resume Accuracy:</strong> Any resume or professional information you submit must be accurate, truthful, and not misleading.</li>
+                <li><strong>Application Conduct:</strong> You will only apply for jobs you are reasonably qualified for and will not spam employers with irrelevant applications.</li>
+                <li><strong>No Guarantee:</strong> BCVWorld does not guarantee that you will receive an interview or a job offer.</li>
             </ul>
         </div>
 
         <div class="terms-section">
-            <h2>3. Content Guidelines</h2>
-            <p>Users are responsible for content they post or share, including:</p>
+            <h2><i class="bi bi-building"></i> 3. For Employers & Recruiters</h2>
+            <p>Employers posting jobs on BCVWorld agree to the following:</p>
             <ul>
-                <li>Job postings and applications</li>
-                <li>Comments and feedback</li>
-                <li>Profile information</li>
-                <li>Uploaded documents</li>
+                <li><strong>Job Content:</strong> Job postings must be for legitimate employment opportunities. You may not post ads for multi-level marketing (MLM), pyramid schemes, or "get rich quick" schemes.</li>
+                <li><strong>No Fees:</strong> You may NOT charge job seekers any fee for applying, interviewing, or training as a condition of employment.</li>
+                <li><strong>Equal Opportunity:</strong> You must comply with all applicable laws regarding equal employment opportunity and non-discrimination.</li>
+            </ul>
+            <div class="warning-box">
+                <p><strong>Strict Policy against Scams:</strong> Any account found posting fraudulent jobs or demanding money from candidates will be immediately banned and reported to relevant authorities.</p>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h2><i class="bi bi-slash-circle"></i> 4. Prohibited Activities</h2>
+            <p>You are strictly prohibited from using the site to:</p>
+            <ul>
+                <li>Violate any local, state, national, or international law.</li>
+                <li>Infringe upon the intellectual property rights of others.</li>
+                <li>Transmit any material that contains viruses, trojan horses, worms, or any other harmful programs.</li>
+                <li>Use any robot, spider, scraper, or other automated means to access the website for any purpose without our express written permission.</li>
+                <li>Collect or harvest any personally identifiable information from other users.</li>
             </ul>
         </div>
 
         <div class="terms-section">
-            <h2>4. Intellectual Property</h2>
-            <p>All content on BCVWorld, including logos, text, and graphics, is protected by copyright and other intellectual property rights. Users may not copy, modify, or distribute this content without permission.</p>
-        </div>
-
-        <div class="terms-section">
-            <h2>5. Limitation of Liability</h2>
-            <p>BCVWorld is not liable for:</p>
+            <h2><i class="bi bi-journal-text"></i> 5. Intellectual Property Rights</h2>
+            <p>Unless otherwise stated, BCVWorld and/or its licensors own the intellectual property rights for all material on BCVWorld. All intellectual property rights are reserved. You may access this from BCVWorld for your own personal use subjected to restrictions set in these terms and conditions.</p>
+            <p>You must not:</p>
             <ul>
-                <li>Accuracy of job postings or user content</li>
-                <li>Direct or indirect damages</li>
-                <li>Service interruptions or technical issues</li>
-                <li>Third-party links or services</li>
+                <li>Republish material from BCVWorld</li>
+                <li>Sell, rent, or sub-license material from BCVWorld</li>
+                <li>Reproduce, duplicate or copy material from BCVWorld</li>
+                <li>Redistribute content from BCVWorld</li>
             </ul>
         </div>
 
         <div class="terms-section">
-            <h2>6. Termination</h2>
-            <p>We reserve the right to terminate or suspend accounts that violate these terms or for any other reason at our discretion.</p>
+            <h2><i class="bi bi-shield-exclamation"></i> 6. Disclaimer of Warranties</h2>
+            <div class="info-box">
+                <p>This website is provided "as is," with all faults, and BCVWorld makes no express or implied representations or warranties, of any kind related to this website or the materials contained on this website. Also, nothing contained on this website shall be interpreted as advising you.</p>
+            </div>
         </div>
 
         <div class="terms-section">
-            <h2>7. Changes to Terms</h2>
-            <p>We may modify these terms at any time. Continued use of our services constitutes acceptance of updated terms.</p>
+            <h2><i class="bi bi-exclamation-octagon"></i> 7. Limitation of Liability</h2>
+            <p>In no event shall BCVWorld, nor any of its officers, directors, and employees, be held liable for anything arising out of or in any way connected with your use of this website whether such liability is under contract. BCVWorld, including its officers, directors, and employees shall not be held liable for any indirect, consequential, or special liability arising out of or in any way related to your use of this website.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2><i class="bi bi-envelope"></i> 8. Contact Information</h2>
+            <p>If you have any questions about these Terms and Conditions, please contact us:</p>
+            <ul>
+                <li>By email: help.bcv@bcvworld.com</li>
+                <li>By visiting this page on our website: <a href="/html/contact.html">Contact Us</a></li>
+            </ul>
         </div>
     </main>
 
