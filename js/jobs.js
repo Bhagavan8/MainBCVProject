@@ -809,6 +809,22 @@ window.applyFilters = async () => {
             jobs.private = await Promise.all(privateSnapshot.docs.map(async docItem => {
                 let jobData = { id: docItem.id, type: 'private', ...docItem.data() };
                 
+                // Fetch user details (posted by)
+                let postedByName = 'bcvworld';
+                if (jobData.userId) {
+                    try {
+                        const userRef = doc(db, 'users', jobData.userId);
+                        const userDoc = await getDoc(userRef);
+                        if (userDoc.exists()) {
+                            const userData = userDoc.data();
+                            postedByName = userData.firstName || userData.displayName || userData.name || 'bcvworld';
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching user details for job ${jobData.id}:`, error);
+                    }
+                }
+                jobData.postedByName = postedByName;
+
                 if (jobData.companyId) {
                     try {
                         const companyRef = doc(db, 'companies', jobData.companyId);
