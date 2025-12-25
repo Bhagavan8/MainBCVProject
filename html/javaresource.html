@@ -446,8 +446,60 @@
       }
 
       function buildPagination() {
-        const pages = Array.from({ length: dynamicTotalPages }, (_, i) => i + 1).map(p => `<button class="page-link ${p === currentPage ? 'active' : ''}" data-page="${p}" ${p === currentPage ? 'disabled' : ''}>${p}</button>`).join('');
-        return `<div class="pagination-controls"><button class="page-prev" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>${pages}<button class="page-next" ${currentPage === dynamicTotalPages ? 'disabled' : ''}>Next</button></div>`;
+        if (dynamicTotalPages <= 1) return '';
+        
+        let pagesHtml = '';
+        const range = 1; // show 1 neighbor on each side
+
+        // If pages are few (<= 7), show all
+        if (dynamicTotalPages <= 7) {
+             pagesHtml = Array.from({ length: dynamicTotalPages }, (_, i) => i + 1)
+                .map(p => `<button class="page-link ${p === currentPage ? 'active' : ''}" data-page="${p}" ${p === currentPage ? 'disabled' : ''}>${p}</button>`)
+                .join('');
+        } else {
+            // Complex logic
+            // Always show 1
+            pagesHtml += `<button class="page-link ${1 === currentPage ? 'active' : ''}" data-page="1" ${1 === currentPage ? 'disabled' : ''}>1</button>`;
+            
+            // Dots or next number
+            if (currentPage > range + 3) {
+                pagesHtml += `<span class="page-dots">...</span>`;
+            } else if (currentPage === range + 3) {
+                pagesHtml += `<button class="page-link" data-page="2">2</button>`;
+            }
+
+            // Middle range
+            let start = Math.max(2, currentPage - range);
+            let end = Math.min(dynamicTotalPages - 1, currentPage + range);
+            
+            // Adjust start/end to connect with 1 or Last if close
+            if (currentPage <= range + 3) { end = Math.max(end, range + 3); }
+            if (currentPage >= dynamicTotalPages - (range + 2)) { start = Math.min(start, dynamicTotalPages - (range + 2)); }
+            
+            // Clamp
+            start = Math.max(2, start);
+            end = Math.min(dynamicTotalPages - 1, end);
+
+            for (let i = start; i <= end; i++) {
+                pagesHtml += `<button class="page-link ${i === currentPage ? 'active' : ''}" data-page="${i}" ${i === currentPage ? 'disabled' : ''}>${i}</button>`;
+            }
+
+            // Dots or prev to last
+            if (currentPage < dynamicTotalPages - (range + 2)) {
+                pagesHtml += `<span class="page-dots">...</span>`;
+            } else if (currentPage === dynamicTotalPages - (range + 2)) {
+                pagesHtml += `<button class="page-link" data-page="${dynamicTotalPages - 1}">${dynamicTotalPages - 1}</button>`;
+            }
+
+            // Always show Last
+            pagesHtml += `<button class="page-link ${dynamicTotalPages === currentPage ? 'active' : ''}" data-page="${dynamicTotalPages}" ${dynamicTotalPages === currentPage ? 'disabled' : ''}>${dynamicTotalPages}</button>`;
+        }
+
+        return `<div class="pagination-controls">
+            <button class="page-prev" ${currentPage === 1 ? 'disabled' : ''}><i class="bi bi-chevron-left"></i> Prev</button>
+            ${pagesHtml}
+            <button class="page-next" ${currentPage === dynamicTotalPages ? 'disabled' : ''}>Next <i class="bi bi-chevron-right"></i></button>
+        </div>`;
       }
 
       let searchTerm = '';
@@ -792,6 +844,9 @@
       // Share/Join removed
 
       function hideAds() {
+        // Add premium mode class for CSS layout adjustments
+        document.body.classList.add('premium-mode');
+
         // Hide all ad containers and sections
         const adSelectors = [
           '.ads-section',
@@ -815,9 +870,12 @@
         // Hide referral banner if goal reached
         if (referralContainer) {
           referralContainer.innerHTML = `
-                    <div class="alert alert-success text-center mb-0 shadow-sm border-0" style="background: #d4edda; color: #155724;">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        <strong>Premium Active!</strong> You are enjoying an ad-free experience with instant downloads.
+                    <div class="premium-active-card">
+                        <div class="premium-icon"><i class="bi bi-check-circle-fill"></i></div>
+                        <div class="premium-text">
+                            <strong>Premium Active!</strong><br>
+                            You are enjoying an ad-free experience with instant downloads.
+                        </div>
                     </div>
                 `;
         }
