@@ -12,11 +12,15 @@
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* More specific reset to avoid breaking third-party components (like footer) */
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
+    margin: 0;
+    padding: 0;
+}
 
         body {
             background-color: #f5f5f5;
@@ -136,10 +140,73 @@
                 display: none !important;
             }
         }
+        /* Mobile Responsive Enhancements */
         @media (max-width: 575px) {
-            .hero { padding: 1.75rem 1rem; }
-            .hero h2 { font-size: 1.4rem; }
-            .hero p { font-size: 0.95rem; }
+            .hero { 
+                padding: 1.5rem 1rem; 
+                margin-bottom: 1rem;
+            }
+            .hero h2 { font-size: 1.35rem; }
+            .hero p { font-size: 0.9rem; }
+
+            .premium-referral-card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+            .referral-header h3 { font-size: 1.25rem; }
+            .referral-desc { font-size: 0.9rem; margin-bottom: 1rem; }
+            
+            /* Stack inputs and buttons fully */
+            .share-actions { flex-direction: column; align-items: stretch; }
+            .input-group-custom { max-width: 100%; min-width: 0; }
+            .share-platforms { justify-content: center; margin-top: 0.5rem; }
+            
+            /* Full width list items */
+            #listContainer {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            /* Resource Card mobile tweaks */
+            .resource-card {
+                padding: 0.85rem;
+            }
+            .resource-title { font-size: 0.95rem; word-break: break-word; }
+            .resource-meta { font-size: 0.8rem; }
+            .resource-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+            .download-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.6rem;
+            }
+            
+            /* Search/Filter stacking */
+            .toolbar-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+            .toolbar-actions {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
+            }
+            .resource-search, .resource-filter {
+                width: 100%;
+                min-width: 0;
+            }
+            
+            /* Pagination spacing */
+            .pagination-controls {
+                gap: 0.3rem;
+            }
+            .page-link, .page-prev, .page-next {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.9rem;
+            }
         }
 
         /* Premium Referral Card */
@@ -493,10 +560,7 @@
             background: #fff;
         }
         .resource-search { min-width: 220px; }
-        @media (max-width: 575px) {
-            .content-wrapper { padding: 0 0.75rem; }
-            .resource-search { min-width: 160px; }
-        }
+
 
         .resource-list {
             position: relative;
@@ -1045,3 +1109,36 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
+
+/* Final Mobile Polish (Overrides) */
+@media (max-width: 575px) {
+    .content-wrapper {
+        padding: 0 0.75rem;
+    }
+    
+    /* Ensure no horizontal scroll on body */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Better spacing for Table of Contents */
+    .toc {
+        padding: 0.75rem;
+    }
+    .toc-title {
+        font-size: 1rem;
+    }
+    
+    /* Adjust ad labels */
+    .ad-label {
+        font-size: 0.7rem;
+    }
+    
+    /* Ensure toast/notifications are visible and sized right */
+    .toastify {
+        max-width: 90% !important;
+        left: 5% !important;
+        right: 5% !important;
+    }
+}
+
