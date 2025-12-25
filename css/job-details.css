@@ -148,6 +148,10 @@ img, iframe, ins, video, object, embed {
     .job-header {
         padding: 16px;
     }
+    
+    .login-btn-responsive {
+        width: 100% !important;
+    }
 }
 
 .company-info {

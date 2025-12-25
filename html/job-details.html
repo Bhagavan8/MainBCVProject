@@ -424,10 +424,12 @@
                                             <i class="bi bi-chat-dots"></i>
                                             <span>Comments</span>
                                         </h4>
-                                        <div id="loginPrompt" class="alert alert-light border d-flex align-items-center mb-3" role="alert">
-                                            <i class="bi bi-person-circle me-2"></i>
-                                            <span class="me-3">Login to add a comment</span>
-                                            <a id="loginRedirectLink" class="btn btn-primary btn-sm ms-auto" href="#">Login</a>
+                                        <div id="loginPrompt" class="alert alert-light border d-flex flex-column flex-sm-row align-items-center justify-content-between mb-3 gap-3" role="alert">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-person-circle me-2 fs-5"></i>
+                                                <span>Login to add a comment</span>
+                                            </div>
+                                            <a id="loginRedirectLink" class="btn btn-primary btn-sm px-4 login-btn-responsive" href="#">Login</a>
                                         </div>
                                         <form class="comment-form" style="display:none">
                                             <div class="mb-2">
