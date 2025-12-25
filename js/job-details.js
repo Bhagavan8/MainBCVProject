@@ -929,6 +929,23 @@ class JobDetailsManager {
         }).join('');
     }
 
+    formatExperience(exp) {
+        if (!exp) return 'Not specified';
+        const trimmed = exp.trim();
+        
+        if (trimmed.toLowerCase() === 'fresher') {
+            return 'Fresher';
+        }
+        
+        // If it contains only numbers, spaces, dots, or hyphens, append "Years"
+        if (/^[\d\s\.\-]+$/.test(trimmed)) {
+            return `${trimmed} Years`;
+        }
+        
+        // Otherwise display exactly what is in Firebase
+        return trimmed;
+    }
+
     capitalizeFirstLetter(string) {
         if (!string) return '';
 
@@ -1031,13 +1048,7 @@ class JobDetailsManager {
         }
 
         if (experienceEl) {
-            if (job.experience?.toLowerCase() === 'fresher') {
-                experienceEl.textContent = 'Fresher';
-            } else if (job.experience) {
-                experienceEl.textContent = `${job.experience} Years`;
-            } else {
-                experienceEl.textContent = 'Not specified';
-            }
+            experienceEl.textContent = this.formatExperience(job.experience);
         }
 
         if (salaryEl && salaryWrapper) {
@@ -1070,6 +1081,43 @@ class JobDetailsManager {
             this.updateBankJobContent(job);
         } else {
             this.updatePrivateJobContent(job);
+        }
+        this.updateWalkinDetails(job);
+    }
+
+    updateWalkinDetails(job) {
+        const section = document.getElementById('walkinDetailsSection');
+        const content = document.getElementById('walkinDetailsContent');
+
+        if (!section || !content) return;
+
+        if (job.walkinDetails) {
+            let formatted = job.walkinDetails;
+
+            // 1. Extract "View on map" links to prevent double processing
+            const mapLinks = [];
+            formatted = formatted.replace(/(https?:\/\/[^\s]+)\s*\(?(View on map)\)?/gi, (match, url) => {
+                mapLinks.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-primary">View on map</a>`);
+                return `__MAP_LINK_${mapLinks.length - 1}__`;
+            });
+
+            // 2. Linkify standard URLs
+            formatted = formatted.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary text-break">$1</a>');
+
+            // 3. Restore "View on map" links
+            formatted = formatted.replace(/__MAP_LINK_(\d+)__/g, (match, index) => mapLinks[index]);
+
+            // 4. Bold Date and Time patterns (e.g. "29 December - 31st December , 10.00 AM - 2.00 PM")
+            const dateTimeRegex = /(\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*-\s*\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:\s*,?\s*\d{1,2}[\.:]\d{2}\s*(?:AM|PM)\s*-\s*\d{1,2}[\.:]\d{2}\s*(?:AM|PM))?)/gi;
+            formatted = formatted.replace(dateTimeRegex, '<strong>$1</strong>');
+
+            // 5. Bold common labels (Time and Venue, Address, Contact) - handles optional colons/hyphens
+            formatted = formatted.replace(/\b(Time and Venue|Address|Contact)\b/gi, '<strong>$1</strong>');
+            
+            content.innerHTML = formatted;
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
         }
     }
 
@@ -1119,7 +1167,7 @@ class JobDetailsManager {
             html += `
                 <div class="detail-item">
                     <span class="detail-label">Experience:</span>
-                    <span class="detail-value">${this.capitalizeFirstLetter(job.experience)}</span>
+                    <span class="detail-value">${this.formatExperience(job.experience)}</span>
                 </div>`;
         }
         
