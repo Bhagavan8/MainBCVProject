@@ -65,10 +65,27 @@ img, iframe, ins, video, object, embed {
 
     .description-content, 
     .qualifications-content {
-        padding-right: 5px; /* Extra buffer for text rendering */
+        padding-right: 5px;
     }
 }
 
+.description-content img,
+.qualifications-content img {
+    display: block;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+@media (max-width: 767px) {
+    .content-block,
+    .description-content,
+    .qualifications-content,
+    .skills-container,
+    .job-details-container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
 
 .main-container {
     flex: 1;
