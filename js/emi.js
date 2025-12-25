@@ -79,6 +79,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const calcSalary = document.getElementById('calc-salary');
   const calcInvest = document.getElementById('calc-invest');
 
+  const loanTypes = document.querySelectorAll('input[name="loanType"]');
+  const priceLabel = document.getElementById('priceLabel');
+  const downPaymentContainer = document.getElementById('downPaymentContainer');
+  const priceHelp = document.getElementById('priceHelp');
+
+  loanTypes.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if(e.target.value === 'car'){
+        priceLabel.textContent = 'Car Price';
+        priceHelp.textContent = 'Total price before down payment';
+        downPaymentContainer.classList.remove('d-none');
+        
+        // Optional: Set defaults for Car Loan
+        if(Number(priceEl.value) < 100000) {
+            priceEl.value = 500000;
+            syncRangeFromPrice();
+        }
+      } else {
+        priceLabel.textContent = 'Personal Loan Amount';
+        priceHelp.textContent = 'Total loan amount required';
+        downPaymentContainer.classList.add('d-none');
+      }
+      update();
+    });
+  });
+
   function syncDownFromRange(){
     const price = Number(priceEl.value || 0);
     const pct = Number(downRange.value);
@@ -127,7 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function update(){
     const price = Number(priceEl.value || 0);
-    const down = clamp(Number(downEl.value || 0), 0, price);
+    
+    // Check loan type
+    const loanTypeRadio = document.querySelector('input[name="loanType"]:checked');
+    const loanType = loanTypeRadio ? loanTypeRadio.value : 'car';
+    
+    let down = 0;
+    if (loanType === 'car') {
+       down = clamp(Number(downEl.value || 0), 0, price);
+    }
+    
     const months = clamp(Number(tenureMonthsEl.value || 0), 1, 360);
     const rate = Number(interestEl.value || 0);
     
