@@ -153,14 +153,46 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
                 padding: 1.25rem;
                 border-radius: 12px;
             }
-            .referral-header h3 { font-size: 1.25rem; }
-            .referral-desc { font-size: 0.9rem; margin-bottom: 1rem; }
+            .referral-header h3 { font-size: 1.1rem; line-height: 1.3; }
+            .referral-header i { font-size: 1.3rem; }
+            .referral-desc { font-size: 0.85rem; margin-bottom: 1rem; }
             
             /* Stack inputs and buttons fully */
-            .share-actions { flex-direction: column; align-items: stretch; }
+            .share-actions { flex-direction: column; align-items: stretch; gap: 0.75rem; }
             .input-group-custom { max-width: 100%; min-width: 0; }
-            .share-platforms { justify-content: center; margin-top: 0.5rem; }
-            .share-platforms a { min-width: 140px; text-align: center; }
+            
+            /* Grid layout for social buttons - 2 per row */
+            .share-platforms { 
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+                justify-content: stretch;
+            }
+            /* Make 'Share on:' text span full width */
+            .share-platforms span {
+                grid-column: 1 / -1;
+                text-align: center;
+                margin-bottom: 0.25rem;
+                width: 100%;
+                display: block;
+            }
+            /* Buttons take full cell width */
+            .share-platforms a { 
+                min-width: 0; 
+                width: 100%;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+            }
+            /* Make the third item span full width to look balanced, or keep it 1fr */
+            /* User said "two in one line", so 3rd item can be full width or half */
+            /* Let's make the last item (Instagram) span full width if it's the 3rd one */
+            .share-platforms a:last-child {
+                grid-column: 1 / -1;
+            }
             
             /* Full width list items */
             #listContainer {
