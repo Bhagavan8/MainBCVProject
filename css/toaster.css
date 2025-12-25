@@ -1,19 +1,19 @@
 .custom-toast {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 20px;
+    left: 50%;
     padding: 12px 20px;
     border-radius: 4px;
     color: white;
     font-weight: 500;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transform: translateY(-100px);
+    transform: translate(-50%, 100px);
     opacity: 0;
     transition: all 0.3s ease;
-    z-index: 1000;
+    z-index: 10000;
 }
 .custom-toast.show {
-    transform: translateY(0);
+    transform: translate(-50%, 0);
     opacity: 1;
 }
 

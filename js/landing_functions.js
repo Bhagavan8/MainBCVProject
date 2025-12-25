@@ -5,6 +5,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Ensure login links preserve current page for redirect after login
+    try {
+        const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+        document.querySelectorAll('a[href="/pages/login.html"]').forEach(a => {
+            a.href = `/pages/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+        });
+    } catch (_) {}
     // Contact Form Submission Handler
     const contactForm = document.getElementById('contactForm');
 
@@ -112,29 +119,58 @@ function createToastContainer() {
     return container;
 }
 
+// Fallback toast if Toastify is not available
+function showFallbackToast(text, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${type}`;
+    toast.textContent = text;
+    // Force bottom-right for fallback to match requirement
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.right = '20px';
+    toast.style.left = 'auto';
+    toast.style.transform = 'none';
+    toast.style.zIndex = '10000';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // Enhanced logout handler
 document.getElementById('logoutBtn').addEventListener('click', function (e) {
     e.preventDefault();
     auth.signOut().then(() => {
-        Toastify({
-            text: "Logged out successfully",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
-        }).showToast();
+        if (typeof Toastify === 'function') {
+            Toastify({
+                text: "Logged out successfully",
+                duration: 3000,
+                gravity: "bottom",
+                position: "right",
+                style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+            }).showToast();
+        } else {
+            showFallbackToast("Logged out successfully", "success");
+        }
 
         setTimeout(() => {
-            window.location.href = 'index.html';
+            const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+            window.location.href = currentUrl;
         }, 1000);
     }).catch((error) => {
-        Toastify({
-            text: "Logout failed. Please try again.",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
-        }).showToast();
+        if (typeof Toastify === 'function') {
+            Toastify({
+                text: "Logout failed. Please try again.",
+                duration: 3000,
+                gravity: "bottom",
+                position: "right",
+                style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+            }).showToast();
+        } else {
+            showFallbackToast("Logout failed. Please try again.", "error");
+        }
     });
 });
 
@@ -295,4 +331,3 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }, { passive: true });
   });
-
