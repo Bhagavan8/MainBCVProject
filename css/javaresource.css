@@ -160,6 +160,7 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
             .share-actions { flex-direction: column; align-items: stretch; }
             .input-group-custom { max-width: 100%; min-width: 0; }
             .share-platforms { justify-content: center; margin-top: 0.5rem; }
+            .share-platforms a { min-width: 140px; text-align: center; }
             
             /* Full width list items */
             #listContainer {
@@ -202,10 +203,16 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
             /* Pagination spacing */
             .pagination-controls {
                 gap: 0.3rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                padding: 0 0.5rem;
+                margin-top: 1rem;
             }
             .page-link, .page-prev, .page-next {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.9rem;
+                padding: 0.5rem 0.8rem;
+                font-size: 1rem;
+                min-width: 44px;
+                min-height: 44px;
             }
         }
 
@@ -1141,4 +1148,3 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
         right: 5% !important;
     }
 }
-
