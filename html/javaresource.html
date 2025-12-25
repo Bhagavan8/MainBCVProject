@@ -618,6 +618,30 @@
               return;
             }
 
+            // If Premium, download immediately without popup/timer
+            if (window.isPremium) {
+                const file = this.getAttribute('data-file');
+                const link = document.createElement('a');
+                link.href = basePath + file;
+                link.setAttribute('download', file);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                if (window.trackDownloadOnce) window.trackDownloadOnce(file);
+                
+                if (typeof Toastify === 'function') {
+                    Toastify({
+                        text: "Premium Download Started! 🚀",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        style: { background: "#10b981" }
+                    }).showToast();
+                }
+                return;
+            }
+
             openPopunder();
             const file = this.getAttribute('data-file');
             currentFile = file;
