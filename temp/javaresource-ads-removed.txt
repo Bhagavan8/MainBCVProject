@@ -1,0 +1,194 @@
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
+    crossorigin="anonymous"></script>
+
+<aside class="ads-section">
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <div class="ad-content responsive-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="7091309532" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+  <div class="ad-container">
+    <div class="ad-label">Sponsored</div>
+    <div class="ad-content tall-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="4465146196" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </div>
+</aside>
+
+<div class="section-ad">
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <div class="ad-content horizontal-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+</div>
+
+<div class="section-ad">
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <div class="ad-content horizontal-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="9603305692" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+</div>
+
+<div class="section-ad">
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <div class="ad-content horizontal-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="2303400170" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+</div>
+
+<aside class="ads-section">
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <div class="ad-content responsive-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="3421040729" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+  <div class="ad-container">
+    <div class="ad-label">Sponsored</div>
+    <div class="ad-content tall-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+        data-ad-slot="6983498326" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </div>
+</aside>
+
+<div class="ad-container-modal">
+  <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
+    data-ad-client="ca-pub-6284022198338659" data-ad-slot="3392831892"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="sticky-footer-ad" id="stickyFooterAd">
+  <button class="sticky-ad-close" aria-label="Close Ad">&times;</button>
+  <div class="sticky-ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
+      data-ad-slot="9525901183" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+</div>
+
+<div class="ads-popup" id="adsPopup" role="dialog" aria-modal="true">
+  <div class="ads-popup-content">
+    <div class="ads-popup-header">
+      <span>Advertisement</span>
+      <button class="ads-popup-close" id="adsPopupClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="ads-popup-body"></div>
+  </div>
+</div>
+
+function buildInlineAd(index) {
+  const adSlots = ['7551857423', '2303400170', '8659542079', '9603305692'];
+  const adSlot = adSlots[index % adSlots.length];
+  return `
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <div class="ad-content horizontal-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${adSlot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </div>
+`;
+}
+
+function loadAllAds() {
+  const adElements = document.querySelectorAll('.adsbygoogle[data-ad-client]:not([data-adsbygoogle-status])');
+  console.log(`[Ads] Found ${adElements.length} new ads to initialize.`);
+  adElements.forEach(ad => {
+    try { (adsbygoogle = window.adsbygoogle || []).push({}); }
+    catch (e) { console.error('[Ads] Loading error:', e); }
+  });
+  const containers = document.querySelectorAll('.ad-container');
+  if (containers.length > 0 && typeof window.adsbygoogle === 'undefined') {
+    console.warn('[Ads] AdSense script not loaded yet.');
+  }
+}
+
+function renderAdIn(containerSelector, slotId) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+  container.innerHTML = '';
+  const ins = document.createElement('ins');
+  ins.className = 'adsbygoogle';
+  ins.style.display = 'block';
+  ins.setAttribute('data-ad-client', AD_CLIENT);
+  ins.setAttribute('data-ad-slot', String(slotId));
+  ins.setAttribute('data-ad-format', 'auto');
+  ins.setAttribute('data-full-width-responsive', 'true');
+  container.appendChild(ins);
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
+}
+
+function ensureAdOrFallback(containerSelector, slotId) {
+  try {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    container.innerHTML = '';
+    const isLocal = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+    if (isLocal) {
+      const demoAd = document.createElement('div');
+      demoAd.className = 'ad-fallback';
+      demoAd.style.background = '#e2e6ea';
+      demoAd.style.color = '#495057';
+      demoAd.innerHTML = '<div style="text-align:center"><h4>Demo Ad Mode</h4><p>AdSense does not load on localhost.</p></div>';
+      container.appendChild(demoAd);
+      return;
+    }
+    if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
+      const ins = document.createElement('ins');
+      ins.className = 'adsbygoogle';
+      ins.style.display = 'block';
+      ins.setAttribute('data-ad-client', AD_CLIENT);
+      ins.setAttribute('data-ad-slot', String(slotId));
+      ins.setAttribute('data-ad-format', 'auto');
+      ins.setAttribute('data-full-width-responsive', 'true');
+      container.appendChild(ins);
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
+      return;
+    }
+    const placeholder = document.createElement('div');
+    placeholder.className = 'ad-fallback';
+    placeholder.innerHTML = '<div>Sponsored • Ad content unavailable.<br><small>Please disable ad blocker to support us.</small></div>';
+    container.appendChild(placeholder);
+  } catch (err) {
+    console.warn('ensureAdOrFallback error', err);
+  }
+}
+
+function showAdsPopup() {
+  const adsPopup = document.getElementById('adsPopup');
+  if (!adsPopup) return;
+  adsPopup.classList.add('show');
+  renderAdIn('.ads-popup-body', 4089957271);
+}

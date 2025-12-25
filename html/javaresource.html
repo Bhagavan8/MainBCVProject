@@ -29,10 +29,8 @@
 
 
 
-  <!-- AdSense script -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
-    crossorigin="anonymous"></script>
-
+  <!-- AdSense for side sticky ads -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659" crossorigin="anonymous"></script>
   <link href="/css/javaresource.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -77,16 +75,13 @@
   <div class="container">
     <div class="main-content">
 
-      <!-- Left ads -->
-      <aside class="ads-section">
+      <!-- Left sticky ads -->
+      <aside class="ads-section sidebar-ads">
         <div class="ad-container">
           <div class="ad-label">Advertisement</div>
           <div class="ad-content responsive-ad">
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
               data-ad-slot="7091309532" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
           </div>
         </div>
         <div class="ad-container">
@@ -108,9 +103,8 @@
           </div>
 
           <p class="referral-desc">
-            <strong>Unlock Downloads:</strong> Share our WhatsApp Channel to <strong>3 Groups</strong> OR Refer
-            <strong>3 Friends</strong>.<br>
-            <strong>Remove Ads:</strong> Refer <strong>5 Friends</strong> to get Premium Ad-Free access!
+            <strong>Unlock Downloads:</strong> Refer <strong>5 Friends</strong> OR Share Channel to <strong>5 Groups</strong>.<br>
+            <strong>Remove Ads:</strong> Refer <strong>5 Friends</strong> to get Premium Ad-Free access.
           </p>
 
           <div id="referral-status-loading" class="text-center py-4">
@@ -160,35 +154,28 @@
           </div>
         </div>
 
-        <h2>Java Resources</h2>
-        <div class="resource-controls">
-          <input type="text" id="searchInput" class="resource-search" placeholder="Search resources" />
-          <select id="categoryFilter" class="resource-filter">
-            <option value="all">All Categories</option>
-            <option value="core">Core Java</option>
-            <option value="spring">Spring & Spring Boot</option>
-            <option value="microservices">Microservices</option>
-            <option value="sql">SQL & Database</option>
-            <option value="testing">Testing (JUnit/Mockito)</option>
-            <option value="tools">Build & VCS (Maven/Git/Gradle)</option>
-            <option value="streams">Streams & Coding</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="resource-list">
-          <div class="section-ad">
-            <div class="ad-container">
-              <div class="ad-label">Advertisement</div>
-              <div class="ad-content horizontal-ad">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                  data-ad-slot="7551857423" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+        <div class="content-wrapper">
+          <div class="toolbar">
+            <div class="toolbar-row">
+              <div class="toolbar-title">Java Resources</div>
+              <div class="toolbar-actions">
+                <input type="text" id="searchInput" class="resource-search" placeholder="Search resources" />
+                <select id="categoryFilter" class="resource-filter">
+                  <option value="all">All Categories</option>
+                  <option value="core">Core Java</option>
+                  <option value="spring">Spring & Spring Boot</option>
+                  <option value="microservices">Microservices</option>
+                  <option value="sql">SQL & Database</option>
+                  <option value="testing">Testing (JUnit/Mockito)</option>
+                  <option value="tools">Build & VCS (Maven/Git/Gradle)</option>
+                  <option value="streams">Streams & Coding</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
             </div>
           </div>
+
+        <div class="resource-list">
           <div class="toc" id="tocContainer">
             <div class="toc-title">Table of Contents</div>
             <div class="toc-list" id="tocList"></div>
@@ -196,44 +183,16 @@
           <div id="listContainer"></div>
           <div class="pagination-controls" id="paginationControls"></div>
         </div>
-
-        <div class="section-ad">
-          <div class="ad-container">
-            <div class="ad-label">Advertisement</div>
-            <div class="ad-content horizontal-ad">
-              <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                data-ad-slot="9603305692" data-ad-format="auto" data-full-width-responsive="true"></ins>
-              <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-ad">
-          <div class="ad-container">
-            <div class="ad-label">Advertisement</div>
-            <div class="ad-content horizontal-ad">
-              <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-                data-ad-slot="2303400170" data-ad-format="auto" data-full-width-responsive="true"></ins>
-              <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
-            </div>
-          </div>
         </div>
       </section>
 
-      <!-- Right ads -->
-      <aside class="ads-section">
+      <!-- Right sticky ads -->
+      <aside class="ads-section sidebar-ads">
         <div class="ad-container">
           <div class="ad-label">Advertisement</div>
           <div class="ad-content responsive-ad">
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
               data-ad-slot="3421040729" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
           </div>
         </div>
         <div class="ad-container">
@@ -255,14 +214,7 @@
         <button class="close-modal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
-        <!-- Ad Container for Display Ad -->
-        <div class="ad-container-modal">
-          <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed"
-            data-ad-client="ca-pub-6284022198338659" data-ad-slot="3392831892"></ins>
-          <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-        </div>
+        <!-- Ad container removed -->
 
         <div class="download-progress">
           <p>Ad Progress: <span id="progressText">0%</span></p>
@@ -279,30 +231,9 @@
     </div>
   </div>
 
-  <!-- Sticky Footer Ad -->
-  <div class="sticky-footer-ad" id="stickyFooterAd">
-    <button class="sticky-ad-close" aria-label="Close Ad">&times;</button>
-    <div class="sticky-ad-container">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6284022198338659"
-        data-ad-slot="9525901183" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    </div>
-  </div>
+  <!-- Sticky Footer Ad removed -->
 
-  <!-- Ads Popup (center modal)
-  <div class="ads-popup" id="adsPopup" role="dialog" aria-modal="true">
-    <div class="ads-popup-content">
-      <div class="ads-popup-header">
-        <span>Advertisement</span>
-        <button class="ads-popup-close" id="adsPopupClose" aria-label="Close">&times;</button>
-      </div>
-      <div class="ads-popup-body">
-         <!-Ad injected via JS to prevent empty white space if hidden -->
-  <!-- </div>
-    </div>
-  </div> -->
+  <!-- Ads Popup removed -->
 
   <div id="footer-container"></div>
 
@@ -395,7 +326,7 @@
       // ---------- Query key nodes EARLY ----------
       const cardsContainer = document.getElementById('listContainer');
       const paginationControls = document.getElementById('paginationControls');
-      const pageSize = 10;
+      const pageSize = 9;
       let currentPage = 1;
       let dynamicTotalPages = Math.max(1, Math.ceil(pdfFiles.length / pageSize));
 
@@ -449,38 +380,60 @@
         if (/stream\s*api|coding/.test(f)) return 'streams';
         return 'other';
       }
+      
+      function whyDownloadTitle(file) {
+        const t = toTitle(file).toLowerCase();
+        if (/non\s*technical\s*lead/.test(t)) return 'Leadership and team management interview prep';
+        if (/junit|mockito/.test(t)) return 'Unit testing with JUnit and Mockito';
+        if (/(maven.*git)|(gradle)/.test(t)) return 'Builds, CI, and version control';
+        if (/microservices.*design.*pattern/.test(t)) return 'Microservices design patterns and architecture';
+        if (/microservices.*level\s*i\b/.test(t)) return 'Microservices fundamentals and service decomposition';
+        if (/microservices.*level\s*ii\b/.test(t)) return 'Resilience, discovery, and advanced microservices';
+        if (/kafka/.test(t)) return 'Event streaming and messaging with Kafka';
+        if (/spring\s*data\s*jpa/.test(t)) return 'Data access with Spring Data JPA';
+        if (/spring\s*security/.test(t)) return 'Authentication and authorization with Spring Security';
+        if (/spring\s*mvc/.test(t)) return 'Controllers, views, and MVC fundamentals';
+        if (/spring\s*boot/.test(t)) return 'Spring Boot configuration, starters, deployment';
+        if (/sql/.test(t)) return 'SQL queries, joins, and optimization';
+        if (/stream.*api|coding/.test(t)) return 'Stream API exercises and coding practice';
+        if (/core\s*java|java.*notes|java\s*coding/.test(t)) return 'Core Java: OOP, collections, exceptions';
+        const c = getCategory(file);
+        if (c === 'core') return 'Core Java fundamentals and syntax';
+        if (c === 'spring') return 'Spring/Spring Boot development essentials';
+        if (c === 'microservices') return 'Microservices architecture and best practices';
+        if (c === 'sql') return 'Relational database querying and design';
+        if (c === 'testing') return 'Automated tests and test doubles';
+        if (c === 'tools') return 'Project builds and version control';
+        if (c === 'streams') return 'Stream API and problem solving';
+        return 'Study material and interview preparation';
+      }
 
       function buildItem(file) {
         const title = toTitle(file);
         const cat = getCategory(file);
         const iconText = 'PDF';
+        const reasonText = whyDownloadTitle(file);
+        const locked = !(window.isDownloadUnlocked || window.isPremium);
+        const disabledAttr = locked ? 'disabled' : '';
+        const btnLabel = locked ? 'Unlock to Download' : 'Download';
         return `
-        <div class="resource-item">
+        <div class="resource-card">
           <div class="resource-info">
-            <div class="resource-icon">${iconText}</div>
             <div class="resource-text">
               <div class="resource-title">${title}</div>
-              <div class="resource-meta">${cat}</div>
+              <div class="resource-meta">${reasonText}</div>
             </div>
+            <div class="resource-icon">${iconText}</div>
           </div>
           <div class="resource-actions">
-            <button class="download-btn" data-file="${file}">Watch Ad to Download</button>
+            <button class="download-btn" data-file="${file}" ${disabledAttr}>${btnLabel}</button>
           </div>
         </div>
       `;
       }
 
       function buildInlineAd(index) {
-        const adSlots = ['7551857423', '2303400170', '8659542079', '9603305692'];
-        const adSlot = adSlots[index % adSlots.length];
-        return `
-        <div class="ad-container">
-          <div class="ad-label">Advertisement</div>
-          <div class="ad-content horizontal-ad">
-            <ins class="adsbygoogle" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${adSlot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
-          </div>
-        </div>
-      `;
+        return ``;
       }
 
       function buildPagination() {
@@ -539,15 +492,14 @@
         let html = '';
         slice.forEach((file, idx) => {
           html += buildItem(file);
-          if ((idx + 1) % 3 === 0) {
-            html += buildInlineAd(start + idx + 1);
-          }
+          // inline ads removed
         });
         cardsContainer.innerHTML = html;
         if (paginationControls) paginationControls.innerHTML = buildPagination();
-        setTimeout(() => loadAllAds(), 150);
+        // ads initialization removed
         attachPaginationHandlers();
         attachDownloadHandlers();
+        if (typeof window.applyDownloadButtonState === 'function') { window.applyDownloadButtonState(); }
       }
 
       function attachPaginationHandlers() {
@@ -583,21 +535,21 @@
             }
 
             // Check if download is unlocked (via share or referral)
-            // User Requirement: 3 Shares (of Channel) OR 3 Referrals to unlock. 5 Referrals for Premium.
-            const shareTarget = 3;
-            const referralUnlockTarget = 3;
+            // User Requirement: 5 Shares OR 5 Referrals to unlock. 5 Referrals for Premium.
+            const shareTarget = 5;
+            const referralUnlockTarget = 5;
 
             if (!window.isDownloadUnlocked && !window.isPremium) {
               if (typeof Toastify === 'function') {
                 Toastify({
-                  text: `🔒 Share Channel to ${shareTarget} Groups OR Refer ${referralUnlockTarget} Friends to Unlock Downloads!`,
+                  text: `🔒 Refer ${referralUnlockTarget} friends OR share channel to ${shareTarget} groups to unlock downloads.`,
                   duration: 4000,
-                  gravity: "top",
-                  position: "center",
+                  gravity: "bottom",
+                  position: "right",
                   style: { background: "#dc3545", boxShadow: "0 3px 10px rgba(0,0,0,0.2)" }
                 }).showToast();
               } else {
-                alert(`Share Channel to ${shareTarget} Groups OR Refer ${referralUnlockTarget} Friends to Unlock Downloads!`);
+                alert(`Refer ${referralUnlockTarget} friends OR share channel to ${shareTarget} groups to unlock downloads.`);
               }
               // Scroll to referral section
               const refSection = document.getElementById('referral-program-container');
@@ -617,13 +569,8 @@
             finalDownload = document.getElementById('finalDownload');
 
             if (downloadModal) downloadModal.classList.add('show');
-            // Inject Display Ad (Slot 3392831892) into the modal container
-            ensureAdOrFallback('.ad-container-modal', 3392831892);
             stopAdProgress();
             resetDownloadState();
-
-            // try to load ads (safe)
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { /* ignore */ }
 
             adInterval = setInterval(() => {
               adProgressValue += 2; // Slower progress
@@ -648,85 +595,15 @@
       }
 
       function loadAllAds() {
-        const adElements = document.querySelectorAll('.adsbygoogle[data-ad-client]:not([data-adsbygoogle-status])');
-        console.log(`[Ads] Found ${adElements.length} new ads to initialize.`);
-
-        adElements.forEach(ad => {
-          try {
-            (adsbygoogle = window.adsbygoogle || []).push({});
-          } catch (e) {
-            console.error('[Ads] Loading error:', e);
-          }
+        const ads = document.querySelectorAll('ins.adsbygoogle');
+        ads.forEach(() => {
+          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
         });
-
-        // Fallback: If no ads found but containers exist, log it (helps debug)
-        const containers = document.querySelectorAll('.ad-container');
-        if (containers.length > 0 && typeof window.adsbygoogle === 'undefined') {
-          console.warn('[Ads] AdSense script not loaded yet.');
-        }
       }
 
-      function renderAdIn(containerSelector, slotId) {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
-        container.innerHTML = '';
-        const ins = document.createElement('ins');
-        ins.className = 'adsbygoogle';
-        ins.style.display = 'block';
-        ins.setAttribute('data-ad-client', AD_CLIENT);
-        ins.setAttribute('data-ad-slot', String(slotId));
-        ins.setAttribute('data-ad-format', 'auto');
-        ins.setAttribute('data-full-width-responsive', 'true');
-        container.appendChild(ins);
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
-      }
+      // renderAdIn removed
 
-      // === NEW: ensureAdOrFallback ===
-      // Ensures that an ad or a non-blocking fallback is placed into the container.
-      function ensureAdOrFallback(containerSelector, slotId) {
-        try {
-          const container = document.querySelector(containerSelector);
-          if (!container) return;
-
-          // clear any existing children
-          container.innerHTML = '';
-
-          // 1. Localhost / Dev Check: Show visual placeholder immediately
-          const isLocal = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
-          if (isLocal) {
-            const demoAd = document.createElement('div');
-            demoAd.className = 'ad-fallback';
-            demoAd.style.background = '#e2e6ea';
-            demoAd.style.color = '#495057';
-            demoAd.innerHTML = '<div style="text-align:center"><h4>Demo Ad Mode</h4><p>AdSense does not load on localhost.</p></div>';
-            container.appendChild(demoAd);
-            return;
-          }
-
-          // 2. If AdSense is available, add a real ad element
-          if (window.adsbygoogle && typeof window.adsbygoogle.push === 'function') {
-            const ins = document.createElement('ins');
-            ins.className = 'adsbygoogle';
-            ins.style.display = 'block';
-            ins.setAttribute('data-ad-client', AD_CLIENT);
-            ins.setAttribute('data-ad-slot', String(slotId));
-            ins.setAttribute('data-ad-format', 'auto');
-            ins.setAttribute('data-full-width-responsive', 'true');
-            container.appendChild(ins);
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { /* ignore */ }
-            return;
-          }
-
-          // 3. Fallback placeholder (non-blocking UI when ads are blocked or not loaded)
-          const placeholder = document.createElement('div');
-          placeholder.className = 'ad-fallback';
-          placeholder.innerHTML = '<div>Sponsored • Ad content unavailable.<br><small>Please disable ad blocker to support us.</small></div>';
-          container.appendChild(placeholder);
-        } catch (err) {
-          // don't break everything if something unexpected happens
-          console.warn('ensureAdOrFallback error', err);
-        }
-      }
+      // ensureAdOrFallback removed
 
       // ---------- DOM ready init ----------
       function initUIHandlers() {
@@ -779,52 +656,24 @@
 
         window.addEventListener('click', function (e) { if (downloadModal && e.target === downloadModal) { stopAdProgress(); resetDownloadState(); downloadModal.classList.remove('show'); } });
 
-        // Sticky Footer Ad Close Logic
-        const stickyFooterAd = document.getElementById('stickyFooterAd');
-        const stickyAdClose = document.querySelector('.sticky-ad-close');
-        if (stickyAdClose && stickyFooterAd) {
-          stickyAdClose.addEventListener('click', function() {
-            stickyFooterAd.style.display = 'none';
-          });
-        }
-
-        // Ads popup (center)
-        const adsPopup = document.getElementById('adsPopup');
-        const adsPopupClose = document.getElementById('adsPopupClose');
-
-        function showAdsPopup() {
-          if (!adsPopup) return;
-          // Do not show if popupAd is visible
-          // if (popupAd && isVisible(popupAd)) return; // Removed popupAd check
-          adsPopup.classList.add('show');
-          renderAdIn('.ads-popup-body', 4089957271);
-        }
-        function closeAdsPopup() { if (!adsPopup) return; adsPopup.classList.remove('show'); }
-
-        if (adsPopupClose) adsPopupClose.addEventListener('click', closeAdsPopup);
-        setTimeout(() => { if (adsPopup) showAdsPopup(); }, 4500);
-        setInterval(() => { if (adsPopup && (!adsPopup.style.display || adsPopup.style.display === 'none')) showAdsPopup(); }, 36000);
-        window.addEventListener('click', function (e) { if (adsPopup && e.target === adsPopup) closeAdsPopup(); });
-
-        // initial ad load + responsive reload
-        window.addEventListener('load', function () { setTimeout(loadAllAds, 1000); });
-        window.addEventListener('resize', function () { setTimeout(loadAllAds, 500); });
+        // Ads popup and sticky footer logic removed
+        // Initialize side ads on load
+        window.addEventListener('load', function () { setTimeout(loadAllAds, 300); });
 
         // Close modals on Escape
         window.addEventListener('keydown', function (e) {
           if (e.key === 'Escape' || e.key === 'Esc') {
             if (downloadModal) downloadModal.classList.remove('show');
-            // if (popupAd) popupAd.classList.remove('show'); // Removed
-            if (adsPopup) adsPopup.classList.remove('show');
+            // popup ad removed
           }
         });
 
         // expose debug helpers
-        window.showAdsPopupNow = showAdsPopup;
+        // window.showAdsPopupNow removed
         // window.showPopupAdNow = ... Removed
         window.testOpenDownloadModal = function (url) { const p = document.getElementById('downloadModal'); if (p) p.classList.add('show'); const fd = document.getElementById('finalDownload'); if (fd) { fd.href = url || '#'; fd.setAttribute('download', (url || 'file').split('/').pop()); } };
 
-        console.log('UI handlers attached. adsbygoogle defined:', !!window.adsbygoogle);
+        console.log('UI handlers attached.');
       }
 
       function init() {
@@ -866,6 +715,20 @@
       window.isPremium = false;
       let currentUser = null;
 
+      function applyDownloadButtonState() {
+        const unlocked = !!(window.isDownloadUnlocked || window.isPremium);
+        document.querySelectorAll('.download-btn').forEach(btn => {
+          if (unlocked) {
+            btn.removeAttribute('disabled');
+            btn.textContent = 'Download';
+          } else {
+            btn.setAttribute('disabled', 'true');
+            btn.textContent = 'Unlock to Download';
+          }
+        });
+      }
+      window.applyDownloadButtonState = applyDownloadButtonState;
+
       // Copy button handler
       copyBtn?.addEventListener('click', async () => {
         const link = linkInput.value;
@@ -905,33 +768,34 @@
       // Helper to unlock downloads
       async function unlockDownloads() {
         if (currentUser) {
-          try {
-            const userRef = doc(db, "users", currentUser.uid);
-            await updateDoc(userRef, {
-              shareCount: increment(1)
-            });
+        try {
+          const userRef = doc(db, "users", currentUser.uid);
+          await updateDoc(userRef, {
+            shareCount: increment(1)
+          });
 
-            // Calculate new status (optimistic)
-            const currentShares = (window.currentShareCount || 0) + 1;
-            window.currentShareCount = currentShares; // update local
+          // Calculate new status (optimistic)
+          const currentShares = (window.currentShareCount || 0) + 1;
+          window.currentShareCount = currentShares; // update local
 
-            const shareTarget = 3;
+          const shareTarget = 5;
 
-            if (currentShares >= shareTarget) {
-              window.isDownloadUnlocked = true;
-              if (typeof Toastify === 'function') {
-                Toastify({ text: "Downloads unlocked! Thanks for your support.", duration: 3000, gravity: "top", position: "center", style: { background: "#28a745" } }).showToast();
-              }
-            } else {
-              const remaining = shareTarget - currentShares;
-              if (typeof Toastify === 'function') {
-                Toastify({ text: `Thanks! Share Channel ${remaining} more times to unlock downloads.`, duration: 3000, gravity: "top", position: "center", style: { background: "#17a2b8" } }).showToast();
-              }
+          if (currentShares >= shareTarget) {
+            window.isDownloadUnlocked = true;
+            if (typeof Toastify === 'function') {
+              Toastify({ text: "Downloads unlocked! Thanks for your support.", duration: 3000, gravity: "top", position: "center", style: { background: "#28a745" } }).showToast();
             }
-          } catch (err) {
-            console.error("Error updating unlock status:", err);
+            if (typeof applyDownloadButtonState === 'function') applyDownloadButtonState();
+          } else {
+            const remaining = shareTarget - currentShares;
+            if (typeof Toastify === 'function') {
+              Toastify({ text: `Thanks! Share Channel ${remaining} more times to unlock downloads.`, duration: 3000, gravity: "top", position: "center", style: { background: "#17a2b8" } }).showToast();
+            }
           }
+        } catch (err) {
+          console.error("Error updating unlock status:", err);
         }
+      }
       }
 
       // WhatsApp Share Handler
@@ -998,13 +862,13 @@
               window.currentShareCount = shareCount; // Sync local state
 
               // User Requirements:
-              // Unlock Download: 3 Shares OR 3 Referrals
+              // Unlock Download: 5 Shares OR 5 Referrals
               // Premium (Ad-Free): 5 Referrals
-              const referralUnlockTarget = 3;
-              const shareTarget = 3;
+              const referralUnlockTarget = 5;
+              const shareTarget = 5;
               const premiumTarget = 5;
 
-              // Logic: Unlock if >= 3 referrals OR >= 3 shares
+              // Logic: Unlock if >= 5 referrals OR >= 5 shares
               window.isDownloadUnlocked = (referralCount >= referralUnlockTarget || shareCount >= shareTarget);
 
               // Logic: Remove ads if >= 5 referrals
@@ -1031,6 +895,9 @@
                 hideAds();
                 enableInstantDownload();
               }
+              
+              // Update download button state
+              applyDownloadButtonState();
             } else {
               // Fallback
               if (loadingDiv) loadingDiv.style.display = 'none';
@@ -1047,6 +914,7 @@
           if (loadingDiv) loadingDiv.style.display = 'none';
           if (contentDiv) contentDiv.style.display = 'none';
           if (loginPromptDiv) loginPromptDiv.style.display = 'block';
+          applyDownloadButtonState();
         }
       });
 
