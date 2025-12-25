@@ -142,6 +142,13 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
         }
         /* Mobile Responsive Enhancements */
         @media (max-width: 575px) {
+            .content-wrapper {
+                padding: 0 0.75rem; /* Ensure content doesn't touch edges */
+            }
+            body {
+                overflow-x: hidden; /* Prevent horizontal scroll */
+            }
+
             .hero { 
                 padding: 1.5rem 1rem; 
                 margin-bottom: 1rem;
@@ -150,12 +157,18 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
             .hero p { font-size: 0.9rem; }
 
             .premium-referral-card {
-                padding: 1.25rem;
+                padding: 1rem; /* Reduced padding to give more space for content */
                 border-radius: 12px;
             }
-            .referral-header h3 { font-size: 0.95rem; line-height: 1.2; white-space: nowrap; }
+            .referral-header h3 { 
+                font-size: 0.85rem; /* Smaller font to fit single line */
+                line-height: 1.2; 
+                white-space: nowrap; 
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
             .referral-header i { font-size: 1.1rem; }
-            .referral-desc { font-size: 0.85rem; margin-bottom: 1rem; }
+            .referral-desc { font-size: 0.8rem; margin-bottom: 0.75rem; }
             
             /* Stack inputs and buttons fully */
             .share-actions { flex-direction: column; align-items: stretch; gap: 0.75rem; }
