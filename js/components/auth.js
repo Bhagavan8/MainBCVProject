@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const phone = document.getElementById('phone')?.value || '';
                 const dob = document.getElementById('dob')?.value || '';
                 const password = document.getElementById('signupPassword')?.value || '';
+                const refId = new URLSearchParams(window.location.search).get('ref') || null;
 
                 // Validate required fields
                 if (!firstName || !lastName || !email || !phone || !dob || !password) {
@@ -71,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     dob,
                     createdAt: new Date(),
                     lastLogin: new Date(),
-                    referralCount: 0 // Initialize referral count
+                    referralCount: 0, // Initialize referral count
+                    referredBy: refId || null
                 });
 
                 // Handle referral if present

@@ -103,7 +103,7 @@
           </div>
 
           <p class="referral-desc">
-            <strong>Unlock Downloads:</strong> Refer <strong>5 Friends</strong> OR Share Channel to <strong>5 Groups</strong>.<br>
+            <strong>Unlock Downloads:</strong> Refer <strong>5 Friends</strong> using your registration link.<br>
             <strong>Remove Ads:</strong> Refer <strong>5 Friends</strong> to get Premium Ad-Free access.
           </p>
 
@@ -133,15 +133,23 @@
                   <i class="bi bi-clipboard"></i> Copy
                 </button>
               </div>
-
-              <a href="#" id="whatsapp-share-btn" class="btn-whatsapp" target="_blank">
-                <i class="bi bi-whatsapp"></i> Share Channel
-              </a>
-
-              <a href="https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o" id="join-channel-btn"
-                class="btn-whatsapp-channel" target="_blank">
-                <i class="bi bi-whatsapp"></i> Join Channel
-              </a>
+              <div class="share-platforms" aria-label="Share your referral link on social apps">
+                <span class="text-light" style="opacity:0.9;">Share on:</span>
+                <a id="share-whatsapp" class="btn-whatsapp" target="_blank" rel="noopener">
+                  <i class="bi bi-whatsapp"></i> WhatsApp
+                </a>
+                <a id="share-telegram" class="btn-telegram" target="_blank" rel="noopener">
+                  <i class="bi bi-telegram"></i> Telegram
+                </a>
+                <a id="share-instagram" class="btn-instagram" target="_blank" rel="noopener">
+                  <i class="bi bi-instagram"></i> Instagram
+                </a>
+              </div>
+              <div class="mt-2">
+                <a href="/html/suggestion.html" class="btn-whatsapp-channel" style="text-decoration:none;">
+                  <i class="bi bi-chat-dots"></i> Raise Suggestion or Issue
+                </a>
+              </div>
             </div>
           </div>
 
@@ -703,12 +711,15 @@
       const loadingDiv = document.getElementById('referral-status-loading');
       const contentDiv = document.getElementById('referral-status-content');
       const loginPromptDiv = document.getElementById('referral-login-prompt');
+      const contentWrapper = document.querySelector('.content-wrapper');
       const countSpan = document.getElementById('referral-count');
       const progressBar = document.getElementById('referral-progress-bar');
       const linkInput = document.getElementById('referral-link');
+      const whatsappShare = document.getElementById('share-whatsapp');
+      const telegramShare = document.getElementById('share-telegram');
+      const instagramShare = document.getElementById('share-instagram');
       const copyBtn = document.getElementById('copy-referral-btn');
-      const whatsappBtn = document.getElementById('whatsapp-share-btn');
-      const joinChannelBtn = document.getElementById('join-channel-btn');
+      // Share/Join removed
 
       // State
       window.isDownloadUnlocked = false;
@@ -768,45 +779,16 @@
       // Helper to unlock downloads
       async function unlockDownloads() {
         if (currentUser) {
-        try {
-          const userRef = doc(db, "users", currentUser.uid);
-          await updateDoc(userRef, {
-            shareCount: increment(1)
-          });
-
-          // Calculate new status (optimistic)
-          const currentShares = (window.currentShareCount || 0) + 1;
-          window.currentShareCount = currentShares; // update local
-
-          const shareTarget = 5;
-
-          if (currentShares >= shareTarget) {
-            window.isDownloadUnlocked = true;
-            if (typeof Toastify === 'function') {
-              Toastify({ text: "Downloads unlocked! Thanks for your support.", duration: 3000, gravity: "top", position: "center", style: { background: "#28a745" } }).showToast();
-            }
-            if (typeof applyDownloadButtonState === 'function') applyDownloadButtonState();
-          } else {
-            const remaining = shareTarget - currentShares;
-            if (typeof Toastify === 'function') {
-              Toastify({ text: `Thanks! Share Channel ${remaining} more times to unlock downloads.`, duration: 3000, gravity: "top", position: "center", style: { background: "#17a2b8" } }).showToast();
-            }
+          try {
+            const userRef = doc(db, "users", currentUser.uid);
+            // Share removed; no-op
+          } catch (err) {
+            console.error("Error updating unlock status:", err);
           }
-        } catch (err) {
-          console.error("Error updating unlock status:", err);
         }
       }
-      }
 
-      // WhatsApp Share Handler
-      whatsappBtn?.addEventListener('click', async (e) => {
-        await unlockDownloads();
-      });
-
-      // Join Channel Handler
-      joinChannelBtn?.addEventListener('click', async (e) => {
-        await unlockDownloads();
-      });
+      // Share/Join removed
 
       function hideAds() {
         // Hide all ad containers and sections
@@ -849,6 +831,7 @@
         if (user) {
           if (loadingDiv) loadingDiv.style.display = 'block';
           if (loginPromptDiv) loginPromptDiv.style.display = 'none';
+          if (contentWrapper) contentWrapper.style.display = 'block';
 
           // Listen for referral count updates in real-time
           onSnapshot(doc(db, "users", user.uid), (docSnap) => {
@@ -858,18 +841,16 @@
             if (docSnap.exists()) {
               const data = docSnap.data();
               const referralCount = data.referralCount || 0;
-              const shareCount = data.shareCount || 0;
-              window.currentShareCount = shareCount; // Sync local state
+              // shareCount removed
 
               // User Requirements:
-              // Unlock Download: 5 Shares OR 5 Referrals
+              // Unlock Download: 5 Referrals
               // Premium (Ad-Free): 5 Referrals
               const referralUnlockTarget = 5;
-              const shareTarget = 5;
               const premiumTarget = 5;
 
-              // Logic: Unlock if >= 5 referrals OR >= 5 shares
-              window.isDownloadUnlocked = (referralCount >= referralUnlockTarget || shareCount >= shareTarget);
+              // Logic: Unlock if >= 5 referrals
+              window.isDownloadUnlocked = (referralCount >= referralUnlockTarget);
 
               // Logic: Remove ads if >= 5 referrals
               const progress = Math.min((referralCount / premiumTarget) * 100, 100);
@@ -881,13 +862,13 @@
               // Set referral link
               const refLink = `${window.location.origin}/pages/register.html?ref=${user.uid}`;
               if (linkInput) linkInput.value = refLink;
+              // Prepare share URLs (informational only; unlock requires registrations)
+              const waMessage = `Register here to join BCV World and access Java resources:\n${refLink}`;
+              if (whatsappShare) whatsappShare.href = `https://wa.me/?text=${encodeURIComponent(waMessage)}`;
+              if (telegramShare) telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent('Register here to join BCV World and access Java resources')}`;
+              if (instagramShare) instagramShare.href = `https://www.instagram.com/`;
 
-              // WhatsApp Share (Promote Channel + Referral Link)
-              if (whatsappBtn) {
-                const channelLink = "https://www.whatsapp.com/channel/0029VasadwXLikgEikBhWE1o";
-                const msg = encodeURIComponent(`🚀 *Join the BCV World Java Channel!* \n\nGet free Java PDFs (Core, Spring, Microservices) and coding resources daily.\n\n👇 *Join Here:* \n${channelLink}\n\n(Register here to remove ads: ${refLink})`);
-                whatsappBtn.href = `https://wa.me/?text=${msg}`;
-              }
+              // Share/Join removed
 
               // Check ad status
               if (referralCount >= premiumTarget) {
@@ -904,16 +885,17 @@
               if (contentDiv) contentDiv.style.display = 'block';
               const refLink = `${window.location.origin}/pages/register.html?ref=${user.uid}`;
               if (linkInput) linkInput.value = refLink;
-              if (whatsappBtn) {
-                const msg = encodeURIComponent(`Hey! Check out these free Java resources and remove ads for free! Register here: ${refLink}`);
-                whatsappBtn.href = `https://wa.me/?text=${msg}`;
-              }
+              const waMessageFallback = `Register here to join BCV World and access Java resources:\n${refLink}`;
+              if (whatsappShare) whatsappShare.href = `https://wa.me/?text=${encodeURIComponent(waMessageFallback)}`;
+              if (telegramShare) telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent('Register here to join BCV World and access Java resources')}`;
+              if (instagramShare) instagramShare.href = `https://www.instagram.com/`;
             }
           });
         } else {
           if (loadingDiv) loadingDiv.style.display = 'none';
           if (contentDiv) contentDiv.style.display = 'none';
           if (loginPromptDiv) loginPromptDiv.style.display = 'block';
+          if (contentWrapper) contentWrapper.style.display = 'none';
           applyDownloadButtonState();
         }
       });
