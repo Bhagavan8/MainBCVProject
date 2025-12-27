@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get a total overview of your financial health with BCVWorld. Monitor net worth, spending trends, income analysis, and financial growth.">
+    <meta name="keywords" content="finance overview, total finance, financial health, net worth tracker, spending analysis, financial dashboard, BCVWorld finance">
+    <meta name="author" content="BCVWorld">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Total Finance Overview - BCVWorld">
+    <meta property="og:description" content="Comprehensive financial dashboard to monitor your total wealth, spending habits, and income sources.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.bcvworld.com/html/total-finance.html">
+    <title>Total Finance Overview - BCVWorld</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- Use absolute path or correct relative path -->
+    <link rel="stylesheet" href="/css/index.css?v=1.1">
+    <style>
+        :root {
+            --background-color: #ffffff;
+            --default-color: #212529;
+            --heading-color: #2d465e;
+            --accent-color: #0d83fd;
+            --surface-color: #ffffff;
+            --contrast-color: #ffffff;
+        }
+        .finance-card {
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            min-height: 140px;
+        }
+        .finance-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-icon-bg {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 5rem;
+            opacity: 0.1;
+            transform: rotate(-15deg);
+        }
+        /* Gradient Backgrounds */
+        .bg-gradient-primary { background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); color: white; }
+        .bg-gradient-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .bg-gradient-danger { background: linear-gradient(135deg, #ef476f 0%, #ff1053 100%); color: white; }
+        .bg-gradient-warning { background: linear-gradient(135deg, #ffd166 0%, #fb8500 100%); color: white; }
+        .bg-gradient-info { background: linear-gradient(135deg, #2ec4b6 0%, #20a4f3 100%); color: white; }
+        .bg-gradient-dark { background: linear-gradient(135deg, #232526 0%, #414345 100%); color: white; }
+        .bg-gradient-purple { background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%); color: white; }
+        
+        main {
+            margin-top: 140px; /* Space for fixed header */
+            min-height: calc(100vh - 200px);
+        }
+    </style>
+</head>
+
+<body>
+
+  <!-- Header is dynamically loaded -->
+  <div id="header-container"></div>
+
+    <main class="container">
+        <h2 class="fw-bold mb-4">Total Finance Overview</h2>
+        
+        <!-- 1. Key Metrics (Grand Totals) -->
+        <div class="row g-4 mb-5">
+
+                    <div class="col-12 col-md-4">
+                        <div class="card finance-card bg-gradient-success h-100">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 opacity-75">Net Total Balance</h6>
+                                <h2 class="card-title mb-0 fw-bold display-5" id="netTotalBalance">₹0.00</h2>
+                                <small class="opacity-75 d-block mt-2">Income - (Expenses + Ads)</small>
+                                <i class="bi bi-wallet-fill card-icon-bg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card finance-card bg-gradient-danger h-100">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 opacity-75">Total All-Time Spending</h6>
+                                <h2 class="card-title mb-0 fw-bold display-5" id="totalAllSpending">₹0.00</h2>
+                                <small class="opacity-75 d-block mt-2">Ads + Expenses + Subscriptions</small>
+                                <i class="bi bi-graph-down-arrow card-icon-bg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card finance-card bg-gradient-primary h-100">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 opacity-75">Total All-Time Income</h6>
+                                <h2 class="card-title mb-0 fw-bold display-5" id="totalAllIncome">₹0.00</h2>
+                                <small class="opacity-75 d-block mt-2">All Sources</small>
+                                <i class="bi bi-cash-coin card-icon-bg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold mb-3">Time-Based Spending Analysis</h5>
+                <!-- 2. Time Based Spending -->
+                <div class="row g-4 mb-5">
+                    <!-- Today -->
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                        <div class="card finance-card bg-white border h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">Today Spend</h6>
+                                <h4 class="mb-0 fw-bold text-danger" id="spendToday">₹0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Week -->
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                        <div class="card finance-card bg-white border h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">This Week Spend</h6>
+                                <h4 class="mb-0 fw-bold text-danger" id="spendWeek">₹0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- This Month -->
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                        <div class="card finance-card bg-white border h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">This Month Spend</h6>
+                                <h4 class="mb-0 fw-bold text-danger" id="spendMonth">₹0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Last Month -->
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                        <div class="card finance-card bg-white border h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">Last Month Spend</h6>
+                                <h4 class="mb-0 fw-bold text-secondary" id="spendLastMonth">₹0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- This Year -->
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                        <div class="card finance-card bg-white border h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">This Year Spend</h6>
+                                <h4 class="mb-0 fw-bold text-danger" id="spendYear">₹0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Last Year -->
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                        <div class="card finance-card bg-white border h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">Last Year Spend</h6>
+                                <h4 class="mb-0 fw-bold text-secondary" id="spendLastYear">₹0.00</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold mb-3">Category Breakdown</h5>
+                <!-- 3. Category Breakdown -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-md-6">
+                        <div class="card finance-card bg-gradient-purple h-100">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 opacity-75">Investments Value</h6>
+                                <h3 class="card-title mb-0 fw-bold" id="totalInvestments">₹0.00</h3>
+                                <small class="opacity-75 d-block mt-1">Current Value</small>
+                                <i class="bi bi-piggy-bank card-icon-bg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="card finance-card bg-gradient-warning h-100 text-dark">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 opacity-75">Loans Outstanding</h6>
+                                <h3 class="card-title mb-0 fw-bold" id="totalLoans">₹0.00</h3>
+                                <small class="opacity-75 d-block mt-1">Remaining Balance</small>
+                                <i class="bi bi-bank card-icon-bg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../js/landing.js"></script>
+    <script type="module" src="../js/landing_functions.js"></script>
+    <script type="module" src="../js/components/component-loader.js"></script>
+    <script type="module" src="../js/total-finance.js"></script>
+</body>
+</html>
