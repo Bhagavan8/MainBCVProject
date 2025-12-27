@@ -516,50 +516,40 @@ img, iframe, ins, video, object, embed {
 
 /* ===== SKILLS ===== */
 .skills-container {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align left for better reading flow, or center if preferred */
+    gap: 12px;
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
     padding: 10px 0;
-    line-height: 1.8;
-    text-align: center; /* Center the text list */
 }
 
 .skill-tag {
-    padding: 0;
-    background: none;
+    padding: 8px 16px;
+    background: #ffffff;
     color: var(--text-secondary);
-    border: none;
-    border-radius: 0;
-    font-size: 15px;
-    font-weight: 400;
-    display: inline;
-    box-shadow: none;
-    transition: color 0.2s ease;
-}
-
-.skill-tag:not(:last-child)::after {
-    content: ", ";
-    margin-right: 4px;
-    color: var(--text-light);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px; /* iOS style rounded corners */
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px; /* Ensure spacing between words inside the tag */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
 }
 
 .skill-tag:hover {
-    background: none;
+    background: #f8fafc;
+    border-color: var(--primary-color);
     color: var(--primary-color);
-    transform: none;
-    box-shadow: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 767px) {
-    .skills-container {
-        text-align: left; /* Left align on mobile for readability */
-    }
-    
-    .skill-tag {
-        font-size: 14px;
-    }
-}
+
 
 /* ===== QUALIFICATIONS ===== */
 .qualifications-content {
@@ -849,6 +839,21 @@ img, iframe, ins, video, object, embed {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     overflow: hidden;
     width: 100%;
+}
+
+@media (max-width: 768px) {
+    .job-navigation-wrapper {
+        flex-direction: column;
+    }
+
+    .nav-job-item {
+        width: 100%;
+        border-right: none !important;
+    }
+
+    .nav-job-item.previous-job {
+        border-bottom: 1px solid #e5e7eb;
+    }
 }
 
 .nav-job-item {
@@ -1877,12 +1882,15 @@ a {
         margin-right: 180px;
     }
 }
+/* Reading progress bar */
 .reading-progress {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: var(--scroll, 0%);
     height: 3px;
-    background: linear-gradient(90deg, #2563eb var(--scroll), transparent 0);
-    z-index: 100000;
+    background: #2563eb;
+    z-index: 100000 !important; /* Force top z-index */
+    transition: width 0.1s linear;
+    display: block !important; /* Ensure it is not hidden */
 }

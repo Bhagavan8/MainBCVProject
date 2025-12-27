@@ -303,18 +303,46 @@ class JobDetailsManager {
 
                 await this.populateNavigationCard(cardElement, jobData, direction, jobType);
             } else {
-                // If no more jobs, try to loop back or just show empty/disabled state
-                // For now, let's disable the arrow or show "No more jobs"
-                // To implement looping, we would reset the cursor to currentJob.createdAt (or opposite end)
-                
-                // Let's implement simple loop:
+                // Circular navigation logic: If end of list reached, loop back
+                let loopQuery;
                 if (direction === 'previous') {
-                     // If no previous, maybe loop to the newest job?
-                     // Or just show "No more previous jobs"
-                     this.showEmptyNavigationCard(cardElement, 'No more previous jobs');
-                     // Disable arrow click? Handled by empty state mostly
+                    // If no older jobs (we are at oldest), loop to newest
+                    loopQuery = query(
+                        collection(db, this.getCollectionName()),
+                        orderBy('createdAt', 'desc'),
+                        limit(1)
+                    );
                 } else {
-                     this.showEmptyNavigationCard(cardElement, 'No more next jobs');
+                    // If no newer jobs (we are at newest), loop to oldest
+                    loopQuery = query(
+                        collection(db, this.getCollectionName()),
+                        orderBy('createdAt', 'asc'),
+                        limit(1)
+                    );
+                }
+
+                const loopSnapshot = await getDocs(loopQuery);
+                
+                if (!loopSnapshot.empty) {
+                    const jobDoc = loopSnapshot.docs[0];
+                    // Don't show if it's the same as current (only 1 job in DB)
+                    if (jobDoc.id === this.currentJob.id) {
+                         this.showEmptyNavigationCard(cardElement, direction === 'previous' ? 'No previous jobs' : 'No next jobs');
+                         return;
+                    }
+
+                    const jobData = { id: jobDoc.id, ...jobDoc.data() };
+                    
+                    // Update cursor to this new looped job's date so subsequent clicks continue from here
+                    if (direction === 'previous') {
+                        this.previousJobCursor = jobData.createdAt;
+                    } else {
+                        this.nextJobCursor = jobData.createdAt;
+                    }
+
+                    await this.populateNavigationCard(cardElement, jobData, direction, jobType);
+                } else {
+                    this.showEmptyNavigationCard(cardElement, direction === 'previous' ? 'No previous jobs' : 'No next jobs');
                 }
             }
 
@@ -1234,12 +1262,34 @@ class JobDetailsManager {
             skillsSection.style.display = 'none';
             return;
         }
+
+        // Process skills to split combined entries (e.g. "Java, Python" or "Java or Python")
+        const processedSkills = [];
+        job.skills.forEach(skillStr => {
+            if (!skillStr) return;
+            // Split by comma or " or " (case insensitive) to create separate tags
+            // Also handle " / " if it implies separate skills, but be careful with "CI/CD"
+            // For now, split by comma and " or "
+            const parts = skillStr.split(/,| or /i);
+            parts.forEach(p => {
+                const trimmed = p.trim();
+                // Remove trailing punctuation like dots or commas that might have remained
+                const clean = trimmed.replace(/[.,;]+$/, '');
+                if (clean) processedSkills.push(clean);
+            });
+        });
         
-        skillsContainer.innerHTML = job.skills.map(skill => `
+        if (processedSkills.length === 0) {
+            skillsSection.style.display = 'none';
+            return;
+        }
+        
+        skillsContainer.innerHTML = processedSkills.map(skill => `
             <span class="skill-tag">
                 ${this.formatSkillText(skill)}
             </span>
         `).join('');
+        skillsSection.style.display = 'block';
     }
 
     formatSkillText(skill) {
@@ -1254,7 +1304,8 @@ class JobDetailsManager {
             'tcp', 'ip', 'dns', 'http', 'https', 'ftp', 'ssh', 'ssl', 'tls', 'vm', 
             'os', 'ios', 'mcsa', 'mcsd', 'ocjp', 'aws', 'gcp', 'azure', 'ci', 'cd',
             'oop', 'dbms', 'rdbms', 'nosql', 'jdbc', 'odbc', 'orm', 'dom', 'bom',
-            'url', 'uri', 'gui', 'cli', 'crud', 'soap', 'mvvm', 'iot', 'ml', 'ai'
+            'url', 'uri', 'gui', 'cli', 'crud', 'soap', 'mvvm', 'iot', 'ml', 'ai', 'sdlc', 'stlc',
+            'vhdl', 'soc', 'tcl', 'cpu', 'dft', 'fpga', 'rf', 'cad', 'rtl', 'asic'
         ]);
 
         // List of words to force lowercase (unless they are the first word)
@@ -1702,64 +1753,52 @@ document.addEventListener('DOMContentLoaded', () => {
         // At load, show restore button if ads are hidden
         updateRestoreVisibility();
 
-        const progressEls = document.querySelectorAll('.reading-progress');
+        // Removed duplicate updateProgress from here to avoid dependency on ad logic success
 
-        function updateProgress() {
-            const docEl = document.documentElement;
-            const body = document.body || document.documentElement;
-            const scrolled = window.pageYOffset || docEl.scrollTop || body.scrollTop || 0;
-            const scrollHeight = Math.max(docEl.scrollHeight, body.scrollHeight);
-            const clientHeight = docEl.clientHeight;
-            const height = scrollHeight - clientHeight;
-            const pct = height > 0 ? (scrolled / height) * 100 : 0;
-            try { document.documentElement.style.setProperty('--scroll', pct + '%'); } catch (_) {}
-        }
-
-        window.addEventListener('scroll', updateProgress, { passive: true });
-        updateProgress();
-
-        
-
-        const footer = document.getElementById('footer-container');
-        if (footer) {
-            const obs = new IntersectionObserver((entries) => {
-                const entry = entries[0];
-                const isAtFooter = entry && entry.isIntersecting;
-                const leftHiddenFlag = localStorage.getItem(LEFT_KEY) === '1';
-                const rightHiddenFlag = localStorage.getItem(RIGHT_KEY) === '1';
-                if (isAtFooter) {
-                    if (leftAd) leftAd.style.display = 'none';
-                    if (rightAd) rightAd.style.display = 'none';
-                } else {
-                    if (!leftHiddenFlag && leftAd) leftAd.style.display = '';
-                    if (!rightHiddenFlag && rightAd) rightAd.style.display = '';
-                    updateRestoreVisibility();
-                }
-            }, { rootMargin: '0px', threshold: 0.01 });
-            obs.observe(footer);
-        }
+        // const footer = document.getElementById('footer-container');
+        // if (footer) {
+        //     const obs = new IntersectionObserver((entries) => {
+        //         const entry = entries[0];
+        //         const isAtFooter = entry && entry.isIntersecting;
+        //         const leftHiddenFlag = localStorage.getItem(LEFT_KEY) === '1';
+        //         const rightHiddenFlag = localStorage.getItem(RIGHT_KEY) === '1';
+        //         if (isAtFooter) {
+        //             if (leftAd) leftAd.style.display = 'none';
+        //             if (rightAd) rightAd.style.display = 'none';
+        //         } else {
+        //             if (!leftHiddenFlag && leftAd) leftAd.style.display = '';
+        //             if (!rightHiddenFlag && rightAd) rightAd.style.display = '';
+        //             updateRestoreVisibility();
+        //         }
+        //     }, { rootMargin: '0px', threshold: 0.01 });
+        //     obs.observe(footer);
+        // }
     } catch (e) {
         console.warn('Side ad close setup error', e);
     }
 
     // Reading progress and scroll-top should work regardless of ad setup
     try {
-        const progressEls = document.querySelectorAll('.reading-progress');
-
         function updateProgress() {
-            const docEl = document.documentElement;
-            const body = document.body || document.documentElement;
-            const scrolled = window.pageYOffset || docEl.scrollTop || body.scrollTop || 0;
-            const scrollHeight = Math.max(docEl.scrollHeight, body.scrollHeight);
-            const clientHeight = docEl.clientHeight;
-            const height = scrollHeight - clientHeight;
-            const pct = height > 0 ? (scrolled / height) * 100 : 0;
-            try { document.documentElement.style.setProperty('--scroll', pct + '%'); } catch (_) {}
+            const bar = document.getElementById('readingProgress');
+            if (bar) {
+                const docEl = document.documentElement;
+                const body = document.body || document.documentElement;
+                const scrolled = window.pageYOffset || docEl.scrollTop || body.scrollTop || 0;
+                const scrollHeight = Math.max(docEl.scrollHeight, body.scrollHeight);
+                const clientHeight = docEl.clientHeight;
+                const height = scrollHeight - clientHeight;
+                const pct = height > 0 ? (scrolled / height) * 100 : 0;
+                bar.style.width = pct + '%';
+            }
         }
 
         window.addEventListener('scroll', updateProgress, { passive: true });
+        window.addEventListener('resize', updateProgress, { passive: true });
+        // Initial call
         updateProgress();
-
+        setTimeout(updateProgress, 100);
+        setTimeout(updateProgress, 500);
         
     } catch (e) {
         console.warn('Progress/scroll-top setup error', e);
@@ -1995,21 +2034,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (_) {}
         }
 
-        // Prefetch counts shortly after page becomes idle
-        try {
-            const prefetch = () => updateOpeningsCounts();
-            if ('requestIdleCallback' in window) {
-                requestIdleCallback(prefetch, { timeout: 1500 });
-            } else {
-                setTimeout(prefetch, 1200);
-            }
-        } catch (_) {}
-    } catch (e) {
-        console.warn('Openings popup setup error', e);
-    }
-});
-
-export { JobDetailsManager };
         function startCountsObserver() {
             try {
                 if (countsObserver) return;
@@ -2025,3 +2049,19 @@ export { JobDetailsManager };
         function stopCountsObserver() {
             try { if (countsObserver) { countsObserver.disconnect(); countsObserver = null; } } catch(_) {}
         }
+
+        // Prefetch counts shortly after page becomes idle
+        try {
+            const prefetch = () => updateOpeningsCounts();
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(prefetch, { timeout: 1500 });
+            } else {
+                setTimeout(prefetch, 1200);
+            }
+        } catch (_) {}
+    } catch (e) {
+        console.warn('Openings popup setup error', e);
+    }
+});
+
+export { JobDetailsManager };
