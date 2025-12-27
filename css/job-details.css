@@ -50,7 +50,7 @@ img, iframe, ins, video, object, embed {
 @media (max-width: 991px) {
     .page-wrapper {
         flex-direction: column;
-        padding: 0 20px;
+        padding: 0 10px; /* Reduced from 20px */
         gap: 0;
         overflow-x: hidden;
         max-width: 100%;
@@ -82,8 +82,8 @@ img, iframe, ins, video, object, embed {
     .qualifications-content,
     .skills-container,
     .job-details-container {
-        padding-left: 5px;
-        padding-right: 8px;
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 
@@ -476,7 +476,7 @@ img, iframe, ins, video, object, embed {
 /* ===== JOB DETAILS GRID ===== */
 .job-details-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     width: 100%;
     max-width: 800px;
@@ -516,28 +516,49 @@ img, iframe, ins, video, object, embed {
 
 /* ===== SKILLS ===== */
 .skills-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: block;
     width: 100%;
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
-    justify-content: center;
+    padding: 10px 0;
+    line-height: 1.8;
+    text-align: center; /* Center the text list */
 }
 
 .skill-tag {
-    padding: 8px 16px;
-    background: var(--bg-gray);
+    padding: 0;
+    background: none;
     color: var(--text-secondary);
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    word-break: break-word;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    font-weight: 400;
+    display: inline;
+    box-shadow: none;
+    transition: color 0.2s ease;
+}
+
+.skill-tag:not(:last-child)::after {
+    content: ", ";
+    margin-right: 4px;
+    color: var(--text-light);
 }
 
 .skill-tag:hover {
-    background: var(--primary-color);
-    color: white;
+    background: none;
+    color: var(--primary-color);
+    transform: none;
+    box-shadow: none;
+}
+
+@media (max-width: 767px) {
+    .skills-container {
+        text-align: left; /* Left align on mobile for readability */
+    }
+    
+    .skill-tag {
+        font-size: 14px;
+    }
 }
 
 /* ===== QUALIFICATIONS ===== */
@@ -567,177 +588,62 @@ img, iframe, ins, video, object, embed {
 
 /* ===== COMMUNITY SECTION ===== */
 .community-section {
-    background: var(--bg-gray);
-    border-radius: var(--border-radius);
+    background: transparent;
     margin: 24px 0;
     width: 100%;
-    padding: 24px;
+    padding: 10px 0;
     text-align: center;
 }
 
-/* Mobile responsive for job navigation */
-@media (max-width: 767px) {
-    .job-navigation-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .nav-job-card {
-        padding: 16px;
-    }
-
-    .nav-job-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .nav-company-logo {
-        width: 50px;
-        height: 50px;
-        margin-bottom: 12px;
-    }
-
-    .nav-job-title {
-        font-size: 16px;
-    }
-
-    .nav-company-name {
-        font-size: 14px;
-    }
-
-    .nav-education {
-        font-size: 12px;
-    }
-
-    .nav-view-btn {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-
-    .job-navigation-section {
-        padding: 16px;
-        margin-top: 16px;
-    }
-
-    .job-navigation-section .section-title {
-        font-size: 16px;
-        margin-bottom: 12px;
-    }
-
-    .nav-job-header {
-        margin-bottom: 12px;
-        font-size: 12px;
-    }
-
-    .nav-job-content {
-        margin-bottom: 12px;
-    }
-}
-
-/* Additional mobile styles for job navigation */
-@media (max-width: 767px) {
-    .nav-job-card {
-        padding: 14px !important;
-    }
-
-    .nav-job-content {
-        gap: 12px !important;
-    }
-
-    .nav-company-logo {
-        width: 45px !important;
-        height: 45px !important;
-    }
-
-    .nav-job-title {
-        font-size: 15px !important;
-        -webkit-line-clamp: 3;
-    }
-
-    .nav-company-name {
-        font-size: 13px !important;
-    }
-
-    .nav-education {
-        font-size: 12px !important;
-        padding: 3px 6px !important;
-    }
-
-    .nav-view-btn {
-        padding: 8px 14px !important;
-        font-size: 13px !important;
-    }
-
-    .job-navigation-section {
-        padding: 16px !important;
-        margin: 16px 0 !important;
-    }
-
-    .job-navigation-section .section-title {
-        font-size: 16px !important;
-        margin-bottom: 16px !important;
-    }
-}
-
 @media (max-width: 575px) {
-    .job-navigation-grid {
-        gap: 12px !important;
+    .page-wrapper {
+        padding: 0 8px;
+    }
+    
+    .job-header {
+        padding: 12px;
     }
 
-    .nav-job-card {
-        padding: 12px !important;
+    .detail-item {
+        padding: 8px;
     }
-
-    .nav-job-content {
-        gap: 10px !important;
-    }
-
-    .nav-company-logo {
-        width: 40px !important;
-        height: 40px !important;
-    }
-
-    .nav-job-title {
-        font-size: 14px !important;
-    }
-
-    .nav-company-name {
-        font-size: 12px !important;
-    }
-
-    .nav-education {
-        font-size: 11px !important;
-    }
-
-    .nav-view-btn {
-        padding: 6px 12px !important;
-        font-size: 12px !important;
-    }
-
-    .nav-job-header {
-        font-size: 12px !important;
-        margin-bottom: 10px !important;
+    
+    .detail-value {
+        font-size: 13px;
     }
 }
 
 .community-links {
     display: flex;
     gap: 16px;
-    flex-wrap: wrap;
     width: 100%;
     justify-content: center;
+    flex-wrap: nowrap; /* Force side by side on desktop */
 }
 
 .community-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center; /* Center text/icon */
     gap: 8px;
-    padding: 14px 24px;
+    padding: 12px 20px; /* Slightly reduced padding */
     border-radius: var(--border-radius);
     text-decoration: none;
     font-weight: 500;
-    max-width: 100%;
+    flex: 1; /* Share width equally */
+    max-width: 300px; /* Don't get too wide ("reduce length") */
+}
+
+@media (max-width: 767px) {
+    .community-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .community-btn {
+        width: 100%;
+        max-width: 100%; /* Full width on mobile */
+    }
 }
 
 .whatsapp-btn {
@@ -767,8 +673,7 @@ img, iframe, ins, video, object, embed {
     overflow: hidden;
 }
 
-.ad-container,
-.ad-box-job {
+.ad-container {
     background: var(--bg-gray);
     border-radius: var(--border-radius);
     padding: 20px;
@@ -776,6 +681,19 @@ img, iframe, ins, video, object, embed {
     max-width: 100%;
     min-height: 250px;
     /* Increased minimum height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ad-box-job {
+    background: transparent;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -919,269 +837,238 @@ img, iframe, ins, video, object, embed {
 
 /* ===== JOB NAVIGATION STYLES ===== */
 .job-navigation-section {
-    background: var(--bg-white);
-    border-radius: var(--border-radius);
-    padding: 24px;
-    margin-top: 20px;
-    border: 1px solid #e5e7eb;
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.job-navigation-section .section-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.job-navigation-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 16px;
-}
-
-/* Ensure mobile shows stacked cards (one below the other) */
-@media (max-width: 767px) {
-    .job-navigation-grid { grid-template-columns: 1fr; gap: 16px; }
-}
-
-.nav-job-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-job-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: var(--primary-color);
-}
-
-.nav-job-card.previous-job {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border-color: #0ea5e9;
-}
-
-.nav-job-card.next-job {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border-color: #22c55e;
-}
-
-.nav-job-header {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-light);
-    margin-bottom: 16px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.nav-job-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.nav-company-logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid #e2e8f0;
-    background: white;
-    flex-shrink: 0;
-}
-
-.nav-job-details {
-    flex: 1;
-    min-width: 0;
-}
-
-.nav-job-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 6px;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.nav-company-name {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
-    font-weight: 500;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.nav-education {
-    font-size: 13px;
-    color: #64748b;
-    background: #f1f5f9;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    font-weight: 500;
-}
-
-.nav-view-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    margin-top: 40px;
     width: 100%;
-    text-align: center;
 }
 
-.nav-view-btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.nav-job-card.previous-job .nav-view-btn {
-    background: #0ea5e9;
-}
-
-.nav-job-card.previous-job .nav-view-btn:hover {
-    background: #0284c7;
-}
-
-.nav-job-card.next-job .nav-view-btn {
-    background: #22c55e;
-}
-
-.nav-job-card.next-job .nav-view-btn:hover {
-    background: #16a34a;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Loading state for navigation cards */
-.nav-job-card.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
-}
-
-.nav-job-card.loading::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #e5e7eb;
-    border-top: 2px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    transform: translate(-50%, -50%);
-}
-
-@keyframes spin {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
-}
-
-/* Enhanced hover effects */
-.nav-job-card:hover .nav-job-title {
-    color: var(--primary-color);
-}
-
-.nav-job-card:hover .nav-company-name {
-    color: var(--text-dark);
-}
-
-/* Smooth transitions for all elements */
-.nav-job-title,
-.nav-company-name,
-.nav-education,
-.nav-view-btn {
-    transition: all 0.3s ease;
-}
-
-/* Ensure proper spacing and alignment */
-.nav-job-details {
+.job-navigation-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    width: 100%;
 }
 
-/* Better visual hierarchy */
-.nav-job-header {
+.nav-job-item {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 8px;
+    padding: 24px;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-width: 0; /* Prevent flex overflow */
+    position: relative;
 }
 
-.nav-job-header::before {
-    content: "";
-    width: 4px;
-    height: 16px;
-    background: var(--primary-color);
-    border-radius: 2px;
+.nav-job-item:hover {
+    background-color: #f8fafc;
 }
 
-.nav-job-card.previous-job .nav-job-header::before {
-    background: #0ea5e9;
+.nav-job-item.previous-job {
+    border-right: 1px solid #e5e7eb;
 }
 
-.nav-job-card.next-job .nav-job-header::before {
-    background: #22c55e;
+.nav-job-item.loading {
+    pointer-events: none;
+    opacity: 0.7;
 }
 
-.nav-job-card.hidden {
+.nav-job-item.empty {
     display: none;
 }
 
-/* Empty state */
-.nav-job-card.empty {
+/* Arrow Circle */
+.nav-arrow-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    cursor: pointer; /* Ensure pointer cursor */
+    z-index: 2; /* Ensure it sits above if needed */
+}
+
+.nav-arrow-circle:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Make only interactive parts show pointer */
+.nav-job-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 24px;
+    gap: 16px;
+    cursor: default; /* Default cursor for container */
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-width: 0; /* Prevent flex overflow */
+    position: relative;
+}
+
+.nav-job-item:hover {
+    background-color: #f8fafc;
+}
+
+/* Logo and Details are clickable for navigation */
+.nav-logo-wrapper,
+.nav-job-details {
+    cursor: pointer;
+}
+
+.nav-logo-wrapper {
+    width: 48px;
+    height: 48px;
+    min-width: 48px; /* Ensure it doesn't shrink */
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 4px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden; /* Ensure content stays inside */
+}
+
+.nav-logo-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    border-radius: 4px;
+    display: block;
+}
+
+/* Details */
+.nav-job-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-direction-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.nav-job-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.nav-job-item:hover .nav-job-title {
+    color: var(--primary-color);
+}
+
+.nav-company-name {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Loading States */
+.nav-job-item.loading .nav-job-title,
+.nav-job-item.loading .nav-company-name {
     background: #f1f5f9;
-    border-style: dashed;
-    border-color: #cbd5e1;
-    cursor: not-allowed;
+    color: transparent;
+    border-radius: 4px;
+    user-select: none;
 }
 
-.nav-job-card.empty .nav-job-content {
-    opacity: 0.5;
+.nav-job-item.loading .nav-job-title {
+    width: 60%;
+    height: 18px;
+    margin-bottom: 4px;
 }
 
-.nav-job-card.empty .nav-view-btn {
-    background: #94a3b8;
-    cursor: not-allowed;
+.nav-job-item.loading .nav-company-name {
+    width: 40%;
+    height: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .job-navigation-wrapper {
+        flex-direction: column;
+    }
+
+    .nav-job-item {
+        padding: 16px;
+    }
+
+    .nav-job-item.previous-job {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* On mobile, keep the split alignment logic or unify? 
+       The user wants "perfect UI". 
+       Usually, consistent left-to-right flow is better on mobile.
+       But let's stick to the "Previous" (left) and "Next" (right) visual cue if possible,
+       OR align everything to the left for readability on small screens.
+       
+       Let's align everything to the left for mobile for better readability.
+       We need to reorder the Next Job items for mobile: Arrow -> Logo -> Text.
+       We can use flex-direction: row-reverse or simply keep it and let it be.
+       
+       Actually, standard mobile UI usually has arrows on the sides.
+       Left item: Arrow Left | Logo | Text
+       Right item: Text | Logo | Arrow Right
+       
+       On mobile:
+       Row 1 (Prev): Arrow | Logo | Text
+       Row 2 (Next): Text | Logo | Arrow (This might look weird if text is right aligned)
+       
+       Better Mobile Layout:
+       Prev: Arrow | Logo | Text (Left aligned)
+       Next: Arrow | Logo | Text (Left aligned) - but the HTML is structured differently.
+       
+       Let's use Flexbox ordering to fix mobile layout for the Next item.
+    */
+    
+    .nav-job-item.next-job {
+        flex-direction: row-reverse; /* Flips: Arrow | Logo | Details */
+        text-align: left; /* Reset text alignment */
+        justify-content: flex-end; /* Align to start (which is now right because of row-reverse? No, row-reverse starts from right) */
+        /* Wait, row-reverse makes it: Arrow (rightmost in DOM) -> Logo -> Details (leftmost in DOM).
+           Visually: Arrow is on Left, Details on Right.
+           So it becomes: Arrow | Logo | Details.
+           This matches the Previous Job layout.
+        */
+    }
+
+    .nav-job-item.next-job .nav-job-details {
+        text-align: left; /* Force left alignment */
+    }
+    
+    /* Adjust arrow margin for consistency */
+    .nav-job-item.next-job .nav-arrow-circle {
+        /* No margin needed if gap handles it */
+    }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -1281,7 +1168,7 @@ img, iframe, ins, video, object, embed {
     }
 
     .job-details-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .section-title {
@@ -1297,6 +1184,9 @@ img, iframe, ins, video, object, embed {
         top: auto;
         min-width: auto;
         z-index: auto;
+        left: 0 !important;
+        right: 0 !important;
+        margin-bottom: 20px;
     }
 
     .page-wrapper {
@@ -1307,23 +1197,26 @@ img, iframe, ins, video, object, embed {
         flex-direction: row;
         gap: 16px;
         overflow-x: auto;
+        justify-content: center; /* Center ads on mobile */
     }
 
     .ad-left .ad-column,
     .ad-right .ad-column {
-        flex-direction: column;
+        flex-direction: row; /* Ensure horizontal on mobile */
     }
 }
 
 /* Small Mobile Devices (320px - 575px) */
 @media (max-width: 575px) {
     .page-wrapper {
-        padding: 0 12px;
+        padding: 0 10px; /* Consistent small padding */
         gap: 12px;
     }
 
     .main-container {
         padding: 12px 0;
+        width: 100%;
+        overflow-x: hidden;
     }
 
     .job-title-section h1 {
@@ -1338,6 +1231,8 @@ img, iframe, ins, video, object, embed {
     .meta-item { font-size: 12px; padding: 6px 10px; }
 }
 
+
+
     .action-btn {
         width: 100%;
         max-width: 300px;
@@ -1345,8 +1240,9 @@ img, iframe, ins, video, object, embed {
         font-size: 16px;
     }
 
+    /* Keep 1 column for small mobile */
     .job-details-container {
-        grid-template-columns: 1fr;
+         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
 
@@ -1355,11 +1251,7 @@ img, iframe, ins, video, object, embed {
         font-size: 14px;
         line-height: 1.6;
     }
-
-    .skill-tag {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
+        
 
     .community-btn {
         width: 100%;
@@ -1487,7 +1379,7 @@ img, iframe, ins, video, object, embed {
     }
 
     .job-details-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .section-title {
@@ -1687,7 +1579,7 @@ img, iframe, ins, video, object, embed {
     }
 
     .job-details-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .section-title {

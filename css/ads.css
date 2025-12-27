@@ -2,8 +2,8 @@
       --popup-bg: rgba(0,0,0,0.65);
       --card-radius: 12px;
       --max-card-width: 420px;
-      --sticky-height-desktop: 90px;
-      --sticky-height-mobile: 60px;
+      --sticky-height-desktop: 130px;
+      --sticky-height-mobile: 100px;
       --z-popup: 99999;
       --z-sticky: 99998;
     }
@@ -53,22 +53,26 @@
     .ad-container {
       min-height: 80px;
       display: flex;
+      flex-direction: column; /* Stack fallback and ad vertically */
       align-items: center;
       justify-content: center;
       overflow: hidden;
       width: 100%;
+      background: transparent !important;
     }
 
     /* Fallback placeholder when ad blocked */
     .ad-fallback {
-      border: 1px dashed #ddd;
-      background: #fafafa;
-      padding: 12px;
+      display: block !important;
+      border: none !important;
+      background: transparent !important;
+      padding: 5px;
       text-align: center;
-      color: #555;
-      font-size: 14px;
-      border-radius: 8px;
-      width:100%;
+      color: #999;
+      font-size: 12px;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     /* ---------- Sticky Bottom Ad ---------- */
@@ -79,14 +83,16 @@
       width: 100%;
       z-index: var(--z-sticky);
       display: flex;
-      align-items: center;
+      align-items: flex-end; /* Align content to bottom */
       justify-content: center;
-      padding: 8px 12px;
+      padding: 0; /* Remove padding to eliminate gaps */
+      margin: 0;
       box-sizing: border-box;
       transform: translateY(100%);
       transition: transform 300ms ease, opacity 300ms ease;
       opacity: 0;
       pointer-events: none;
+      background: #fff; /* Ensure no transparent gap */
     }
     .sticky-ad.active {
       transform: translateY(0);
@@ -107,6 +113,13 @@
       position:relative;
       padding: 6px 14px;
       box-sizing: border-box;
+    }
+    
+    /* Override global ad styles for sticky container */
+    .sticky-inner .adsbygoogle {
+      height: 100% !important;
+      min-height: unset !important;
+      max-height: 100% !important;
     }
 
 .sticky-close {
@@ -144,6 +157,12 @@
 
     /* ensure ins.adsbygoogle takes space when present */
     ins.adsbygoogle { display:block !important; width:100% !important; height:auto !important; min-height:50px; }
+
+    /* Override any global min-height for sticky ads */
+    .sticky-inner ins.adsbygoogle {
+        min-height: 50px !important;
+        height: 100% !important;
+    }
 
     .price-alert-container {
             max-width: 1000px;

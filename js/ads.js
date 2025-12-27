@@ -207,6 +207,14 @@
       if (!sticky || sticky.classList.contains('active')) return;
       safeLog('showSticky called', { force, isMobile: isMobile() });
 
+      // FORCE height on sticky-inner to override AdSense inline styles
+      const h = isMobile() ? (getComputedStyle(document.documentElement).getPropertyValue('--sticky-height-mobile') || '50px') : (getComputedStyle(document.documentElement).getPropertyValue('--sticky-height-desktop') || '30px');
+      if (stickyInner) {
+          stickyInner.style.setProperty('height', h.trim(), 'important');
+          stickyInner.style.setProperty('min-height', 'unset', 'important');
+          stickyInner.style.setProperty('max-height', h.trim(), 'important');
+      }
+
       // try ensure script and push
       ensureAdsenseScript(cfg.adsenseClientId).then(() => {
         safePushAds();
@@ -219,6 +227,24 @@
         sticky.setAttribute('aria-hidden', 'false');
         setTimeout(() => showFallbackIfBlocked(stickyInner), 900);
       });
+      
+      // Observer to fight back if AdSense adds inline styles
+      if (stickyInner && window.MutationObserver) {
+          const obs = new MutationObserver((mutations) => {
+              mutations.forEach((m) => {
+                  if (m.type === 'attributes' && m.attributeName === 'style') {
+                      const currentH = stickyInner.style.height;
+                      const targetH = isMobile() ? (getComputedStyle(document.documentElement).getPropertyValue('--sticky-height-mobile') || '50px').trim() : (getComputedStyle(document.documentElement).getPropertyValue('--sticky-height-desktop') || '30px').trim();
+                      if (currentH !== targetH) {
+                          stickyInner.style.setProperty('height', targetH, 'important');
+                          stickyInner.style.setProperty('min-height', 'unset', 'important');
+                          stickyInner.style.setProperty('max-height', targetH, 'important');
+                      }
+                  }
+              });
+          });
+          obs.observe(stickyInner, { attributes: true });
+      }
     }
 
     function hideSticky(userInitiated = false) {

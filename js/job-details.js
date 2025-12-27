@@ -241,107 +241,88 @@ class JobDetailsManager {
 
             if (!previousJobCard || !nextJobCard) return;
 
-            // Add loading state
-            previousJobCard.classList.add('loading');
-            nextJobCard.classList.add('loading');
-
-            // Get current job's creation timestamp or use current time as fallback
-            const currentJobTimestamp = this.currentJob.createdAt || new Date();
-            const jobType = this.jobType || 'private';
-
-            // Query for previous job (created before current job)
-            const previousJobQuery = query(
-                collection(db, this.getCollectionName()),
-                where('createdAt', '<', currentJobTimestamp),
-                orderBy('createdAt', 'desc'),
-                limit(1)
-            );
-
-            // Query for next job (created after current job)
-            const nextJobQuery = query(
-                collection(db, this.getCollectionName()),
-                where('createdAt', '>', currentJobTimestamp),
-                orderBy('createdAt', 'asc'),
-                limit(1)
-            );
-
-            // Execute both queries with timeout protection
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Navigation query timeout')), 5000)
-            );
-
-            const navigationPromise = Promise.all([
-                getDocs(previousJobQuery),
-                getDocs(nextJobQuery)
-            ]);
-
-            const [previousSnapshot, nextSnapshot] = await Promise.race([
-                navigationPromise,
-                timeoutPromise
-            ]);
-
-            // Handle previous job
-            if (!previousSnapshot.empty) {
-                const previousJobDoc = previousSnapshot.docs[0];
-                const previousJob = { id: previousJobDoc.id, ...previousJobDoc.data() };
-                await this.populateNavigationCard(previousJobCard, previousJob, 'previous', jobType);
-            } else {
-                // Fallback: try to get the most recent job if no previous job found
-                const fallbackQuery = query(
-                    collection(db, this.getCollectionName()),
-                    orderBy('createdAt', 'desc'),
-                    limit(2)
-                );
-                const fallbackSnapshot = await getDocs(fallbackQuery);
-                
-                if (fallbackSnapshot.docs.length > 1) {
-                    const fallbackJob = fallbackSnapshot.docs[1];
-                    const fallbackJobData = { id: fallbackJob.id, ...fallbackJob.data() };
-                    await this.populateNavigationCard(previousJobCard, fallbackJobData, 'previous', jobType);
-                } else {
-                    this.showEmptyNavigationCard(previousJobCard, 'No previous job available');
-                }
+            // Initialize cursors if not already set
+            if (!this.previousJobCursor) {
+                this.previousJobCursor = this.currentJob.createdAt || new Date();
+            }
+            if (!this.nextJobCursor) {
+                this.nextJobCursor = this.currentJob.createdAt || new Date();
             }
 
-            // Handle next job
-            if (!nextSnapshot.empty) {
-                const nextJobDoc = nextSnapshot.docs[0];
-                const nextJob = { id: nextJobDoc.id, ...nextJobDoc.data() };
-                await this.populateNavigationCard(nextJobCard, nextJob, 'next', jobType);
-            } else {
-                // Fallback: try to get the oldest job if no next job found
-                const fallbackQuery = query(
+            // Initial load
+            await Promise.all([
+                this.loadMoreJobs('previous'),
+                this.loadMoreJobs('next')
+            ]);
+
+        } catch (error) {
+            console.error('Error loading before/after jobs:', error);
+        }
+    }
+
+    // NEW METHOD: Load more jobs for pagination
+    async loadMoreJobs(direction) {
+        const cardId = direction === 'previous' ? 'previousJobCard' : 'nextJobCard';
+        const cardElement = document.getElementById(cardId);
+        if (!cardElement) return;
+
+        try {
+            cardElement.classList.add('loading');
+            const jobType = this.jobType || 'private';
+            
+            // Determine query based on direction
+            let jobQuery;
+            if (direction === 'previous') {
+                jobQuery = query(
                     collection(db, this.getCollectionName()),
-                    orderBy('createdAt', 'asc'),
-                    limit(2)
+                    where('createdAt', '<', this.previousJobCursor),
+                    orderBy('createdAt', 'desc'),
+                    limit(1)
                 );
-                const fallbackSnapshot = await getDocs(fallbackQuery);
+            } else {
+                jobQuery = query(
+                    collection(db, this.getCollectionName()),
+                    where('createdAt', '>', this.nextJobCursor),
+                    orderBy('createdAt', 'asc'),
+                    limit(1)
+                );
+            }
+
+            const snapshot = await getDocs(jobQuery);
+
+            if (!snapshot.empty) {
+                const jobDoc = snapshot.docs[0];
+                const jobData = { id: jobDoc.id, ...jobDoc.data() };
                 
-                if (fallbackSnapshot.docs.length > 1) {
-                    const fallbackJob = fallbackSnapshot.docs[1];
-                    const fallbackJobData = { id: fallbackJob.id, ...fallbackJob.data() };
-                    await this.populateNavigationCard(nextJobCard, fallbackJobData, 'next', jobType);
+                // Update cursor
+                if (direction === 'previous') {
+                    this.previousJobCursor = jobData.createdAt;
                 } else {
-                    this.showEmptyNavigationCard(nextJobCard, 'No next job available');
+                    this.nextJobCursor = jobData.createdAt;
+                }
+
+                await this.populateNavigationCard(cardElement, jobData, direction, jobType);
+            } else {
+                // If no more jobs, try to loop back or just show empty/disabled state
+                // For now, let's disable the arrow or show "No more jobs"
+                // To implement looping, we would reset the cursor to currentJob.createdAt (or opposite end)
+                
+                // Let's implement simple loop:
+                if (direction === 'previous') {
+                     // If no previous, maybe loop to the newest job?
+                     // Or just show "No more previous jobs"
+                     this.showEmptyNavigationCard(cardElement, 'No more previous jobs');
+                     // Disable arrow click? Handled by empty state mostly
+                } else {
+                     this.showEmptyNavigationCard(cardElement, 'No more next jobs');
                 }
             }
 
         } catch (error) {
-            console.error('Error loading before/after jobs:', error);
-            
-            // Show user-friendly error messages
-            const errorMessage = error.message === 'Navigation query timeout' 
-                ? 'Loading timeout - please refresh' 
-                : 'Unable to load navigation';
-                
-            this.showEmptyNavigationCard(document.getElementById('previousJobCard'), errorMessage);
-            this.showEmptyNavigationCard(document.getElementById('nextJobCard'), errorMessage);
+            console.error(`Error loading ${direction} job:`, error);
+            this.showEmptyNavigationCard(cardElement, 'Error loading job');
         } finally {
-            // Remove loading state
-            const previousJobCard = document.getElementById('previousJobCard');
-            const nextJobCard = document.getElementById('nextJobCard');
-            if (previousJobCard) previousJobCard.classList.remove('loading');
-            if (nextJobCard) nextJobCard.classList.remove('loading');
+            cardElement.classList.remove('loading');
         }
     }
 
@@ -362,7 +343,7 @@ class JobDetailsManager {
             const jobTitle = job.jobTitle || job.postName || 'Job Title';
             const companyName = companyData.name || job.companyName || job.bankName || 'Company Name';
             const education = job.educationLevel || job.qualification || 'Education requirements not specified';
-            const companyLogo = companyData.logo || job.companyLogo;
+            const companyLogo = companyData.logo || companyData.logoURL || job.companyLogo;
 
             // Update job title
             const jobTitleEl = cardElement.querySelector('.nav-job-title');
@@ -394,21 +375,58 @@ class JobDetailsManager {
                 };
             }
 
-            // Update view button link
-            const viewBtn = cardElement.querySelector('.nav-view-btn');
-            if (viewBtn) {
-                const jobUrl = `/html/job-details.html?id=${job.id}&type=${jobType}`;
-                viewBtn.setAttribute('onclick', `window.location.href='${jobUrl}'`);
-            }
-
-            // Add click handler to entire card
-            cardElement.addEventListener('click', (e) => {
-                if (!e.target.closest('.nav-view-btn')) {
-                    const jobUrl = `/html/job-details.html?id=${job.id}&type=${jobType}`;
-                    window.location.href = jobUrl;
-                }
+            // SETUP CLICK LISTENERS
+            
+            // 1. Arrow Click (Load More)
+            const arrowEl = cardElement.querySelector('.nav-arrow-circle');
+            // Remove old listener if any (cloning node is a quick way to clear listeners)
+            const newArrowEl = arrowEl.cloneNode(true);
+            arrowEl.parentNode.replaceChild(newArrowEl, arrowEl);
+            
+            newArrowEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.loadMoreJobs(direction);
             });
 
+            // 2. Content Click (Redirect) - Logo and Details
+            const logoWrapper = cardElement.querySelector('.nav-logo-wrapper');
+            const detailsWrapper = cardElement.querySelector('.nav-job-details');
+            const jobUrl = `/html/job-details.html?id=${job.id}&type=${jobType}`;
+            
+            const redirectHandler = (e) => {
+                e.stopPropagation();
+                window.location.href = jobUrl;
+            };
+
+            // Reset listeners
+            if (logoWrapper) {
+                const newLogoWrapper = logoWrapper.cloneNode(true);
+                logoWrapper.parentNode.replaceChild(newLogoWrapper, logoWrapper);
+                newLogoWrapper.addEventListener('click', redirectHandler);
+                // Also re-attach the logo error handler if we cloned the image inside
+                const newLogoImg = newLogoWrapper.querySelector('.nav-logo-img');
+                if (newLogoImg) {
+                    newLogoImg.onerror = function() {
+                        this.src = '/assets/images/companies/default-company.webp';
+                    };
+                }
+            }
+            
+            if (detailsWrapper) {
+                 const newDetailsWrapper = detailsWrapper.cloneNode(true);
+                 detailsWrapper.parentNode.replaceChild(newDetailsWrapper, detailsWrapper);
+                 newDetailsWrapper.addEventListener('click', redirectHandler);
+            }
+
+            // Remove any generic click listeners on the card itself (by cloning if necessary, but we can just not add one)
+            // The previous implementation added a listener to cardElement. We just don't add it here.
+            // If there were existing listeners on cardElement from previous calls, they might persist if we don't clear them.
+            // However, populateNavigationCard is called on the SAME element.
+            // To be safe, we can clone the card element inner content? No, that breaks references.
+            // Best way is to NOT add the listener to cardElement.
+            // But wait, if we call this function multiple times on the same element, the OLD listener on cardElement (from previous code run) might still be there if we didn't refresh page?
+            // Since we are editing the code, the user will reload the page. So it's fine.
+            
             // Remove any empty state classes
             cardElement.classList.remove('empty', 'hidden');
 
@@ -435,7 +453,7 @@ class JobDetailsManager {
             viewBtn.style.display = 'none';
         }
         if (logoImg) {
-            logoImg.src = '/assets/images/default-company.webp';
+            logoImg.src = '/assets/images/companies/default-company.webp';
             logoImg.alt = 'No company logo';
         }
     }
@@ -1219,9 +1237,169 @@ class JobDetailsManager {
         
         skillsContainer.innerHTML = job.skills.map(skill => `
             <span class="skill-tag">
-                ${this.capitalizeFirstLetter(skill)}
+                ${this.formatSkillText(skill)}
             </span>
         `).join('');
+    }
+
+    formatSkillText(skill) {
+        if (!skill) return '';
+        
+        // List of words to force uppercase (Acronyms & Tech Stack)
+        const forceUppercase = new Set([
+            'api', 'wcf', 'rest', 'linq', 'xml', 'json', 'ajax', 'sql', 'css', 'html', 
+            'aws', 'mvc', 'asp', 'net', 'j2ee', 'php', 'qa', 'ui', 'ux', 'seo', 'sem', 
+            'saas', 'paas', 'iaas', 'crm', 'erp', 'cms', 'jwt', 'sdk', 'ide', 'git', 
+            'svn', 'tfs', 'npm', 'yarn', 'spa', 'pwa', 'ssr', 'csr', 'ssg', 'udp', 
+            'tcp', 'ip', 'dns', 'http', 'https', 'ftp', 'ssh', 'ssl', 'tls', 'vm', 
+            'os', 'ios', 'mcsa', 'mcsd', 'ocjp', 'aws', 'gcp', 'azure', 'ci', 'cd',
+            'oop', 'dbms', 'rdbms', 'nosql', 'jdbc', 'odbc', 'orm', 'dom', 'bom',
+            'url', 'uri', 'gui', 'cli', 'crud', 'soap', 'mvvm', 'iot', 'ml', 'ai'
+        ]);
+
+        // List of words to force lowercase (unless they are the first word)
+        const forceLowercase = new Set([
+            'or', 'and', 'of', 'in', 'with', 'a', 'an', 'the', 'to', 'for', 'any', 'etc', 'via', 'by'
+        ]);
+
+        // Special casing map
+        const specialCases = {
+            'jquery': 'jQuery',
+            'javascript': 'JavaScript',
+            'typescript': 'TypeScript',
+            'nodejs': 'Node.js',
+            'node.js': 'Node.js',
+            'angularjs': 'AngularJS',
+            'reactjs': 'React.js',
+            'vuejs': 'Vue.js',
+            'nextjs': 'Next.js',
+            'nuxtjs': 'Nuxt.js',
+            'expressjs': 'Express.js',
+            'mongodb': 'MongoDB',
+            'mysql': 'MySQL',
+            'postgresql': 'PostgreSQL',
+            'dotnet': '.NET',
+            '.net': '.NET',
+            'c#': 'C#',
+            'f#': 'F#',
+            'c++': 'C++',
+            'github': 'GitHub',
+            'gitlab': 'GitLab',
+            'bitbucket': 'Bitbucket',
+            'wordpress': 'WordPress',
+            'powerbi': 'Power BI',
+            'sharepoint': 'SharePoint',
+            'photoshop': 'Photoshop',
+            'illustrator': 'Illustrator',
+            'indesign': 'InDesign',
+            'premiere': 'Premiere',
+            'aftereffects': 'After Effects',
+            'microservices': 'Microservices',
+            'devops': 'DevOps',
+            'fullstack': 'Full Stack',
+            'frontend': 'Frontend',
+            'backend': 'Backend',
+            'html5': 'HTML5',
+            'css3': 'CSS3'
+        };
+
+        // Split by space first
+        const words = skill.trim().split(/\s+/);
+        
+        return words.map((word, index) => {
+            // Handle slashed terms like Api/wcf/rest
+            if (word.includes('/')) {
+                return word.split('/').map(subWord => this.processSingleWord(subWord, forceUppercase, forceLowercase, specialCases, false)).join('/');
+            }
+            return this.processSingleWord(word, forceUppercase, forceLowercase, specialCases, index === 0);
+        }).join(' ');
+    }
+
+    processSingleWord(word, forceUppercase, forceLowercase, specialCases, isFirstWord) {
+        // Remove common punctuation for checking but preserve it in output if needed?
+        // For simplicity, let's just clean the word for checking
+        const cleanWord = word.replace(/[^a-zA-Z0-9\+\#\.]/g, ''); 
+        const lowerWord = cleanWord.toLowerCase();
+        
+        // Check uppercase list
+        if (forceUppercase.has(lowerWord)) {
+            return `<strong>${word.toUpperCase()}</strong>`;
+        }
+        
+        // Check special cases (always bold these too as they are tech terms)
+        if (specialCases[lowerWord]) {
+             // Preserve punctuation if any, but bold the term
+             return word.replace(cleanWord, `<strong>${specialCases[lowerWord]}</strong>`);
+        }
+
+        // Additional bold keywords (Tech terms that might not be in forceUppercase but should be bold)
+        const boldKeywords = new Set([
+            // Languages
+            'java', 'python', 'c', 'c++', 'c#', 'ruby', 'perl', 'swift', 'kotlin', 'go', 'golang', 'rust', 'scala', 
+            'php', 'dart', 'r', 'matlab', 'assembly', 'haskell', 'lua', 'julia', 'vba', 'cobol', 'fortran',
+            'typescript', 'ts', 'javascript', 'js', 'html', 'css', 'bash', 'shell', 'powershell',
+            
+            // Frameworks & Libraries
+            'spring', 'boot', 'django', 'flask', 'rails', 'laravel', 'symfony', 'express', 'node.js', 'nodejs',
+            'angular', 'react', 'vue', 'svelte', 'ember', 'backbone', 'jquery', 'bootstrap', 'tailwind', 'sass', 'less',
+            'next.js', 'nuxt.js', 'gatsby', 'redux', 'mobx', 'rxjs', 'graphql',
+            'tensorflow', 'pytorch', 'keras', 'pandas', 'numpy', 'scikit-learn', 'opencv',
+            
+            // Databases
+            'mysql', 'postgresql', 'postgres', 'sqlite', 'oracle', 'mssql', 'sql', 'pl/sql', 't-sql', 'nosql',
+            'redis', 'cassandra', 'mongo', 'mongodb', 'mariadb', 'couchdb', 'dynamodb', 'firestore', 'firebase', 'supabase',
+            'elasticsearch', 'solr',
+            
+            // DevOps & Tools
+            'git', 'svn', 'mercurial', 'docker', 'kubernetes', 'k8s', 'jenkins', 'gitlab', 'bitbucket', 'jira',
+            'aws', 'azure', 'gcp', 'heroku', 'netlify', 'vercel', 'digitalocean',
+            'linux', 'unix', 'windows', 'macos', 'android', 'ios',
+            'terraform', 'ansible', 'puppet', 'chef', 'vagrant', 'prometheus', 'grafana', 'elk',
+            
+            // Concepts & Architecture
+            'microservices', 'rest', 'restful', 'soap', 'grpc', 'websocket',
+            'agile', 'scrum', 'kanban', 'devops', 'ci/cd', 'tdd', 'bdd',
+            'mvc', 'mvvm', 'oop', 'solid', 'dry',
+            'data', 'structures', 'algorithms', 'dsa', 'system', 'design',
+            'machine', 'learning', 'deep', 'artificial', 'intelligence', 'neural', 'networks',
+            'computer', 'vision', 'natural', 'language', 'processing', 'nlp',
+            'cloud', 'distributed', 'computing', 'serverless',
+            'blockchain', 'crypto', 'web3', 'smart', 'contracts',
+            'security', 'cryptography', 'encryption', 'auth', 'oauth', 'jwt'
+        ]);
+
+        if (boldKeywords.has(lowerWord)) {
+            // Capitalize first letter if it's not already handled
+            const capitalized = isFirstWord ? 
+                word.substring(0, 1).toUpperCase() + word.substring(1) : 
+                word;
+            return `<strong>${capitalized}</strong>`;
+        }
+        
+        // Check lowercase list (only if not first word)
+        if (!isFirstWord && forceLowercase.has(lowerWord)) {
+            return word.toLowerCase();
+        }
+        
+        // Default: Capitalize first letter
+        // Handle words like "content", "management" -> "Content", "Management"
+        // Also handle "web" -> "Web" (not WEB unless in uppercase list)
+        
+        // Re-construct the word with capitalized first letter of the clean part
+        // This is a bit complex if there's punctuation.
+        // Simple approach:
+        if (word.length === 0) return word;
+        
+        // Find the first letter index
+        const firstLetterMatch = word.match(/[a-zA-Z]/);
+        if (firstLetterMatch) {
+            const index = firstLetterMatch.index;
+            return word.substring(0, index) + 
+                   word.charAt(index).toUpperCase() + 
+                   word.substring(index + 1).toLowerCase();
+        }
+        
+        return word;
     }
 
     updateQualificationsSection(job) {
@@ -1247,11 +1425,31 @@ class JobDetailsManager {
     formatDescription(description) {
         if (!description) return '';
         const points = description.split('\n').filter(point => point.trim());
+
+        const boldImportantTerms = (text) => {
+            // Regex for numbers, keywords, and important terms
+            const patterns = [
+                // Numbers (including percentages, years, etc.)
+                /(\d+(?:\.\d+)?(?:%|\+)?)/g,
+                // Specific locations
+                /\b(Bengaluru|Bangalore|Hyderabad|Chennai|Mumbai|Pune|Delhi|Noida|Gurgaon|Kolkata)\b/gi,
+                // Job/Education related keywords
+                /\b(Fresher|Freshers|Experience|Education|Degree|Graduate|Graduation)\b/gi,
+                /\b(B\.?E\.?|B\.?Tech|M\.?Tech|MCA|MBA|BCA|B\.?Sc|M\.?Sc)\b/gi
+            ];
+
+            let processedText = text;
+            patterns.forEach(pattern => {
+                processedText = processedText.replace(pattern, '<strong>$1</strong>');
+            });
+            return processedText;
+        };
+
         return `
             <ul class="description-list">
                 ${points.map(point => `
                     <li class="description-point">
-                        ${point.trim()}
+                        ${boldImportantTerms(point.trim())}
                     </li>
                 `).join('')}
             </ul>
@@ -1278,10 +1476,31 @@ class JobDetailsManager {
 
         const boldTechTerms = (text) => {
             let processedText = text;
+            
+            // Existing tech keywords bolding
             techKeywords.forEach(keyword => {
                 const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
                 processedText = processedText.replace(regex, '<strong>$&</strong>');
             });
+
+            // NEW: Additional bolding for numbers and specific keywords requested by user
+            const additionalPatterns = [
+                // Numbers
+                /(\d+(?:\.\d+)?(?:%|\+)?)/g,
+                // Locations
+                /\b(Bengaluru|Bangalore|Hyderabad|Chennai|Mumbai|Pune|Delhi|Noida|Gurgaon|Kolkata)\b/gi,
+                // Important Keywords
+                /\b(Fresher|Freshers|Experience|Education|Degree|Graduate|Graduation)\b/gi
+            ];
+
+            additionalPatterns.forEach(pattern => {
+                // Avoid double bolding if already bolded by techKeywords (simple check)
+                processedText = processedText.replace(pattern, (match) => {
+                    if (match.includes('<strong>')) return match;
+                    return `<strong>${match}</strong>`;
+                });
+            });
+
             return processedText;
         };
 
