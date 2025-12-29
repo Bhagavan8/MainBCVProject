@@ -117,9 +117,91 @@
                   <button class="btn btn-outline-secondary" id="calcBtnTax">Tax</button>
                   <button class="btn btn-outline-secondary" id="calcBtnSalary">Salary</button>
                   <button class="btn btn-outline-secondary" id="calcBtnInvest">Investment</button>
+                  <button class="btn btn-outline-secondary" id="calcBtnElig">Eligibility</button>
+                  <button class="btn btn-outline-secondary" id="calcBtnBasic">Calculator</button>
                 </div>
               </div>
               <div class="card-body">
+                <div id="calc-basic" class="d-none">
+                  <div class="card bg-light border-0">
+                    <div class="card-body p-2">
+                      <input type="text" class="form-control form-control-lg mb-3 text-end fw-bold fs-3" id="basicCalcDisplay" value="0" readonly>
+                      <div class="row g-2">
+                        <!-- Scientific Row 1 -->
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="sin(">sin</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="cos(">cos</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="tan(">tan</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="PI">π</button></div>
+
+                        <!-- Scientific Row 2 -->
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="log(">log</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="ln(">ln</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="sqrt(">√</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="^">^</button></div>
+
+                        <!-- Scientific Row 3 -->
+                        <div class="col-3"><button class="btn btn-secondary w-100 fs-5 calc-btn" data-val="(">(</button></div>
+                        <div class="col-3"><button class="btn btn-secondary w-100 fs-5 calc-btn" data-val=")">)</button></div>
+                        <div class="col-3"><button class="btn btn-info w-100 fs-6 calc-btn" data-val="E">e</button></div>
+                        <div class="col-3"><button class="btn btn-danger w-100 fs-5 calc-btn" data-val="C">C</button></div>
+
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="7">7</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="8">8</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="9">9</button></div>
+                        <div class="col-3"><button class="btn btn-warning w-100 fs-5 calc-btn" data-val="/">÷</button></div>
+
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="4">4</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="5">5</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="6">6</button></div>
+                        <div class="col-3"><button class="btn btn-warning w-100 fs-5 calc-btn" data-val="*">×</button></div>
+
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="1">1</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="2">2</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="3">3</button></div>
+                        <div class="col-3"><button class="btn btn-warning w-100 fs-5 calc-btn" data-val="-">−</button></div>
+
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val="0">0</button></div>
+                        <div class="col-3"><button class="btn btn-light w-100 fs-5 calc-btn" data-val=".">.</button></div>
+                        <div class="col-3"><button class="btn btn-secondary w-100 fs-5 calc-btn" data-val="%">%</button></div>
+                        <div class="col-3"><button class="btn btn-warning w-100 fs-5 calc-btn" data-val="+">+</button></div>
+
+                        <div class="col-6"><button class="btn btn-secondary w-100 fs-5 calc-btn" data-val="DEL">⌫</button></div>
+                        <div class="col-6"><button class="btn btn-primary w-100 fs-5 calc-btn" data-val="=">=</button></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="calc-eligibility" class="d-none">
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Gross Monthly Income</label>
+                    <div class="input-group">
+                      <span class="input-group-text">₹</span>
+                      <input type="number" class="form-control" id="eligIncome" min="0" step="1000" value="50000">
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Total Monthly EMIs</label>
+                    <div class="input-group">
+                      <span class="input-group-text">₹</span>
+                      <input type="number" class="form-control" id="eligEmi" min="0" step="1000" value="0">
+                      <div class="form-text">Existing EMIs you are currently paying</div>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Interest Rate</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control" id="eligRate" min="0" step="0.1" value="9">
+                      <span class="input-group-text">%</span>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Tenure</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control" id="eligTenure" min="1" max="30" step="1" value="20">
+                      <span class="input-group-text">years</span>
+                    </div>
+                  </div>
+                </div>
                 <div id="calc-emi">
                   <div class="mb-3">
                     <label class="form-label fw-semibold">Loan Type</label>
@@ -357,6 +439,7 @@
             <li><a href="#tax-calculator">Income Tax Calculator</a> – monthly net and tax amount</li>
             <li><a href="#salary-calculator">Salary In-Hand</a> – deductions (PF/other) and net monthly</li>
             <li><a href="#sip-calculator">SIP Investment</a> – principal invested, returns, future value</li>
+            <li><a href="#eligibility-calculator">Loan Eligibility</a> – max loan amount based on income/EMI</li>
           </ul>
         </div>
         <div class="col-lg-6">
@@ -368,6 +451,8 @@
           <p>See your take-home monthly salary from CTC with PF and other deductions. Adjust percentages to match your employment structure and understand net vs deductions.</p>
           <h2 class="h5 mt-3" id="sip-calculator">SIP Investment Calculator</h2>
           <p>Plan long-term wealth with SIP. Enter monthly contribution, tenure in months, and expected annual return. We use monthly compounding to show principal invested, gains, and future value.</p>
+          <h2 class="h5 mt-3" id="eligibility-calculator">Loan Eligibility Calculator</h2>
+          <p>Estimate the maximum loan amount you can borrow based on your gross monthly income and existing EMI obligations. We assume a 50% Fixed Obligation to Income Ratio (FOIR) to calculate your eligible monthly installment capacity.</p>
         </div>
       </div>
     </section>
@@ -418,7 +503,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6284022198338659"
     crossorigin="anonymous"></script>
   <script src="/js/bootstrap/bootstrap.bundle.min.js" defer></script>
-  <script src="/js/emi.js" defer></script>
+  <script src="/js/emi.js?v=3" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

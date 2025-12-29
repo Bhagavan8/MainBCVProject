@@ -74,10 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnTax = document.getElementById('calcBtnTax');
   const btnSalary = document.getElementById('calcBtnSalary');
   const btnInvest = document.getElementById('calcBtnInvest');
+  const btnElig = document.getElementById('calcBtnElig');
+  const btnBasic = document.getElementById('calcBtnBasic');
   const calcEmi = document.getElementById('calc-emi');
   const calcTax = document.getElementById('calc-tax');
   const calcSalary = document.getElementById('calc-salary');
   const calcInvest = document.getElementById('calc-invest');
+  const calcElig = document.getElementById('calc-eligibility');
+  const calcBasic = document.getElementById('calc-basic');
 
   const loanTypes = document.querySelectorAll('input[name="loanType"]');
   const priceLabel = document.getElementById('priceLabel');
@@ -166,6 +170,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const months = clamp(Number(tenureMonthsEl.value || 0), 1, 360);
     const rate = Number(interestEl.value || 0);
     
+    if (currentCalc === 'basic'){
+      labelA.textContent = '-';
+      labelB.textContent = '-';
+      labelTotal.textContent = '-';
+      emiValueEl.textContent = 'Standard Calculator';
+      emiSubEl.textContent = '';
+      principalText.textContent = '-';
+      interestText.textContent = '-';
+      totalText.textContent = '-';
+      updateDonut(0, 0);
+      scheduleBody.innerHTML = '';
+      graphView.classList.remove('d-none');
+      scheduleView.classList.add('d-none');
+      toggleSchedule.checked = false;
+      toggleSchedule.disabled = true;
+      return;
+    }
+
     if (currentCalc === 'emi'){
       labelA.textContent = 'Principal Loan Amount';
       labelB.textContent = 'Total Interest Payable';
@@ -258,6 +280,46 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleSchedule.checked = false;
       toggleSchedule.disabled = true;
     }
+
+    if (currentCalc === 'elig'){
+      labelA.textContent = 'Max Monthly EMI';
+      labelB.textContent = 'Remaining Income';
+      labelTotal.textContent = 'Net Monthly Income';
+      
+      const income = Math.max(0, Number(document.getElementById('eligIncome').value || 0));
+      const existingEmi = Math.max(0, Number(document.getElementById('eligEmi').value || 0));
+      const rate = Number(document.getElementById('eligRate').value || 0);
+      const tenureYears = Number(document.getElementById('eligTenure').value || 0);
+      
+      const netIncome = Math.max(0, income - existingEmi);
+      const maxEmi = netIncome * 0.5; // 50% FOIR
+      
+      const r = (rate/100)/12;
+      const n = tenureYears * 12;
+      
+      let maxLoan = 0;
+      if (r === 0) {
+          maxLoan = maxEmi * n;
+      } else {
+          const pow = Math.pow(1+r, n);
+          maxLoan = (maxEmi * (pow - 1)) / (r * pow);
+      }
+      
+      emiValueEl.textContent = formatINR(Math.round(maxLoan));
+      emiSubEl.textContent = 'Maximum Loan Amount';
+      
+      principalText.textContent = formatINR(Math.round(maxEmi));
+      interestText.textContent = formatINR(Math.round(netIncome - maxEmi));
+      totalText.textContent = formatINR(Math.round(netIncome));
+      
+      updateDonut(maxEmi, netIncome - maxEmi);
+      
+      scheduleBody.innerHTML = '';
+      graphView.classList.remove('d-none');
+      scheduleView.classList.add('d-none');
+      toggleSchedule.checked = false;
+      toggleSchedule.disabled = true;
+    }
   }
 
   toggleSchedule.addEventListener('change', () => {
@@ -310,23 +372,70 @@ document.addEventListener('DOMContentLoaded', () => {
     update();
   });
 
+  // Eligibility Events
+  ['eligIncome', 'eligEmi', 'eligRate', 'eligTenure'].forEach(id => {
+      document.getElementById(id).addEventListener('input', update);
+  });
+
+  // Basic Calculator Logic
+  let calcExpression = '';
+  const calcDisplay = document.getElementById('basicCalcDisplay');
+  
+  document.querySelectorAll('.calc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.val;
+      if(val === 'C') {
+        calcExpression = '';
+      } else if(val === 'DEL') {
+        calcExpression = calcExpression.toString().slice(0, -1);
+      } else if(val === '=') {
+        try {
+           let evalExpr = calcExpression
+            .replace(/sin\(/g, 'Math.sin(')
+            .replace(/cos\(/g, 'Math.cos(')
+            .replace(/tan\(/g, 'Math.tan(')
+            .replace(/log\(/g, 'Math.log10(')
+            .replace(/ln\(/g, 'Math.log(')
+            .replace(/sqrt\(/g, 'Math.sqrt(')
+            .replace(/PI/g, 'Math.PI')
+            .replace(/E/g, 'Math.E')
+            .replace(/\^/g, '**')
+            .replace(/%/g, '/100');
+           calcExpression = String(eval(evalExpr)); 
+        } catch(e) {
+           calcExpression = 'Error';
+        }
+      } else {
+        if(calcExpression === 'Error') calcExpression = '';
+        calcExpression += val;
+      }
+      calcDisplay.value = calcExpression || '0';
+    });
+  });
+
   function setCalc(type){
     currentCalc = type;
-    [btnEmi, btnTax, btnSalary, btnInvest].forEach(btn => btn.classList.remove('active'));
+    [btnEmi, btnTax, btnSalary, btnInvest, btnElig, btnBasic].forEach(btn => btn.classList.remove('active'));
     if (type==='emi') btnEmi.classList.add('active');
     if (type==='tax') btnTax.classList.add('active');
     if (type==='salary') btnSalary.classList.add('active');
     if (type==='invest') btnInvest.classList.add('active');
+    if (type==='elig') btnElig.classList.add('active');
+    if (type==='basic') btnBasic.classList.add('active');
     calcEmi.classList.toggle('d-none', type!=='emi');
     calcTax.classList.toggle('d-none', type!=='tax');
     calcSalary.classList.toggle('d-none', type!=='salary');
     calcInvest.classList.toggle('d-none', type!=='invest');
+    calcElig.classList.toggle('d-none', type!=='elig');
+    calcBasic.classList.toggle('d-none', type!=='basic');
     update();
   }
   btnEmi.addEventListener('click', ()=>setCalc('emi'));
   btnTax.addEventListener('click', ()=>setCalc('tax'));
   btnSalary.addEventListener('click', ()=>setCalc('salary'));
   btnInvest.addEventListener('click', ()=>setCalc('invest'));
+  btnElig.addEventListener('click', ()=>setCalc('elig'));
+  btnBasic.addEventListener('click', ()=>setCalc('basic'));
 
   syncDownFromRange();
   syncTenureFromRange();
