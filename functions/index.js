@@ -51,7 +51,7 @@ async function sendPush(job, type, id) {
       fcmOptions: { link },
       notification: { icon: '/assets/icons/icon-192.png' }
     },
-    data: { url: link, type }
+    data: { url: link, type, click_action: link }
   };
   const messaging = admin.messaging();
   for (const batch of batches) {

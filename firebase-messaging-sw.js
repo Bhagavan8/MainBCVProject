@@ -21,11 +21,13 @@ if (cfg) {
     const title = payload.notification?.title || 'New Update';
     const body = payload.notification?.body || '';
     const icon = payload.notification?.icon || '/assets/icons/icon-192.png';
-    const click_action = payload.notification?.click_action || '/';
+    // Prioritize data.url, then fcmOptions.link, then click_action, then root
+    const url = payload.data?.url || payload.fcmOptions?.link || payload.notification?.click_action || '/';
+    
     self.registration.showNotification(title, {
       body,
       icon,
-      data: { url: click_action }
+      data: { url }
     });
   });
 }
