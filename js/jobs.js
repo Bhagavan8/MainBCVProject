@@ -8,7 +8,9 @@ import {
     getDoc,
     doc, 
     serverTimestamp,
-    addDoc 
+    addDoc,
+    onSnapshot,
+    limit
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 let currentJobsList = [];
 let currentPaginationState = {
@@ -56,6 +58,7 @@ async function initializePage() {
         updateCategoryCounts();
         loadSidebarJobs();
         loadCompanyWiseJobs();
+        setupRealtimeJobNotifications();
         
         // Event listeners
         document.getElementById('clearFilterBtn').addEventListener('click', clearDateFilter);
@@ -69,6 +72,42 @@ async function initializePage() {
     }
 }
 
+function setupRealtimeJobNotifications(){
+    const notify = (job, type) => {
+        if (Notification.permission !== 'granted') return;
+        const title = (job.jobTitle || job.postName || 'New Job') + ' • ' + (job.companyName || job.bankName || '');
+        const body = (job.location || job.state || 'New opening');
+        const link = `/html/job-details.html?type=${type}&id=${job.id}`;
+        const n = new Notification(title, { body, icon: '/assets/icons/icon-192.png' });
+        n.onclick = () => { window.open(link, '_blank'); };
+    };
+    const ensurePermission = async () => {
+        if (Notification.permission === 'default') {
+            try { await Notification.requestPermission(); } catch {}
+        }
+    };
+    ensurePermission();
+    const setups = [
+        { col: 'jobs', type: 'private' },
+        { col: 'bankJobs', type: 'bank' },
+        { col: 'governmentJobs', type: 'government' }
+    ];
+    setups.forEach(({col, type}) => {
+        let initialized = false;
+        const qRef = query(collection(db, col), where('isActive','==',true), orderBy('createdAt','desc'), limit(10));
+        onSnapshot(qRef, (snap) => {
+            if (!initialized) { initialized = true; return; }
+            snap.docChanges().forEach(change => {
+                if (change.type === 'added') {
+                    const job = { id: change.doc.id, ...change.doc.data() };
+                    notify(job, type);
+                }
+            });
+        }, (err) => {
+            console.warn('Realtime notifications error', err?.message || err);
+        });
+    });
+}
 // Initialize jobs with proper pagination
 async function initializeJobs() {
     try {
@@ -220,11 +259,25 @@ async function getJobs(jobType) {
 
 
 function createJobCard(job, type) {
-    const getValue = (value, defaultValue = 'Not specified') => value || defaultValue;
-    const trimText = (text, maxLength) => {
-        if (!text) return '';
-        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-    };
+  const getValue = (value, defaultValue = 'Not specified') => value || defaultValue;
+  const trimText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+  const slugify = (s) => (s || '')
+    .toString()
+    .toLowerCase()
+    .replace(/[\s/|_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  const buildJobSlug = (title, company, loc, id) => {
+    const t = slugify(title);
+    const c = slugify(company);
+    const l = slugify(loc);
+    const parts = [t, c, l].filter(Boolean);
+    return `${parts.join('-')}~${id}`;
+  };
     
     const formatDateDisplay = (dateInput) => {
         if (!dateInput) return '';
@@ -253,8 +306,8 @@ function createJobCard(job, type) {
         jobTitle = getValue(job.postName);
     }
 
-    // Construct Header Title
-    const headerTitle = `${jobTitle} | ${companyName} | ${location}`;
+  // Construct Header Title
+  const headerTitle = `${jobTitle} | ${companyName} | ${location}`;
 
     // Description (Strip HTML)
     let description = job.description || job.about || '';
@@ -263,8 +316,9 @@ function createJobCard(job, type) {
     let plainTextDesc = tmp.textContent || tmp.innerText || "";
     plainTextDesc = trimText(plainTextDesc, 180);
 
-    const jobLink = `/html/job-details.html?id=${job.id}&type=${type}`;
-    const dateStr = formatDateDisplay(job.createdAt || job.postedAt);
+  const jobSlug = buildJobSlug(jobTitle, companyName, location, job.id);
+  const jobLink = `/html/job-details.html?type=${type}&id=${job.id}&slug=${encodeURIComponent(jobSlug)}`;
+  const dateStr = formatDateDisplay(job.createdAt || job.postedAt);
 
     return `
         <div class="job-list-card">
@@ -381,6 +435,9 @@ function updatePaginationUI() {
 
     // Update URL
     updateUrlWithPagination();
+    
+    // Inject ItemList JSON-LD for SEO
+    injectItemListSchema(paginatedJobs);
 }
 
 // Add these new functions for pagination
@@ -454,6 +511,37 @@ function updateUrlWithPagination() {
     window.history.replaceState({}, '', url);
 }
 
+function injectItemListSchema(jobs) {
+    try {
+        const items = jobs.map((job, idx) => {
+            const title = job.jobTitle || job.postName || job.title || 'Job';
+            const company = job.companyName || job.bankName || job.company || '';
+            const loc = job.location || job.state || '';
+            const slugify = (s) => (s || '').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
+            const slug = `${slugify(title)}-${slugify(company)}-${slugify(loc)}~${job.id}`;
+            const url = `${location.origin}/html/job-details.html?type=${encodeURIComponent(job.type)}&id=${encodeURIComponent(job.id)}&slug=${encodeURIComponent(slug)}`;
+            return {
+                "@type": "ListItem",
+                "position": idx + 1 + ((currentPaginationState.page - 1) * 10),
+                "name": `${title} at ${company}`,
+                "url": url
+            };
+        });
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": items
+        };
+        let script = document.getElementById('jobs-itemlist-jsonld');
+        if (!script) {
+            script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = 'jobs-itemlist-jsonld';
+            document.head.appendChild(script);
+        }
+        script.textContent = JSON.stringify(schema);
+    } catch (_) {}
+}
 
 
 async function filterByCategory(category) {
@@ -702,14 +790,23 @@ function formatDate(dateInput) {
 }
 // In your displayJobs function, after setting the jobsGrid innerHTML
 jobsGrid.addEventListener('click', (e) => {
-    const applyButton = e.target.closest('.apply-btn');
-    if (applyButton) {
-        const jobId = applyButton.dataset.jobId;
-        const jobType = applyButton.dataset.jobType;
-        if (jobId && jobType) {
-            window.location.href = `/html/job-details.html?id=${jobId}&type=${jobType}`;
-        }
+  const applyButton = e.target.closest('.apply-btn');
+  if (applyButton) {
+    const jobId = applyButton.dataset.jobId;
+    const jobType = applyButton.dataset.jobType;
+    if (jobId && jobType) {
+      const card = applyButton.closest('.job-list-card');
+      const titleEl = card?.querySelector('.job-title-heading');
+      const headerTitle = titleEl?.textContent || '';
+      const parts = headerTitle.split('|').map(s => s.trim());
+      const jobTitle = parts[0] || '';
+      const companyName = parts[1] || '';
+      const location = parts[2] || '';
+      const slugify = (s) => (s || '').toLowerCase().replace(/[\s/|_]+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '');
+      const jobSlug = `${slugify(jobTitle)}-${slugify(companyName)}-${slugify(location)}~${jobId}`;
+      window.location.href = `/html/job-details.html?type=${jobType}&id=${jobId}&slug=${encodeURIComponent(jobSlug)}`;
     }
+  }
 });
 
 // Add missing export statement if needed
@@ -947,7 +1044,11 @@ const loadSidebarJobs = async () => {
             const jobs = containerId === 'recentJobs' ? recentJobs : mostViewedJobs;
 
             container.innerHTML = jobs.map((job, index) => `
-                <a href="/html/job-details.html?id=${job.id}&type=${job.type}" 
+                <a href="/html/job-details.html?type=${job.type}&id=${job.id}&slug=${encodeURIComponent(
+                    [(job.title||job.jobTitle||'').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,''),
+                     (job.company||job.companyName||'').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,''),
+                     (job.location||'').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'')
+                    ].filter(Boolean).join('-') + '~' + job.id)}" 
                    class="list-group-item list-group-item-action py-2 fade-in"
                    style="animation-delay: ${index * 0.1}s">
                     <div class="d-flex justify-content-between align-items-start">
@@ -1329,7 +1430,11 @@ window.showCompanyRoles = async function(companyIdentifier, isOldFormat) {
                 </div>
             </div>
             ${jobs.map(job => `
-                <a href="/html/job-details.html?id=${job.id}&type=private" 
+                <a href="/html/job-details.html?type=private&id=${job.id}&slug=${encodeURIComponent(
+                    [(job.jobTitle||'').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,''),
+                     (job.companyName||companyName||'').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,''),
+                     (job.location||'').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'')
+                    ].filter(Boolean).join('-') + '~' + job.id)}" 
                    class="list-group-item list-group-item-action role-item py-3">
                     <h6 class="mb-1">${job.jobTitle}</h6>
                     <div class="d-flex align-items-center justify-content-between">
@@ -1783,4 +1888,3 @@ function parseJobDate(raw) {
         return null;
     } catch (e) { return null; }
 }
-

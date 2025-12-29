@@ -23,8 +23,23 @@ class JobDetailsManager {
         }
 
         JobDetailsManager.instance = this;
-        this.jobId = new URLSearchParams(window.location.search).get('id');
-        this.jobType = new URLSearchParams(window.location.search).get('type');
+        const params = new URLSearchParams(window.location.search);
+        this.jobId = params.get('id');
+        this.jobType = params.get('type');
+        this.slug = params.get('slug');
+        if (!this.jobId || !this.jobType) {
+            const path = window.location.pathname;
+            const m = path.match(/^\/jobs\/([^/]+)\/(.+)$/);
+            if (m) {
+                this.jobType = decodeURIComponent(m[1]);
+                const slugStr = decodeURIComponent(m[2]);
+                const idFromSlug = slugStr.split('~').pop();
+                if (idFromSlug) {
+                    this.jobId = idFromSlug;
+                    this.slug = slugStr;
+                }
+            }
+        }
         this.currentJob = null;
         this.currentCompany = null;
         this.viewsTracked = false;
@@ -99,6 +114,7 @@ class JobDetailsManager {
     async init() {
         await this.loadJobDetails();
         if (this.currentJob) {
+            this.updatePrettyUrl();
             this.setupEventListeners();
             this.initializeAds();
             this.setupNavigationScroll();
@@ -145,6 +161,31 @@ class JobDetailsManager {
         }
     }
 
+    updatePrettyUrl() {
+        try {
+            const title = this.currentJob?.jobTitle || this.currentJob?.postName || '';
+            const company = this.currentJob?.companyName || this.currentJob?.bankName || '';
+            const loc = this.currentJob?.location || this.currentJob?.state || '';
+            const slugify = (s) => (s || '').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
+            const slug = `${slugify(title)}-${slugify(company)}-${slugify(loc)}~${this.jobId}`;
+            const canonical = `${location.origin}/html/job-details.html?type=${encodeURIComponent(this.jobType)}&id=${encodeURIComponent(this.jobId)}&slug=${encodeURIComponent(slug)}`;
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, canonical);
+            }
+            this.updateCanonicalLink(canonical);
+        } catch (_) {}
+    }
+
+    updateCanonicalLink(url) {
+        let link = document.querySelector('link[rel="canonical"]');
+        if (!link) {
+            link = document.createElement('link');
+            link.setAttribute('rel', 'canonical');
+            document.head.appendChild(link);
+        }
+        link.setAttribute('href', url);
+    }
+
     async updateUI() {
         // Ensure company data is fetched and merged before updating UI components
         await this.fetchAndMergeCompanyData();
@@ -162,9 +203,14 @@ class JobDetailsManager {
         
         // UPDATE: Add meta tags update for social sharing
         this.updateMetaTagsForSharing(this.currentJob);
+        this.injectJobPostingSchema(this.currentJob);
         
-        // NEW: Load before/after jobs navigation
-        await this.loadBeforeAfterJobs();
+        // NEW: Load before/after jobs navigation deferred
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => this.loadBeforeAfterJobs());
+        } else {
+            setTimeout(() => this.loadBeforeAfterJobs(), 0);
+        }
         
         this.initializeSocialShare();
         this.setupEventListeners();
@@ -180,6 +226,7 @@ class JobDetailsManager {
             job.description.substring(0, 160) + '...' : 
             'Apply for this amazing job opportunity with great benefits and career growth. Join now!';
         const currentUrl = window.location.href;
+        const ogUrl = currentUrl; 
         
         // Generate OG Image URL
         const ogImageUrl = this.generateOGImageUrl(jobTitle, companyName);
@@ -187,7 +234,7 @@ class JobDetailsManager {
         // Update Open Graph tags
         this.updateMetaTag('property', 'og:title', `${jobTitle} at ${companyName} | BCVWorld`);
         this.updateMetaTag('property', 'og:description', jobDescription);
-        this.updateMetaTag('property', 'og:url', currentUrl);
+        this.updateMetaTag('property', 'og:url', ogUrl);
         this.updateMetaTag('property', 'og:image', ogImageUrl);
         this.updateMetaTag('property', 'og:image:width', '1200');
         this.updateMetaTag('property', 'og:image:height', '630');
@@ -204,6 +251,53 @@ class JobDetailsManager {
         document.title = `${jobTitle} at ${companyName} | BCVWorld`;
         
         console.log('Meta tags updated for sharing:', { jobTitle, companyName, ogImageUrl });
+    }
+
+    injectJobPostingSchema(job) {
+        const title = job.jobTitle || job.postName || 'Job';
+        const company = job.companyName || job.bankName || 'Company';
+        const descriptionHtml = job.description || job.about || '';
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = descriptionHtml;
+        const description = (tempDiv.textContent || tempDiv.innerText || '').trim().slice(0, 500);
+        const datePosted = (job.createdAt?.toDate ? job.createdAt.toDate() : (job.createdAt || new Date()));
+        const validThrough = job.lastDate?.toDate ? job.lastDate.toDate() : (job.lastDate || null);
+        const location = job.location || job.state || '';
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "JobPosting",
+            "title": title,
+            "description": description,
+            "datePosted": new Date(datePosted).toISOString(),
+            ...(validThrough ? {"validThrough": new Date(validThrough).toISOString()} : {}),
+            "employmentType": job.employmentType || "FULL_TIME",
+            "hiringOrganization": {
+                "@type": "Organization",
+                "name": company
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "IN",
+                    "addressLocality": location
+                }
+            },
+            "identifier": {
+                "@type": "PropertyValue",
+                "name": "BCVWorld",
+                "value": this.jobId
+            },
+            "url": window.location.href
+        };
+        let script = document.getElementById('jobposting-jsonld');
+        if (!script) {
+            script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = 'jobposting-jsonld';
+            document.head.appendChild(script);
+        }
+        script.textContent = JSON.stringify(schema);
     }
 
     // NEW METHOD: Update individual meta tag
@@ -391,17 +485,21 @@ class JobDetailsManager {
             // Update company logo
             const logoImg = cardElement.querySelector('.nav-logo-img');
             if (logoImg) {
-                const logoSrc = companyLogo?.startsWith('http') 
-                    ? companyLogo 
-                    : `/assets/images/companies/${companyLogo || 'default-company.webp'}`;
-                logoImg.src = logoSrc;
-                logoImg.alt = `${companyName} Logo`;
-                
-                // Add error handling for logo
-                logoImg.onerror = function() {
-                    this.src = '/assets/images/companies/default-company.webp';
-                };
-            }
+            const logoSrc = companyLogo?.startsWith('http') 
+                ? companyLogo 
+                : `/assets/images/companies/${companyLogo || 'default-company.webp'}`;
+            logoImg.src = logoSrc;
+            logoImg.alt = `${companyName} Logo`;
+            logoImg.setAttribute('loading', 'lazy');
+            logoImg.setAttribute('decoding', 'async');
+            logoImg.setAttribute('width', '48');
+            logoImg.setAttribute('height', '48');
+            
+            // Add error handling for logo
+            logoImg.onerror = function() {
+                this.src = '/assets/images/companies/default-company.webp';
+            };
+        }
 
             // SETUP CLICK LISTENERS
             
@@ -620,38 +718,26 @@ class JobDetailsManager {
     }
 
     initializeAds() {
-        console.log('Initializing ads...');
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                setTimeout(() => {
-                    this.initializeAdsOnce();
-                }, 1000);
-            });
+        const init = () => this.initializeAdsOnce();
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(init, { timeout: 1500 });
         } else {
-            setTimeout(() => {
-                this.initializeAdsOnce();
-            }, 1000);
+            setTimeout(init, 800);
         }
     }
 
     initializeAdsOnce() {
-        console.log('Starting ad initialization...');
-        
         try {
             const adContainers = document.querySelectorAll('.adsbygoogle:not([data-initialized])');
-            console.log(`Found ${adContainers.length} ad containers to initialize`);
 
             if (adContainers.length === 0) {
-                console.log('No uninitialized ad containers found');
                 return;
             }
 
-            adContainers.forEach((container, index) => {
+            const initContainer = (container, index) => {
                 const containerId = container.id || `ad-${index}`;
                 
                 if (this.adContainersInitialized.has(containerId)) {
-                    console.log(`Ad container ${containerId} already initialized, skipping`);
                     return;
                 }
 
@@ -659,11 +745,8 @@ class JobDetailsManager {
                 const isVisible = rect.width > 0 && rect.height > 0;
                 
                 if (!isVisible) {
-                    console.warn(`Ad container ${containerId} has zero width/height, skipping`);
                     return;
                 }
-
-                console.log(`Initializing ad container ${containerId} with width: ${rect.width}px`);
 
                 try {
                     container.setAttribute('data-initialized', 'true');
@@ -671,29 +754,32 @@ class JobDetailsManager {
                     
                     (window.adsbygoogle = window.adsbygoogle || []).push({});
                     
-                    console.log(`Ad container ${containerId} initialization requested`);
-                    
                 } catch (error) {
-                    console.error(`Error initializing ad container ${containerId}:`, error);
                     container.removeAttribute('data-initialized');
                     this.adContainersInitialized.delete(containerId);
                 }
-            });
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        observer.unobserve(el);
+                        initContainer(el, Array.from(adContainers).indexOf(el));
+                    }
+                });
+            }, { rootMargin: '200px 0px' });
+
+            adContainers.forEach((container) => observer.observe(container));
 
         } catch (error) {
-            console.error('Error in ad initialization process:', error);
         }
     }
 
     updateJobStats(job) {
         try {
-            console.log('=== DEBUG: updateJobStats started ===');
-            console.log('Full job object:', job);
-            
             const jobCodeEl = document.getElementById('jobCode');
             if (jobCodeEl) {
-                console.log('Job code element found');
-                
                 const possibleJobCodeFields = [
                     'referralCode', 'referralcode', 'refCode', 'refcode', 'referenceCode',
                     'jobCode', 'jobcode', 'code', 'postShortName', 'postshortname',
@@ -711,25 +797,14 @@ class JobDetailsManager {
                         break;
                     }
                 }
-                
-                console.log('Job code search results:', {
-                    foundJobCode,
-                    foundField,
-                    referralCode: job.referralCode
-                });
-                
                 jobCodeEl.textContent = foundJobCode;
-                console.log('Job code set to:', foundJobCode);
-                
             } else {
-                console.error('Job code element NOT FOUND in DOM');
             }
 
             const viewCountEl = document.getElementById('viewCount');
             if (viewCountEl) {
                 const views = job.views || 0;
                 viewCountEl.textContent = views.toLocaleString();
-                console.log('View count set to:', views);
             }
 
             const likeCountEl = document.getElementById('likeCount');
@@ -738,17 +813,13 @@ class JobDetailsManager {
             if (likeCountEl) {
                 const likes = job.likes || 0;
                 likeCountEl.textContent = likes.toLocaleString();
-                console.log('Like count set to:', likes);
             }
 
             if (likeButton) {
                 this.setupLikeButton(likeButton, job);
             }
 
-            console.log('=== DEBUG: updateJobStats completed ===');
-
         } catch (error) {
-            console.error('Error updating job stats:', error);
         }
     }
 
@@ -1118,6 +1189,10 @@ class JobDetailsManager {
                 <img src="${logoUrl}" 
                      alt="${job.companyName} Logo" 
                      class="company-logo"
+                     width="64" height="64"
+                     loading="eager"
+                     decoding="async"
+                     fetchpriority="high"
                      onerror="this.src='/assets/images/companies/default-company.webp'">`;
         }
     }
