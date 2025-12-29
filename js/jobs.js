@@ -77,7 +77,7 @@ function setupRealtimeJobNotifications(){
         if (Notification.permission !== 'granted') return;
         const title = (job.jobTitle || job.postName || 'New Job') + ' • ' + (job.companyName || job.bankName || '');
         const body = (job.location || job.state || 'New opening');
-        const link = `/html/job-details.html?type=${type}&id=${job.id}`;
+        const link = `/html/job-details.html?type=${type}&id=${job.id}&t=${Date.now()}`;
         const n = new Notification(title, { body, icon: '/assets/icons/icon-192.png' });
         n.onclick = () => { window.open(link, '_blank'); };
     };
@@ -317,7 +317,7 @@ function createJobCard(job, type) {
     plainTextDesc = trimText(plainTextDesc, 180);
 
   const jobSlug = buildJobSlug(jobTitle, companyName, location, job.id);
-  const jobLink = `/html/job-details.html?type=${type}&id=${job.id}&slug=${encodeURIComponent(jobSlug)}`;
+  const jobLink = `/html/job-details.html?type=${type}&id=${job.id}&slug=${encodeURIComponent(jobSlug)}&t=${Date.now()}`;
   const dateStr = formatDateDisplay(job.createdAt || job.postedAt);
 
     return `
@@ -519,7 +519,7 @@ function injectItemListSchema(jobs) {
             const loc = job.location || job.state || '';
             const slugify = (s) => (s || '').toLowerCase().replace(/[\s/|_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
             const slug = `${slugify(title)}-${slugify(company)}-${slugify(loc)}~${job.id}`;
-            const url = `${location.origin}/html/job-details.html?type=${encodeURIComponent(job.type)}&id=${encodeURIComponent(job.id)}&slug=${encodeURIComponent(slug)}`;
+            const url = `${location.origin}/html/job-details.html?type=${encodeURIComponent(job.type)}&id=${encodeURIComponent(job.id)}&slug=${encodeURIComponent(slug)}&t=${Date.now()}`;
             return {
                 "@type": "ListItem",
                 "position": idx + 1 + ((currentPaginationState.page - 1) * 10),

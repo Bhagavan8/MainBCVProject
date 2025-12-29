@@ -3,7 +3,7 @@
     "source": "functions"
   },
   "hosting": {
-    "public": "public",
+    "public": ".",
     "headers": [
       {
         "source": "**/*.@(jpg|jpeg|gif|png|css|js|woff2)",
@@ -19,13 +19,14 @@
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "max-age=3600"
+            "value": "no-cache, no-store, must-revalidate"
           }
         ]
       }
     ],
     "ignore": [
       "firebase.json",
+      "functions/**",
       "**/.*",
       "**/node_modules/**"
     ]

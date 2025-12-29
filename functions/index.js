@@ -29,7 +29,7 @@ function buildLink(job, type, id) {
   const parts = [slugify(title), slugify(company), slugify(loc)].filter(Boolean).join('-');
   const slug = `${parts}~${id}`;
   const origin = functions.config().app?.origin || 'https://bcvworld.com';
-  return `${origin}/html/job-details.html?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}&slug=${encodeURIComponent(slug)}`;
+  return `${origin}/html/job-details.html?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}&slug=${encodeURIComponent(slug)}&t=${Date.now()}`;
 }
 
 async function sendPush(job, type, id) {
