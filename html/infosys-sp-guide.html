@@ -47,17 +47,38 @@
             top: 20px;
             right: 20px;
         }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+        }
         @media print {
             .no-print { display: none !important; }
             body { padding: 0; }
             .section-box { border: none; padding: 0; margin-bottom: 30px; }
         }
+        @media (max-width: 768px) {
+            .print-btn, .back-btn {
+                position: static;
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .header-strip {
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
 <body class="p-4">
-    <button class="btn btn-primary print-btn no-print" onclick="window.print()">
-        <i class="bi bi-printer"></i> Print / Save as PDF
-    </button>
+    <div class="d-flex gap-2 justify-content-between no-print mb-3">
+        <a href="infosys-specialist-programmer-interview-questions-2025.html" class="btn btn-outline-secondary back-btn">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <button class="btn btn-primary print-btn" onclick="window.print()">
+            <i class="bi bi-file-earmark-pdf"></i> Save as PDF / Print
+        </button>
+    </div>
 
     <div class="header-strip">
         <h1 class="fw-bold mb-2">Infosys Specialist Programmer (SP)</h1>
@@ -83,6 +104,32 @@
                     <h4 class="fw-bold text-primary">₹21 LPA</h4>
                     <small class="text-muted">Salary Package</small>
                 </div>
+            </div>
+        </div>
+
+        <!-- 2024 Real-time Experience -->
+        <div class="section-box bg-light">
+            <h3 class="section-title text-danger"><i class="bi bi-fire me-2"></i>2024-25 Real-time Interview Pattern</h3>
+            <p>Based on recent candidates' experiences (Off-campus & On-campus):</p>
+            
+            <div class="mb-3">
+                <h6 class="fw-bold"><i class="bi bi-1-circle-fill text-primary me-2"></i>Online Coding Round (3 Hours)</h6>
+                <ul class="mb-2">
+                    <li><strong>Question 1 (Easy):</strong> Arrays/Strings (e.g., Kadane's, Sliding Window).</li>
+                    <li><strong>Question 2 (Medium):</strong> Greedy/Heap/Stack (e.g., Merge Intervals, Next Greater Element).</li>
+                    <li><strong>Question 3 (Hard):</strong> Dynamic Programming/Graph (e.g., LCS, Knapsack, Rotten Oranges).</li>
+                </ul>
+            </div>
+            
+            <div class="mb-3">
+                <h6 class="fw-bold"><i class="bi bi-2-circle-fill text-primary me-2"></i>Technical Interview (45-60 Mins)</h6>
+                <ul class="mb-2">
+                    <li><strong>No Intro (Sometimes):</strong> Interviewers may jump directly to DSA questions.</li>
+                    <li><strong>Coding on Paper/Notepad:</strong> Be ready to write full code without an IDE.</li>
+                    <li><strong>Project Deep Dive:</strong> Questions on Architecture, Database Schema, and Challenges faced.</li>
+                    <li><strong>Emerging Tech:</strong> Be prepared for questions on AI/ML or Cloud if mentioned in resume.</li>
+                    <li><strong>Scenario Based:</strong> "How would you design a system to handle X?"</li>
+                </ul>
             </div>
         </div>
 

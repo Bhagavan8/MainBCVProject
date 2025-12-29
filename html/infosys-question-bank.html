@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infosys SP 200+ Question Bank | BCVWorld</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -44,32 +45,73 @@
             z-index: -1;
             white-space: nowrap;
         }
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                padding: 0;
-            }
-            a {
-                text-decoration: none;
-                color: #333;
-            }
-        }
         .print-btn {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 1000;
         }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                padding: 0;
+                font-size: 11pt;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            a {
+                text-decoration: none;
+                color: #333;
+            }
+            .section-title {
+                margin-top: 20px;
+                padding: 5px 10px;
+                page-break-after: avoid;
+            }
+            li {
+                page-break-inside: avoid;
+            }
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 20px !important;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .print-btn, .back-btn {
+                position: static;
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .watermark {
+                font-size: 50px;
+            }
+        }
     </style>
 </head>
 <body class="p-5">
     <div class="watermark">BCVWorld</div>
     
-    <button class="btn btn-primary print-btn no-print" onclick="window.print()">
-        Download / Print PDF
-    </button>
+    <div class="d-flex gap-2 justify-content-between no-print mb-3">
+        <a href="infosys-specialist-programmer-interview-questions-2025.html" class="btn btn-outline-secondary back-btn">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <button class="btn btn-primary print-btn" onclick="window.print()">
+            <i class="bi bi-file-earmark-pdf"></i> Save as PDF / Print
+        </button>
+    </div>
 
     <div class="container">
         <div class="header">
@@ -79,13 +121,40 @@
         </div>
 
         <div class="alert alert-info no-print">
-            <strong>Instructions:</strong> Click the "Download / Print PDF" button (top right) and select "Save as PDF" in the destination to save this file.
+            <strong>Instructions:</strong> Click the "Save as PDF / Print" button to save this file. Ensure "Save as PDF" is selected in the destination.
         </div>
-
-        <!-- Section 1: Data Structures & Algorithms -->
-        <h3 class="section-title">I. Data Structures & Algorithms (Coding Round & Technical)</h3>
         
-        <h5 class="mt-3 text-primary">Arrays & Strings</h5>
+        <!-- Section 0: Latest Trends -->
+        <h3 class="section-title text-danger">★ Latest 2024-2025 Asked Questions (Real-time)</h3>
+        <p class="text-muted small mb-2"><i class="bi bi-info-circle"></i> Based on recent interview experiences (Off-campus & On-campus)</p>
+        <div class="alert alert-light border-danger">
+            <h6 class="fw-bold text-danger">Recent Coding Problems (LeetCode/GFG):</h6>
+            <ul class="mb-2">
+                <li><strong>Confirmation Rate</strong> (SQL Medium) - <em>Very Frequent</em></li>
+                <li><strong>Insert Interval</strong> (Arrays Medium)</li>
+                <li><strong>Circular Tour</strong> (Greedy/Queue Medium)</li>
+                <li><strong>Next Smallest Palindrome</strong> (Strings Hard)</li>
+                <li><strong>String Compression</strong> (e.g., "aaabbbcc" -> "a3b3c2")</li>
+                <li><strong>Build a Heap from Array</strong> (Heapify)</li>
+                <li><strong>Rotten Oranges</strong> (Graph BFS)</li>
+            </ul>
+            <h6 class="fw-bold text-danger mt-3">System Design & Concepts:</h6>
+            <ul class="mb-0">
+                <li><strong>Singleton Design Pattern</strong> (Thread-safe implementation)</li>
+                <li><strong>Interface Segregation Principle</strong> (SOLID)</li>
+                <li><strong>Scenario:</strong> Design a system to handle 1M+ requests/sec (Load Balancing, Caching)</li>
+                <li><strong>Scenario:</strong> Optimize a slow database query (Indexing, Partitioning, Query Plan)</li>
+                <li><strong>Project:</strong> Explain Image Processing / Socket Programming / Cloud deployment challenges</li>
+            </ul>
+        </div>
+        <ol class="question-list fw-bold text-dark">
+            <li class="question-item">Swap two numbers without using a third variable.</li>
+            <li class="question-item">Longest Common Subsequence (LCS) - Dynamic Programming.</li>
+            <li class="question-item">Write a program to print a spiral matrix.</li>
+        </ol>
+
+        <!-- Section 1: Arrays & Strings -->
+        <h3 class="section-title">I. Arrays & Strings</h3>
         <ol class="question-list">
             <li class="question-item">Find the maximum sum subarray (Kadane's Algorithm)</li>
             <li class="question-item">Find the missing number in an array of 1 to N</li>
@@ -99,13 +168,51 @@
             <li class="question-item">Group Anagrams from a list of strings</li>
             <li class="question-item">Minimum Window Substring</li>
             <li class="question-item">Longest Palindromic Substring</li>
-            <li class="question-item">Valid Parentheses (Stack)</li>
             <li class="question-item">Product of Array Except Self</li>
             <li class="question-item">Search in Rotated Sorted Array</li>
+            <li class="question-item">Container With Most Water</li>
+            <li class="question-item">3Sum Problem (Find triplets with zero sum)</li>
+            <li class="question-item">Median of Two Sorted Arrays (Hard)</li>
+            <li class="question-item">Sort Colors (0s, 1s, 2s)</li>
+            <li class="question-item">First Missing Positive</li>
+            <li class="question-item">Subarray Sum Equals K</li>
+            <li class="question-item">Rearrange Array Alternately</li>
+            <li class="question-item">Count Pairs with Given Sum</li>
+            <li class="question-item">Row with Max 1s in a Boolean 2D Matrix</li>
+            <li class="question-item">Spiral Matrix Traversal</li>
+            <li class="question-item">Set Matrix Zeroes</li>
+            <li class="question-item">Majority Element (I & II)</li>
+            <li class="question-item">Gas Station (Greedy Circuit)</li>
+            <li class="question-item">Candy Problem (Hard Greedy)</li>
+            <li class="question-item">H-Index (I & II)</li>
+            <li class="question-item">Insert Delete GetRandom O(1)</li>
+            <li class="question-item">Minimum Size Subarray Sum</li>
+            <li class="question-item">Longest Repeating Character Replacement</li>
+            <li class="question-item">Find All Anagrams in a String</li>
+            <li class="question-item">Permutation in String (Sliding Window)</li>
+            <li class="question-item">Game of Life (In-place)</li>
+            <li class="question-item">Increasing Triplet Subsequence</li>
+            <li class="question-item">Summary Ranges</li>
         </ol>
 
-        <h5 class="mt-3 text-primary">Linked Lists</h5>
-        <ol class="question-list" start="16">
+        <!-- Section 2: Searching & Sorting -->
+        <h3 class="section-title">II. Searching & Sorting</h3>
+        <ol class="question-list" start="26">
+            <li class="question-item">Binary Search (Iterative & Recursive)</li>
+            <li class="question-item">Search Insert Position</li>
+            <li class="question-item">Find First and Last Position of Element in Sorted Array</li>
+            <li class="question-item">Find Peak Element</li>
+            <li class="question-item">Kth Largest Element in an Array</li>
+            <li class="question-item">Merge Sort Implementation</li>
+            <li class="question-item">Quick Sort Implementation</li>
+            <li class="question-item">Count Inversions in an Array</li>
+            <li class="question-item">Allocate Minimum Pages (Binary Search on Answer)</li>
+            <li class="question-item">Aggressive Cows Problem</li>
+        </ol>
+
+        <!-- Section 3: Linked Lists -->
+        <h3 class="section-title">III. Linked Lists</h3>
+        <ol class="question-list" start="36">
             <li class="question-item">Reverse a Linked List (Iterative & Recursive)</li>
             <li class="question-item">Detect Cycle in a Linked List (Floyd’s Cycle Finding)</li>
             <li class="question-item">Find the intersection point of two Linked Lists</li>
@@ -116,10 +223,45 @@
             <li class="question-item">Flatten a Multilevel Doubly Linked List</li>
             <li class="question-item">Reverse Nodes in k-Group</li>
             <li class="question-item">Copy List with Random Pointer</li>
+            <li class="question-item">Rotate List</li>
+            <li class="question-item">Remove Duplicates from Sorted List II</li>
+            <li class="question-item">Partition List</li>
+            <li class="question-item">Sort List (Merge Sort on Linked List)</li>
+            <li class="question-item">Odd Even Linked List</li>
         </ol>
 
-        <h5 class="mt-3 text-primary">Trees & Graphs</h5>
-        <ol class="question-list" start="26">
+        <!-- Section 4: Stacks & Queues -->
+        <h3 class="section-title">IV. Stacks & Queues</h3>
+        <ol class="question-list" start="51">
+            <li class="question-item">Implement Queue using Stacks</li>
+            <li class="question-item">Implement Stack using Queues</li>
+            <li class="question-item">Min Stack Implementation</li>
+            <li class="question-item">Next Greater Element</li>
+            <li class="question-item">Valid Parentheses (Balanced Brackets)</li>
+            <li class="question-item">Largest Rectangle in Histogram</li>
+            <li class="question-item">Sliding Window Maximum</li>
+            <li class="question-item">Stock Span Problem</li>
+            <li class="question-item">The Celebrity Problem</li>
+            <li class="question-item">Sort a Stack using Recursion</li>
+            <li class="question-item">Circular Queue Implementation</li>
+            <li class="question-item">Design a Double Ended Queue (Deque)</li>
+            <li class="question-item">Flatten Nested List Iterator</li>
+            <li class="question-item">Implement Stack using Array</li>
+            <li class="question-item">Check for redundant brackets</li>
+            <li class="question-item">Evaluate Reverse Polish Notation</li>
+            <li class="question-item">Basic Calculator (I & II)</li>
+            <li class="question-item">Daily Temperatures</li>
+            <li class="question-item">Remove K Digits</li>
+            <li class="question-item">Task Scheduler</li>
+            <li class="question-item">Design Circular Deque</li>
+            <li class="question-item">Asteroid Collision</li>
+            <li class="question-item">Trapping Rain Water (Stack Solution)</li>
+            <li class="question-item">Simplify Path (Canonical Path)</li>
+        </ol>
+
+        <!-- Section 5: Trees & Graphs -->
+        <h3 class="section-title">V. Trees (Binary Trees & BST)</h3>
+        <ol class="question-list" start="66">
             <li class="question-item">Maximum Depth of Binary Tree</li>
             <li class="question-item">Check if two trees are identical</li>
             <li class="question-item">Level Order Traversal (BFS)</li>
@@ -129,16 +271,91 @@
             <li class="question-item">Diameter of Binary Tree</li>
             <li class="question-item">Binary Tree Maximum Path Sum</li>
             <li class="question-item">Serialize and Deserialize Binary Tree</li>
+            <li class="question-item">Symmetric Tree (Mirror Image)</li>
+            <li class="question-item">Balanced Binary Tree Check</li>
+            <li class="question-item">Path Sum III</li>
+            <li class="question-item">Construct Binary Tree from Preorder and Inorder</li>
+            <li class="question-item">Flatten Binary Tree to Linked List</li>
+            <li class="question-item">Burn a Tree (Minimum time to burn)</li>
+            <li class="question-item">Count Complete Tree Nodes</li>
+            <li class="question-item">Vertical Order Traversal</li>
+            <li class="question-item">Top View of Binary Tree</li>
+            <li class="question-item">Bottom View of Binary Tree</li>
+            <li class="question-item">Kth Smallest Element in BST</li>
+            <li class="question-item">Construct Binary Tree from Inorder and Postorder Traversal</li>
+            <li class="question-item">Populating Next Right Pointers in Each Node</li>
+            <li class="question-item">Convert Sorted Array to Binary Search Tree</li>
+            <li class="question-item">Path Sum (I, II, III)</li>
+            <li class="question-item">Sum Root to Leaf Numbers</li>
+            <li class="question-item">Binary Tree Right Side View</li>
+            <li class="question-item">Maximum Width of Binary Tree</li>
+            <li class="question-item">All Nodes Distance K in Binary Tree</li>
+            <li class="question-item">Lowest Common Ancestor of a Binary Search Tree</li>
+            <li class="question-item">Delete Node in a BST</li>
+            <li class="question-item">Trim a Binary Search Tree</li>
+            <li class="question-item">Range Sum of BST</li>
+            <li class="question-item">Convert BST to Greater Tree</li>
+        </ol>
+
+        <h3 class="section-title">VI. Graphs</h3>
+        <ol class="question-list" start="86">
             <li class="question-item">Number of Islands (Graph BFS/DFS)</li>
             <li class="question-item">Rotting Oranges</li>
             <li class="question-item">Course Schedule (Topological Sort)</li>
             <li class="question-item">Word Ladder</li>
             <li class="question-item">Graph Valid Tree</li>
             <li class="question-item">Dijkstra's Algorithm (Shortest Path)</li>
+            <li class="question-item">Clone Graph</li>
+            <li class="question-item">Number of Provinces</li>
+            <li class="question-item">Surrounded Regions</li>
+            <li class="question-item">Course Schedule II (Order of courses)</li>
+            <li class="question-item">Alien Dictionary</li>
+            <li class="question-item">Prim’s Algorithm (MST)</li>
+            <li class="question-item">Kruskal’s Algorithm (MST)</li>
+            <li class="question-item">Bellman-Ford Algorithm</li>
+            <li class="question-item">Floyd Warshall Algorithm</li>
         </ol>
 
-        <h5 class="mt-3 text-primary">Dynamic Programming (High Priority)</h5>
-        <ol class="question-list" start="41">
+        <!-- Section 7: Greedy Algorithms -->
+        <h3 class="section-title">VII. Greedy Algorithms</h3>
+        <ol class="question-list" start="101">
+            <li class="question-item">Activity Selection Problem</li>
+            <li class="question-item">N Meetings in One Room</li>
+            <li class="question-item">Fractional Knapsack</li>
+            <li class="question-item">Minimum Platforms Required</li>
+            <li class="question-item">Job Sequencing Problem</li>
+            <li class="question-item">Huffman Coding</li>
+            <li class="question-item">Minimum Coins to make a value</li>
+            <li class="question-item">Lemonade Change</li>
+            <li class="question-item">Jump Game I</li>
+            <li class="question-item">Jump Game II (Minimum jumps)</li>
+        </ol>
+
+        <!-- Section 8: Backtracking -->
+        <h3 class="section-title">VIII. Backtracking & Recursion</h3>
+        <ol class="question-list" start="111">
+            <li class="question-item">N-Queens Problem</li>
+            <li class="question-item">Sudoku Solver</li>
+            <li class="question-item">M-Coloring Problem</li>
+            <li class="question-item">Rat in a Maze</li>
+            <li class="question-item">Word Search (Grid)</li>
+            <li class="question-item">Permutations of a String/Array</li>
+            <li class="question-item">Subsets (Power Set)</li>
+            <li class="question-item">Combination Sum</li>
+            <li class="question-item">Palindrome Partitioning</li>
+            <li class="question-item">Letter Combinations of a Phone Number</li>
+            <li class="question-item">Generate Parentheses</li>
+            <li class="question-item">Combination Sum (I, II, III)</li>
+            <li class="question-item">Permutations II (Unique)</li>
+            <li class="question-item">Subsets II (Duplicates)</li>
+            <li class="question-item">Restore IP Addresses</li>
+            <li class="question-item">Partition to K Equal Sum Subsets</li>
+            <li class="question-item">Beautiful Arrangement</li>
+        </ol>
+
+        <!-- Section 9: Dynamic Programming -->
+        <h3 class="section-title">IX. Dynamic Programming (High Priority)</h3>
+        <ol class="question-list" start="121">
             <li class="question-item">Climbing Stairs</li>
             <li class="question-item">Coin Change Problem</li>
             <li class="question-item">Longest Increasing Subsequence (LIS)</li>
@@ -149,11 +366,36 @@
             <li class="question-item">Word Break Problem</li>
             <li class="question-item">Partition Equal Subset Sum</li>
             <li class="question-item">Matrix Chain Multiplication</li>
+            <li class="question-item">Minimum Path Sum (Grid)</li>
+            <li class="question-item">Unique Paths</li>
+            <li class="question-item">House Robber I</li>
+            <li class="question-item">House Robber II (Circular)</li>
+            <li class="question-item">Target Sum</li>
+            <li class="question-item">Unbounded Knapsack (Rod Cutting)</li>
+            <li class="question-item">Egg Dropping Puzzle</li>
+            <li class="question-item">Palindromic Partitioning</li>
+            <li class="question-item">Maximum Sum Increasing Subsequence</li>
+            <li class="question-item">Burst Balloons (Hard)</li>
         </ol>
 
-        <!-- Section 2: Core Java & OOPs -->
-        <h3 class="section-title">II. Core Java & OOPs Concepts</h3>
-        <ol class="question-list" start="51">
+        <!-- Section 10: Bit Manipulation & Math -->
+        <h3 class="section-title">X. Bit Manipulation & Math</h3>
+        <ol class="question-list" start="141">
+            <li class="question-item">Single Number (Find element appearing once)</li>
+            <li class="question-item">Check if a number is Power of Two</li>
+            <li class="question-item">Reverse Bits</li>
+            <li class="question-item">Count Set Bits (Kernighan’s Algo)</li>
+            <li class="question-item">Sieve of Eratosthenes (Prime Numbers)</li>
+            <li class="question-item">GCD and LCM (Euclidean Algo)</li>
+            <li class="question-item">Prime Factors of a Number</li>
+            <li class="question-item">Pascal's Triangle</li>
+            <li class="question-item">Divide Two Integers without operators</li>
+            <li class="question-item">Pow(x, n) - Binary Exponentiation</li>
+        </ol>
+
+        <!-- Section 11: Core Java & OOPs -->
+        <h3 class="section-title">XI. Core Java & OOPs Concepts</h3>
+        <ol class="question-list" start="151">
             <li class="question-item">Explain the internal working of HashMap in Java. How are collisions handled?</li>
             <li class="question-item">Difference between ArrayList and LinkedList. When to use which?</li>
             <li class="question-item">What are the 4 pillars of OOPs? Explain with real-world examples.</li>
@@ -174,11 +416,16 @@
             <li class="question-item">Difference between Comparator and Comparable.</li>
             <li class="question-item">What is the volatile keyword?</li>
             <li class="question-item">Explain ClassLoaders in Java.</li>
+            <li class="question-item">What is the 'transient' keyword?</li>
+            <li class="question-item">Deep Copy vs Shallow Copy?</li>
+            <li class="question-item">Explain Design Patterns used in JDK (Factory, Observer, Decorator).</li>
+            <li class="question-item">Java 8 Stream API - filter vs map vs reduce.</li>
+            <li class="question-item">What is a Marker Interface?</li>
         </ol>
 
-        <!-- Section 3: Database & SQL -->
-        <h3 class="section-title">III. Database Management (DBMS) & SQL</h3>
-        <ol class="question-list" start="71">
+        <!-- Section 12: Database & SQL -->
+        <h3 class="section-title">XII. Database Management (DBMS) & SQL</h3>
+        <ol class="question-list" start="176">
             <li class="question-item">Explain ACID properties.</li>
             <li class="question-item">Difference between Clustered and Non-Clustered Index.</li>
             <li class="question-item">What is Normalization? Explain 1NF, 2NF, 3NF, BCNF.</li>
@@ -199,11 +446,16 @@
             <li class="question-item">What is a Cursor in SQL?</li>
             <li class="question-item">Difference between UNION and UNION ALL.</li>
             <li class="question-item">Write a query to calculate the number of employees in each department.</li>
+            <li class="question-item">Explain B-Tree vs B+ Tree.</li>
+            <li class="question-item">What is Database Replication?</li>
+            <li class="question-item">Explain CAP Theorem in context of NoSQL.</li>
+            <li class="question-item">Write a query to find Nth highest salary (Generic).</li>
+            <li class="question-item">Explain Inner vs Outer Join with Venn Diagram.</li>
         </ol>
 
-        <!-- Section 4: System Design -->
-        <h3 class="section-title">IV. System Design (LLD & HLD)</h3>
-        <ol class="question-list" start="91">
+        <!-- Section 13: System Design -->
+        <h3 class="section-title">XIII. System Design (LLD & HLD)</h3>
+        <ol class="question-list" start="201">
             <li class="question-item">Design a URL Shortener (TinyURL).</li>
             <li class="question-item">Design a Parking Lot System (LLD).</li>
             <li class="question-item">Design an Elevator System (LLD).</li>
@@ -219,11 +471,25 @@
             <li class="question-item">Design a Notification System.</li>
             <li class="question-item">How to handle 1 Million requests per second?</li>
             <li class="question-item">Design a Rate Limiter.</li>
+            <li class="question-item">Design Instagram / News Feed.</li>
+            <li class="question-item">Design a Chatbot.</li>
+            <li class="question-item">Design Typeahead Suggestion (Google Search).</li>
+            <li class="question-item">Design a Web Crawler.</li>
+            <li class="question-item">API Rate Limiting Algorithms (Token Bucket, Leaky Bucket).</li>
+            <li class="question-item">Design a Key-Value Store</li>
+            <li class="question-item">Design a Distributed Message Queue (Kafka)</li>
+            <li class="question-item">Design a File System</li>
+            <li class="question-item">Design Google Drive / Dropbox</li>
+            <li class="question-item">Design Uber / Lyft</li>
+            <li class="question-item">Design Tinder</li>
+            <li class="question-item">Design a Unique ID Generator (Snowflake)</li>
+            <li class="question-item">Design Ticketmaster</li>
+            <li class="question-item">Design Netflix / YouTube (Video Streaming)</li>
         </ol>
 
-        <!-- Section 5: Behavioral -->
-        <h3 class="section-title">V. Behavioral & HR Questions</h3>
-        <ol class="question-list" start="106">
+        <!-- Section 14: Behavioral -->
+        <h3 class="section-title">XIV. Behavioral & HR Questions</h3>
+        <ol class="question-list" start="221">
             <li class="question-item">Tell me about yourself.</li>
             <li class="question-item">Why Infosys? Why Specialist Programmer role?</li>
             <li class="question-item">Describe a challenging project you worked on.</li>
@@ -237,7 +503,7 @@
         </ol>
         
         <!-- Additional Practice -->
-        <h3 class="section-title">VI. Additional Practice Topics (Quick Fire)</h3>
+        <h3 class="section-title">XV. Additional Practice Topics (Quick Fire)</h3>
         <div class="row">
             <div class="col-md-6">
                 <ul>
