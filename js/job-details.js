@@ -469,7 +469,13 @@ class JobDetailsManager {
 
             // Update job title
             const jobTitleEl = cardElement.querySelector('.nav-job-title');
-            if (jobTitleEl) jobTitleEl.textContent = jobTitle;
+            if (jobTitleEl) {
+                // Truncate title if longer than 25 characters
+                const displayTitle = jobTitle.length > 25 ? jobTitle.substring(0, 25) + '...' : jobTitle;
+                jobTitleEl.textContent = displayTitle;
+                // Add full title as tooltip
+                jobTitleEl.title = jobTitle;
+            }
 
             // Update company name
             const companyNameEl = cardElement.querySelector('.nav-company-name');
