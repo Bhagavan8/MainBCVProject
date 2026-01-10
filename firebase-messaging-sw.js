@@ -20,7 +20,7 @@ if (cfg) {
   messaging.onBackgroundMessage(function(payload) {
     const title = payload.notification?.title || 'New Update';
     const body = payload.notification?.body || '';
-    const icon = payload.notification?.icon || '/assets/icons/icon-192.png';
+    const icon = payload.notification?.icon || '/assets/images/web-app-manifest-192x192.png';
     // Prioritize data.url, then fcmOptions.link, then click_action, then root
     const url = payload.data?.url || payload.fcmOptions?.link || payload.notification?.click_action || '/';
     

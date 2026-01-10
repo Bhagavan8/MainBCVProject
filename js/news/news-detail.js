@@ -123,13 +123,19 @@ async function incrementViewCount(newsId) {
 function resolveImagePath(p){
     if(!p) return '/assets/images/logo.png';
     const s = String(p).trim();
+    // 1. Check if it's already a full URL (http/https)
     if (/^https?:\/\//i.test(s)) {
         if (location.protocol === 'https:' && s.startsWith('http://')) return s.replace(/^http:\/\//i, 'https://');
         return s;
     }
-    if (s.startsWith('/')) return s;
-    if (s.startsWith('assets/') || s.startsWith('assets\\') || s.startsWith('assets/images/') || s.startsWith('images/')) return '/' + s.replace(/^\.\/+/, '');
-    return '/assets/images/news/' + s;
+    // 2. If it starts with /assets/, treat it as a local path relative to root
+    if (s.startsWith('/assets/')) return s;
+    if (s.startsWith('assets/')) return '/' + s;
+
+    // 3. Otherwise, assume it's just a filename and prepend the local news assets path
+    // Remove any leading slashes or 'news/' prefix if present to avoid duplication
+    let filename = s.replace(/^[\/\\]+/, '').replace(/^news[\/\\]+/, '');
+    return '/assets/images/news/' + filename;
 }
 
 async function displayNewsDetail(newsData) {
@@ -350,24 +356,36 @@ async function displayNewsDetail(newsData) {
         const imageContainer = document.querySelector('.featured-image-container');
         if (imageContainer) {
             const imgCandidates = [
-                newsData.imageUrl,
+                newsData.image,         // Prioritize direct filename/path
+                newsData.imagePath,
+                newsData.imageUrl,      // Then URLs
                 newsData.imageURL,
                 newsData.featuredImageUrl,
-                newsData.featuredImage,
-                newsData.image,
-                newsData.imagePath
+                newsData.featuredImage
             ].filter(Boolean);
             let src = '';
             for (const cand of imgCandidates) {
+                // Try to resolve using our new logic
                 const s = String(cand).trim();
-                if (/^https?:\/\//i.test(s) || s.startsWith('/')) { src = resolveImagePath(s); break; }
-            }
-            if (!src) {
-                const storagePath = newsData.imageStoragePath || newsData.storagePath || '';
-                if (storagePath) {
-                    try { src = await getDownloadURL(ref(storage, storagePath)); } catch(e) {}
+                if (s) {
+                    src = resolveImagePath(s);
+                    break; 
                 }
             }
+            
+            // Fallback: Check if we have a filename in newsData that we missed
+            if (!src && newsData.fileName) {
+                 src = resolveImagePath(newsData.fileName);
+            }
+
+            // Remove old storage path logic since we are moving away from Firebase Storage
+            // if (!src) {
+            //    const storagePath = newsData.imageStoragePath || newsData.storagePath || '';
+            //    if (storagePath) {
+            //        try { src = await getDownloadURL(ref(storage, storagePath)); } catch(e) {}
+            //    }
+            // }
+
             if (!src) { src = '/assets/images/logo.png'; }
 
             imageContainer.innerHTML = `

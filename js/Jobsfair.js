@@ -14,7 +14,7 @@ import {
 async function updateViewCount() {
     // Get the current page URL to determine which job fair
     const currentPage = window.location.pathname;
-    const pageId = currentPage.includes('chennai') ? 'job-fair-chennai-may2025' : 'job-fair-bangalore-may2025';
+    const pageId = currentPage.includes('chennai') ? 'job-fair-chennai-may2026' : 'job-fair-bangalore-may2026';
     const viewsRef = doc(db, 'pageViews', pageId);
     
     try {
@@ -292,7 +292,7 @@ export function downloadBangaloreVenueDirections() {
             car: 'Ample parking space available within campus'
         },
         event: {
-            date: 'Saturday, May 17, 2025',
+            date: 'Saturday, May 16, 2026',
             time: '8:00 AM to 2:00 PM',
             type: 'Freshers Job Fair'
         }
@@ -399,7 +399,7 @@ export function downloadChennaiVenueDirections() {
             car: 'Ample parking space available within campus'
         },
         event: {
-            date: 'Saturday, May 10, 2025',
+            date: 'Saturday, May 9, 2026',
             time: '8:00 AM to 2:00 PM',
             type: 'Freshers Job Fair'
         }

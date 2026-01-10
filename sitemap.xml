@@ -6,7 +6,7 @@
     <!-- Homepage -->
     <url>
         <loc>https://bcvworld.com/</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
@@ -14,13 +14,13 @@
     <!-- Main Job Pages -->
     <url>
         <loc>https://bcvworld.com/html/jobs.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>always</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://bcvworld.com/html/job-details.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>always</changefreq>
         <priority>0.9</priority>
     </url>
@@ -28,37 +28,37 @@
     <!-- Information Pages -->
     <url>
         <loc>https://bcvworld.com/html/about.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://bcvworld.com/html/contact.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://bcvworld.com/html/privacy.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
     <url>
         <loc>https://bcvworld.com/html/terms.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
     <url>
         <loc>https://bcvworld.com/html/sitemap.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
         <loc>https://bcvworld.com/html/404.html</loc>
-        <lastmod>2025-04-24</lastmod>
+        <lastmod>2026-01-10</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
     </url>
