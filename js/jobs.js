@@ -148,10 +148,12 @@ function setupRealtimeJobNotifications(){
 // Initialize jobs with proper pagination
 async function initializeJobs() {
     try {
+        // Fetch only the latest 10 jobs for each category to speed up initial load
+        // Pagination or "Load More" will handle the rest
         const jobs = {
-            bank: await getJobs('bank'),
-            government: await getJobs('government'),
-            private: await getJobs('private')
+            bank: await getJobs('bank', 10),
+            government: await getJobs('government', 10),
+            private: await getJobs('private', 10)
         };
         displayJobs(jobs, 'default');
     } catch (error) {
@@ -160,7 +162,7 @@ async function initializeJobs() {
 }
 
 
-async function getJobs(jobType) {
+async function getJobs(jobType, limitCount = 20) {
     try {
         let jobsRef;
         let q;
@@ -168,47 +170,36 @@ async function getJobs(jobType) {
         // Get current date and 1 month ago date in IST
         const nowIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
         const currentDate = new Date(nowIST);
-        const oneMonthAgo = new Date(currentDate);
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
+        
+        // Use simpler query logic: just get the latest N active jobs
+        // We will trust the database 'isActive' flag and 'createdAt' sort
+        
         switch (jobType) {
             case 'private':
                 jobsRef = collection(db, 'jobs');
-                q = query(
-                    jobsRef,
-                    where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')
-                );
                 break;
             case 'government':
                 jobsRef = collection(db, 'governmentJobs');
-                q = query(
-                    jobsRef,
-                    where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')
-                );
                 break;
             case 'bank':
                 jobsRef = collection(db, 'bankJobs');
-                q = query(
-                    jobsRef,
-                    where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')
-                );
                 break;
             default:
                 jobsRef = collection(db, 'jobs');
-                q = query(
-                    jobsRef,
-                    where('isActive', '==', true),
-                    orderBy('createdAt', 'desc')
-                );
         }
+
+        // Optimized Query: Active jobs, sorted by date, LIMITED
+        q = query(
+            jobsRef,
+            where('isActive', '==', true),
+            orderBy('createdAt', 'desc'),
+            limit(limitCount)
+        );
 
         const snapshot = await getDocs(q);
         console.log(`Query executed for ${jobType} jobs. Results:`, snapshot.size);
 
-        // Process jobs with date filtering and company details
+        // Process jobs
         const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
             const jobData = {
                 id: docItem.id,
@@ -219,23 +210,20 @@ async function getJobs(jobType) {
                     : new Date(docItem.data().createdAt || currentDate)
             };
 
-            // Convert dates to IST
-            const createdAt = jobData.createdAt?.toDate 
-                ? jobData.createdAt.toDate() 
-                : new Date(jobData.createdAt || currentDate);
-            const lastDate = jobData.lastDate?.toDate 
-                ? jobData.lastDate.toDate() 
-                : jobData.lastDate ? new Date(jobData.lastDate) : null;
-
-            // Apply date filters
-            const isRecent = createdAt >= oneMonthAgo;
-            const isNotExpired = !lastDate || lastDate >= currentDate;
+            // Optimization: Skip company/user fetch if data exists on the job document
+            // Only fetch if absolutely necessary (or just rely on denormalized data)
             
-            if (!isRecent || !isNotExpired) return null;
-
             // Fetch company details if available
             let companyDetails = {};
-            if (jobData.companyId) {
+            // Use existing data if available to avoid extra reads
+            if (jobData.companyName && jobData.companyLogo) {
+                 companyDetails = {
+                    companyName: jobData.companyName,
+                    companyLogo: jobData.companyLogo,
+                    companyWebsite: jobData.companyWebsite || '',
+                    companyAbout: jobData.companyAbout || ''
+                };
+            } else if (jobData.companyId) {
                 try {
                     const companyRef = doc(db, 'companies', jobData.companyId);
                     const companyDoc = await getDoc(companyRef);
@@ -254,9 +242,11 @@ async function getJobs(jobType) {
                 }
             }
 
-            // Fetch user details (posted by)
+            // Fetch user details (posted by) - Optimization: Skip if not critical or use default
             let postedByName = 'bcvworld';
-            if (jobData.userId) {
+            if (jobData.postedByName) {
+                postedByName = jobData.postedByName;
+            } else if (jobData.userId) {
                 try {
                     const userRef = doc(db, 'users', jobData.userId);
                     const userDoc = await getDoc(userRef);
@@ -265,24 +255,18 @@ async function getJobs(jobType) {
                         postedByName = userData.firstName || userData.displayName || userData.name || 'bcvworld';
                     }
                 } catch (error) {
-                    console.error(`Error fetching user details for job ${jobData.id}:`, error);
+                    // console.error(`Error fetching user details for job ${jobData.id}:`, error);
                 }
             }
 
             return {
                 ...jobData,
                 ...companyDetails,
-                postedByName,
-                createdAt,
-                lastDate
+                postedByName
             };
         }));
 
-        // Filter out null jobs (those that didn't meet date criteria)
-        const filteredJobs = jobs.filter(job => job !== null);
-        
-        console.log(`Filtered ${jobType} jobs count:`, filteredJobs.length);
-        return filteredJobs;
+        return jobs;
 
     } catch (error) {
         console.error(`Error getting ${jobType} jobs:`, error);
@@ -434,14 +418,15 @@ function updatePaginationUI() {
     const jobsGrid = document.getElementById('jobsGrid');
     if (!jobsGrid) return;
 
-    // Show loading state
-    jobsGrid.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
-
     // Check if we have jobs to display
     if (!currentJobsList || currentJobsList.length === 0) {
         const jobCountElement = document.getElementById('jobCount');
         if (jobCountElement) jobCountElement.textContent = '0';
-        jobsGrid.innerHTML = '<div class="alert alert-info">No jobs found</div>';
+        jobsGrid.innerHTML = `
+            <div class="alert alert-info text-center p-4">
+                <h4>No Jobs Found</h4>
+                <p class="mb-0">We couldn't find any jobs matching your criteria at this time. Please check back later or try a different search.</p>
+            </div>`;
         return;
     }
 
@@ -1005,58 +990,62 @@ function debounce(func, wait) {
     };
 }
 
+async function enrichJobsWithCompanyDetails(jobs) {
+    return Promise.all(jobs.map(async (job) => {
+        // Use existing company name if available to skip fetch if detail not critical
+        // But for consistency we fetch if we have ID
+        if (job.companyId) {
+            try {
+                // Check if we already have company name and logo (denormalized)
+                // If so, maybe skip? For now, let's just fetch to be safe but cache could be better
+                const companyRef = doc(db, 'companies', job.companyId);
+                const companyDoc = await getDoc(companyRef);
 
-async function getRecentJobs(limit = 4) {
+                if (companyDoc.exists()) {
+                    const companyData = companyDoc.data();
+                    return {
+                        ...job,
+                        company: companyData.name || job.company,
+                        companyLogo: companyData.logoURL || null,
+                        companyWebsite: companyData.website || null,
+                        companyAbout: companyData.about || null
+                    };
+                }
+            } catch (error) {
+                console.error('Error fetching company details:', error);
+            }
+        }
+        return job;
+    }));
+}
+
+
+async function getRecentJobs(limitCount = 4) {
     try {
         const jobsRef = collection(db, 'jobs');
         const q = query(
             jobsRef,
             where('isActive', '==', true),
-            orderBy('createdAt', 'desc')
+            orderBy('createdAt', 'desc'),
+            limit(limitCount)
         );
 
         const snapshot = await getDocs(q);
         
-        // Process jobs with company details
-        const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
-            const jobData = {
-                id: docItem.id,
-                type: 'private',
-                title: docItem.data().jobTitle,
-                company: docItem.data().companyName,
-                location: docItem.data().location,
-                createdAt: docItem.data().createdAt,
-                postedAt: formatDate(docItem.data().createdAt),
-                companyId: docItem.data().companyId  // Include companyId
-            };
-
-            // Fetch company details if companyId exists
-            if (jobData.companyId) {
-                try {
-                    const companyRef = doc(db, 'companies', jobData.companyId);
-                    const companyDoc = await getDoc(companyRef);
-
-                    if (companyDoc.exists()) {
-                        const companyData = companyDoc.data();
-                        return {
-                            ...jobData,
-                            company: companyData.name || jobData.company,
-                            companyLogo: companyData.logoURL || null,
-                            companyWebsite: companyData.website || null,
-                            companyAbout: companyData.about || null
-                        };
-                    }
-                } catch (error) {
-                    console.error('Error fetching company details:', error);
-                }
-            }
-            return jobData;
+        // Initial map to basic structure
+        const basicJobs = snapshot.docs.map(docItem => ({
+            id: docItem.id,
+            type: 'private',
+            title: docItem.data().jobTitle,
+            company: docItem.data().companyName,
+            location: docItem.data().location,
+            createdAt: docItem.data().createdAt,
+            postedAt: formatDate(docItem.data().createdAt),
+            companyId: docItem.data().companyId
         }));
 
-        // Sort by date and apply limit
-        return jobs
-            .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-            .slice(0, limit);
+        // Enrich with company details
+        return await enrichJobsWithCompanyDetails(basicJobs);
     } catch (error) {
         console.error('Error fetching recent jobs:', error);
         return [];
@@ -1068,6 +1057,7 @@ async function getMostViewedJobs(limitCount = 4) {
     try {
         const jobsRef = collection(db, 'jobs');
         // Fetch more jobs to find the most viewed ones effectively without a specific index
+        // We fetch 20 recent active jobs to find the "trending" ones
         const q = query(
             jobsRef,
             where('isActive', '==', true),
@@ -1077,46 +1067,26 @@ async function getMostViewedJobs(limitCount = 4) {
 
         const snapshot = await getDocs(q);
         
-        // Process jobs
-        const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
-            const jobData = {
-                id: docItem.id,
-                type: 'private',
-                title: docItem.data().jobTitle,
-                company: docItem.data().companyName,
-                location: docItem.data().location,
-                createdAt: docItem.data().createdAt,
-                postedAt: formatDate(docItem.data().createdAt),
-                views: docItem.data().views || 0,
-                companyId: docItem.data().companyId
-            };
-
-            if (jobData.companyId) {
-                try {
-                    const companyRef = doc(db, 'companies', jobData.companyId);
-                    const companyDoc = await getDoc(companyRef);
-
-                    if (companyDoc.exists()) {
-                        const companyData = companyDoc.data();
-                        return {
-                            ...jobData,
-                            company: companyData.name || jobData.company,
-                            companyLogo: companyData.logoURL || null,
-                            companyWebsite: companyData.website || null,
-                            companyAbout: companyData.about || null
-                        };
-                    }
-                } catch (error) {
-                    console.error('Error fetching company details:', error);
-                }
-            }
-            return jobData;
+        // Map to basic structure first
+        let jobs = snapshot.docs.map(docItem => ({
+            id: docItem.id,
+            type: 'private',
+            title: docItem.data().jobTitle,
+            company: docItem.data().companyName,
+            location: docItem.data().location,
+            createdAt: docItem.data().createdAt,
+            postedAt: formatDate(docItem.data().createdAt),
+            views: docItem.data().views || 0,
+            companyId: docItem.data().companyId
         }));
 
-        // Sort by views and apply limit
-        return jobs
+        // Sort by views and apply limit BEFORE fetching company details
+        jobs = jobs
             .sort((a, b) => (b.views || 0) - (a.views || 0))
             .slice(0, limitCount);
+
+        // Now enrich only the top jobs
+        return await enrichJobsWithCompanyDetails(jobs);
     } catch (error) {
         console.error('Error fetching most viewed jobs:', error);
         return [];
@@ -1126,8 +1096,10 @@ async function getMostViewedJobs(limitCount = 4) {
 
 const loadSidebarJobs = async () => {
     try {
-        const recentJobs = await getRecentJobs(4);
-        const mostViewedJobs = await getMostViewedJobs(4);
+        const [recentJobs, mostViewedJobs] = await Promise.all([
+            getRecentJobs(4),
+            getMostViewedJobs(4)
+        ]);
 
         // Update counts in the headers
         const recentCount = document.getElementById('recentJobsCount');
@@ -1135,7 +1107,7 @@ const loadSidebarJobs = async () => {
         if (recentCount) recentCount.textContent = recentJobs.length;
         if (viewedCount) viewedCount.textContent = mostViewedJobs.length;
 
-        ['recentJobs', 'mostViewedJobs'].forEach((containerId, containerIndex) => {
+        ['recentJobs', 'mostViewedJobs'].forEach((containerId) => {
             const container = document.getElementById(containerId);
             if (!container) return;
 
