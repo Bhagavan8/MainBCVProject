@@ -222,13 +222,7 @@
         }
 
         /* Content Sections */
-        section {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            box-shadow: var(--shadow);
-        }
+       
 
         .section-title {
             display: flex;
@@ -435,11 +429,11 @@
         }
 
         .blog-image {
-            width: 90%;
-            /* Reduced by 10% to reduce height while maintaining aspect ratio */
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            object-fit: cover;
             margin: 0 auto;
-            /* Centers the image */
-            height: auto;
             border-radius: 1rem;
             box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
@@ -849,41 +843,35 @@
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">Popular Fresher Career Paths</h3>
 
-                    <div class="career-cards">
-                        <div class="career-card">
-                            <h3>Software Developer</h3>
-                            <p>Java / Python / Full Stack development. Most in-demand role with opportunities in both
-                                product and service companies.</p>
+                    <div class="career-paths-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">1. Software Developer</h5>
+                            <p class="mb-0 text-muted">Java / Python / Full Stack development. Most in-demand role with opportunities in both product and service companies.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Frontend Developer</h3>
-                            <p>React / Angular / Vue.js. Focus on creating user interfaces and web applications with
-                                modern frameworks.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">2. Frontend Developer</h5>
+                            <p class="mb-0 text-muted">React / Angular / Vue.js. Focus on creating user interfaces and web applications with modern frameworks.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Backend Developer</h3>
-                            <p>Spring Boot / Node.js / Django. Build server-side logic, databases, and APIs for web and
-                                mobile applications.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">3. Backend Developer</h5>
+                            <p class="mb-0 text-muted">Spring Boot / Node.js / Django. Build server-side logic, databases, and APIs for web and mobile applications.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Data Analyst / Scientist</h3>
-                            <p>Python / R / SQL / ML. Analyze data, create visualizations, and build predictive models
-                                for business insights.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">4. Data Analyst / Scientist</h5>
+                            <p class="mb-0 text-muted">Python / R / SQL / ML. Analyze data, create visualizations, and build predictive models for business insights.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>QA / Automation Tester</h3>
-                            <p>Selenium / JUnit / TestNG. Ensure software quality through manual and automated testing
-                                processes.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">5. QA / Automation Tester</h5>
+                            <p class="mb-0 text-muted">Selenium / JUnit / TestNG. Ensure software quality through manual and automated testing processes.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Cloud / DevOps</h3>
-                            <p>AWS / Docker / Kubernetes. Entry-level roles in cloud infrastructure and deployment
-                                automation.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">6. Cloud / DevOps</h5>
+                            <p class="mb-0 text-muted">AWS / Docker / Kubernetes. Entry-level roles in cloud infrastructure and deployment automation.</p>
                         </div>
                     </div>
 
@@ -933,22 +921,31 @@
                     </ul>
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">🔗 Best Practice Platforms</h3>
-                    <div class="platform-cards">
-                        <a href="https://leetcode.com/" target="_blank" class="platform-card"
-                            style="text-decoration: none; color: inherit; display: block; transition: transform 0.2s;">
-                            <h4>LeetCode <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></h4>
-                            <p>Company-specific questions</p>
-                        </a>
-                        <a href="https://www.hackerrank.com/" target="_blank" class="platform-card"
-                            style="text-decoration: none; color: inherit; display: block; transition: transform 0.2s;">
-                            <h4>HackerRank <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></h4>
-                            <p>Beginner-friendly challenges</p>
-                        </a>
-                        <a href="https://www.geeksforgeeks.org/" target="_blank" class="platform-card"
-                            style="text-decoration: none; color: inherit; display: block; transition: transform 0.2s;">
-                            <h4>GeeksforGeeks <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></h4>
-                            <p>Detailed explanations</p>
-                        </a>
+                    <div class="platforms-list">
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://leetcode.com/" target="_blank" class="text-decoration-none text-dark">
+                                    LeetCode <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Company-specific questions</p>
+                        </div>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.hackerrank.com/" target="_blank" class="text-decoration-none text-dark">
+                                    HackerRank <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Beginner-friendly challenges</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.geeksforgeeks.org/" target="_blank" class="text-decoration-none text-dark">
+                                    GeeksforGeeks <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Detailed explanations</p>
+                        </div>
                     </div>
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">🔹 Frameworks (Role-based)</h3>
@@ -985,27 +982,25 @@
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">Fresher Project Ideas</h3>
 
-                    <div class="career-cards">
-                        <div class="career-card">
-                            <h3>Job Portal Website</h3>
-                            <p>Create a platform where job seekers can search and apply for jobs, and employers can post
-                                openings.</p>
+                    <div class="projects-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">1. Job Portal Website</h5>
+                            <p class="mb-0 text-muted">Create a platform where job seekers can search and apply for jobs, and employers can post openings.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Student Management System</h3>
-                            <p>Manage student records, grades, and attendance with admin and student portals.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">2. Student Management System</h5>
+                            <p class="mb-0 text-muted">Manage student records, grades, and attendance with admin and student portals.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>E-commerce Backend API</h3>
-                            <p>Build REST APIs for product catalog, user authentication, cart, and order processing.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">3. E-commerce Backend API</h5>
+                            <p class="mb-0 text-muted">Build REST APIs for product catalog, user authentication, cart, and order processing.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Blog Application</h3>
-                            <p>Create a full-stack blog with user registration, article creation, comments, and likes.
-                            </p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">4. Blog Application</h5>
+                            <p class="mb-0 text-muted">Create a full-stack blog with user registration, article creation, comments, and likes.</p>
                         </div>
                     </div>
 
@@ -1060,7 +1055,7 @@
                                 <img src="https://raw.githubusercontent.com/jakegut/resume/master/resume.png"
                                     alt="Jake's Resume Template Preview - ATS Friendly Format" class="img-fluid rounded shadow-sm border"
                                     loading="lazy" decoding="async"
-                                    style="max-height: 400px; width: auto; display: block; margin: 0 auto;">
+                                    style="max-height: 300px; width: auto; display: block; margin: 0 auto;">
                             </div>
                             <div class="col-md-6">
                                 <h4 class="mb-3">Why this template?</h4>
@@ -1090,56 +1085,56 @@
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">Ideal Fresher Resume Structure</h3>
 
-                    <div class="career-cards">
-                        <div class="career-card">
-                            <h3>Header</h3>
-                            <p>Name, Email, Phone, GitHub, LinkedIn (make sure links work!)</p>
+                    <div class="resume-structure-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Header</h5>
+                            <p class="mb-0 text-muted">Name, Email, Phone, GitHub, LinkedIn (make sure links work!)</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Career Objective</h3>
-                            <p>2–3 lines, role-focused. Mention what you bring to the table.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Career Objective</h5>
+                            <p class="mb-0 text-muted">2–3 lines, role-focused. Mention what you bring to the table.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Technical Skills</h3>
-                            <p>Categorized (Languages, Frameworks, Tools, Databases)</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Technical Skills</h5>
+                            <p class="mb-0 text-muted">Categorized (Languages, Frameworks, Tools, Databases)</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Projects</h3>
-                            <p>MOST IMPORTANT SECTION. Describe 2-3 projects in detail.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Projects</h5>
+                            <p class="mb-0 text-muted">MOST IMPORTANT SECTION. Describe 2-3 projects in detail.</p>
                         </div>
                     </div>
 
-                    <div class="career-cards">
-                        <div class="career-card">
-                            <h3>Education</h3>
-                            <p>Degree, University, Year, CGPA (if above 7.5/10)</p>
+                    <div class="resume-structure-list mt-4">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Education</h5>
+                            <p class="mb-0 text-muted">Degree, University, Year, CGPA (if above 7.5/10)</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Internships</h3>
-                            <p>Any training or internships (even if unpaid)</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Internships</h5>
+                            <p class="mb-0 text-muted">Any training or internships (even if unpaid)</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Certifications</h3>
-                            <p>Relevant online courses (Coursera, Udemy, etc.)</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Certifications</h5>
+                            <p class="mb-0 text-muted">Relevant online courses (Coursera, Udemy, etc.)</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3>Achievements</h3>
-                            <p>Hackathons, coding competitions, publications</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Achievements</h5>
+                            <p class="mb-0 text-muted">Hackathons, coding competitions, publications</p>
                         </div>
                     </div>
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">⚠️ Avoid These Common Mistakes:</h3>
 
-                    <div class="tips-container">
-                        <div class="tip-card bad">
-                            <h4><i class="fas fa-times-circle"></i> Don't Include</h4>
-                            <ul class="topic-list">
+                    <div class="mistakes-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-danger mb-2"><i class="fas fa-times-circle"></i> Don't Include</h5>
+                            <ul class="topic-list mb-0 ps-3">
                                 <li>Photos (unless specifically requested)</li>
                                 <li>Fancy designs and colors</li>
                                 <li>Irrelevant hobbies (like "reading books")</li>
@@ -1148,9 +1143,9 @@
                             </ul>
                         </div>
 
-                        <div class="tip-card good">
-                            <h4><i class="fas fa-check-circle"></i> Do Include</h4>
-                            <ul class="topic-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-success mb-2"><i class="fas fa-check-circle"></i> Do Include</h5>
+                            <ul class="topic-list mb-0 ps-3">
                                 <li>Action verbs (Developed, Implemented, Optimized)</li>
                                 <li>Quantifiable results where possible</li>
                                 <li>Keywords from job description</li>
@@ -1196,22 +1191,22 @@
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">Check Your ATS Score Here:</h3>
 
-                    <div class="platform-cards">
-                        <div class="platform-card">
-                            <h4>Resume Worded</h4>
-                            <p>Free ATS checker with detailed feedback</p>
+                    <div class="ats-checkers-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Resume Worded</h5>
+                            <p class="mb-0 text-muted">Free ATS checker with detailed feedback</p>
                         </div>
-                        <div class="platform-card">
-                            <h4>Jobscan</h4>
-                            <p>Compares resume with job description</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Jobscan</h5>
+                            <p class="mb-0 text-muted">Compares resume with job description</p>
                         </div>
-                        <div class="platform-card">
-                            <h4>Zety</h4>
-                            <p>Resume builder with ATS optimization</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Zety</h5>
+                            <p class="mb-0 text-muted">Resume builder with ATS optimization</p>
                         </div>
-                        <div class="platform-card">
-                            <h4>Novoresume</h4>
-                            <p>Templates and ATS compatibility check</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2">Novoresume</h5>
+                            <p class="mb-0 text-muted">Templates and ATS compatibility check</p>
                         </div>
                     </div>
 
@@ -1236,59 +1231,75 @@
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">📘 Learning Platforms</h3>
 
-                    <div class="platform-cards">
-                        <div class="platform-card">
-                            <h4><a href="https://www.freecodecamp.org/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">freeCodeCamp <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Free coding tutorials and projects</p>
+                    <div class="learning-platforms-list">
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.freecodecamp.org/" target="_blank" class="text-decoration-none text-dark">
+                                    freeCodeCamp <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Free coding tutorials and projects</p>
                         </div>
-                        <div class="platform-card">
-                            <h4><a href="https://www.udemy.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Udemy <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Affordable courses (wait for sales)</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.udemy.com/" target="_blank" class="text-decoration-none text-dark">
+                                    Udemy <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Affordable courses (wait for sales)</p>
                         </div>
-                        <div class="platform-card">
-                            <h4><a href="https://www.coursera.org/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Coursera <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>University courses with certificates</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.coursera.org/" target="_blank" class="text-decoration-none text-dark">
+                                    Coursera <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">University courses with certificates</p>
                         </div>
-                        <div class="platform-card">
-                            <h4><a href="https://www.youtube.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">YouTube <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Free tutorials (CodeWithHarry, Apna College)</p>
+                        <div class="mb-3">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.youtube.com/" target="_blank" class="text-decoration-none text-dark">
+                                    YouTube <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Free tutorials (CodeWithHarry, Apna College)</p>
                         </div>
                     </div>
 
                     <h3 style="color: var(--primary); margin: 2rem 0 1rem;">🧠 Interview Preparation</h3>
 
-                    <div class="platform-cards">
-                        <div class="platform-card">
-                            <h4><a href="https://www.interviewbit.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">InterviewBit <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Company-wise interview questions</p>
+                    <div class="interview-prep-list">
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.interviewbit.com/" target="_blank" class="text-decoration-none text-dark">
+                                    InterviewBit <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Company-wise interview questions</p>
                         </div>
-                        <div class="platform-card">
-                            <h4><a href="https://www.pramp.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Pramp <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Free mock interviews with peers</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.pramp.com/" target="_blank" class="text-decoration-none text-dark">
+                                    Pramp <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Free mock interviews with peers</p>
                         </div>
-                        <div class="platform-card">
-                            <h4><a href="https://www.glassdoor.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Glassdoor <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Company reviews and interview experiences</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.glassdoor.com/" target="_blank" class="text-decoration-none text-dark">
+                                    Glassdoor <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Company reviews and interview experiences</p>
                         </div>
-                        <div class="platform-card">
-                            <h4><a href="https://www.ambitionbox.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">AmbitionBox <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h4>
-                            <p>Salary insights and company information</p>
+                        <div class="mb-3">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.ambitionbox.com/" target="_blank" class="text-decoration-none text-dark">
+                                    AmbitionBox <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Salary insights and company information</p>
                         </div>
                     </div>
                 </section>
@@ -1313,41 +1324,50 @@
                     <p class="intro-text">Knowing where to apply is as important as being prepared. Here are the best
                         platforms and strategies for fresher job applications.</p>
 
-                    <div class="career-cards">
-                        <div class="career-card" style="border: 2px solid var(--primary); background-color: #f0f9ff;">
-                            <h3><a href="https://www.bcvworld.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">BCV World <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h3>
-                            <p><strong>Highly Recommended:</strong> Your one-stop destination for career guidance,
-                                interview preparation, and latest tech updates.</p>
+                    <div class="job-portals-list">
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.bcvworld.com/" target="_blank" class="text-decoration-none text-primary">
+                                    BCV World <i class="fas fa-external-link-alt small ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted"><strong>Highly Recommended:</strong> Your one-stop destination for career guidance, interview preparation, and latest tech updates.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3><a href="https://www.linkedin.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">LinkedIn <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h3>
-                            <p>Best for networking and company research. Use "Open to Work" feature.</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.linkedin.com/" target="_blank" class="text-decoration-none text-dark">
+                                    LinkedIn <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Best for networking and company research. Use "Open to Work" feature.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3><a href="https://www.indeed.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Indeed <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h3>
-                            <p>Large job database. Set up email alerts for fresher roles.</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.indeed.com/" target="_blank" class="text-decoration-none text-dark">
+                                    Indeed <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Large job database. Set up email alerts for fresher roles.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3><a href="https://www.naukri.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Naukri <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h3>
-                            <p>Popular in India. Regularly update your profile for better visibility.</p>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://www.naukri.com/" target="_blank" class="text-decoration-none text-dark">
+                                    Naukri <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Popular in India. Regularly update your profile for better visibility.</p>
                         </div>
 
-                        <div class="career-card">
-                            <h3><a href="https://wellfound.com/" target="_blank"
-                                    style="text-decoration: none; color: inherit;">Wellfound (AngelList) <i
-                                        class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i></a></h3>
-                            <p>Startup jobs. Freshers often get more responsibility in startups.</p>
+                        <div class="mb-3">
+                            <h5 class="fw-bold mb-1">
+                                <a href="https://wellfound.com/" target="_blank" class="text-decoration-none text-dark">
+                                    Wellfound (AngelList) <i class="fas fa-external-link-alt small text-muted ms-1"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted">Startup jobs. Freshers often get more responsibility in startups.</p>
                         </div>
                     </div>
 
@@ -1441,49 +1461,35 @@
                     <p class="intro-text">The journey from campus to corporate can be challenging, but with the right
                         approach, you can land your dream job. Here's my final advice:</p>
 
-                    <div class="advice-cards">
-                        <div class="advice-card">
-                            <i class="fas fa-play-circle"></i>
-                            <h3>Start Now</h3>
-                            <p>Don't wait to be "perfect". Start applying when you're 70% ready. You'll learn more
-                                during interviews.</p>
+                    <div class="final-advice-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2"><i class="fas fa-play-circle text-primary me-2"></i> Start Now</h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">Don't wait to be "perfect". Start applying when you're 70% ready. You'll learn more during interviews.</p>
                         </div>
 
-                        <div class="advice-card">
-                            <i class="fas fa-users"></i>
-                            <h3>Network Actively</h3>
-                            <p>Connect with seniors, alumni, and professionals on LinkedIn. Referrals increase interview
-                                chances by 10x.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2"><i class="fas fa-users text-primary me-2"></i> Network Actively</h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">Connect with seniors, alumni, and professionals on LinkedIn. Referrals increase interview chances by 10x.</p>
                         </div>
 
-                        <div class="advice-card">
-                            <i class="fas fa-redo"></i>
-                            <h3>Embrace Rejections</h3>
-                            <p>Rejections are part of the journey. Each "no" brings you closer to a "yes". Learn from
-                                every interview.</p>
-                        </div>
-                    </div>
-
-                    <div class="advice-cards">
-                        <div class="advice-card">
-                            <i class="fas fa-project-diagram"></i>
-                            <h3>Quality Over Quantity</h3>
-                            <p>2-3 good projects are better than 10 simple ones. Focus on projects that solve real
-                                problems.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2"><i class="fas fa-redo text-primary me-2"></i> Embrace Rejections</h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">Rejections are part of the journey. Each "no" brings you closer to a "yes". Learn from every interview.</p>
                         </div>
 
-                        <div class="advice-card">
-                            <i class="fas fa-sync-alt"></i>
-                            <h3>Iterate Your Resume</h3>
-                            <p>Update your resume after every rejection. Tailor it for each application based on job
-                                description.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2"><i class="fas fa-project-diagram text-primary me-2"></i> Quality Over Quantity</h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">2-3 good projects are better than 10 simple ones. Focus on projects that solve real problems.</p>
                         </div>
 
-                        <div class="advice-card">
-                            <i class="fas fa-brain"></i>
-                            <h3>Master Fundamentals</h3>
-                            <p>Companies test fundamentals more than frameworks. Strong basics help in learning any
-                                technology faster.</p>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2"><i class="fas fa-sync-alt text-primary me-2"></i> Iterate Your Resume</h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">Update your resume after every rejection. Tailor it for each application based on job description.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-2"><i class="fas fa-brain text-primary me-2"></i> Master Fundamentals</h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">Companies test fundamentals more than frameworks. Strong basics help in learning any technology faster.</p>
                         </div>
                     </div>
 
@@ -1501,6 +1507,61 @@
                         best time is now. Pick one step from this guide and start working on it today.</p>
                     <a href="#" onclick="window.print(); return false;" class="cta-button"><i
                             class="fas fa-file-pdf"></i> Print / Save Guide as PDF</a>
+                </div>
+
+                <!-- Related Resources -->
+                <div class="related-resources mt-5">
+                    <h4 class="section-title"><i class="fas fa-link"></i> Recommended Resources</h4>
+                    <div class="related-resources-list">
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-2">
+                                <a href="javaresource.html" class="text-decoration-none text-dark d-flex align-items-center">
+                                    <i class="fab fa-java text-primary me-2 fa-lg"></i>
+                                    Java Resources <i class="fas fa-arrow-right small text-muted ms-2"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">Comprehensive Java PDFs, Core Java, Spring, Microservices.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-2">
+                                <a href="infosys-question-bank.html" class="text-decoration-none text-dark d-flex align-items-center">
+                                    <i class="fas fa-code text-danger me-2 fa-lg"></i>
+                                    Infosys Question Bank <i class="fas fa-arrow-right small text-muted ms-2"></i>
+                                </a>
+                            </h5>
+                            <p class="mb-0 text-muted ms-4 ps-2">300+ real interview questions for SP and Power Programmer roles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section mt-5">
+                    <h4 class="section-title">
+                        <i class="bi bi-chat-dots"></i>
+                        <span>Comments</span>
+                    </h4>
+                    <div id="loginPrompt"
+                        class="alert alert-light border d-flex flex-column flex-sm-row align-items-center justify-content-between mb-3 gap-3"
+                        role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2 fs-5"></i>
+                            <span>Login to add a comment</span>
+                        </div>
+                        <a id="loginRedirectLink" class="btn btn-primary btn-sm px-4 login-btn-responsive"
+                            href="#">Login</a>
+                    </div>
+                    <form class="comment-form" style="display:none">
+                        <div class="mb-2">
+                            <textarea id="commentInput" class="form-control" rows="3" maxlength="500"
+                                placeholder="Write your comment..."></textarea>
+                            <div class="d-flex justify-content-between mt-2">
+                                <small class="text-muted"><span class="char-count">0/500</span></small>
+                                <button id="postComment" type="button" class="btn btn-primary btn-sm">Post Comment</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="commentsList" class="mt-3"></div>
                 </div>
             </main>
 
@@ -1738,6 +1799,14 @@
         }
     </script>
     <script type="module" src="/js/components/component-loader.js"></script>
+    <script type="module">
+        import { GenericCommentsManager } from '/js/generic-comments.js';
+        
+        // Initialize comments
+        document.addEventListener('DOMContentLoaded', () => {
+            new GenericCommentsManager('fresher-resume-preparation-job-readiness-guide');
+        });
+    </script>
     <script>
         function updateDateTime() {
             const now = new Date();
@@ -1752,19 +1821,3 @@
     </script>
 </body>
 
-</html>ript type="module" src="/js/components/component-loader.js"></script>
-<script>
-    function updateDateTime() {
-        const now = new Date();
-        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        const dateStr = now.toLocaleDateString('en-US', dateOptions);
-        const timeStr = now.toLocaleTimeString('en-US', timeOptions);
-        document.getElementById('current-date-time').textContent = `${dateStr} at ${timeStr}`;
-    }
-    updateDateTime();
-    setInterval(updateDateTime, 1000); // Update every second
-</script>
-</body>
-
-</html>
