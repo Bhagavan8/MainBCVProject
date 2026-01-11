@@ -276,25 +276,17 @@
         <div class="row">
             <!-- Left Sidebar -->
             <div class="col-lg-2 d-none d-lg-block">
-                <!-- Jobs By Category Widget -->
+                <!-- Recent Jobs Widget -->
                 <div class="mb-4">
-                    <h6 class="fw-bold mb-3 pb-2 border-bottom border-2 border-primary" style="font-size: 0.9rem;">Jobs
-                        By Category</h6>
-                    <div class="list-group list-group-flush small">
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('IT'); return false;">IT Jobs</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('government'); return false;">Government Jobs</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('bank'); return false;">Bank Jobs</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('BPO'); return false;">BPO Jobs</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('Core'); return false;">Core Jobs</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('Civil'); return false;">Civil Jobs</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByCategory('Mechanical'); return false;">Mechanical Jobs</a>
+                    <h6 class="fw-bold mb-3 pb-2 border-bottom border-2 border-primary" style="font-size: 0.9rem;">
+                        Recent Jobs <span class="badge bg-primary rounded-pill ms-2" id="recentJobsCount">0</span>
+                    </h6>
+                    <div id="recentJobs" class="list-group list-group-flush small">
+                        <div class="text-center p-3">
+                             <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                             </div>
+                        </div>
                     </div>
                 </div>
 
@@ -306,6 +298,7 @@
                          <a href="/html/infosys-specialist-programmer-interview-questions-2025.html" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted">Infosys Interview Prep</a>
                     </div>
                 </div>
+
 
                 <!-- Sticky Ad -->
                 <div class="sticky-top" style="top: 100px; z-index: 1;">
@@ -436,37 +429,29 @@
                 <!-- Jobs List -->
                 <div id="jobsList" class="jobs-container" style="min-height: 200px">
                     <div id="jobsGrid">
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Loading latest jobs...</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Right Sidebar -->
             <div class="col-lg-2 d-none d-lg-block">
-                <!-- Jobs By Location Widget -->
+                <!-- Most Viewed Jobs Widget -->
                 <div class="mb-4">
-                    <h6 class="fw-bold mb-3 pb-2 border-bottom border-2 border-info" style="font-size: 0.9rem;">Jobs By
-                        Location</h6>
-                    <div class="list-group list-group-flush small">
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Andhra Pradesh'); return false;">Jobs in Andhra Pradesh</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Bangalore'); return false;">Jobs in Bangalore</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Chennai'); return false;">Jobs in Chennai</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Delhi'); return false;">Jobs in Delhi</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Gurgaon'); return false;">Jobs in Gurgaon</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Hyderabad'); return false;">Jobs in Hyderabad</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Mumbai'); return false;">Jobs in Mumbai</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('NCR'); return false;">Jobs in NCR</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Noida'); return false;">Jobs in Noida</a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 py-1 text-muted"
-                            onclick="filterByLocation('Pune'); return false;">Jobs in Pune</a>
+                    <h6 class="fw-bold mb-3 pb-2 border-bottom border-2 border-primary" style="font-size: 0.9rem;">
+                        Most Viewed Jobs <span class="badge bg-primary rounded-pill ms-2" id="mostViewedJobsCount">0</span>
+                    </h6>
+                    <div id="mostViewedJobs" class="list-group list-group-flush small">
+                         <div class="text-center p-3">
+                              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                 <span class="visually-hidden">Loading...</span>
+                              </div>
+                         </div>
                     </div>
                 </div>
 

@@ -19,58 +19,95 @@ let currentPaginationState = {
     filterValue: null
 };
 
-// Main initialization
-async function initializePage() {
-    try {
-        // Set date picker to today's date (IST)
-        const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-        const todayDate = new Date(todayIST);
-        const dateStr = formatDateForInput(todayDate);
+    // Main initialization
+    async function initializePage() {
+        try {
+            // Set date picker to today's date (IST)
+            const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+            const todayDate = new Date(todayIST);
+            const dateStr = formatDateForInput(todayDate);
+    
+            const datePicker = document.getElementById('dateFilter');
+            if (datePicker) {
+                datePicker.value = dateStr;
+            }
+    
+            // Range override via URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            const range = urlParams.get('range');
+            
+            if (range === 'today' || range === 'week' || range === 'month') {
+                // Fetch all jobs first
+                const [bankJobs, govJobs, pvtJobs] = await Promise.all([
+                    getJobs('bank'),
+                    getJobs('government'),
+                    getJobs('private')
+                ]);
+                
+                const allJobs = {
+                    bank: bankJobs,
+                    government: govJobs,
+                    private: pvtJobs
+                };
 
-        const datePicker = document.getElementById('dateFilter');
-        if (datePicker) {
-            datePicker.value = dateStr;
+                let filteredJobs = { bank: [], government: [], private: [] };
+                
+                if (range === 'today') {
+                    // Filter for today
+                    const isToday = (date) => {
+                        if (!date) return false;
+                        const d = new Date(date);
+                        return d.getDate() === todayDate.getDate() && 
+                               d.getMonth() === todayDate.getMonth() && 
+                               d.getFullYear() === todayDate.getFullYear();
+                    };
+                    
+                    filteredJobs.bank = bankJobs.filter(j => isToday(j.createdAt));
+                    filteredJobs.government = govJobs.filter(j => isToday(j.createdAt));
+                    filteredJobs.private = pvtJobs.filter(j => isToday(j.createdAt));
+                    
+                    displayJobs(filteredJobs, 'date', dateStr);
+                } else {
+                    // Filter for range (week/month)
+                    const now = new Date();
+                    const start = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+                    if (range === 'week') start.setDate(start.getDate() - 7);
+                    else start.setDate(start.getDate() - 30);
+                    
+                    const isAfter = (date) => {
+                        if (!date) return false;
+                        return new Date(date) >= start;
+                    };
+
+                    filteredJobs.bank = bankJobs.filter(j => isAfter(j.createdAt));
+                    filteredJobs.government = govJobs.filter(j => isAfter(j.createdAt));
+                    filteredJobs.private = pvtJobs.filter(j => isAfter(j.createdAt));
+
+                    displayJobs(filteredJobs, 'range', range);
+                }
+            } else {
+                // Load ALL recent jobs by default
+                await initializeJobs();
+            }
+            
+            // Setup other components
+            populateLocationFilter();
+            updateCategoryCounts();
+            loadSidebarJobs();
+            loadCompanyWiseJobs();
+            setupRealtimeJobNotifications();
+            
+            // Event listeners
+            document.getElementById('clearFilterBtn').addEventListener('click', clearDateFilter);
+            
+            // Setup pagination handlers
+            setupPagination();
+    
+        } catch (error) {
+            console.error("Initialization error:", error);
+            showToast('Error initializing page. Please try again.', false);
         }
-
-        // Range override via URL params
-        const urlParams = new URLSearchParams(window.location.search);
-        const range = urlParams.get('range');
-        if (range === 'today') {
-            const jobs = await getJobsByDate(dateStr);
-            displayJobs(jobs, 'date', dateStr);
-        } else if (range === 'week' || range === 'month') {
-            const now = new Date();
-            const start = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-            if (range === 'week') start.setDate(start.getDate() - 7);
-            else start.setDate(start.getDate() - 30);
-            const startStr = start.toISOString();
-            const endStr = now.toISOString();
-            const jobs = await getJobsByRange(startStr, endStr);
-            displayJobs(jobs, 'range', range);
-        } else {
-            // Load today's jobs by default
-            const jobs = await getJobsByDate(dateStr);
-            displayJobs(jobs, 'date', dateStr);
-        }
-        
-        // Setup other components
-        populateLocationFilter();
-        updateCategoryCounts();
-        loadSidebarJobs();
-        loadCompanyWiseJobs();
-        setupRealtimeJobNotifications();
-        
-        // Event listeners
-        document.getElementById('clearFilterBtn').addEventListener('click', clearDateFilter);
-        
-        // Setup pagination handlers
-        setupPagination();
-
-    } catch (error) {
-        console.error("Initialization error:", error);
-        showToast('Error initializing page. Please try again.', false);
     }
-}
 
 function setupRealtimeJobNotifications(){
     const notify = (job, type) => {
@@ -1027,9 +1064,70 @@ async function getRecentJobs(limit = 4) {
 }
 
 
+async function getMostViewedJobs(limitCount = 4) {
+    try {
+        const jobsRef = collection(db, 'jobs');
+        // Fetch more jobs to find the most viewed ones effectively without a specific index
+        const q = query(
+            jobsRef,
+            where('isActive', '==', true),
+            orderBy('createdAt', 'desc'),
+            limit(20)
+        );
+
+        const snapshot = await getDocs(q);
+        
+        // Process jobs
+        const jobs = await Promise.all(snapshot.docs.map(async (docItem) => {
+            const jobData = {
+                id: docItem.id,
+                type: 'private',
+                title: docItem.data().jobTitle,
+                company: docItem.data().companyName,
+                location: docItem.data().location,
+                createdAt: docItem.data().createdAt,
+                postedAt: formatDate(docItem.data().createdAt),
+                views: docItem.data().views || 0,
+                companyId: docItem.data().companyId
+            };
+
+            if (jobData.companyId) {
+                try {
+                    const companyRef = doc(db, 'companies', jobData.companyId);
+                    const companyDoc = await getDoc(companyRef);
+
+                    if (companyDoc.exists()) {
+                        const companyData = companyDoc.data();
+                        return {
+                            ...jobData,
+                            company: companyData.name || jobData.company,
+                            companyLogo: companyData.logoURL || null,
+                            companyWebsite: companyData.website || null,
+                            companyAbout: companyData.about || null
+                        };
+                    }
+                } catch (error) {
+                    console.error('Error fetching company details:', error);
+                }
+            }
+            return jobData;
+        }));
+
+        // Sort by views and apply limit
+        return jobs
+            .sort((a, b) => (b.views || 0) - (a.views || 0))
+            .slice(0, limitCount);
+    } catch (error) {
+        console.error('Error fetching most viewed jobs:', error);
+        return [];
+    }
+}
+
+
 const loadSidebarJobs = async () => {
     try {
         const recentJobs = await getRecentJobs(4);
+        const mostViewedJobs = await getMostViewedJobs(4);
 
         // Update counts in the headers
         const recentCount = document.getElementById('recentJobsCount');
